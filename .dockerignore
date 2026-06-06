@@ -1,0 +1,13 @@
+.env
+vendor
+node_modules
+public/build
+public/hot
+*.log
+storage/logs/*.log
+.phpunit.result.cache
+bootstrap/cache/*.php
+.git
+.gitignore
+Dockerfile
+.dockerignore
