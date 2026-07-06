@@ -7,3 +7,22 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer base {
+    html {
+        font-family: var(--font-sans);
+    }
+
+    body {
+        margin: 0;
+        min-width: 320px;
+        background-color: #f2f2ef;
+        background-image: radial-gradient(circle, rgba(94, 85, 74, 0.22) 1px, transparent 1px);
+        background-size: 16px 16px;
+    }
+
+    a,
+    button {
+        -webkit-tap-highlight-color: transparent;
+    }
+}

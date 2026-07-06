@@ -1,16 +1,24 @@
 import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/react';
+import type { ReactNode } from 'react';
 import type { ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
+import AppLayout from './Layouts/AppLayout';
 
 type InertiaPageModule = {
-    default: ComponentType<Record<string, unknown>>;
+    default: ComponentType<Record<string, unknown>> & {
+        layout?: (page: ReactNode) => ReactNode;
+    };
 };
 
 createInertiaApp({
     resolve: (name) => {
         const pages = import.meta.glob<InertiaPageModule>('./Pages/**/*.tsx', { eager: true });
-        return pages[`./Pages/${name}.tsx`];
+        const page = pages[`./Pages/${name}.tsx`];
+
+        page.default.layout ??= (pageContent: ReactNode) => <AppLayout>{pageContent}</AppLayout>;
+
+        return page;
     },
     setup({ el, App, props }) {
         createRoot(el).render(<App {...props} />);
