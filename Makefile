@@ -1,4 +1,4 @@
-.PHONY: up down build key migrate fresh logs ps tinker dev
+.PHONY: up down build key migrate fresh logs ps tinker dev dev-up
 
 up:       ; docker compose up -d
 down:     ; docker compose down
@@ -11,5 +11,6 @@ fresh:    ; docker compose down -v && docker compose up --build -d && sleep 8 &&
 logs:     ; docker compose logs -f
 ps:       ; docker compose ps
 tinker:   ; docker compose exec app php artisan tinker
-# Hot-reload dev server (run alongside `make up`): http://localhost:5173
-dev:      ; docker run --rm -it -v "$(PWD)":/app -w /app -p 5173:5173 node:24-alpine sh -c "npm install && npm run dev -- --host"
+# Local workflow: `make up`, then keep `make dev` running for React/CSS hot reload.
+dev:      ; docker run --rm -it -v "$(PWD)":/app -w /app -p 5173:5173 node:24-alpine sh -c "npm install && npm run dev"
+dev-up:   ; docker compose up -d && $(MAKE) dev
