@@ -28,8 +28,8 @@ my-app/                         (the Laravel app lives at the root)
 ├── bootstrap/app.php
 ├── routes/web.php
 ├── resources/
-│   ├── js/app.jsx
-│   ├── js/Pages/Welcome.jsx
+│   ├── js/app.tsx
+│   ├── js/Pages/Welcome.tsx
 │   └── views/app.blade.php
 ├── vite.config.js
 ├── public/                     (built assets land in public/build)
@@ -78,8 +78,9 @@ cd my-app
 # Server-side Inertia adapter
 composer require inertiajs/inertia-laravel
 
-# Client-side Inertia + React + the Vite React plugin
+# Client-side Inertia + React + TypeScript + the Vite React plugin
 npm install @inertiajs/react react react-dom @vitejs/plugin-react
+npm install --save-dev typescript @types/react @types/react-dom
 ```
 
 > No Composer/Node on the host? Run the same commands in `composer:latest` /
@@ -99,7 +100,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.jsx'],
+            input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
         }),
         react(),
@@ -107,17 +108,22 @@ export default defineConfig({
 });
 ```
 
-**`resources/js/app.jsx`** — the Inertia client bootstrap:
+**`resources/js/app.tsx`** — the Inertia client bootstrap:
 
-```jsx
+```tsx
 import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/react';
+import type { ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
+
+type InertiaPageModule = {
+    default: ComponentType<Record<string, unknown>>;
+};
 
 createInertiaApp({
     resolve: (name) => {
-        const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true });
-        return pages[`./Pages/${name}.jsx`];
+        const pages = import.meta.glob<InertiaPageModule>('./Pages/**/*.tsx', { eager: true });
+        return pages[`./Pages/${name}.tsx`];
     },
     setup({ el, App, props }) {
         createRoot(el).render(<App {...props} />);
@@ -135,7 +141,7 @@ createInertiaApp({
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
     @viteReactRefresh
-    @vite(['resources/css/app.css', 'resources/js/app.jsx'])
+    @vite(['resources/css/app.css', 'resources/js/app.tsx'])
     @inertiaHead
 </head>
 <body>
@@ -145,7 +151,7 @@ createInertiaApp({
 ```
 
 > Delete the default `resources/views/welcome.blade.php` and
-> `resources/js/app.js` — `app.blade.php` and `app.jsx` replace them.
+> `resources/js/app.js` — `app.blade.php` and `app.tsx` replace them.
 
 **`app/Http/Middleware/HandleInertiaRequests.php`** — sets the root view and
 shares global props (or generate it with `php artisan inertia:middleware`):
@@ -210,15 +216,20 @@ Route::get('/', fn () => Inertia::render('Welcome', [
 ]));
 ```
 
-**`resources/js/Pages/Welcome.jsx`** — a sample page (props come from the controller):
+**`resources/js/Pages/Welcome.tsx`** — a sample page (props come from the controller):
 
-```jsx
-export default function Welcome({ appName, message }) {
+```tsx
+type WelcomeProps = {
+    appName: string;
+    message: string;
+};
+
+export default function Welcome({ appName, message }: WelcomeProps) {
     return (
         <main style={{ maxWidth: '40rem', margin: '4rem auto', textAlign: 'center', fontFamily: 'system-ui' }}>
             <h1>{appName}</h1>
             <p>{message}</p>
-            <p>Edit <code>resources/js/Pages/Welcome.jsx</code> and <code>routes/web.php</code>.</p>
+            <p>Edit <code>resources/js/Pages/Welcome.tsx</code> and <code>routes/web.php</code>.</p>
         </main>
     );
 }
@@ -457,7 +468,7 @@ to the built assets.
 
 ## Adding more pages
 
-1. Create `resources/js/Pages/About.jsx` exporting a React component.
+1. Create `resources/js/Pages/About.tsx` exporting a React component.
 2. Add a route: `Route::get('/about', fn () => Inertia::render('About'));`
 3. Link to it with Inertia's `<Link href="/about">` (`import { Link } from '@inertiajs/react'`).
 
