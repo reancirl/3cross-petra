@@ -93,76 +93,72 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
             </Head>
 
             <main className="w-full bg-[#f3f1ec]">
-                <section className="relative overflow-hidden border-b border-[#dad5cb] bg-neutral-950 text-white">
-                    <img
-                        src={heroImage}
-                        alt="Oilfield equipment yard with production machinery represented by Petra."
-                        className="absolute inset-0 h-full w-full object-cover grayscale"
-                    />
-                    <div className="absolute inset-0 bg-black/70" aria-hidden="true" />
-
-                    <div className="relative mx-auto grid min-h-[680px] max-w-[1280px] grid-cols-1 items-center gap-14 px-5 py-24 sm:px-10 lg:grid-cols-12 lg:py-32">
-                        <div className="lg:col-span-7">
-                            <div className="mb-8 flex flex-wrap gap-4">
-                                <span className="border border-white/30 px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-white/80">
+                <section className="border-b border-[#dad5cb] bg-white">
+                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-5 py-20 sm:px-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:py-24">
+                        <div>
+                            <div className="mb-7 flex flex-wrap gap-3">
+                                <span className="border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]">
                                     Equipment Marketplace
                                 </span>
-                                <span className="border border-white/30 px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-white/80">
+                                <span className="border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600">
                                     Brokerage Verified
                                 </span>
                             </div>
 
-                            <h1 className="font-hero text-[2.7rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-white sm:text-[3.4rem] lg:text-[4.4rem]">
+                            <h1 className="max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.4rem] lg:text-[4.2rem]">
                                 Used Oilfield Equipment
-                                <span className="block text-[#b06b3d]">Without the Auction Runaround.</span>
                             </h1>
 
-                            <p className="mt-8 max-w-2xl text-base font-medium leading-7 text-white/80 sm:text-lg">
-                                Petra connects operators, buyers, and sellers around real industrial equipment. Browse
-                                active categories, review representative listings, or send us the exact asset you need
-                                sourced.
+                            <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg">
+                                Browse representative listings, active categories, and broker-reviewed used oilfield
+                                equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.
                             </p>
-
-                            <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-                                <a
-                                    href="#featured-equipment"
-                                    className="inline-flex h-16 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
-                                >
-                                    View Equipment
-                                </a>
-                                <a
-                                    href="/request-equipment"
-                                    className="inline-flex h-16 items-center justify-center border border-white/50 px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-white/10"
-                                >
-                                    Request Equipment
-                                </a>
-                            </div>
                         </div>
 
-                        <aside className="border border-white/20 bg-black/35 p-8 backdrop-blur-sm lg:col-span-5">
-                            <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#b06b3d]">
+                        <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
+                            <a
+                                href="#featured-equipment"
+                                className="inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
+                            >
+                                View Equipment
+                            </a>
+                            <a
+                                href="/request-equipment"
+                                className="inline-flex h-14 items-center justify-center border border-neutral-500 px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white"
+                            >
+                                Request Equipment
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
+                    <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
+                        <div className="mx-auto mb-9 max-w-3xl text-center">
+                            <span className="font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]">
                                 What Gets Listed
                             </span>
-                            <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                {categories.map((category) => (
-                                    <article
-                                        key={category.slug}
-                                        className="group border border-white/15 p-5 transition-colors hover:border-[#a56437] hover:bg-white/5"
-                                    >
-                                        <div className="mb-5 flex items-center justify-between gap-4">
-                                            <CategoryIcon type={category.slug === 'separators' ? 'loader' : category.slug === 'tank-batteries' ? 'dozer' : category.slug === 'pump-packages' ? 'compaction' : 'tool'} />
-                                            <span className="font-heading text-xs font-semibold uppercase tracking-[0.12em] text-white/50">
-                                                {category.count}
-                                            </span>
-                                        </div>
-                                        <h2 className="font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-white">
-                                            {category.name}
-                                        </h2>
-                                        <p className="mt-3 text-sm leading-6 text-white/65">{category.summary}</p>
-                                    </article>
-                                ))}
-                            </div>
-                        </aside>
+                            <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-white sm:text-4xl">
+                                Equipment Categories
+                            </h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-px bg-white/15 sm:grid-cols-2 lg:grid-cols-4">
+                            {categories.map((category) => (
+                                <article key={category.slug} className="bg-[#1c1a16] p-6 transition-colors hover:bg-[#24211c]">
+                                    <div className="mb-5 flex items-center justify-center">
+                                        <CategoryIcon type={category.slug === 'separators' ? 'loader' : category.slug === 'tank-batteries' ? 'dozer' : category.slug === 'pump-packages' ? 'compaction' : 'tool'} />
+                                    </div>
+                                    <h3 className="text-center font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-white">
+                                        {category.name}
+                                    </h3>
+                                    <p className="mt-2 text-center font-heading text-xs font-semibold uppercase tracking-[0.12em] text-white/45">
+                                        {category.count}
+                                    </p>
+                                    <p className="mt-4 text-center text-sm leading-6 text-white/65">{category.summary}</p>
+                                </article>
+                            ))}
+                        </div>
                     </div>
                 </section>
 
@@ -184,9 +180,9 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                     </div>
                 </section>
 
-                <section id="featured-equipment" className="py-28 sm:py-36 lg:py-40">
+                <section id="featured-equipment" className="py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
-                        <div className="mb-16 flex flex-col gap-8 md:mb-24 md:flex-row md:items-end md:justify-between">
+                        <div className="mb-12 flex flex-col gap-8 md:mb-16 md:flex-row md:items-end md:justify-between">
                             <div className="max-w-3xl">
                                 <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
                                     Featured Equipment

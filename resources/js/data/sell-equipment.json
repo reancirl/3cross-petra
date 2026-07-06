@@ -1,0 +1,62 @@
+{
+    "heroImage": "/images/petra-equipment-yard-hero.png",
+    "assetTypes": ["Compressors", "Separators", "Tank batteries", "Pump packages", "Production equipment", "Industrial surplus"],
+    "processSteps": [
+        {
+            "number": "01",
+            "title": "Send the Basics",
+            "description": "Share the equipment type, location, condition, photos, and any available specs or documentation."
+        },
+        {
+            "number": "02",
+            "title": "Market Review",
+            "description": "Petra reviews where the asset fits, who is likely to care, and whether brokerage makes sense."
+        },
+        {
+            "number": "03",
+            "title": "Position the Asset",
+            "description": "We organize the story around real field use, condition, logistics, and practical buyer questions."
+        },
+        {
+            "number": "04",
+            "title": "Connect Real Buyers",
+            "description": "The equipment is put in front of relevant buyers without running it through a public auction process."
+        }
+    ],
+    "requirements": [
+        "Equipment type and manufacturer",
+        "Model, year, size, pressure, horsepower, capacity, or other core specs",
+        "Current location and access notes",
+        "Operating condition and known issues",
+        "Photos, serial plates, inspection notes, or maintenance records",
+        "Target timing, asking range, and logistics constraints"
+    ],
+    "sellerBenefits": [
+        {
+            "title": "No Auction Guesswork",
+            "description": "Petra focuses on direct buyer conversations, practical valuation, and controlled exposure."
+        },
+        {
+            "title": "Field-Aware Positioning",
+            "description": "Listings are framed around how operators evaluate equipment: condition, fit, documents, and logistics."
+        },
+        {
+            "title": "Regional Buyer Network",
+            "description": "We work across Wyoming, the Rockies, the Bakken, North Dakota, Colorado, Utah, New Mexico, and Montana."
+        }
+    ],
+    "faqs": [
+        {
+            "question": "What equipment can Petra help sell?",
+            "answer": "Petra focuses on used oilfield and industrial assets such as compressors, separators, tank batteries, pump packages, production equipment, and regional surplus."
+        },
+        {
+            "question": "Do I need perfect documentation before reaching out?",
+            "answer": "No. Photos, core specs, location, and condition notes are enough to start a review. Strong documentation helps position the asset more accurately."
+        },
+        {
+            "question": "Is this a public auction process?",
+            "answer": "No. Petra is built around brokerage, direct buyer conversations, equipment positioning, and practical deal support."
+        }
+    ]
+}

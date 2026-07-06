@@ -13,6 +13,11 @@ Route::get('/equipment', fn () => Inertia::render('Equipment', [
     'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
 ]));
 
+Route::get('/sell-equipment', fn () => Inertia::render('SellEquipment', [
+    'canonicalUrl' => url('/sell-equipment'),
+    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+]));
+
 Route::redirect('/inventory', '/equipment', 301);
 
 Route::get('/sitemap.xml', function () {
@@ -26,6 +31,11 @@ Route::get('/sitemap.xml', function () {
             'loc' => url('/equipment'),
             'changefreq' => 'daily',
             'priority' => '0.9',
+        ],
+        [
+            'loc' => url('/sell-equipment'),
+            'changefreq' => 'weekly',
+            'priority' => '0.8',
         ],
     ];
     $lastModified = now()->toDateString();
