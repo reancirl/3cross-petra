@@ -1,0 +1,126 @@
+{
+    "heroImage": "/images/petra-equipment-yard-hero.png",
+    "stats": [
+        {
+            "value": "Field",
+            "label": "Reality"
+        },
+        {
+            "value": "Real",
+            "label": "Buyers"
+        },
+        {
+            "value": "Deals",
+            "label": "Moving"
+        },
+        {
+            "value": "Regional",
+            "label": "Markets"
+        }
+    ],
+    "featureItems": [
+        {
+            "label": "Straight Brokerage",
+            "icon": "check"
+        },
+        {
+            "label": "Real Buyers",
+            "icon": "badge"
+        },
+        {
+            "label": "Field Equipment",
+            "icon": "truck"
+        }
+    ],
+    "categories": [
+        {
+            "label": "Compressors",
+            "icon": "tool",
+            "imagePosition": "18% center"
+        },
+        {
+            "label": "Separators",
+            "icon": "loader",
+            "imagePosition": "40% center"
+        },
+        {
+            "label": "Tank Batteries",
+            "icon": "dozer",
+            "imagePosition": "64% center"
+        },
+        {
+            "label": "Pump Packages",
+            "icon": "compaction",
+            "imagePosition": "86% center"
+        }
+    ],
+    "processSteps": [
+        {
+            "number": "01",
+            "title": "Tell Us",
+            "description": "You tell us what you've got or what you need. No complicated forms, just the basics."
+        },
+        {
+            "number": "02",
+            "title": "Review",
+            "description": "We review it, position it correctly, and identify where it fits in the market."
+        },
+        {
+            "number": "03",
+            "title": "Connect",
+            "description": "We connect the right buyers and sellers, not everyone, just the ones who matter."
+        },
+        {
+            "number": "04",
+            "title": "Negotiation",
+            "description": "We handle the back-and-forth around pricing, questions, negotiation, and documentation."
+        },
+        {
+            "number": "05",
+            "title": "Deal Done",
+            "description": "Equipment moves, paperwork clears, and everyone moves on."
+        }
+    ],
+    "inventoryItems": [
+        {
+            "title": "3-Phase Separator",
+            "badge": "Available",
+            "badgeStyle": "solid",
+            "id": "PH-9902",
+            "imagePosition": "22% center",
+            "specs": [
+                ["Year", "2020"],
+                ["PSI", "1440 WP"],
+                ["Size", "36\" x 10'"],
+                ["Condition", "Certified"]
+            ]
+        },
+        {
+            "title": "Ariel JGK/4 Compressor",
+            "badge": "Market Movement",
+            "badgeStyle": "primary",
+            "id": "PH-1148",
+            "imagePosition": "52% center",
+            "specs": [
+                ["Year", "2018"],
+                ["HP", "3550"],
+                ["Hours", "4200"],
+                ["Stages", "2-Stage"]
+            ]
+        },
+        {
+            "title": "Storage Tank Battery",
+            "badge": "Available",
+            "badgeStyle": "outline",
+            "id": "PH-7761",
+            "imagePosition": "80% center",
+            "specs": [
+                ["Capacity", "400 BBL x 4"],
+                ["Material", "Fiberglass"],
+                ["Status", "Cleaned"],
+                ["Coating", "Internal"]
+            ]
+        }
+    ],
+    "states": ["Wyoming Oilfields", "North Dakota Bakken", "Colorado Energy Corridors", "Utah & New Mexico", "Montana Industrial Yards", "Regional Surplus Yards"]
+}
