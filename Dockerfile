@@ -21,14 +21,16 @@ COPY . .
 # ── Stage 3: runtime ──
 FROM php:8.3-fpm AS release
 RUN apt-get update && apt-get install -y \
-    libzip-dev libonig-dev libxml2-dev libpq-dev \
+    libzip-dev libonig-dev libxml2-dev libpq-dev nodejs \
     && docker-php-ext-install pdo pdo_pgsql mbstring zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /var/www/html
 COPY --from=vendor /var/www/html/vendor ./vendor
 COPY --from=vendor /var/www/html .
 COPY --from=assets /app/public/build ./public/build
+COPY --from=assets /app/bootstrap/ssr ./bootstrap/ssr
 RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+    && chmod -R 775 storage bootstrap/cache \
+    && chmod +x docker/start.sh
 EXPOSE 9000
-CMD ["php-fpm"]
+CMD ["docker/start.sh"]

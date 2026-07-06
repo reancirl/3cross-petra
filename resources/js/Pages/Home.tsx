@@ -4,15 +4,68 @@ import { AccentIcon, CategoryIcon, FeatureIcon } from '../Components/home-icons'
 import homeData from '../data/home.json';
 
 type HomeProps = {
-    message: string;
+    canonicalUrl: string;
+    ogImageUrl: string;
 };
 
 const { heroImage, stats, featureItems, categories, processSteps, inventoryItems, states } = homeData;
+const pageTitle = 'Petra | Used Oilfield & Industrial Equipment Brokerage';
+const pageDescription =
+    'Petra connects real buyers and sellers of used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.';
 
-export default function Home({ message: _message }: HomeProps) {
+export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
+    const structuredData = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'Organization',
+                '@id': `${canonicalUrl}#organization`,
+                name: 'Petra',
+                url: canonicalUrl,
+                description: 'Used oilfield and industrial equipment brokerage serving Wyoming, the Rockies, and surrounding producing regions.',
+                areaServed: ['Wyoming', 'Rockies', 'Bakken', 'North Dakota', 'Colorado', 'Utah', 'New Mexico', 'Montana'],
+                knowsAbout: [
+                    'Used oilfield equipment',
+                    'Industrial equipment brokerage',
+                    'Equipment sourcing',
+                    'Asset liquidation',
+                    'Equipment valuation',
+                ],
+            },
+            {
+                '@type': 'WebSite',
+                '@id': `${canonicalUrl}#website`,
+                name: 'Petra',
+                url: canonicalUrl,
+                publisher: {
+                    '@id': `${canonicalUrl}#organization`,
+                },
+                description: pageDescription,
+            },
+        ],
+    };
+
     return (
         <>
-            <Head title="Home" />
+            <Head title={pageTitle}>
+                <meta name="description" content={pageDescription} />
+                <link rel="canonical" href={canonicalUrl} />
+                <meta name="robots" content="index, follow" />
+
+                <meta property="og:title" content={pageTitle} />
+                <meta property="og:description" content={pageDescription} />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content={canonicalUrl} />
+                <meta property="og:image" content={ogImageUrl} />
+                <meta property="og:image:alt" content="Used oilfield and industrial equipment yard represented by Petra brokerage." />
+
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={pageTitle} />
+                <meta name="twitter:description" content={pageDescription} />
+                <meta name="twitter:image" content={ogImageUrl} />
+
+                <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+            </Head>
 
             <main className="w-full">
                 <section
