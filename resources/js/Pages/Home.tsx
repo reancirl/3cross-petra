@@ -102,7 +102,7 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
 
                         <div className="mt-12 flex w-full max-w-xs flex-col gap-4">
                             <a
-                                href="/inventory"
+                                href="/equipment"
                                 className="flex h-16 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
                             >
                                 See Available Equipment
@@ -164,7 +164,7 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                                 If it runs in the field, processes product, or moves production, we probably handle it.
                             </p>
                             <div className="mt-6 flex justify-center">
-                                <a className="border-b border-[#a56437] pb-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437] transition-colors hover:border-neutral-950 hover:text-neutral-950" href="/inventory">
+                                <a className="border-b border-[#a56437] pb-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437] transition-colors hover:border-neutral-950 hover:text-neutral-950" href="/equipment">
                                     Browse Equipment
                                 </a>
                             </div>
@@ -172,7 +172,7 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                             {categories.map((category) => (
-                                <a key={category.label} href="/inventory" className="group relative h-[500px] cursor-pointer overflow-hidden bg-neutral-950">
+                                <a key={category.label} href="/equipment" className="group relative h-[500px] cursor-pointer overflow-hidden bg-neutral-950">
                                     <div
                                         className="absolute inset-0 bg-cover grayscale transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0"
                                         style={{
@@ -249,7 +249,7 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                                     Browse what is currently available or contact us if you're looking for something specific.
                                 </p>
                             </div>
-                            <a href="/inventory" className="border border-neutral-500 px-8 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
+                            <a href="/equipment" className="border border-neutral-500 px-8 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
                                 View Equipment
                             </a>
                         </div>
@@ -419,7 +419,7 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                             <a href="/contact" className="inline-flex h-16 items-center justify-center bg-[#a56437] px-12 font-heading text-base font-semibold uppercase tracking-[0.16em] text-white transition-opacity hover:opacity-90 sm:px-16">
                                 Talk to a Broker
                             </a>
-                            <a href="/inventory" className="inline-flex h-16 items-center justify-center border border-white/50 px-12 font-heading text-base font-semibold uppercase tracking-[0.16em] text-white transition-colors hover:bg-white/10 sm:px-16">
+                            <a href="/equipment" className="inline-flex h-16 items-center justify-center border border-white/50 px-12 font-heading text-base font-semibold uppercase tracking-[0.16em] text-white transition-colors hover:bg-white/10 sm:px-16">
                                 Browse Equipment
                             </a>
                         </div>

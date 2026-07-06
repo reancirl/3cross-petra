@@ -5,8 +5,10 @@
   "resources/js/Components/home-icons.tsx": [],
   "resources/js/Components/nav-bar.tsx": [],
   "resources/js/Layouts/AppLayout.tsx": [],
+  "resources/js/Pages/Equipment.tsx": [],
   "resources/js/Pages/Errors/NotFound.tsx": [],
   "resources/js/Pages/Home.tsx": [],
+  "resources/js/data/equipment.json": [],
   "resources/js/data/home.json": [],
   "resources/js/ssr.tsx": []
 }

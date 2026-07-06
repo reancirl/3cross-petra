@@ -34,7 +34,7 @@ export default function Footer() {
                         Navigation
                     </h3>
                     <nav className="flex flex-col gap-4 text-neutral-600">
-                        <a className="transition-colors hover:text-[#a56437]" href="/inventory">
+                        <a className="transition-colors hover:text-[#a56437]" href="/equipment">
                             Browse Equipment
                         </a>
                         <a className="transition-colors hover:text-[#a56437]" href="/sell-equipment">

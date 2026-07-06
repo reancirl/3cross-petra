@@ -8,19 +8,44 @@ Route::get('/', fn () => Inertia::render('Home', [
     'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
 ]));
 
+Route::get('/equipment', fn () => Inertia::render('Equipment', [
+    'canonicalUrl' => url('/equipment'),
+    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+]));
+
+Route::redirect('/inventory', '/equipment', 301);
+
 Route::get('/sitemap.xml', function () {
-    $homeUrl = htmlspecialchars(url('/'), ENT_XML1);
+    $urls = [
+        [
+            'loc' => url('/'),
+            'changefreq' => 'weekly',
+            'priority' => '1.0',
+        ],
+        [
+            'loc' => url('/equipment'),
+            'changefreq' => 'daily',
+            'priority' => '0.9',
+        ],
+    ];
     $lastModified = now()->toDateString();
+    $entries = collect($urls)->map(function ($url) use ($lastModified) {
+        $loc = htmlspecialchars($url['loc'], ENT_XML1);
+
+        return <<<XML
+    <url>
+        <loc>{$loc}</loc>
+        <lastmod>{$lastModified}</lastmod>
+        <changefreq>{$url['changefreq']}</changefreq>
+        <priority>{$url['priority']}</priority>
+    </url>
+XML;
+    })->implode("\n");
 
     $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>{$homeUrl}</loc>
-        <lastmod>{$lastModified}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
+{$entries}
 </urlset>
 XML;
 
