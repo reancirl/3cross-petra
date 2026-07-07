@@ -1,58 +1,230 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 3Cross PETRA
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel + Inertia React site for PETRA equipment brokerage.
 
-## About Laravel
+The app is a single Laravel monolith. Laravel serves the routes, Inertia renders React pages, Vite builds the frontend assets, PostgreSQL stores application data, Redis is available for cache/queue support, and Nginx serves the app through Docker Compose.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+For the recommended setup you only need:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Git
+- Docker Engine
+- Docker Compose v2
 
-## Learning Laravel
+Optional host tools:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Make
+- PHP 8.3+
+- Composer
+- Node 24+
+- npm
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Fresh Clone Setup
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+From a new clone, run this if you have `make`:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+make setup
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Without `make`, run the same setup manually:
 
-## Contributing
+```bash
+cp .env.example .env
+docker compose build
+APP_KEY=$(docker compose run --rm --no-deps app php artisan key:generate --show)
+sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" .env
+docker compose up -d
+docker compose exec app php artisan migrate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Do not skip `cp .env.example .env`. The key command prints a fresh key from Laravel inside Docker, then the host shell writes that value into `.env`.
 
-## Code of Conduct
+If PostgreSQL is still starting when the migration runs, wait a few seconds and run the migrate command again.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+If the page shows `No application encryption key has been specified`, confirm that `.env` is a file and has an `APP_KEY` value:
 
-## Security Vulnerabilities
+```bash
+ls -ld .env
+grep '^APP_KEY=' .env
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+If `.env` is a directory, remove that directory, recreate the file, and generate the key through Docker:
 
-## License
+```bash
+rmdir .env
+cp .env.example .env
+APP_KEY=$(docker compose run --rm --no-deps app php artisan key:generate --show)
+sed -i "s|^APP_KEY=.*|APP_KEY=${APP_KEY}|" .env
+docker compose up -d --force-recreate app
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Do not run `php artisan key:generate` on the host unless you have already run `composer install`. A fresh Docker-only clone will not have `vendor/autoload.php` on the host.
+
+Open the site at:
+
+```text
+http://localhost:8000
+```
+
+The default port is controlled by `APP_PORT` in `.env`.
+
+## After Pulling Updates
+
+When you pull new changes, refresh the containers and run any new migrations:
+
+```bash
+git pull
+make update
+```
+
+Without `make`, run:
+
+```bash
+docker compose build
+docker compose up -d
+docker compose exec app php artisan migrate
+```
+
+If you are using the Vite dev server, restart `make dev` after dependency or frontend changes.
+
+## Development Workflow
+
+Start the Laravel, Nginx, PostgreSQL, and Redis containers:
+
+```bash
+docker compose up -d
+```
+
+Run the Vite dev server for React/CSS hot reload:
+
+```bash
+make dev
+```
+
+Then keep both running and visit:
+
+```text
+http://localhost:8000
+```
+
+If you do not have `make`, run the Vite dev server through Node directly:
+
+```bash
+docker run --rm -it -v "$PWD":/app -w /app -p 5173:5173 node:24-alpine sh -c "npm install && npm run dev"
+```
+
+## Useful Commands
+
+```bash
+# Start containers
+docker compose up -d
+
+# Stop containers
+docker compose down
+
+# Rebuild and start containers
+docker compose up --build -d
+
+# Run migrations
+docker compose exec app php artisan migrate
+
+# Rebuild the database from scratch
+docker compose down -v
+docker compose up --build -d
+docker compose exec app php artisan migrate --seed
+
+# View container logs
+docker compose logs -f
+
+# Check running services
+docker compose ps
+```
+
+Makefile shortcuts are also available:
+
+```bash
+make env
+make up
+make down
+make build
+make setup
+make update
+make docker-key
+make migrate
+make fresh
+make logs
+make ps
+make tinker
+make dev
+make dev-up
+```
+
+Note: `make key` runs `php artisan key:generate` on the host, so it requires host PHP and Composer dependencies. Use `make docker-key` if you want to generate the key through Docker.
+
+## Testing And Checks
+
+Install dependencies on the host if you want to run checks directly:
+
+```bash
+composer install
+npm install
+```
+
+Then run:
+
+```bash
+composer test
+npm run typecheck
+npm run build
+```
+
+Inside Docker, migrations and Artisan commands should be run through the `app` service:
+
+```bash
+docker compose exec app php artisan test
+docker compose exec app php artisan route:list
+```
+
+## Project Structure
+
+```text
+app/                    Laravel application code
+bootstrap/              Laravel bootstrapping and Inertia SSR output
+config/                 Laravel configuration
+database/               Migrations, factories, and seeders
+docker/                 Container startup scripts
+nginx/                  Nginx site configuration
+public/                 Public assets and compiled Vite build output
+resources/css/          Tailwind/CSS entry
+resources/js/           Inertia React app, pages, layouts, and data
+routes/web.php          Web routes and sitemap route
+tests/                  PHPUnit tests
+```
+
+Current public pages:
+
+- `/`
+- `/equipment`
+- `/sell-equipment`
+- `/sitemap.xml`
+
+## Environment Notes
+
+The included `.env.example` is configured for Docker:
+
+```text
+DB_CONNECTION=pgsql
+DB_HOST=db
+REDIS_HOST=cache
+APP_PORT=8000
+```
+
+For a different local port, change `APP_PORT` and restart the web container:
+
+```bash
+docker compose up -d --force-recreate web
+```
+
+Do not commit `.env`, `vendor/`, `node_modules/`, or generated build artifacts.
