@@ -8,9 +8,9 @@ type IndustriesProps = {
 };
 
 const { heroImage, industries, signals, regions, faqs } = industriesData;
-const pageTitle = 'Oilfield and Industrial Equipment Industries | Petra';
+const pageTitle = 'Industries | Petra';
 const pageDescription =
-    'Petra serves oil and gas production, midstream operations, industrial surplus, and regional equipment yards with used equipment brokerage and sourcing.';
+    'Petra works across producing and industrial regions including Wyoming, the Bakken, Colorado energy corridors, Utah, New Mexico, Montana, and regional surplus equipment yards.';
 
 export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps) {
     const structuredData = {
@@ -19,10 +19,17 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
             {
                 '@type': 'CollectionPage',
                 '@id': `${canonicalUrl}#industries`,
-                name: 'Oilfield and industrial equipment industries',
+                name: 'Industries',
                 url: canonicalUrl,
                 description: pageDescription,
-                about: industries.map((industry) => industry.title),
+                about: [
+                    'Wyoming oilfields',
+                    'North Dakota Bakken',
+                    'Colorado energy corridors',
+                    'Utah and New Mexico producing regions',
+                    'Montana industrial yards',
+                    'Regional surplus equipment yards and private sellers',
+                ],
                 isPartOf: {
                     '@type': 'WebSite',
                     name: 'Petra',
@@ -47,6 +54,8 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                     },
                 ],
             },
+            /*
+            Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
             {
                 '@type': 'FAQPage',
                 '@id': `${canonicalUrl}#faq`,
@@ -59,6 +68,7 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                     },
                 })),
             },
+            */
         ],
     };
 
@@ -86,8 +96,9 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
 
             <main className="w-full bg-[#f3f1ec]">
                 <section className="border-b border-[#dad5cb] bg-white">
-                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-20 sm:px-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:py-24">
+                    <div className="mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-24">
                         <div>
+                            {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                             <div className="mb-7 flex flex-wrap gap-3">
                                 <span className="border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]">
                                     Industry Coverage
@@ -96,14 +107,15 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                                     Producing Regions
                                 </span>
                             </div>
+                            */}
 
                             <h1 className="max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.35rem] lg:text-[4.1rem]">
-                                Oilfield and Industrial Equipment Industries
+                                Industries
                             </h1>
 
                             <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg">
-                                Petra works across the markets where used field equipment still has real utility:
-                                production sites, midstream operations, industrial surplus channels, and regional yards.
+                                We work across producing and industrial regions including Wyoming, the Bakken, Colorado
+                                energy corridors, Utah, New Mexico, Montana, and regional surplus equipment yards.
                             </p>
 
                             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -122,6 +134,7 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                             </div>
                         </div>
 
+                        {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                         <figure className="relative min-h-[300px] overflow-hidden border border-[#dad5cb] bg-neutral-950 lg:min-h-[420px]">
                             <img
                                 src={heroImage}
@@ -138,9 +151,49 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                                 </p>
                             </figcaption>
                         </figure>
+                        */}
                     </div>
                 </section>
 
+                <section className="border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
+                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-5 sm:px-10 lg:grid-cols-12 lg:items-start lg:gap-14">
+                        <div className="max-w-3xl lg:col-span-5">
+                            <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
+                                Where We Operate
+                            </span>
+                            <h2 className="font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl">
+                                Regional Markets Petra Knows
+                            </h2>
+                            <p className="mt-6 text-lg leading-8 text-neutral-600">
+                                If equipment is moving in these areas—we're usually already connected to it.
+                            </p>
+                        </div>
+
+                        <div className="lg:col-span-7">
+                            <div className="border border-[#dad5cb] bg-white p-6 sm:p-8">
+                                <div className="grid grid-cols-1 gap-px bg-[#dad5cb] sm:grid-cols-2">
+                                    {[
+                                        'Wyoming oilfields (Powder River, Jonah, Green River Basin)',
+                                        'North Dakota (Bakken)',
+                                        'Colorado energy corridors',
+                                        'Utah & New Mexico producing regions',
+                                        'Montana industrial yards',
+                                        'Regional surplus equipment yards and private sellers',
+                                    ].map((region) => (
+                                        <article key={region} className="flex min-h-24 items-start gap-4 bg-white p-5">
+                                            <FeatureIcon type="check" className="mt-1 h-5 w-5 shrink-0" />
+                                            <h3 className="font-heading text-lg font-semibold uppercase leading-snug tracking-[0.08em] text-neutral-950">
+                                                {region}
+                                            </h3>
+                                        </article>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
                     <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
                         <div className="mx-auto mb-9 max-w-3xl text-center">
@@ -175,7 +228,9 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                         </div>
                     </div>
                 </section>
+                */}
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
                         <div className="mb-12 max-w-3xl">
@@ -199,7 +254,9 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                         </div>
                     </div>
                 </section>
+                */}
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="bg-[#f3f1ec] py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 sm:px-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,1.1fr)]">
                         <div>
@@ -227,7 +284,9 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                         </aside>
                     </div>
                 </section>
+                */}
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-y border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
                         <div className="mb-12 max-w-3xl">
@@ -251,6 +310,7 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                         </div>
                     </div>
                 </section>
+                */}
             </main>
         </>
     );
