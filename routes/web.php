@@ -18,6 +18,11 @@ Route::get('/sell-equipment', fn () => Inertia::render('SellEquipment', [
     'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
 ]));
 
+Route::get('/request-equipment', fn () => Inertia::render('RequestEquipment', [
+    'canonicalUrl' => url('/request-equipment'),
+    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+]));
+
 Route::redirect('/inventory', '/equipment', 301);
 
 Route::get('/sitemap.xml', function () {
@@ -34,6 +39,11 @@ Route::get('/sitemap.xml', function () {
         ],
         [
             'loc' => url('/sell-equipment'),
+            'changefreq' => 'weekly',
+            'priority' => '0.8',
+        ],
+        [
+            'loc' => url('/request-equipment'),
             'changefreq' => 'weekly',
             'priority' => '0.8',
         ],

@@ -1,0 +1,63 @@
+{
+    "heroImage": "/images/petra-equipment-yard-hero.png",
+    "requestedAssets": ["Compressors", "Separators", "Pump packages", "Tank batteries", "Production equipment", "Hard-to-source surplus"],
+    "processSteps": [
+        {
+            "number": "01",
+            "title": "Send the Spec",
+            "description": "Share the equipment type, required size, service conditions, location needs, and timing."
+        },
+        {
+            "number": "02",
+            "title": "Check the Network",
+            "description": "Petra reviews active sellers, regional surplus, operator relationships, and quiet-market availability."
+        },
+        {
+            "number": "03",
+            "title": "Verify Fit",
+            "description": "We compare condition, documents, field use, logistics, and practical buyer requirements before presenting options."
+        },
+        {
+            "number": "04",
+            "title": "Move the Deal",
+            "description": "When a fit is real, Petra supports buyer questions, seller coordination, negotiation, and next-step logistics."
+        }
+    ],
+    "requirements": [
+        "Equipment category and target application",
+        "Manufacturer, model, horsepower, pressure, size, capacity, or material requirements",
+        "Required location, delivery region, or acceptable pickup radius",
+        "Timing, budget range, and urgency",
+        "Condition requirements and deal breakers",
+        "Documentation, inspection, or compliance needs"
+    ],
+    "buyerBenefits": [
+        {
+            "title": "Specific Asset Sourcing",
+            "description": "Petra is built for buyers who need a real fit, not a long list of irrelevant public listings."
+        },
+        {
+            "title": "Quiet-Market Access",
+            "description": "Some equipment moves through operator relationships and regional sellers before it ever reaches an open marketplace."
+        },
+        {
+            "title": "Practical Verification",
+            "description": "We focus on condition, specs, documentation, site fit, and logistics before a buyer wastes time."
+        }
+    ],
+    "regions": ["Wyoming", "Powder River", "Rockies", "Bakken", "North Dakota", "Colorado", "Utah", "New Mexico", "Montana"],
+    "faqs": [
+        {
+            "question": "Can Petra source equipment that is not listed publicly?",
+            "answer": "Yes. Petra can review buyer requirements against active sellers, regional surplus, operator relationships, and quiet-market opportunities."
+        },
+        {
+            "question": "What information should a buyer provide?",
+            "answer": "The most useful details are equipment type, required specs, location needs, condition requirements, timing, budget range, and documentation needs."
+        },
+        {
+            "question": "Does Petra only work in oilfield equipment?",
+            "answer": "Petra focuses on used oilfield and industrial equipment, including compressors, separators, pump packages, tank batteries, production equipment, and related surplus assets."
+        }
+    ]
+}
