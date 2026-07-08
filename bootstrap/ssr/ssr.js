@@ -203,6 +203,200 @@ function AccentIcon$1({ type }) {
 		})
 	});
 }
+//#endregion
+//#region resources/js/Pages/Contact.tsx
+var Contact_exports = /* @__PURE__ */ __exportAll({ default: () => Contact });
+var pageTitle$6 = "Contact Petra | Talk to an Equipment Broker";
+var pageDescription$6 = "Contact Petra about selling, sourcing, or reviewing used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.";
+var contactTopics = [
+	"Selling used oilfield or industrial equipment",
+	"Sourcing a specific compressor, separator, tank battery, pump package, or surplus asset",
+	"Reviewing condition, documentation, logistics, or regional fit",
+	"Discussing buyer demand across Wyoming, the Rockies, the Bakken, and nearby producing regions"
+];
+var nextSteps = [
+	"Tell us whether you are selling, sourcing, or evaluating equipment.",
+	"Include the equipment type, location, condition, and relevant specs.",
+	"Share photos, serial plates, documents, timing, and deal constraints when available.",
+	"Petra will review whether the opportunity is a fit for brokerage or sourcing support."
+];
+function Contact({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [{
+			"@type": "ContactPage",
+			"@id": `${canonicalUrl}#contact`,
+			name: "Contact Petra",
+			url: canonicalUrl,
+			description: pageDescription$6,
+			about: [
+				"Used oilfield equipment brokerage",
+				"Equipment sourcing",
+				"Industrial surplus equipment"
+			]
+		}, {
+			"@type": "BreadcrumbList",
+			"@id": `${canonicalUrl}#breadcrumbs`,
+			itemListElement: [{
+				"@type": "ListItem",
+				position: 1,
+				name: "Home",
+				item: canonicalUrl.replace(/\/contact$/, "")
+			}, {
+				"@type": "ListItem",
+				position: 2,
+				name: "Contact",
+				item: canonicalUrl
+			}]
+		}]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
+		title: pageTitle$6,
+		children: [
+			/* @__PURE__ */ jsx("meta", {
+				name: "description",
+				content: pageDescription$6
+			}),
+			/* @__PURE__ */ jsx("link", {
+				rel: "canonical",
+				href: canonicalUrl
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "robots",
+				content: "index, follow"
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:title",
+				content: pageTitle$6
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:description",
+				content: pageDescription$6
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:type",
+				content: "website"
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:url",
+				content: canonicalUrl
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:image",
+				content: ogImageUrl
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:image:alt",
+				content: "Oilfield equipment yard represented by Petra brokerage."
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "twitter:card",
+				content: "summary_large_image"
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "twitter:title",
+				content: pageTitle$6
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "twitter:description",
+				content: pageDescription$6
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "twitter:image",
+				content: ogImageUrl
+			}),
+			/* @__PURE__ */ jsx("script", {
+				type: "application/ld+json",
+				children: JSON.stringify(structuredData)
+			})
+		]
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [/* @__PURE__ */ jsx("section", {
+			className: "border-b border-[#dad5cb] bg-white",
+			children: /* @__PURE__ */ jsxs("div", {
+				className: "mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-20 sm:px-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:py-24",
+				children: [/* @__PURE__ */ jsxs("div", { children: [
+					/* @__PURE__ */ jsxs("div", {
+						className: "mb-7 flex flex-wrap gap-3",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]",
+							children: "Contact"
+						}), /* @__PURE__ */ jsx("span", {
+							className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600",
+							children: "Broker Review"
+						})]
+					}),
+					/* @__PURE__ */ jsx("h1", {
+						className: "max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.35rem] lg:text-[4.1rem]",
+						children: "Talk to an Equipment Broker"
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg",
+						children: "Bring Petra the equipment details, sourcing request, or field question. We will review whether the opportunity fits brokerage, sourcing, or market positioning support."
+					}),
+					/* @__PURE__ */ jsxs("div", {
+						className: "mt-10 flex flex-col gap-4 sm:flex-row",
+						children: [/* @__PURE__ */ jsx("a", {
+							href: "/sell-equipment",
+							className: "inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
+							children: "Sell Equipment"
+						}), /* @__PURE__ */ jsx("a", {
+							href: "/request-equipment",
+							className: "inline-flex h-14 items-center justify-center border border-neutral-500 px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
+							children: "Request Equipment"
+						})]
+					})
+				] }), /* @__PURE__ */ jsxs("aside", {
+					className: "border border-[#dad5cb] bg-[#f3f1ec] p-8",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]",
+						children: "Useful Context"
+					}), /* @__PURE__ */ jsx("ul", {
+						className: "mt-7 space-y-5",
+						children: contactTopics.map((topic) => /* @__PURE__ */ jsxs("li", {
+							className: "flex items-start gap-4 border-b border-[#dad5cb] pb-5 last:border-b-0 last:pb-0",
+							children: [/* @__PURE__ */ jsx(FeatureIcon, {
+								type: "check",
+								className: "mt-0.5 h-5 w-5 shrink-0"
+							}), /* @__PURE__ */ jsx("span", {
+								className: "text-base leading-7 text-neutral-700",
+								children: topic
+							})]
+						}, topic))
+					})]
+				})]
+			})
+		}), /* @__PURE__ */ jsx("section", {
+			className: "border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28",
+			children: /* @__PURE__ */ jsxs("div", {
+				className: "mx-auto max-w-[1280px] px-5 sm:px-10",
+				children: [/* @__PURE__ */ jsxs("div", {
+					className: "mb-12 max-w-3xl",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+						children: "Before Outreach"
+					}), /* @__PURE__ */ jsx("h2", {
+						className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+						children: "What to Have Ready"
+					})]
+				}), /* @__PURE__ */ jsx("div", {
+					className: "grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-4",
+					children: nextSteps.map((step, index) => /* @__PURE__ */ jsxs("article", {
+						className: "bg-white p-7",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-3xl font-semibold uppercase tracking-[0.05em] text-[#a56437]",
+							children: String(index + 1).padStart(2, "0")
+						}), /* @__PURE__ */ jsx("p", {
+							className: "mt-8 text-base leading-7 text-neutral-600",
+							children: step
+						})]
+					}, step))
+				})]
+			})
+		})]
+	})] });
+}
 var equipment_default = {
 	heroImage: "/images/petra-equipment-yard-hero.png",
 	categories: [
@@ -799,6 +993,16 @@ var home_default = {
 			"imagePosition": "86% center"
 		}
 	],
+	additionalCategories: [
+		"Production equipment packages",
+		"Heater treaters",
+		"Pumping units",
+		"Generators & power units",
+		"Gas processing equipment",
+		"Flowback & well testing equipment",
+		"Pipe, tubing, and surplus yard inventory",
+		"Valves, fittings, and control systems"
+	],
 	processSteps: [
 		{
 			"number": "01",
@@ -867,19 +1071,37 @@ var home_default = {
 			]
 		}
 	],
+	whyPeopleWorkWithPetra: [
+		{
+			"title": "We understand field reality",
+			"description": "We're not guessing what a compressor package is or how it's used. We know how it actually runs in the field."
+		},
+		{
+			"title": "We deal with real buyers",
+			"description": "Not tire-kickers. Not \"just curious\" inquiries."
+		},
+		{
+			"title": "We keep deals moving",
+			"description": "No ghosting. No endless waiting for replies."
+		},
+		{
+			"title": "We know regional markets",
+			"description": "Wyoming, Powder River, Bakken, Rockies—we understand how pricing and demand actually shift here."
+		}
+	],
 	states: [
-		"Wyoming Oilfields",
-		"North Dakota Bakken",
-		"Colorado Energy Corridors",
-		"Utah & New Mexico",
-		"Montana Industrial Yards",
-		"Regional Surplus Yards"
+		"Wyoming oilfields (Powder River, Jonah, Green River Basin)",
+		"North Dakota (Bakken)",
+		"Colorado energy corridors",
+		"Utah & New Mexico producing regions",
+		"Montana industrial yards",
+		"Regional surplus equipment yards and private sellers"
 	]
 };
 //#endregion
 //#region resources/js/Pages/Home.tsx
 var Home_exports = /* @__PURE__ */ __exportAll({ default: () => Home });
-var { heroImage: heroImage$8, stats, featureItems, categories, processSteps: processSteps$4, inventoryItems, states } = home_default;
+var { heroImage: heroImage$8, stats, featureItems, categories, additionalCategories, processSteps: processSteps$4, inventoryItems, whyPeopleWorkWithPetra, states } = home_default;
 var pageTitle$4 = "Petra | Used Oilfield & Industrial Equipment Brokerage";
 var pageDescription$4 = "Petra connects real buyers and sellers of used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.";
 function Home({ canonicalUrl, ogImageUrl }) {
@@ -1021,6 +1243,10 @@ function Home({ canonicalUrl, ogImageUrl }) {
 							}),
 							/* @__PURE__ */ jsx("p", {
 								className: "mt-8 max-w-2xl text-base font-medium leading-7 text-white/80 sm:text-lg",
+								children: "Or trying to find a solid piece of gear without chasing 12 different sellers who don't return calls?"
+							}),
+							/* @__PURE__ */ jsx("p", {
+								className: "mt-5 max-w-2xl text-base font-medium leading-7 text-white/80 sm:text-lg",
 								children: "Petra helps you move equipment faster without the runaround. We connect real buyers and sellers of used oilfield and industrial equipment across Wyoming, the Rockies, and surrounding producing regions."
 							}),
 							/* @__PURE__ */ jsxs("div", {
@@ -1057,9 +1283,15 @@ function Home({ canonicalUrl, ogImageUrl }) {
 					className: "border-t border-[#dad5cb] bg-white py-8",
 					children: /* @__PURE__ */ jsxs("div", {
 						className: "mx-auto flex max-w-[1200px] flex-col items-start justify-between gap-8 px-5 sm:px-10 lg:flex-row lg:items-center",
-						children: [/* @__PURE__ */ jsx("h3", {
-							className: "font-heading text-base font-semibold tracking-[0.08em] text-neutral-600 lg:whitespace-nowrap",
-							children: "No auctions. No guessing games. No wasted time."
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "max-w-xl",
+							children: [/* @__PURE__ */ jsx("h3", {
+								className: "font-heading text-base font-semibold tracking-[0.08em] text-neutral-600 lg:whitespace-nowrap",
+								children: "No auctions. No guessing games. No wasted time."
+							}), /* @__PURE__ */ jsx("p", {
+								className: "mt-3 text-base leading-7 text-neutral-600",
+								children: "Just straight brokerage work between people who actually understand field equipment."
+							})]
 						}), /* @__PURE__ */ jsx("div", {
 							className: "flex flex-col gap-5 sm:flex-row sm:flex-wrap lg:flex-nowrap lg:gap-10",
 							children: featureItems.map((item) => /* @__PURE__ */ jsxs("div", {
@@ -1077,68 +1309,133 @@ function Home({ canonicalUrl, ogImageUrl }) {
 				})]
 			}),
 			/* @__PURE__ */ jsx("section", {
+				className: "bg-[#1c1a16] py-28 text-white sm:py-36 lg:py-40",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "mx-auto grid max-w-[1280px] grid-cols-1 gap-16 px-5 sm:px-10 lg:grid-cols-12 lg:items-start",
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "lg:col-span-5",
+						children: /* @__PURE__ */ jsx("h2", {
+							className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-white sm:text-5xl",
+							children: "Equipment doesn't move itself. And it doesn't sell itself either."
+						})
+					}), /* @__PURE__ */ jsxs("div", {
+						className: "lg:col-span-7",
+						children: [
+							/* @__PURE__ */ jsx("p", {
+								className: "text-lg leading-8 text-white/75",
+								children: "If you've ever tried to sell a separator, compressor, tank battery, or pump package—you already know:"
+							}),
+							/* @__PURE__ */ jsx("ul", {
+								className: "mt-10 space-y-6 border-y border-white/15 py-10",
+								children: [
+									"Posting online doesn't bring serious buyers",
+									"Most \"buyers\" aren't actually ready",
+									"And half the time, you're stuck explaining specs over and over again"
+								].map((item) => /* @__PURE__ */ jsxs("li", {
+									className: "flex items-start gap-4",
+									children: [/* @__PURE__ */ jsx(FeatureIcon, {
+										type: "check",
+										className: "mt-0.5 h-5 w-5"
+									}), /* @__PURE__ */ jsx("span", {
+										className: "text-lg leading-7 text-white/85",
+										children: item
+									})]
+								}, item))
+							}),
+							/* @__PURE__ */ jsx("p", {
+								className: "mt-10 text-lg leading-8 text-white/75",
+								children: "Petra steps in as the middle ground. We take the equipment, get it properly represented, and put it in front of the right people who are actually in the market."
+							})
+						]
+					})]
+				})
+			}),
+			/* @__PURE__ */ jsx("section", {
 				className: "bg-[#f3f1ec] py-28 sm:py-36 lg:py-40",
 				children: /* @__PURE__ */ jsxs("div", {
 					className: "mx-auto max-w-[1280px] px-5 sm:px-10",
-					children: [/* @__PURE__ */ jsxs("div", {
-						className: "mb-16 text-center sm:mb-24",
-						children: [
-							/* @__PURE__ */ jsx("span", {
-								className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-								children: "Equipment Types"
-							}),
-							/* @__PURE__ */ jsx("h2", {
-								className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
-								children: "What We Actually Deal With"
-							}),
-							/* @__PURE__ */ jsx("p", {
-								className: "mx-auto mt-6 max-w-2xl text-lg leading-8 text-neutral-600",
-								children: "If it runs in the field, processes product, or moves production, we probably handle it."
-							}),
-							/* @__PURE__ */ jsx("div", {
-								className: "mt-6 flex justify-center",
-								children: /* @__PURE__ */ jsx("a", {
-									className: "border-b border-[#a56437] pb-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437] transition-colors hover:border-neutral-950 hover:text-neutral-950",
-									href: "/equipment",
-									children: "Browse Equipment"
-								})
-							})
-						]
-					}), /* @__PURE__ */ jsx("div", {
-						className: "grid grid-cols-1 gap-4 md:grid-cols-4",
-						children: categories.map((category) => /* @__PURE__ */ jsxs("a", {
-							href: "/equipment",
-							className: "group relative h-[500px] cursor-pointer overflow-hidden bg-neutral-950",
+					children: [
+						/* @__PURE__ */ jsxs("div", {
+							className: "mb-16 text-center sm:mb-24",
 							children: [
-								/* @__PURE__ */ jsx("div", {
-									className: "absolute inset-0 bg-cover grayscale transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0",
-									style: {
-										backgroundImage: `url('${heroImage$8}')`,
-										backgroundPosition: category.imagePosition
-									},
-									"aria-hidden": "true"
+								/* @__PURE__ */ jsx("span", {
+									className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+									children: "Equipment Types"
+								}),
+								/* @__PURE__ */ jsx("h2", {
+									className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+									children: "What We Actually Deal With"
+								}),
+								/* @__PURE__ */ jsx("p", {
+									className: "mx-auto mt-6 max-w-2xl text-lg leading-8 text-neutral-600",
+									children: "If it runs in the field, processes product, or moves production, we probably handle it."
 								}),
 								/* @__PURE__ */ jsx("div", {
-									className: "absolute inset-0 bg-black/45 transition-colors group-hover:bg-black/25",
-									"aria-hidden": "true"
-								}),
-								/* @__PURE__ */ jsx("div", {
-									className: "absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent",
-									"aria-hidden": "true"
-								}),
-								/* @__PURE__ */ jsxs("div", {
-									className: "absolute inset-0 flex flex-col items-center justify-end p-10",
-									children: [/* @__PURE__ */ jsx("div", {
-										className: "translate-y-4 transition-transform group-hover:translate-y-0",
-										children: /* @__PURE__ */ jsx(CategoryIcon, { type: category.icon })
-									}), /* @__PURE__ */ jsx("h4", {
-										className: "mt-4 font-heading text-xl font-semibold uppercase tracking-[0.08em] text-white",
-										children: category.label
-									})]
+									className: "mt-6 flex justify-center",
+									children: /* @__PURE__ */ jsx("a", {
+										className: "border-b border-[#a56437] pb-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437] transition-colors hover:border-neutral-950 hover:text-neutral-950",
+										href: "/equipment",
+										children: "Browse Equipment"
+									})
 								})
 							]
-						}, category.label))
-					})]
+						}),
+						/* @__PURE__ */ jsx("div", {
+							className: "grid grid-cols-1 gap-4 md:grid-cols-4",
+							children: categories.map((category) => /* @__PURE__ */ jsxs("a", {
+								href: "/equipment",
+								className: "group relative h-[500px] cursor-pointer overflow-hidden bg-neutral-950",
+								children: [
+									/* @__PURE__ */ jsx("div", {
+										className: "absolute inset-0 bg-cover grayscale transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0",
+										style: {
+											backgroundImage: `url('${heroImage$8}')`,
+											backgroundPosition: category.imagePosition
+										},
+										"aria-hidden": "true"
+									}),
+									/* @__PURE__ */ jsx("div", {
+										className: "absolute inset-0 bg-black/45 transition-colors group-hover:bg-black/25",
+										"aria-hidden": "true"
+									}),
+									/* @__PURE__ */ jsx("div", {
+										className: "absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent",
+										"aria-hidden": "true"
+									}),
+									/* @__PURE__ */ jsxs("div", {
+										className: "absolute inset-0 flex flex-col items-center justify-end p-10",
+										children: [/* @__PURE__ */ jsx("div", {
+											className: "translate-y-4 transition-transform group-hover:translate-y-0",
+											children: /* @__PURE__ */ jsx(CategoryIcon, { type: category.icon })
+										}), /* @__PURE__ */ jsx("h4", {
+											className: "mt-4 font-heading text-xl font-semibold uppercase tracking-[0.08em] text-white",
+											children: category.label
+										})]
+									})
+								]
+							}, category.label))
+						}),
+						/* @__PURE__ */ jsx("div", {
+							className: "mt-12 border border-[#dad5cb] bg-white p-8 sm:p-10",
+							children: /* @__PURE__ */ jsx("div", {
+								className: "grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-2 lg:grid-cols-4",
+								children: additionalCategories.map((category) => /* @__PURE__ */ jsxs("div", {
+									className: "flex items-start gap-3",
+									children: [/* @__PURE__ */ jsx(FeatureIcon, {
+										type: "check",
+										className: "mt-0.5 h-5 w-5"
+									}), /* @__PURE__ */ jsx("span", {
+										className: "text-base leading-7 text-neutral-700",
+										children: category
+									})]
+								}, category))
+							})
+						}),
+						/* @__PURE__ */ jsx("p", {
+							className: "mx-auto mt-10 max-w-2xl text-center text-lg leading-8 text-neutral-600",
+							children: "If it's sitting in a yard collecting dust—we can probably move it."
+						})
+					]
 				})
 			}),
 			/* @__PURE__ */ jsx("section", {
@@ -1282,19 +1579,40 @@ function Home({ canonicalUrl, ogImageUrl }) {
 							}),
 							/* @__PURE__ */ jsxs("ul", {
 								className: "mb-12 space-y-6",
-								children: [/* @__PURE__ */ jsxs("li", {
-									className: "flex items-start gap-4",
-									children: [/* @__PURE__ */ jsx(FeatureIcon, {
-										type: "check",
-										className: "mt-0.5 h-5 w-5"
-									}), /* @__PURE__ */ jsx("span", { children: "Get equipment in front of active buyers." })]
-								}), /* @__PURE__ */ jsxs("li", {
-									className: "flex items-start gap-4",
-									children: [/* @__PURE__ */ jsx(FeatureIcon, {
-										type: "check",
-										className: "mt-0.5 h-5 w-5"
-									}), /* @__PURE__ */ jsx("span", { children: "Price it based on actual market movement, not guesswork." })]
-								})]
+								children: [
+									/* @__PURE__ */ jsxs("li", {
+										className: "flex items-start gap-4",
+										children: [/* @__PURE__ */ jsx(FeatureIcon, {
+											type: "check",
+											className: "mt-0.5 h-5 w-5"
+										}), /* @__PURE__ */ jsx("span", { children: "Get equipment in front of active buyers." })]
+									}),
+									/* @__PURE__ */ jsxs("li", {
+										className: "flex items-start gap-4",
+										children: [/* @__PURE__ */ jsx(FeatureIcon, {
+											type: "check",
+											className: "mt-0.5 h-5 w-5"
+										}), /* @__PURE__ */ jsx("span", { children: "Price it based on actual market movement, not guesswork." })]
+									}),
+									/* @__PURE__ */ jsxs("li", {
+										className: "flex items-start gap-4",
+										children: [/* @__PURE__ */ jsx(FeatureIcon, {
+											type: "check",
+											className: "mt-0.5 h-5 w-5"
+										}), /* @__PURE__ */ jsx("span", { children: "Handle buyer calls and negotiation." })]
+									}),
+									/* @__PURE__ */ jsxs("li", {
+										className: "flex items-start gap-4",
+										children: [/* @__PURE__ */ jsx(FeatureIcon, {
+											type: "check",
+											className: "mt-0.5 h-5 w-5"
+										}), /* @__PURE__ */ jsx("span", { children: "Move equipment without tying up your team." })]
+									})
+								]
+							}),
+							/* @__PURE__ */ jsx("p", {
+								className: "mb-12 text-lg leading-8 text-neutral-600",
+								children: "If you've got surplus iron sitting in a yard in Wyoming, North Dakota, or Colorado—we'll help you turn it into capital again."
 							}),
 							/* @__PURE__ */ jsx("a", {
 								href: "/sell-equipment",
@@ -1319,23 +1637,38 @@ function Home({ canonicalUrl, ogImageUrl }) {
 							}),
 							/* @__PURE__ */ jsx("p", {
 								className: "mb-10 text-lg leading-8 text-neutral-600",
-								children: "Most buyers do not need more listings. They need the right size, the right spec, the right condition, and someone who actually knows where to find it."
+								children: "Most buyers do not need more listings. They need:"
 							}),
 							/* @__PURE__ */ jsxs("ul", {
 								className: "mb-12 space-y-6",
-								children: [/* @__PURE__ */ jsxs("li", {
-									className: "flex items-start gap-4",
-									children: [/* @__PURE__ */ jsx(FeatureIcon, {
-										type: "check",
-										className: "mt-0.5 h-5 w-5"
-									}), /* @__PURE__ */ jsx("span", { children: "Tell us what you're trying to source." })]
-								}), /* @__PURE__ */ jsxs("li", {
-									className: "flex items-start gap-4",
-									children: [/* @__PURE__ */ jsx(FeatureIcon, {
-										type: "check",
-										className: "mt-0.5 h-5 w-5"
-									}), /* @__PURE__ */ jsx("span", { children: "We work our network and come back with real options." })]
-								})]
+								children: [
+									[
+										"The right size",
+										"The right spec",
+										"The right condition",
+										"And someone who actually knows where to find it"
+									].map((item) => /* @__PURE__ */ jsxs("li", {
+										className: "flex items-start gap-4",
+										children: [/* @__PURE__ */ jsx(FeatureIcon, {
+											type: "check",
+											className: "mt-0.5 h-5 w-5"
+										}), /* @__PURE__ */ jsx("span", { children: item })]
+									}, item)),
+									/* @__PURE__ */ jsxs("li", {
+										className: "flex items-start gap-4",
+										children: [/* @__PURE__ */ jsx(FeatureIcon, {
+											type: "check",
+											className: "mt-0.5 h-5 w-5"
+										}), /* @__PURE__ */ jsx("span", { children: "Tell us what you're trying to source." })]
+									}),
+									/* @__PURE__ */ jsxs("li", {
+										className: "flex items-start gap-4",
+										children: [/* @__PURE__ */ jsx(FeatureIcon, {
+											type: "check",
+											className: "mt-0.5 h-5 w-5"
+										}), /* @__PURE__ */ jsx("span", { children: "We work our network and come back with real options." })]
+									})
+								]
 							}),
 							/* @__PURE__ */ jsx("a", {
 								href: "/contact",
@@ -1343,6 +1676,31 @@ function Home({ canonicalUrl, ogImageUrl }) {
 								children: "Request Equipment"
 							})
 						]
+					})]
+				})
+			}),
+			/* @__PURE__ */ jsx("section", {
+				className: "bg-[#f3f1ec] py-28 sm:py-36 lg:py-40",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "mx-auto max-w-[1280px] px-5 sm:px-10",
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "mb-16 text-center sm:mb-24",
+						children: /* @__PURE__ */ jsx("h2", {
+							className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+							children: "Why People Work With Petra"
+						})
+					}), /* @__PURE__ */ jsx("div", {
+						className: "grid grid-cols-1 gap-6 md:grid-cols-2",
+						children: whyPeopleWorkWithPetra.map((item) => /* @__PURE__ */ jsxs("article", {
+							className: "border border-[#dad5cb] bg-white p-8 sm:p-10",
+							children: [/* @__PURE__ */ jsx("h3", {
+								className: "font-heading text-2xl font-semibold uppercase tracking-[0.06em] text-neutral-950",
+								children: item.title
+							}), /* @__PURE__ */ jsx("p", {
+								className: "mt-5 text-base leading-7 text-neutral-600",
+								children: item.description
+							})]
+						}, item.title))
 					})]
 				})
 			}),
@@ -1374,6 +1732,10 @@ function Home({ canonicalUrl, ogImageUrl }) {
 										children: state
 									})]
 								}, state))
+							}),
+							/* @__PURE__ */ jsx("p", {
+								className: "mt-10 text-lg leading-8 text-neutral-600",
+								children: "If equipment is moving in these areas—we're usually already connected to it."
 							})
 						]
 					}), /* @__PURE__ */ jsxs("div", {
@@ -1390,6 +1752,27 @@ function Home({ canonicalUrl, ogImageUrl }) {
 							})
 						]
 					})]
+				})
+			}),
+			/* @__PURE__ */ jsx("section", {
+				className: "border-t border-[#dad5cb] bg-white py-28 text-center sm:py-36 lg:py-40",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "mx-auto max-w-[900px] px-5 sm:px-10",
+					children: [
+						/* @__PURE__ */ jsx("h2", {
+							className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+							children: "Not Sure What Your Equipment Is Worth?"
+						}),
+						/* @__PURE__ */ jsx("p", {
+							className: "mx-auto mt-8 max-w-3xl text-lg leading-8 text-neutral-600",
+							children: "Most people either overprice it and it sits for months, or underprice it and leave money on the table. We help you find the middle ground based on actual market activity—not guesswork or outdated pricing charts."
+						}),
+						/* @__PURE__ */ jsx("a", {
+							href: "/contact",
+							className: "mt-12 inline-flex h-16 items-center justify-center bg-[#a56437] px-12 font-heading text-base font-semibold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90",
+							children: "Request Valuation"
+						})
+					]
 				})
 			}),
 			/* @__PURE__ */ jsx("section", {
@@ -1818,6 +2201,183 @@ function Industries({ canonicalUrl, ogImageUrl }) {
 				})
 			})
 		]
+	})] });
+}
+var legal_pages_default = {
+	privacy: {
+		"title": "Privacy Policy",
+		"metaTitle": "Privacy Policy | Petra",
+		"description": "Petra's privacy policy for visitors using the public used oilfield and industrial equipment brokerage website.",
+		"eyebrow": "Privacy",
+		"intro": "This policy explains how Petra handles basic information connected to public website inquiries and equipment brokerage conversations.",
+		"sections": [
+			{
+				"heading": "Information You Provide",
+				"body": "You may provide contact details, equipment descriptions, location notes, photos, documents, or request details when discussing equipment brokerage, sourcing, or sale opportunities."
+			},
+			{
+				"heading": "How Information Is Used",
+				"body": "Petra uses submitted information to review equipment opportunities, respond to buyer or seller requests, assess market fit, coordinate brokerage conversations, and improve public website content."
+			},
+			{
+				"heading": "Operational Sharing",
+				"body": "Equipment details may be shared with relevant buyers, sellers, logistics contacts, or service providers when needed to evaluate or move a potential transaction."
+			},
+			{
+				"heading": "Retention",
+				"body": "Information may be retained when it supports active brokerage conversations, recordkeeping, business operations, or future equipment sourcing needs."
+			}
+		]
+	},
+	terms: {
+		"title": "Terms of Service",
+		"metaTitle": "Terms of Service | Petra",
+		"description": "Terms for using Petra's public used oilfield and industrial equipment brokerage website.",
+		"eyebrow": "Terms",
+		"intro": "These terms cover general use of Petra's public website and equipment brokerage information.",
+		"sections": [
+			{
+				"heading": "Website Use",
+				"body": "The website is provided for general information about Petra's used oilfield and industrial equipment brokerage work. You agree not to misuse the site or interfere with its operation."
+			},
+			{
+				"heading": "Equipment Information",
+				"body": "Equipment descriptions, availability, condition, specifications, and regional notes may change. Public website content should not be treated as a final offer, warranty, or transaction document."
+			},
+			{
+				"heading": "Brokerage Conversations",
+				"body": "Any transaction, sourcing request, sale discussion, inspection, logistics plan, or documentation requirement must be confirmed through direct business communication."
+			},
+			{
+				"heading": "No Guaranteed Outcome",
+				"body": "Petra may review equipment opportunities and buyer requests, but no sale, purchase, valuation, sourcing result, or timeline is guaranteed through website use."
+			}
+		]
+	},
+	cookies: {
+		"title": "Cookie Policy",
+		"metaTitle": "Cookie Policy | Petra",
+		"description": "Cookie policy for Petra's public used oilfield and industrial equipment brokerage website.",
+		"eyebrow": "Cookies",
+		"intro": "This page explains the basic role cookies and similar browser technologies may play on Petra's public website.",
+		"sections": [
+			{
+				"heading": "Site Function",
+				"body": "Cookies or similar storage may support basic website functionality, preferences, security, analytics, or performance measurement."
+			},
+			{
+				"heading": "Analytics and Performance",
+				"body": "Petra may review aggregated website activity to understand page usage, improve content, and keep public equipment brokerage pages useful."
+			},
+			{
+				"heading": "Browser Controls",
+				"body": "Most browsers allow you to block, delete, or limit cookies. Some site features may not work as expected if browser storage is disabled."
+			},
+			{
+				"heading": "Policy Updates",
+				"body": "This policy may be updated as website tools, analytics practices, or public site features change."
+			}
+		]
+	},
+	disclaimer: {
+		"title": "Disclaimer",
+		"metaTitle": "Disclaimer | Petra",
+		"description": "Website disclaimer for Petra's used oilfield and industrial equipment brokerage information.",
+		"eyebrow": "Disclaimer",
+		"intro": "This disclaimer explains the limits of public website information about equipment, brokerage, sourcing, and market context.",
+		"sections": [
+			{
+				"heading": "General Information",
+				"body": "Website content is provided for general informational purposes and does not replace direct review, inspection, documentation, or transaction-specific communication."
+			},
+			{
+				"heading": "Equipment Condition",
+				"body": "Condition, specifications, availability, location, and suitability must be verified before any buyer, seller, or operator relies on an equipment opportunity."
+			},
+			{
+				"heading": "Market Context",
+				"body": "Market movement, buyer demand, sourcing availability, and regional fit can change quickly. Petra does not guarantee pricing, liquidity, or transaction outcomes based on public content."
+			},
+			{
+				"heading": "Third-Party Details",
+				"body": "Some equipment information may originate from sellers, operators, yards, or other third parties and must be confirmed before use in a transaction."
+			}
+		]
+	}
+};
+//#endregion
+//#region resources/js/Pages/LegalPage.tsx
+var LegalPage_exports = /* @__PURE__ */ __exportAll({ default: () => LegalPage });
+function LegalPage({ pageKey, canonicalUrl }) {
+	const page = legal_pages_default[pageKey];
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		name: page.title,
+		url: canonicalUrl,
+		description: page.description
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
+		title: page.metaTitle,
+		children: [
+			/* @__PURE__ */ jsx("meta", {
+				name: "description",
+				content: page.description
+			}),
+			/* @__PURE__ */ jsx("link", {
+				rel: "canonical",
+				href: canonicalUrl
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "robots",
+				content: "noindex, follow"
+			}),
+			/* @__PURE__ */ jsx("script", {
+				type: "application/ld+json",
+				children: JSON.stringify(structuredData)
+			})
+		]
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [/* @__PURE__ */ jsx("section", {
+			className: "border-b border-[#dad5cb] bg-white",
+			children: /* @__PURE__ */ jsxs("div", {
+				className: "mx-auto max-w-[960px] px-5 py-20 sm:px-10 lg:py-24",
+				children: [
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+						children: page.eyebrow
+					}),
+					/* @__PURE__ */ jsx("h1", {
+						className: "mt-5 font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.35rem]",
+						children: page.title
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg",
+						children: page.intro
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-5 font-heading text-sm font-semibold uppercase tracking-[0.14em] text-neutral-500",
+						children: "Last updated July 8, 2026"
+					})
+				]
+			})
+		}), /* @__PURE__ */ jsx("section", {
+			className: "py-16 sm:py-20",
+			children: /* @__PURE__ */ jsx("div", {
+				className: "mx-auto grid max-w-[960px] grid-cols-1 gap-px bg-[#dad5cb] px-5 sm:px-10",
+				children: page.sections.map((section) => /* @__PURE__ */ jsxs("article", {
+					className: "bg-white p-7 sm:p-8",
+					children: [/* @__PURE__ */ jsx("h2", {
+						className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+						children: section.heading
+					}), /* @__PURE__ */ jsx("p", {
+						className: "mt-4 text-base leading-7 text-neutral-600",
+						children: section.body
+					})]
+				}, section.heading))
+			})
+		})]
 	})] });
 }
 var request_equipment_default = {
@@ -3339,10 +3899,12 @@ createServer((page) => createInertiaApp({
 	render: renderToString,
 	resolve: (name) => {
 		const resolvedPage = (/* @__PURE__ */ Object.assign({
+			"./Pages/Contact.tsx": Contact_exports,
 			"./Pages/Equipment.tsx": Equipment_exports,
 			"./Pages/Errors/NotFound.tsx": NotFound_exports,
 			"./Pages/Home.tsx": Home_exports,
 			"./Pages/Industries.tsx": Industries_exports,
+			"./Pages/LegalPage.tsx": LegalPage_exports,
 			"./Pages/RequestEquipment.tsx": RequestEquipment_exports,
 			"./Pages/SellEquipment.tsx": SellEquipment_exports,
 			"./Pages/Services.tsx": Services_exports

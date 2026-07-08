@@ -54,6 +54,16 @@
             "imagePosition": "86% center"
         }
     ],
+    "additionalCategories": [
+        "Production equipment packages",
+        "Heater treaters",
+        "Pumping units",
+        "Generators & power units",
+        "Gas processing equipment",
+        "Flowback & well testing equipment",
+        "Pipe, tubing, and surplus yard inventory",
+        "Valves, fittings, and control systems"
+    ],
     "processSteps": [
         {
             "number": "01",
@@ -122,5 +132,30 @@
             ]
         }
     ],
-    "states": ["Wyoming Oilfields", "North Dakota Bakken", "Colorado Energy Corridors", "Utah & New Mexico", "Montana Industrial Yards", "Regional Surplus Yards"]
+    "whyPeopleWorkWithPetra": [
+        {
+            "title": "We understand field reality",
+            "description": "We're not guessing what a compressor package is or how it's used. We know how it actually runs in the field."
+        },
+        {
+            "title": "We deal with real buyers",
+            "description": "Not tire-kickers. Not \"just curious\" inquiries."
+        },
+        {
+            "title": "We keep deals moving",
+            "description": "No ghosting. No endless waiting for replies."
+        },
+        {
+            "title": "We know regional markets",
+            "description": "Wyoming, Powder River, Bakken, Rockies—we understand how pricing and demand actually shift here."
+        }
+    ],
+    "states": [
+        "Wyoming oilfields (Powder River, Jonah, Green River Basin)",
+        "North Dakota (Bakken)",
+        "Colorado energy corridors",
+        "Utah & New Mexico producing regions",
+        "Montana industrial yards",
+        "Regional surplus equipment yards and private sellers"
+    ]
 }

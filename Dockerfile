@@ -27,6 +27,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /var/www/html
 COPY --from=vendor /var/www/html/vendor ./vendor
 COPY --from=vendor /var/www/html .
+COPY --from=assets /app/node_modules ./node_modules
 COPY --from=assets /app/public/build ./public/build
 COPY --from=assets /app/bootstrap/ssr ./bootstrap/ssr
 RUN chown -R www-data:www-data storage bootstrap/cache \

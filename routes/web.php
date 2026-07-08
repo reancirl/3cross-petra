@@ -33,6 +33,31 @@ Route::get('/industries', fn () => Inertia::render('Industries', [
     'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
 ]));
 
+Route::get('/contact', fn () => Inertia::render('Contact', [
+    'canonicalUrl' => url('/contact'),
+    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+]));
+
+Route::get('/privacy', fn () => Inertia::render('LegalPage', [
+    'pageKey' => 'privacy',
+    'canonicalUrl' => url('/privacy'),
+]));
+
+Route::get('/terms', fn () => Inertia::render('LegalPage', [
+    'pageKey' => 'terms',
+    'canonicalUrl' => url('/terms'),
+]));
+
+Route::get('/cookies', fn () => Inertia::render('LegalPage', [
+    'pageKey' => 'cookies',
+    'canonicalUrl' => url('/cookies'),
+]));
+
+Route::get('/disclaimer', fn () => Inertia::render('LegalPage', [
+    'pageKey' => 'disclaimer',
+    'canonicalUrl' => url('/disclaimer'),
+]));
+
 Route::redirect('/services/equipment-brokerage', '/services', 301);
 Route::redirect('/industries/oil-and-gas-production', '/industries', 301);
 
@@ -69,6 +94,11 @@ Route::get('/sitemap.xml', function () {
             'loc' => url('/industries'),
             'changefreq' => 'weekly',
             'priority' => '0.7',
+        ],
+        [
+            'loc' => url('/contact'),
+            'changefreq' => 'monthly',
+            'priority' => '0.6',
         ],
     ];
     $lastModified = now()->toDateString();

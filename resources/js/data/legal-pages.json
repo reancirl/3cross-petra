@@ -1,0 +1,102 @@
+{
+    "privacy": {
+        "title": "Privacy Policy",
+        "metaTitle": "Privacy Policy | Petra",
+        "description": "Petra's privacy policy for visitors using the public used oilfield and industrial equipment brokerage website.",
+        "eyebrow": "Privacy",
+        "intro": "This policy explains how Petra handles basic information connected to public website inquiries and equipment brokerage conversations.",
+        "sections": [
+            {
+                "heading": "Information You Provide",
+                "body": "You may provide contact details, equipment descriptions, location notes, photos, documents, or request details when discussing equipment brokerage, sourcing, or sale opportunities."
+            },
+            {
+                "heading": "How Information Is Used",
+                "body": "Petra uses submitted information to review equipment opportunities, respond to buyer or seller requests, assess market fit, coordinate brokerage conversations, and improve public website content."
+            },
+            {
+                "heading": "Operational Sharing",
+                "body": "Equipment details may be shared with relevant buyers, sellers, logistics contacts, or service providers when needed to evaluate or move a potential transaction."
+            },
+            {
+                "heading": "Retention",
+                "body": "Information may be retained when it supports active brokerage conversations, recordkeeping, business operations, or future equipment sourcing needs."
+            }
+        ]
+    },
+    "terms": {
+        "title": "Terms of Service",
+        "metaTitle": "Terms of Service | Petra",
+        "description": "Terms for using Petra's public used oilfield and industrial equipment brokerage website.",
+        "eyebrow": "Terms",
+        "intro": "These terms cover general use of Petra's public website and equipment brokerage information.",
+        "sections": [
+            {
+                "heading": "Website Use",
+                "body": "The website is provided for general information about Petra's used oilfield and industrial equipment brokerage work. You agree not to misuse the site or interfere with its operation."
+            },
+            {
+                "heading": "Equipment Information",
+                "body": "Equipment descriptions, availability, condition, specifications, and regional notes may change. Public website content should not be treated as a final offer, warranty, or transaction document."
+            },
+            {
+                "heading": "Brokerage Conversations",
+                "body": "Any transaction, sourcing request, sale discussion, inspection, logistics plan, or documentation requirement must be confirmed through direct business communication."
+            },
+            {
+                "heading": "No Guaranteed Outcome",
+                "body": "Petra may review equipment opportunities and buyer requests, but no sale, purchase, valuation, sourcing result, or timeline is guaranteed through website use."
+            }
+        ]
+    },
+    "cookies": {
+        "title": "Cookie Policy",
+        "metaTitle": "Cookie Policy | Petra",
+        "description": "Cookie policy for Petra's public used oilfield and industrial equipment brokerage website.",
+        "eyebrow": "Cookies",
+        "intro": "This page explains the basic role cookies and similar browser technologies may play on Petra's public website.",
+        "sections": [
+            {
+                "heading": "Site Function",
+                "body": "Cookies or similar storage may support basic website functionality, preferences, security, analytics, or performance measurement."
+            },
+            {
+                "heading": "Analytics and Performance",
+                "body": "Petra may review aggregated website activity to understand page usage, improve content, and keep public equipment brokerage pages useful."
+            },
+            {
+                "heading": "Browser Controls",
+                "body": "Most browsers allow you to block, delete, or limit cookies. Some site features may not work as expected if browser storage is disabled."
+            },
+            {
+                "heading": "Policy Updates",
+                "body": "This policy may be updated as website tools, analytics practices, or public site features change."
+            }
+        ]
+    },
+    "disclaimer": {
+        "title": "Disclaimer",
+        "metaTitle": "Disclaimer | Petra",
+        "description": "Website disclaimer for Petra's used oilfield and industrial equipment brokerage information.",
+        "eyebrow": "Disclaimer",
+        "intro": "This disclaimer explains the limits of public website information about equipment, brokerage, sourcing, and market context.",
+        "sections": [
+            {
+                "heading": "General Information",
+                "body": "Website content is provided for general informational purposes and does not replace direct review, inspection, documentation, or transaction-specific communication."
+            },
+            {
+                "heading": "Equipment Condition",
+                "body": "Condition, specifications, availability, location, and suitability must be verified before any buyer, seller, or operator relies on an equipment opportunity."
+            },
+            {
+                "heading": "Market Context",
+                "body": "Market movement, buyer demand, sourcing availability, and regional fit can change quickly. Petra does not guarantee pricing, liquidity, or transaction outcomes based on public content."
+            },
+            {
+                "heading": "Third-Party Details",
+                "body": "Some equipment information may originate from sellers, operators, yards, or other third parties and must be confirmed before use in a transaction."
+            }
+        ]
+    }
+}

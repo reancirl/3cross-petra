@@ -8,7 +8,7 @@ type HomeProps = {
     ogImageUrl: string;
 };
 
-const { heroImage, stats, featureItems, categories, processSteps, inventoryItems, states } = homeData;
+const { heroImage, stats, featureItems, categories, additionalCategories, processSteps, inventoryItems, whyPeopleWorkWithPetra, states } = homeData;
 const pageTitle = 'Petra | Used Oilfield & Industrial Equipment Brokerage';
 const pageDescription =
     'Petra connects real buyers and sellers of used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.';
@@ -95,6 +95,11 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                         </h1>
 
                         <p className="mt-8 max-w-2xl text-base font-medium leading-7 text-white/80 sm:text-lg">
+                            Or trying to find a solid piece of gear without chasing 12 different sellers who don't
+                            return calls?
+                        </p>
+
+                        <p className="mt-5 max-w-2xl text-base font-medium leading-7 text-white/80 sm:text-lg">
                             Petra helps you move equipment faster without the runaround. We connect real buyers and
                             sellers of used oilfield and industrial equipment across Wyoming, the Rockies, and
                             surrounding producing regions.
@@ -133,9 +138,14 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
 
                     <div className="border-t border-[#dad5cb] bg-white py-8">
                         <div className="mx-auto flex max-w-[1200px] flex-col items-start justify-between gap-8 px-5 sm:px-10 lg:flex-row lg:items-center">
-                            <h3 className="font-heading text-base font-semibold tracking-[0.08em] text-neutral-600 lg:whitespace-nowrap">
-                                No auctions. No guessing games. No wasted time.
-                            </h3>
+                            <div className="max-w-xl">
+                                <h3 className="font-heading text-base font-semibold tracking-[0.08em] text-neutral-600 lg:whitespace-nowrap">
+                                    No auctions. No guessing games. No wasted time.
+                                </h3>
+                                <p className="mt-3 text-base leading-7 text-neutral-600">
+                                    Just straight brokerage work between people who actually understand field equipment.
+                                </p>
+                            </div>
 
                             <div className="flex flex-col gap-5 sm:flex-row sm:flex-wrap lg:flex-nowrap lg:gap-10">
                                 {featureItems.map((item) => (
@@ -147,6 +157,39 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                                     </div>
                                 ))}
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="bg-[#1c1a16] py-28 text-white sm:py-36 lg:py-40">
+                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-16 px-5 sm:px-10 lg:grid-cols-12 lg:items-start">
+                        <div className="lg:col-span-5">
+                            <h2 className="font-heading text-4xl font-bold uppercase tracking-[0.08em] text-white sm:text-5xl">
+                                Equipment doesn't move itself. And it doesn't sell itself either.
+                            </h2>
+                        </div>
+
+                        <div className="lg:col-span-7">
+                            <p className="text-lg leading-8 text-white/75">
+                                If you've ever tried to sell a separator, compressor, tank battery, or pump package—you
+                                already know:
+                            </p>
+                            <ul className="mt-10 space-y-6 border-y border-white/15 py-10">
+                                {[
+                                    "Posting online doesn't bring serious buyers",
+                                    "Most \"buyers\" aren't actually ready",
+                                    "And half the time, you're stuck explaining specs over and over again",
+                                ].map((item) => (
+                                    <li key={item} className="flex items-start gap-4">
+                                        <FeatureIcon type="check" className="mt-0.5 h-5 w-5" />
+                                        <span className="text-lg leading-7 text-white/85">{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                            <p className="mt-10 text-lg leading-8 text-white/75">
+                                Petra steps in as the middle ground. We take the equipment, get it properly represented,
+                                and put it in front of the right people who are actually in the market.
+                            </p>
                         </div>
                     </div>
                 </section>
@@ -194,6 +237,21 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                                 </a>
                             ))}
                         </div>
+
+                        <div className="mt-12 border border-[#dad5cb] bg-white p-8 sm:p-10">
+                            <div className="grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
+                                {additionalCategories.map((category) => (
+                                    <div key={category} className="flex items-start gap-3">
+                                        <FeatureIcon type="check" className="mt-0.5 h-5 w-5" />
+                                        <span className="text-base leading-7 text-neutral-700">{category}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <p className="mx-auto mt-10 max-w-2xl text-center text-lg leading-8 text-neutral-600">
+                            If it's sitting in a yard collecting dust—we can probably move it.
+                        </p>
                     </div>
                 </section>
 
@@ -331,7 +389,19 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                                     <FeatureIcon type="check" className="mt-0.5 h-5 w-5" />
                                     <span>Price it based on actual market movement, not guesswork.</span>
                                 </li>
+                                <li className="flex items-start gap-4">
+                                    <FeatureIcon type="check" className="mt-0.5 h-5 w-5" />
+                                    <span>Handle buyer calls and negotiation.</span>
+                                </li>
+                                <li className="flex items-start gap-4">
+                                    <FeatureIcon type="check" className="mt-0.5 h-5 w-5" />
+                                    <span>Move equipment without tying up your team.</span>
+                                </li>
                             </ul>
+                            <p className="mb-12 text-lg leading-8 text-neutral-600">
+                                If you've got surplus iron sitting in a yard in Wyoming, North Dakota, or Colorado—we'll
+                                help you turn it into capital again.
+                            </p>
                             <a href="/sell-equipment" className="mt-auto inline-flex h-16 w-fit items-center self-start bg-[#a56437] px-12 font-heading text-base font-semibold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90">
                                 Sell Equipment
                             </a>
@@ -349,10 +419,20 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                                 Request Equipment
                             </h2>
                             <p className="mb-10 text-lg leading-8 text-neutral-600">
-                                Most buyers do not need more listings. They need the right size, the right spec, the
-                                right condition, and someone who actually knows where to find it.
+                                Most buyers do not need more listings. They need:
                             </p>
                             <ul className="mb-12 space-y-6">
+                                {[
+                                    'The right size',
+                                    'The right spec',
+                                    'The right condition',
+                                    'And someone who actually knows where to find it',
+                                ].map((item) => (
+                                    <li key={item} className="flex items-start gap-4">
+                                        <FeatureIcon type="check" className="mt-0.5 h-5 w-5" />
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
                                 <li className="flex items-start gap-4">
                                     <FeatureIcon type="check" className="mt-0.5 h-5 w-5" />
                                     <span>Tell us what you're trying to source.</span>
@@ -365,6 +445,27 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                             <a href="/contact" className="mt-auto inline-flex h-16 w-fit items-center self-start border border-neutral-950 px-12 font-heading text-base font-semibold uppercase tracking-[0.12em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
                                 Request Equipment
                             </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="bg-[#f3f1ec] py-28 sm:py-36 lg:py-40">
+                    <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
+                        <div className="mb-16 text-center sm:mb-24">
+                            <h2 className="font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl">
+                                Why People Work With Petra
+                            </h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            {whyPeopleWorkWithPetra.map((item) => (
+                                <article key={item.title} className="border border-[#dad5cb] bg-white p-8 sm:p-10">
+                                    <h3 className="font-heading text-2xl font-semibold uppercase tracking-[0.06em] text-neutral-950">
+                                        {item.title}
+                                    </h3>
+                                    <p className="mt-5 text-base leading-7 text-neutral-600">{item.description}</p>
+                                </article>
+                            ))}
                         </div>
                     </div>
                 </section>
@@ -393,6 +494,9 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                                     </div>
                                 ))}
                             </div>
+                            <p className="mt-10 text-lg leading-8 text-neutral-600">
+                                If equipment is moving in these areas—we're usually already connected to it.
+                            </p>
                         </div>
 
                         <div className="relative h-[520px] overflow-hidden border border-[#dad5cb] bg-white md:col-span-7 lg:h-[650px]">
@@ -400,6 +504,22 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                             <div className="pointer-events-none absolute inset-0 bg-white/20" aria-hidden="true" />
                             <div className="pointer-events-none absolute inset-6 border border-[#dad5cb]" aria-hidden="true" />
                         </div>
+                    </div>
+                </section>
+
+                <section className="border-t border-[#dad5cb] bg-white py-28 text-center sm:py-36 lg:py-40">
+                    <div className="mx-auto max-w-[900px] px-5 sm:px-10">
+                        <h2 className="font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl">
+                            Not Sure What Your Equipment Is Worth?
+                        </h2>
+                        <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-neutral-600">
+                            Most people either overprice it and it sits for months, or underprice it and leave money on
+                            the table. We help you find the middle ground based on actual market activity—not guesswork
+                            or outdated pricing charts.
+                        </p>
+                        <a href="/contact" className="mt-12 inline-flex h-16 items-center justify-center bg-[#a56437] px-12 font-heading text-base font-semibold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90">
+                            Request Valuation
+                        </a>
                     </div>
                 </section>
 
