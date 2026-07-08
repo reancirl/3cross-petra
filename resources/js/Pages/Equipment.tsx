@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react';
 import { Head } from '@inertiajs/react';
 import { CategoryIcon, FeatureIcon } from '../Components/home-icons';
 import equipmentData from '../data/equipment.json';
@@ -8,11 +9,67 @@ type EquipmentProps = {
 };
 
 const { heroImage, categories, listings, regions } = equipmentData;
+type FilterKey = 'category' | 'condition' | 'location' | 'manufacturer' | 'availability';
+
+const emptyFilters: Record<FilterKey, string> = {
+    category: '',
+    condition: '',
+    location: '',
+    manufacturer: '',
+    availability: '',
+};
+
+const unique = (values: string[]) => Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
+const primaryCategories = categories.slice(0, 4);
+const additionalCategories = categories.slice(4);
+const categoryIconType = (slug: string) =>
+    slug === 'separators' ? 'loader' : slug === 'tank-batteries' ? 'dozer' : slug === 'pump-packages' ? 'compaction' : 'tool';
+
 const pageTitle = 'Used Oilfield Equipment Marketplace | Petra';
 const pageDescription =
     'Browse used oilfield and industrial equipment handled by Petra, including compressors, separators, tank batteries, and pump packages across Wyoming, the Rockies, and the Bakken.';
 
 export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) {
+    const [filters, setFilters] = useState<Record<FilterKey, string>>(emptyFilters);
+    const hasActiveFilters = Object.values(filters).some(Boolean);
+    const filterOptions = useMemo(
+        () => ({
+            category: categories.map((category) => category.name),
+            condition: unique(listings.map((listing) => listing.condition)),
+            location: unique(listings.map((listing) => listing.location)),
+            manufacturer: unique(listings.map((listing) => listing.manufacturer)),
+            availability: unique(listings.map((listing) => listing.status)),
+        }),
+        [],
+    );
+    const filterControls: { key: FilterKey; label: string; options: string[] }[] = [
+        { key: 'category', label: 'Category', options: filterOptions.category },
+        { key: 'condition', label: 'Condition', options: filterOptions.condition },
+        { key: 'location', label: 'Location', options: filterOptions.location },
+        { key: 'manufacturer', label: 'Manufacturer', options: filterOptions.manufacturer },
+        { key: 'availability', label: 'Availability', options: filterOptions.availability },
+    ];
+    const filteredListings = listings.filter((listing) => {
+        return (
+            (!filters.category || listing.category === filters.category) &&
+            (!filters.condition || listing.condition === filters.condition) &&
+            (!filters.location || listing.location === filters.location) &&
+            (!filters.manufacturer || listing.manufacturer === filters.manufacturer) &&
+            (!filters.availability || listing.status === filters.availability)
+        );
+    });
+    const handleCategorySelect = (categoryName: string) => {
+        setFilters((current) => ({
+            ...current,
+            category: categoryName,
+        }));
+
+        document.getElementById('featured-equipment')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        });
+    };
+
     const structuredData = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -105,8 +162,9 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                                 </span>
                             </div>
 
+                            {/* TODO(client-confirm): Content doc specifies hero heading "Available Equipment" and body "Real equipment currently available through Petra brokerage network. Inventory changes quickly—availability is subject to market movement." Current copy appears to be a broader creative rewrite, so leave it until client sign-off. */}
                             <h1 className="max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.4rem] lg:text-[4.2rem]">
-                                Used Oilfield Equipment
+                                Used Oilfield Equipments
                             </h1>
 
                             <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg">
@@ -133,31 +191,92 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                 </section>
 
                 <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
-                    <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
-                        <div className="mx-auto mb-9 max-w-3xl text-center">
-                            <span className="font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]">
-                                What Gets Listed
-                            </span>
-                            <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-white sm:text-4xl">
-                                Equipment Categories
-                            </h2>
-                        </div>
+                    <div className="mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-24">
+                        {/* TODO(client-confirm): Sitemap also names "Pumps" and "Tanks"; those may duplicate existing "Pump Packages" and "Tank Batteries" groupings, so they are not added as separate cards until confirmed. */}
+                        <div className="grid grid-cols-1 gap-14 lg:grid-cols-[minmax(280px,0.38fr)_minmax(0,1fr)] lg:items-start">
+                            <div className="lg:sticky lg:top-8">
+                                <span className="font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]">
+                                    What Gets Listed
+                                </span>
+                                <h2 className="mt-4 font-heading text-4xl font-bold uppercase tracking-[0.08em] text-white sm:text-5xl">
+                                    Equipment Categories
+                                </h2>
+                                <p className="mt-6 text-lg leading-8 text-white/65">
+                                    Core marketplace categories stay prominent, with broader network categories grouped
+                                    below for quick scanning.
+                                </p>
+                                <div className="mt-10 flex items-center gap-4 border-t border-white/15 pt-6">
+                                    <span className="font-heading text-5xl font-semibold uppercase leading-none tracking-[0.04em] text-[#b06b3d]">
+                                        {categories.length}
+                                    </span>
+                                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.14em] text-white/55">
+                                        Equipment categories tracked
+                                    </span>
+                                </div>
+                            </div>
 
-                        <div className="grid grid-cols-1 gap-px bg-white/15 sm:grid-cols-2 lg:grid-cols-4">
-                            {categories.map((category) => (
-                                <article key={category.slug} className="bg-[#1c1a16] p-6 transition-colors hover:bg-[#24211c]">
-                                    <div className="mb-5 flex items-center justify-center">
-                                        <CategoryIcon type={category.slug === 'separators' ? 'loader' : category.slug === 'tank-batteries' ? 'dozer' : category.slug === 'pump-packages' ? 'compaction' : 'tool'} />
-                                    </div>
-                                    <h3 className="text-center font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-white">
-                                        {category.name}
+                            <div>
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    {primaryCategories.map((category) => (
+                                        <button
+                                            key={category.slug}
+                                            type="button"
+                                            onClick={() => handleCategorySelect(category.name)}
+                                            className={`group min-h-[260px] border p-7 text-left transition-colors hover:border-[#a56437] hover:bg-[#24211c] focus:outline-none focus-visible:border-[#a56437] focus-visible:ring-2 focus-visible:ring-[#a56437]/40 ${
+                                                filters.category === category.name
+                                                    ? 'border-[#a56437] bg-[#24211c]'
+                                                    : 'border-white/15 bg-[#201d19]'
+                                            }`}
+                                        >
+                                            <div className="mb-7 flex items-start justify-between gap-5">
+                                                <CategoryIcon type={categoryIconType(category.slug)} />
+                                                <span className="font-heading text-xs font-semibold uppercase tracking-[0.14em] text-white/40">
+                                                    {category.count}
+                                                </span>
+                                            </div>
+                                            <h3 className="font-heading text-3xl font-semibold uppercase leading-none tracking-[0.08em] text-white">
+                                                {category.name}
+                                            </h3>
+                                            <p className="mt-5 text-sm leading-6 text-white/65">{category.summary}</p>
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div id="additional-network-categories" className="mt-7 border-t border-white/15 pt-7">
+                                    <h3 className="mb-5 font-heading text-base font-semibold uppercase tracking-[0.16em] text-white/60">
+                                        Additional Network Categories
                                     </h3>
-                                    <p className="mt-2 text-center font-heading text-xs font-semibold uppercase tracking-[0.12em] text-white/45">
-                                        {category.count}
-                                    </p>
-                                    <p className="mt-4 text-center text-sm leading-6 text-white/65">{category.summary}</p>
-                                </article>
-                            ))}
+                                    <div className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 xl:grid-cols-3">
+                                        {additionalCategories.map((category) => (
+                                            <button
+                                                key={category.slug}
+                                                type="button"
+                                                onClick={() => handleCategorySelect(category.name)}
+                                                className={`group text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#a56437]/40 ${
+                                                    filters.category === category.name ? 'text-[#d59a72]' : 'text-white'
+                                                }`}
+                                            >
+                                                <span className="flex items-center gap-3">
+                                                    <span
+                                                        className={`h-1.5 w-1.5 shrink-0 transition-colors ${
+                                                            filters.category === category.name
+                                                                ? 'bg-[#d59a72]'
+                                                                : 'bg-white/25 group-hover:bg-[#a56437]'
+                                                        }`}
+                                                        aria-hidden="true"
+                                                    />
+                                                    <span className="font-heading text-base font-semibold uppercase tracking-[0.08em] group-hover:text-[#d59a72]">
+                                                        {category.name}
+                                                    </span>
+                                                </span>
+                                                <span className="mt-2 block pl-4 text-sm leading-6 text-white/50 group-hover:text-white/70">
+                                                    {category.summary}
+                                                </span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -203,8 +322,52 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                             </a>
                         </div>
 
+                        <div className="mb-12 border border-[#dad5cb] bg-white p-6 sm:p-8">
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-5">
+                                {filterControls.map((filter) => (
+                                    <label key={filter.key} className="flex flex-col gap-2">
+                                        <span className="font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                                            {filter.label}
+                                        </span>
+                                        <select
+                                            value={filters[filter.key]}
+                                            onChange={(event) =>
+                                                setFilters((current) => ({
+                                                    ...current,
+                                                    [filter.key]: event.target.value,
+                                                }))
+                                            }
+                                            className="h-12 border border-[#dad5cb] bg-[#f3f1ec] px-3 font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950 outline-none transition-colors focus:border-[#a56437]"
+                                        >
+                                            <option value="">All {filter.label}</option>
+                                            {filter.options.map((option) => (
+                                                <option key={option} value={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
+                                ))}
+                            </div>
+
+                            <div className="mt-6 flex flex-col gap-4 border-t border-[#dad5cb] pt-5 sm:flex-row sm:items-center sm:justify-between">
+                                <p className="font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600">
+                                    Showing {filteredListings.length} of {listings.length} listings
+                                </p>
+                                {hasActiveFilters && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setFilters(emptyFilters)}
+                                        className="inline-flex h-11 w-fit items-center justify-center border border-neutral-500 px-6 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white"
+                                    >
+                                        Reset Filters
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
                         <div className="space-y-8">
-                            {listings.map((listing) => (
+                            {filteredListings.map((listing) => (
                                 <article
                                     key={listing.id}
                                     className="group grid grid-cols-1 overflow-hidden border border-[#dad5cb] bg-white transition-colors duration-500 hover:border-[#a56437] lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]"
@@ -278,6 +441,18 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                                 </article>
                             ))}
                         </div>
+
+                        {filteredListings.length === 0 && (
+                            <div className="border border-[#dad5cb] bg-white p-8 text-center">
+                                <p className="text-lg leading-8 text-neutral-600">
+                                    No listed equipment matches those filters right now.
+                                </p>
+                            </div>
+                        )}
+
+                        <p className="mx-auto mt-12 max-w-3xl text-center text-lg leading-8 text-neutral-600">
+                            If you see equipment that matches your needs, reach out early. High-quality assets move fast.
+                        </p>
                     </div>
                 </section>
 

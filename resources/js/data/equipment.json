@@ -24,6 +24,66 @@
             "slug": "pump-packages",
             "summary": "Pump skids, transfer packages, saltwater disposal support equipment, and production handling assets.",
             "count": "Sourcing ready"
+        },
+        {
+            "name": "Production Equipment",
+            "slug": "production-equipment",
+            "summary": "Production packages, field equipment groups, and site-ready assets used across active producing regions.",
+            "count": "Network category"
+        },
+        {
+            "name": "Processing Equipment",
+            "slug": "processing-equipment",
+            "summary": "Processing assets, treating equipment, and production support systems for field and yard operations.",
+            "count": "Network category"
+        },
+        {
+            "name": "Generators",
+            "slug": "generators",
+            "summary": "Generator sets, power units, and field power packages for production and industrial sites.",
+            "count": "Network category"
+        },
+        {
+            "name": "Drilling Equipment",
+            "slug": "drilling-equipment",
+            "summary": "Drilling support equipment, surplus packages, and related assets moving through regional sellers.",
+            "count": "Network category"
+        },
+        {
+            "name": "Electrical Equipment",
+            "slug": "electrical-equipment",
+            "summary": "Electrical gear, power distribution assets, and field-ready equipment for industrial operations.",
+            "count": "Network category"
+        },
+        {
+            "name": "Pipe & Tubular",
+            "slug": "pipe-tubular",
+            "summary": "Pipe, tubing, tubular goods, and surplus yard inventory available through regional networks.",
+            "count": "Network category"
+        },
+        {
+            "name": "Valves & Controls",
+            "slug": "valves-controls",
+            "summary": "Valves, fittings, control systems, and related production-site components.",
+            "count": "Network category"
+        },
+        {
+            "name": "Instrumentation",
+            "slug": "instrumentation",
+            "summary": "Instrumentation, measurement equipment, and control components for field operations.",
+            "count": "Network category"
+        },
+        {
+            "name": "Wellhead Equipment",
+            "slug": "wellhead-equipment",
+            "summary": "Wellhead equipment, production-site hardware, and related field assets.",
+            "count": "Network category"
+        },
+        {
+            "name": "Other Equipment",
+            "slug": "other-equipment",
+            "summary": "Other oilfield, industrial, and surplus equipment that does not fit a primary category.",
+            "count": "Network category"
         }
     ],
     "listings": [

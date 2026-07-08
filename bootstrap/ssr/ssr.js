@@ -1,8 +1,8 @@
 import { Head, createInertiaApp } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+import { useMemo, useState } from "react";
 import createServer from "@inertiajs/react/server";
 import { renderToString } from "react-dom/server";
-import { useState } from "react";
 //#region \0rolldown/runtime.js
 var __defProp = Object.defineProperty;
 var __exportAll = (all, no_symbols) => {
@@ -423,6 +423,66 @@ var equipment_default = {
 			"slug": "pump-packages",
 			"summary": "Pump skids, transfer packages, saltwater disposal support equipment, and production handling assets.",
 			"count": "Sourcing ready"
+		},
+		{
+			"name": "Production Equipment",
+			"slug": "production-equipment",
+			"summary": "Production packages, field equipment groups, and site-ready assets used across active producing regions.",
+			"count": "Network category"
+		},
+		{
+			"name": "Processing Equipment",
+			"slug": "processing-equipment",
+			"summary": "Processing assets, treating equipment, and production support systems for field and yard operations.",
+			"count": "Network category"
+		},
+		{
+			"name": "Generators",
+			"slug": "generators",
+			"summary": "Generator sets, power units, and field power packages for production and industrial sites.",
+			"count": "Network category"
+		},
+		{
+			"name": "Drilling Equipment",
+			"slug": "drilling-equipment",
+			"summary": "Drilling support equipment, surplus packages, and related assets moving through regional sellers.",
+			"count": "Network category"
+		},
+		{
+			"name": "Electrical Equipment",
+			"slug": "electrical-equipment",
+			"summary": "Electrical gear, power distribution assets, and field-ready equipment for industrial operations.",
+			"count": "Network category"
+		},
+		{
+			"name": "Pipe & Tubular",
+			"slug": "pipe-tubular",
+			"summary": "Pipe, tubing, tubular goods, and surplus yard inventory available through regional networks.",
+			"count": "Network category"
+		},
+		{
+			"name": "Valves & Controls",
+			"slug": "valves-controls",
+			"summary": "Valves, fittings, control systems, and related production-site components.",
+			"count": "Network category"
+		},
+		{
+			"name": "Instrumentation",
+			"slug": "instrumentation",
+			"summary": "Instrumentation, measurement equipment, and control components for field operations.",
+			"count": "Network category"
+		},
+		{
+			"name": "Wellhead Equipment",
+			"slug": "wellhead-equipment",
+			"summary": "Wellhead equipment, production-site hardware, and related field assets.",
+			"count": "Network category"
+		},
+		{
+			"name": "Other Equipment",
+			"slug": "other-equipment",
+			"summary": "Other oilfield, industrial, and surplus equipment that does not fit a primary category.",
+			"count": "Network category"
 		}
 	],
 	listings: [
@@ -495,9 +555,59 @@ var equipment_default = {
 //#region resources/js/Pages/Equipment.tsx
 var Equipment_exports = /* @__PURE__ */ __exportAll({ default: () => Equipment });
 var { heroImage: heroImage$10, categories: categories$2, listings, regions: regions$6 } = equipment_default;
+var emptyFilters = {
+	category: "",
+	condition: "",
+	location: "",
+	manufacturer: "",
+	availability: ""
+};
+var unique = (values) => Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
+var primaryCategories = categories$2.slice(0, 4);
+var additionalCategories$2 = categories$2.slice(4);
+var categoryIconType = (slug) => slug === "separators" ? "loader" : slug === "tank-batteries" ? "dozer" : slug === "pump-packages" ? "compaction" : "tool";
 var pageTitle$5 = "Used Oilfield Equipment Marketplace | Petra";
 var pageDescription$5 = "Browse used oilfield and industrial equipment handled by Petra, including compressors, separators, tank batteries, and pump packages across Wyoming, the Rockies, and the Bakken.";
 function Equipment({ canonicalUrl, ogImageUrl }) {
+	const [filters, setFilters] = useState(emptyFilters);
+	const hasActiveFilters = Object.values(filters).some(Boolean);
+	const filterOptions = useMemo(() => ({
+		category: categories$2.map((category) => category.name),
+		condition: unique(listings.map((listing) => listing.condition)),
+		location: unique(listings.map((listing) => listing.location)),
+		manufacturer: unique(listings.map((listing) => listing.manufacturer)),
+		availability: unique(listings.map((listing) => listing.status))
+	}), []);
+	const filterControls = [
+		{
+			key: "category",
+			label: "Category",
+			options: filterOptions.category
+		},
+		{
+			key: "condition",
+			label: "Condition",
+			options: filterOptions.condition
+		},
+		{
+			key: "location",
+			label: "Location",
+			options: filterOptions.location
+		},
+		{
+			key: "manufacturer",
+			label: "Manufacturer",
+			options: filterOptions.manufacturer
+		},
+		{
+			key: "availability",
+			label: "Availability",
+			options: filterOptions.availability
+		}
+	];
+	const filteredListings = listings.filter((listing) => {
+		return (!filters.category || listing.category === filters.category) && (!filters.condition || listing.condition === filters.condition) && (!filters.location || listing.location === filters.location) && (!filters.manufacturer || listing.manufacturer === filters.manufacturer) && (!filters.availability || listing.status === filters.availability);
+	});
 	const structuredData = {
 		"@context": "https://schema.org",
 		"@graph": [
@@ -653,41 +763,87 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("section", {
 				className: "border-b border-[#dad5cb] bg-[#1c1a16] text-white",
-				children: /* @__PURE__ */ jsxs("div", {
-					className: "mx-auto max-w-[1280px] px-5 py-12 sm:px-10",
-					children: [/* @__PURE__ */ jsxs("div", {
-						className: "mx-auto mb-9 max-w-3xl text-center",
-						children: [/* @__PURE__ */ jsx("span", {
-							className: "font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]",
-							children: "What Gets Listed"
-						}), /* @__PURE__ */ jsx("h2", {
-							className: "mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-white sm:text-4xl",
-							children: "Equipment Categories"
-						})]
-					}), /* @__PURE__ */ jsx("div", {
-						className: "grid grid-cols-1 gap-px bg-white/15 sm:grid-cols-2 lg:grid-cols-4",
-						children: categories$2.map((category) => /* @__PURE__ */ jsxs("article", {
-							className: "bg-[#1c1a16] p-6 transition-colors hover:bg-[#24211c]",
+				children: /* @__PURE__ */ jsx("div", {
+					className: "mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-24",
+					children: /* @__PURE__ */ jsxs("div", {
+						className: "grid grid-cols-1 gap-14 lg:grid-cols-[minmax(280px,0.38fr)_minmax(0,1fr)] lg:items-start",
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "lg:sticky lg:top-8",
 							children: [
-								/* @__PURE__ */ jsx("div", {
-									className: "mb-5 flex items-center justify-center",
-									children: /* @__PURE__ */ jsx(CategoryIcon, { type: category.slug === "separators" ? "loader" : category.slug === "tank-batteries" ? "dozer" : category.slug === "pump-packages" ? "compaction" : "tool" })
+								/* @__PURE__ */ jsx("span", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]",
+									children: "What Gets Listed"
 								}),
-								/* @__PURE__ */ jsx("h3", {
-									className: "text-center font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-white",
-									children: category.name
-								}),
-								/* @__PURE__ */ jsx("p", {
-									className: "mt-2 text-center font-heading text-xs font-semibold uppercase tracking-[0.12em] text-white/45",
-									children: category.count
+								/* @__PURE__ */ jsx("h2", {
+									className: "mt-4 font-heading text-4xl font-bold uppercase tracking-[0.08em] text-white sm:text-5xl",
+									children: "Equipment Categories"
 								}),
 								/* @__PURE__ */ jsx("p", {
-									className: "mt-4 text-center text-sm leading-6 text-white/65",
-									children: category.summary
+									className: "mt-6 text-lg leading-8 text-white/65",
+									children: "Core marketplace categories stay prominent, with broader network categories grouped below for quick scanning."
+								}),
+								/* @__PURE__ */ jsxs("div", {
+									className: "mt-10 flex items-center gap-4 border-t border-white/15 pt-6",
+									children: [/* @__PURE__ */ jsx("span", {
+										className: "font-heading text-5xl font-semibold uppercase leading-none tracking-[0.04em] text-[#b06b3d]",
+										children: categories$2.length
+									}), /* @__PURE__ */ jsx("span", {
+										className: "font-heading text-sm font-semibold uppercase tracking-[0.14em] text-white/55",
+										children: "Equipment categories tracked"
+									})]
 								})
 							]
-						}, category.slug))
-					})]
+						}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("div", {
+							className: "grid grid-cols-1 gap-4 sm:grid-cols-2",
+							children: primaryCategories.map((category) => /* @__PURE__ */ jsxs("article", {
+								className: "group border border-white/15 bg-[#201d19] p-7 transition-colors hover:border-[#a56437] hover:bg-[#24211c]",
+								children: [
+									/* @__PURE__ */ jsxs("div", {
+										className: "mb-7 flex items-start justify-between gap-5",
+										children: [/* @__PURE__ */ jsx(CategoryIcon, { type: categoryIconType(category.slug) }), /* @__PURE__ */ jsx("span", {
+											className: "font-heading text-xs font-semibold uppercase tracking-[0.14em] text-white/40",
+											children: category.count
+										})]
+									}),
+									/* @__PURE__ */ jsx("h3", {
+										className: "font-heading text-3xl font-semibold uppercase leading-none tracking-[0.08em] text-white",
+										children: category.name
+									}),
+									/* @__PURE__ */ jsx("p", {
+										className: "mt-5 text-sm leading-6 text-white/65",
+										children: category.summary
+									})
+								]
+							}, category.slug))
+						}), /* @__PURE__ */ jsxs("div", {
+							className: "mt-5 border border-white/15 bg-[#171512]",
+							children: [/* @__PURE__ */ jsx("div", {
+								className: "border-b border-white/15 px-6 py-5",
+								children: /* @__PURE__ */ jsx("h3", {
+									className: "font-heading text-xl font-semibold uppercase tracking-[0.12em] text-white",
+									children: "Additional Network Categories"
+								})
+							}), /* @__PURE__ */ jsx("div", {
+								className: "grid grid-cols-1 gap-px bg-white/10 sm:grid-cols-2 xl:grid-cols-3",
+								children: additionalCategories$2.map((category) => /* @__PURE__ */ jsxs("article", {
+									className: "bg-[#171512] p-5 transition-colors hover:bg-[#211e19]",
+									children: [/* @__PURE__ */ jsxs("div", {
+										className: "mb-4 flex items-center gap-3",
+										children: [/* @__PURE__ */ jsx(CategoryIcon, { type: categoryIconType(category.slug) }), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h4", {
+											className: "font-heading text-xl font-semibold uppercase leading-tight tracking-[0.08em] text-white",
+											children: category.name
+										}), /* @__PURE__ */ jsx("p", {
+											className: "mt-1 font-heading text-xs font-semibold uppercase tracking-[0.12em] text-white/35",
+											children: category.count
+										})] })]
+									}), /* @__PURE__ */ jsx("p", {
+										className: "text-sm leading-6 text-white/60",
+										children: category.summary
+									})]
+								}, category.slug))
+							})]
+						})] })]
+					})
 				})
 			}),
 			/* @__PURE__ */ jsx("section", {
@@ -721,112 +877,170 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 				className: "py-20 sm:py-24 lg:py-28",
 				children: /* @__PURE__ */ jsxs("div", {
 					className: "mx-auto max-w-[1280px] px-5 sm:px-10",
-					children: [/* @__PURE__ */ jsxs("div", {
-						className: "mb-12 flex flex-col gap-8 md:mb-16 md:flex-row md:items-end md:justify-between",
-						children: [/* @__PURE__ */ jsxs("div", {
-							className: "max-w-3xl",
-							children: [
-								/* @__PURE__ */ jsx("span", {
-									className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-									children: "Featured Equipment"
-								}),
-								/* @__PURE__ */ jsx("h2", {
-									className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
-									children: "Representative Listings"
-								}),
-								/* @__PURE__ */ jsx("p", {
-									className: "mt-5 text-lg leading-8 text-neutral-600",
-									children: "These listings show the type of equipment Petra handles. Availability can move quickly, so use the inquiry CTA for current condition, location, and documentation."
-								})
-							]
-						}), /* @__PURE__ */ jsx("a", {
-							href: "/sell-equipment",
-							className: "inline-flex h-16 w-fit items-center justify-center border border-neutral-500 px-8 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
-							children: "Sell Equipment"
-						})]
-					}), /* @__PURE__ */ jsx("div", {
-						className: "space-y-8",
-						children: listings.map((listing) => /* @__PURE__ */ jsxs("article", {
-							className: "group grid grid-cols-1 overflow-hidden border border-[#dad5cb] bg-white transition-colors duration-500 hover:border-[#a56437] lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]",
-							children: [/* @__PURE__ */ jsxs("figure", {
-								className: "relative min-h-[260px] overflow-hidden bg-neutral-950 sm:min-h-[330px] lg:min-h-[390px]",
+					children: [
+						/* @__PURE__ */ jsxs("div", {
+							className: "mb-12 flex flex-col gap-8 md:mb-16 md:flex-row md:items-end md:justify-between",
+							children: [/* @__PURE__ */ jsxs("div", {
+								className: "max-w-3xl",
 								children: [
-									/* @__PURE__ */ jsx("img", {
-										src: heroImage$10,
-										alt: `${listing.name} represented in Petra's used oilfield equipment marketplace.`,
-										loading: "lazy",
-										className: "absolute inset-0 h-full w-full object-cover opacity-95 transition-transform duration-700 group-hover:scale-105",
-										style: { objectPosition: listing.imagePosition }
+									/* @__PURE__ */ jsx("span", {
+										className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+										children: "Featured Equipment"
 									}),
-									/* @__PURE__ */ jsx("div", {
-										className: "absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent",
-										"aria-hidden": "true"
-									}),
-									/* @__PURE__ */ jsx("div", {
-										className: "absolute left-4 top-4 bg-[#a56437] px-3 py-1.5 font-heading text-xs font-semibold uppercase tracking-[0.08em] text-white",
-										children: listing.category
-									}),
-									/* @__PURE__ */ jsxs("figcaption", {
-										className: "absolute bottom-4 left-4 right-4 flex flex-wrap items-end justify-between gap-4",
-										children: [/* @__PURE__ */ jsx("span", {
-											className: "max-w-xl font-heading text-2xl font-semibold uppercase leading-none tracking-[0.06em] text-white sm:text-3xl",
-											children: listing.name
-										}), /* @__PURE__ */ jsxs("span", {
-											className: "border border-white/20 bg-black/50 px-2 py-1 font-heading text-xs font-semibold tracking-[0.08em] text-white/80 backdrop-blur-md",
-											children: ["ID: ", listing.id]
-										})]
-									})
-								]
-							}), /* @__PURE__ */ jsxs("div", {
-								className: "flex flex-col p-6 sm:p-8",
-								children: [
-									/* @__PURE__ */ jsxs("div", {
-										className: "mb-5 flex flex-wrap items-center gap-3",
-										children: [/* @__PURE__ */ jsx("span", {
-											className: "bg-[#f3f1ec] px-3 py-1 font-heading text-xs font-semibold uppercase tracking-[0.1em] text-[#a56437]",
-											children: listing.status
-										}), /* @__PURE__ */ jsx("span", {
-											className: "font-heading text-xs font-semibold uppercase tracking-[0.1em] text-neutral-500",
-											children: listing.location
-										})]
-									}),
-									/* @__PURE__ */ jsx("h3", {
-										className: "font-heading text-2xl font-semibold uppercase leading-tight tracking-[0.06em] text-neutral-950 sm:text-3xl",
-										children: listing.name
+									/* @__PURE__ */ jsx("h2", {
+										className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+										children: "Representative Listings"
 									}),
 									/* @__PURE__ */ jsx("p", {
-										className: "mt-4 text-base leading-7 text-neutral-600",
-										children: listing.description
-									}),
-									/* @__PURE__ */ jsx("dl", {
-										className: "my-6 grid grid-cols-1 gap-px bg-[#dad5cb] sm:grid-cols-2",
-										children: [
-											["Condition", listing.condition],
-											["Manufacturer", listing.manufacturer],
-											["Year", listing.year],
-											["Capacity", listing.capacity],
-											["Status", listing.status],
-											["Region", listing.location]
-										].map(([label, value]) => /* @__PURE__ */ jsxs("div", {
-											className: "bg-white p-4",
-											children: [/* @__PURE__ */ jsx("dt", {
-												className: "font-heading text-xs font-semibold uppercase tracking-[0.1em] text-neutral-500",
-												children: label
-											}), /* @__PURE__ */ jsx("dd", {
-												className: "mt-1 font-heading text-sm font-semibold text-neutral-950",
-												children: value
-											})]
-										}, label))
-									}),
-									/* @__PURE__ */ jsx("a", {
-										href: `/request-equipment?asset=${listing.id}`,
-										className: "mt-auto flex h-14 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
-										children: "Request Details"
+										className: "mt-5 text-lg leading-8 text-neutral-600",
+										children: "These listings show the type of equipment Petra handles. Availability can move quickly, so use the inquiry CTA for current condition, location, and documentation."
 									})
 								]
+							}), /* @__PURE__ */ jsx("a", {
+								href: "/sell-equipment",
+								className: "inline-flex h-16 w-fit items-center justify-center border border-neutral-500 px-8 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
+								children: "Sell Equipment"
 							})]
-						}, listing.id))
-					})]
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "mb-12 border border-[#dad5cb] bg-white p-6 sm:p-8",
+							children: [/* @__PURE__ */ jsx("div", {
+								className: "grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-5",
+								children: filterControls.map((filter) => /* @__PURE__ */ jsxs("label", {
+									className: "flex flex-col gap-2",
+									children: [/* @__PURE__ */ jsx("span", {
+										className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+										children: filter.label
+									}), /* @__PURE__ */ jsxs("select", {
+										value: filters[filter.key],
+										onChange: (event) => setFilters((current) => ({
+											...current,
+											[filter.key]: event.target.value
+										})),
+										className: "h-12 border border-[#dad5cb] bg-[#f3f1ec] px-3 font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950 outline-none transition-colors focus:border-[#a56437]",
+										children: [/* @__PURE__ */ jsxs("option", {
+											value: "",
+											children: ["All ", filter.label]
+										}), filter.options.map((option) => /* @__PURE__ */ jsx("option", {
+											value: option,
+											children: option
+										}, option))]
+									})]
+								}, filter.key))
+							}), /* @__PURE__ */ jsxs("div", {
+								className: "mt-6 flex flex-col gap-4 border-t border-[#dad5cb] pt-5 sm:flex-row sm:items-center sm:justify-between",
+								children: [/* @__PURE__ */ jsxs("p", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600",
+									children: [
+										"Showing ",
+										filteredListings.length,
+										" of ",
+										listings.length,
+										" listings"
+									]
+								}), hasActiveFilters && /* @__PURE__ */ jsx("button", {
+									type: "button",
+									onClick: () => setFilters(emptyFilters),
+									className: "inline-flex h-11 w-fit items-center justify-center border border-neutral-500 px-6 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
+									children: "Reset Filters"
+								})]
+							})]
+						}),
+						/* @__PURE__ */ jsx("div", {
+							className: "space-y-8",
+							children: filteredListings.map((listing) => /* @__PURE__ */ jsxs("article", {
+								className: "group grid grid-cols-1 overflow-hidden border border-[#dad5cb] bg-white transition-colors duration-500 hover:border-[#a56437] lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]",
+								children: [/* @__PURE__ */ jsxs("figure", {
+									className: "relative min-h-[260px] overflow-hidden bg-neutral-950 sm:min-h-[330px] lg:min-h-[390px]",
+									children: [
+										/* @__PURE__ */ jsx("img", {
+											src: heroImage$10,
+											alt: `${listing.name} represented in Petra's used oilfield equipment marketplace.`,
+											loading: "lazy",
+											className: "absolute inset-0 h-full w-full object-cover opacity-95 transition-transform duration-700 group-hover:scale-105",
+											style: { objectPosition: listing.imagePosition }
+										}),
+										/* @__PURE__ */ jsx("div", {
+											className: "absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent",
+											"aria-hidden": "true"
+										}),
+										/* @__PURE__ */ jsx("div", {
+											className: "absolute left-4 top-4 bg-[#a56437] px-3 py-1.5 font-heading text-xs font-semibold uppercase tracking-[0.08em] text-white",
+											children: listing.category
+										}),
+										/* @__PURE__ */ jsxs("figcaption", {
+											className: "absolute bottom-4 left-4 right-4 flex flex-wrap items-end justify-between gap-4",
+											children: [/* @__PURE__ */ jsx("span", {
+												className: "max-w-xl font-heading text-2xl font-semibold uppercase leading-none tracking-[0.06em] text-white sm:text-3xl",
+												children: listing.name
+											}), /* @__PURE__ */ jsxs("span", {
+												className: "border border-white/20 bg-black/50 px-2 py-1 font-heading text-xs font-semibold tracking-[0.08em] text-white/80 backdrop-blur-md",
+												children: ["ID: ", listing.id]
+											})]
+										})
+									]
+								}), /* @__PURE__ */ jsxs("div", {
+									className: "flex flex-col p-6 sm:p-8",
+									children: [
+										/* @__PURE__ */ jsxs("div", {
+											className: "mb-5 flex flex-wrap items-center gap-3",
+											children: [/* @__PURE__ */ jsx("span", {
+												className: "bg-[#f3f1ec] px-3 py-1 font-heading text-xs font-semibold uppercase tracking-[0.1em] text-[#a56437]",
+												children: listing.status
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-heading text-xs font-semibold uppercase tracking-[0.1em] text-neutral-500",
+												children: listing.location
+											})]
+										}),
+										/* @__PURE__ */ jsx("h3", {
+											className: "font-heading text-2xl font-semibold uppercase leading-tight tracking-[0.06em] text-neutral-950 sm:text-3xl",
+											children: listing.name
+										}),
+										/* @__PURE__ */ jsx("p", {
+											className: "mt-4 text-base leading-7 text-neutral-600",
+											children: listing.description
+										}),
+										/* @__PURE__ */ jsx("dl", {
+											className: "my-6 grid grid-cols-1 gap-px bg-[#dad5cb] sm:grid-cols-2",
+											children: [
+												["Condition", listing.condition],
+												["Manufacturer", listing.manufacturer],
+												["Year", listing.year],
+												["Capacity", listing.capacity],
+												["Status", listing.status],
+												["Region", listing.location]
+											].map(([label, value]) => /* @__PURE__ */ jsxs("div", {
+												className: "bg-white p-4",
+												children: [/* @__PURE__ */ jsx("dt", {
+													className: "font-heading text-xs font-semibold uppercase tracking-[0.1em] text-neutral-500",
+													children: label
+												}), /* @__PURE__ */ jsx("dd", {
+													className: "mt-1 font-heading text-sm font-semibold text-neutral-950",
+													children: value
+												})]
+											}, label))
+										}),
+										/* @__PURE__ */ jsx("a", {
+											href: `/request-equipment?asset=${listing.id}`,
+											className: "mt-auto flex h-14 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
+											children: "Request Details"
+										})
+									]
+								})]
+							}, listing.id))
+						}),
+						filteredListings.length === 0 && /* @__PURE__ */ jsx("div", {
+							className: "border border-[#dad5cb] bg-white p-8 text-center",
+							children: /* @__PURE__ */ jsx("p", {
+								className: "text-lg leading-8 text-neutral-600",
+								children: "No listed equipment matches those filters right now."
+							})
+						}),
+						/* @__PURE__ */ jsx("p", {
+							className: "mx-auto mt-12 max-w-3xl text-center text-lg leading-8 text-neutral-600",
+							children: "If you see equipment that matches your needs, reach out early. High-quality assets move fast."
+						})
+					]
 				})
 			}),
 			/* @__PURE__ */ jsx("section", {
