@@ -1,0 +1,54 @@
+{
+    "heroImage": "/images/petra-equipment-yard-hero.png",
+    "industries": [
+        {
+            "title": "Oil and Gas Production",
+            "summary": "Production equipment, compression, separation, tank batteries, pump packages, and field assets used across producing basins.",
+            "equipment": ["Separators", "Compressors", "Tank batteries", "Pump packages"]
+        },
+        {
+            "title": "Midstream Operations",
+            "summary": "Equipment tied to movement, pressure, processing support, and site infrastructure for oil and gas systems.",
+            "equipment": ["Compression packages", "Piping assets", "Support skids", "Production handling"]
+        },
+        {
+            "title": "Industrial Surplus",
+            "summary": "Used industrial equipment and surplus assets that still have practical value for operators, yards, and regional buyers.",
+            "equipment": ["Surplus packages", "Storage assets", "Field support", "Process equipment"]
+        },
+        {
+            "title": "Regional Equipment Yards",
+            "summary": "Assets sitting in yards, operator facilities, and surplus channels across Wyoming, the Rockies, and surrounding regions.",
+            "equipment": ["Idle equipment", "Stored assets", "Decommissioned units", "Ready-to-move packages"]
+        }
+    ],
+    "signals": [
+        {
+            "title": "Field Use",
+            "description": "Petra evaluates what the equipment was built to do, where it has been used, and whether that use case still matches buyer demand."
+        },
+        {
+            "title": "Regional Demand",
+            "description": "Equipment fit changes by basin, timing, logistics, and operator needs. Petra keeps regional movement part of the conversation."
+        },
+        {
+            "title": "Asset Readiness",
+            "description": "Condition, documentation, access, and transportation all affect whether an equipment opportunity is actually workable."
+        }
+    ],
+    "regions": ["Wyoming", "Powder River", "Rockies", "Bakken", "North Dakota", "Colorado", "Utah", "New Mexico", "Montana"],
+    "faqs": [
+        {
+            "question": "Which industries does Petra serve?",
+            "answer": "Petra focuses on used oilfield and industrial equipment for oil and gas production, midstream operations, industrial surplus, and regional equipment yards."
+        },
+        {
+            "question": "Does Petra work outside one basin?",
+            "answer": "Yes. Petra works across Wyoming, the Powder River, the Rockies, the Bakken, North Dakota, Colorado, Utah, New Mexico, Montana, and surrounding producing regions."
+        },
+        {
+            "question": "Why does industry context matter?",
+            "answer": "The same piece of equipment can have different value depending on field use, location, condition, buyer demand, documents, and logistics."
+        }
+    ]
+}

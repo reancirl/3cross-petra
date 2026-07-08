@@ -28,7 +28,13 @@ Route::get('/services', fn () => Inertia::render('Services', [
     'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
 ]));
 
+Route::get('/industries', fn () => Inertia::render('Industries', [
+    'canonicalUrl' => url('/industries'),
+    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+]));
+
 Route::redirect('/services/equipment-brokerage', '/services', 301);
+Route::redirect('/industries/oil-and-gas-production', '/industries', 301);
 
 Route::redirect('/inventory', '/equipment', 301);
 
@@ -56,6 +62,11 @@ Route::get('/sitemap.xml', function () {
         ],
         [
             'loc' => url('/services'),
+            'changefreq' => 'weekly',
+            'priority' => '0.7',
+        ],
+        [
+            'loc' => url('/industries'),
             'changefreq' => 'weekly',
             'priority' => '0.7',
         ],
