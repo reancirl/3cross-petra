@@ -8,9 +8,9 @@ type SellEquipmentProps = {
 };
 
 const { heroImage, assetTypes, processSteps, requirements, sellerBenefits, faqs } = sellEquipmentData;
-const pageTitle = 'Sell Used Oilfield Equipment | Petra Equipment Brokerage';
+const pageTitle = 'Sell Your Equipment | Petra Equipment Brokerage';
 const pageDescription =
-    'Sell used oilfield and industrial equipment through Petra. Brokerage support for compressors, separators, tank batteries, pump packages, and surplus assets across producing regions.';
+    'Got equipment sitting in a yard or out in the field? Petra helps you turn unused oilfield and industrial equipment into real buyers.';
 
 export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmentProps) {
     const structuredData = {
@@ -48,6 +48,8 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                     },
                 ],
             },
+            /*
+            Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
             {
                 '@type': 'FAQPage',
                 '@id': `${canonicalUrl}#faq`,
@@ -60,6 +62,7 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                     },
                 })),
             },
+            */
         ],
     };
 
@@ -87,8 +90,9 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
 
             <main className="w-full bg-[#f3f1ec]">
                 <section className="border-b border-[#dad5cb] bg-white">
-                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-20 sm:px-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:py-24">
+                    <div className="mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-24">
                         <div>
+                            {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                             <div className="mb-7 flex flex-wrap gap-3">
                                 <span className="border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]">
                                     Divestment Support
@@ -97,14 +101,15 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                                     Brokerage First
                                 </span>
                             </div>
+                            */}
 
                             <h1 className="max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.35rem] lg:text-[4.1rem]">
-                                Sell Used Oilfield Equipment
+                                Sell Your Equipment
                             </h1>
 
                             <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg">
-                                Petra helps sellers position field equipment for real buyers without auction guesswork.
-                                Share the asset details, and we will tell you where it fits in the market.
+                                Got equipment sitting in a yard or out in the field? We help you turn unused oilfield
+                                and industrial equipment into real buyers.
                             </p>
 
                             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -112,7 +117,7 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                                     href="#seller-intake"
                                     className="inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
                                 >
-                                    Start Seller Review
+                                    Submit Equipment
                                 </a>
                                 <a
                                     href="/equipment"
@@ -123,6 +128,7 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                             </div>
                         </div>
 
+                        {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                         <figure className="relative min-h-[300px] overflow-hidden border border-[#dad5cb] bg-neutral-950 lg:min-h-[420px]">
                             <img
                                 src={heroImage}
@@ -139,6 +145,36 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                                 </p>
                             </figcaption>
                         </figure>
+                        */}
+                    </div>
+                </section>
+
+                <section className="border-b border-[#dad5cb] bg-[#f3f1ec] py-20 sm:py-24 lg:py-28">
+                    <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
+                        <div className="max-w-4xl">
+                            <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
+                                Reality Check
+                            </span>
+                            <h2 className="font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl">
+                                Most equipment doesn't fail to sell because it's bad.
+                            </h2>
+                            <p className="mt-6 text-lg leading-8 text-neutral-600">
+                                It fails because:
+                            </p>
+                        </div>
+
+                        <div className="mt-10 grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-3">
+                            {["nobody is actively marketing it", "it's stuck in a small network", "or pricing isn't aligned with the market"].map((item) => (
+                                <article key={item} className="bg-white p-7">
+                                    <FeatureIcon type="check" className="mb-6 h-5 w-5" />
+                                    <p className="text-lg leading-8 text-neutral-700">{item}</p>
+                                </article>
+                            ))}
+                        </div>
+
+                        <p className="mt-10 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
+                            We fix that.
+                        </p>
                     </div>
                 </section>
 
@@ -146,14 +182,14 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                     <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
                         <div className="mx-auto mb-9 max-w-3xl text-center">
                             <span className="font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]">
-                                Assets We Review
+                                What You Can Send
                             </span>
                             <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-white sm:text-4xl">
-                                Field Equipment and Industrial Surplus
+                                What You Can Send
                             </h2>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-px bg-white/15 md:grid-cols-3 lg:grid-cols-6">
+                        <div className="grid grid-cols-2 gap-px bg-white/15 md:grid-cols-4">
                             {assetTypes.map((assetType) => (
                                 <div key={assetType} className="bg-[#1c1a16] p-5 text-center transition-colors hover:bg-[#24211c]">
                                     <div className="mx-auto mb-4 h-1.5 w-1.5 bg-[#a56437]" />
@@ -163,6 +199,10 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                                 </div>
                             ))}
                         </div>
+
+                        <p className="mx-auto mt-9 max-w-3xl text-center text-lg leading-8 text-white/70">
+                            If you're not sure it's sellable—send it anyway.
+                        </p>
                     </div>
                 </section>
 
@@ -177,7 +217,7 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                             </h2>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-2 lg:grid-cols-5">
                             {processSteps.map((step) => (
                                 <article key={step.number} className="bg-white p-7">
                                     <span className="font-heading text-3xl font-semibold uppercase tracking-[0.05em] text-[#a56437]">
@@ -194,6 +234,35 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                 </section>
 
                 <section id="seller-intake" className="bg-[#f3f1ec] py-20 sm:py-24 lg:py-28">
+                    <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
+                        <div className="mb-12 max-w-3xl">
+                            <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
+                                Submit Equipment
+                            </span>
+                            <h2 className="font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl">
+                                What We Need
+                            </h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-px bg-[#dad5cb] sm:grid-cols-2 lg:grid-cols-5">
+                            {requirements.map((requirement) => (
+                                <article key={requirement} className="bg-white p-7">
+                                    <FeatureIcon type="check" className="mb-6 h-5 w-5" />
+                                    <h3 className="font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
+                                        {requirement}
+                                    </h3>
+                                </article>
+                            ))}
+                        </div>
+
+                        <p className="mt-10 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
+                            We don't let equipment sit. If it can move, we move it.
+                        </p>
+                    </div>
+                </section>
+
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
+                <section id="seller-intake-creative" className="bg-[#f3f1ec] py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 sm:px-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,1.1fr)]">
                         <div>
                             <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
@@ -251,7 +320,9 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                         </aside>
                     </div>
                 </section>
+                */}
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-y border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
                         <div className="mb-12 max-w-3xl">
@@ -275,6 +346,7 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                         </div>
                     </div>
                 </section>
+                */}
             </main>
         </>
     );

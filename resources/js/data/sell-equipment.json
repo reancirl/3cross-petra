@@ -1,35 +1,48 @@
 {
     "heroImage": "/images/petra-equipment-yard-hero.png",
-    "assetTypes": ["Compressors", "Separators", "Tank batteries", "Pump packages", "Production equipment", "Industrial surplus"],
+    "assetTypes": [
+        "Compressors",
+        "Separators",
+        "Tanks",
+        "Pump packages",
+        "Generators",
+        "Flowback equipment",
+        "Yard surplus inventory",
+        "Full packages or single assets"
+    ],
     "processSteps": [
         {
             "number": "01",
-            "title": "Send the Basics",
-            "description": "Share the equipment type, location, condition, photos, and any available specs or documentation."
+            "title": "Send equipment info",
+            "description": "Share what you have: equipment details, location, condition, photos, and available documents."
         },
         {
             "number": "02",
-            "title": "Market Review",
-            "description": "Petra reviews where the asset fits, who is likely to care, and whether brokerage makes sense."
+            "title": "We review the asset",
+            "description": "Petra reviews the equipment, market fit, likely buyers, and whether the pricing aligns with current demand."
         },
         {
             "number": "03",
-            "title": "Position the Asset",
-            "description": "We organize the story around real field use, condition, logistics, and practical buyer questions."
+            "title": "We position it",
+            "description": "We represent the equipment clearly so serious buyers understand condition, specs, location, and practical value."
         },
         {
             "number": "04",
-            "title": "Connect Real Buyers",
-            "description": "The equipment is put in front of relevant buyers without running it through a public auction process."
+            "title": "We handle negotiation",
+            "description": "Petra works the buyer conversations, answers practical questions, and keeps the deal moving."
+        },
+        {
+            "number": "05",
+            "title": "You receive actual offers",
+            "description": "When there is a real fit, you get offers from buyers who are actually in the market."
         }
     ],
     "requirements": [
-        "Equipment type and manufacturer",
-        "Model, year, size, pressure, horsepower, capacity, or other core specs",
-        "Current location and access notes",
-        "Operating condition and known issues",
-        "Photos, serial plates, inspection notes, or maintenance records",
-        "Target timing, asking range, and logistics constraints"
+        "Equipment details",
+        "Location",
+        "Condition (rough is fine)",
+        "Photos",
+        "Documents"
     ],
     "sellerBenefits": [
         {
