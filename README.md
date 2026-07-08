@@ -91,27 +91,30 @@ If you are using the Vite dev server, restart `make dev` after dependency or fro
 
 ## Development Workflow
 
-Start the Laravel, Nginx, PostgreSQL, and Redis containers:
+For normal local browsing, start the Laravel, Nginx, PostgreSQL, and Redis containers:
 
 ```bash
 docker compose up -d
 ```
 
-Run the Vite dev server for React/CSS hot reload:
+The page should load at `http://localhost:8000` without `make dev`. The Docker image already contains built frontend assets.
+
+Run the Vite dev server only when you are editing React/CSS and want hot reload:
 
 ```bash
 make dev
 ```
 
-Then keep both running and visit:
+`make dev` starts the app with `docker-compose.hmr.yml`, which mounts `public/` so Laravel can see Vite's hot file. Keep it running and visit:
 
 ```text
 http://localhost:8000
 ```
 
-If you do not have `make`, run the Vite dev server through Node directly:
+If you do not have `make`, start the app with the HMR compose file and then run Vite through Node:
 
 ```bash
+docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.hmr.yml up -d
 docker run --rm -it -v "$PWD":/app -w /app -p 5173:5173 node:24-alpine sh -c "npm install && npm run dev"
 ```
 

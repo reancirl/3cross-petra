@@ -26,6 +26,6 @@ fresh:    ; docker compose down -v && docker compose up --build -d && sleep 8 &&
 logs:     ; docker compose logs -f
 ps:       ; docker compose ps
 tinker:   ; docker compose exec app php artisan tinker
-# Local workflow: `make up`, then keep `make dev` running for React/CSS hot reload.
-dev:      ; docker run --rm -it -v "$(PWD)":/app -w /app -p 5173:5173 node:24-alpine sh -c "npm install && npm run dev"
-dev-up:   ; docker compose up -d && $(MAKE) dev
+# Local workflow: keep `make dev` running for React/CSS hot reload.
+dev:      ; docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.hmr.yml up -d && docker run --rm -it -v "$(PWD)":/app -w /app -p 5173:5173 node:24-alpine sh -c "npm install && npm run dev"
+dev-up:   ; $(MAKE) dev

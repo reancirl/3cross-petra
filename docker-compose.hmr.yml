@@ -1,0 +1,8 @@
+services:
+  app:
+    volumes:
+      - ./public:/var/www/html/public
+
+  web:
+    volumes:
+      - ./public:/var/www/html/public:ro
