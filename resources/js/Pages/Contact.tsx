@@ -6,9 +6,9 @@ type ContactProps = {
     ogImageUrl: string;
 };
 
-const pageTitle = 'Contact Petra | Talk to an Equipment Broker';
+const pageTitle = "Contact Petra | Let's Move Something";
 const pageDescription =
-    'Contact Petra about selling, sourcing, or reviewing used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.';
+    "If you've got equipment to sell or you're trying to source something for a job, reach out. Petra will tell you straight up if we can help or not.";
 
 const contactTopics = [
     'Selling used oilfield or industrial equipment',
@@ -81,8 +81,9 @@ export default function Contact({ canonicalUrl, ogImageUrl }: ContactProps) {
 
             <main className="w-full bg-[#f3f1ec]">
                 <section className="border-b border-[#dad5cb] bg-white">
-                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-20 sm:px-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:py-24">
+                    <div className="mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-24">
                         <div>
+                            {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                             <div className="mb-7 flex flex-wrap gap-3">
                                 <span className="border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]">
                                     Contact
@@ -91,14 +92,15 @@ export default function Contact({ canonicalUrl, ogImageUrl }: ContactProps) {
                                     Broker Review
                                 </span>
                             </div>
+                            */}
 
                             <h1 className="max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.35rem] lg:text-[4.1rem]">
-                                Talk to an Equipment Broker
+                                Let's Move Something
                             </h1>
 
                             <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg">
-                                Bring Petra the equipment details, sourcing request, or field question. We will review
-                                whether the opportunity fits brokerage, sourcing, or market positioning support.
+                                If you've got equipment to sell or you're trying to source something for a job, just
+                                reach out. We'll tell you straight up if we can help or not.
                             </p>
 
                             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -117,6 +119,7 @@ export default function Contact({ canonicalUrl, ogImageUrl }: ContactProps) {
                             </div>
                         </div>
 
+                        {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                         <aside className="border border-[#dad5cb] bg-[#f3f1ec] p-8">
                             <span className="font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]">
                                 Useful Context
@@ -130,9 +133,11 @@ export default function Contact({ canonicalUrl, ogImageUrl }: ContactProps) {
                                 ))}
                             </ul>
                         </aside>
+                        */}
                     </div>
                 </section>
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
                         <div className="mb-12 max-w-3xl">
@@ -156,6 +161,7 @@ export default function Contact({ canonicalUrl, ogImageUrl }: ContactProps) {
                         </div>
                     </div>
                 </section>
+                */}
             </main>
         </>
     );
