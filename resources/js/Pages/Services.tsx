@@ -8,9 +8,9 @@ type ServicesProps = {
 };
 
 const { heroImage, services, workflow, regions, faqs } = servicesData;
-const pageTitle = 'Oilfield Equipment Brokerage Services | Petra';
+const pageTitle = 'Services | Petra';
 const pageDescription =
-    'Petra provides used oilfield and industrial equipment brokerage, sourcing, market review, and logistics coordination across Wyoming, the Rockies, and producing regions.';
+    'Straight brokerage work between people who actually understand field equipment. Petra helps sellers move surplus equipment and buyers source the right assets.';
 
 export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
     const structuredData = {
@@ -28,7 +28,9 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                     url: canonicalUrl.replace(/\/services$/, ''),
                 },
                 areaServed: regions,
-                serviceType: services.map((service) => service.title),
+                serviceType: ['Equipment brokerage', 'Equipment sourcing'],
+                /*
+                Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 hasOfferCatalog: {
                     '@type': 'OfferCatalog',
                     name: 'Petra equipment brokerage services',
@@ -41,6 +43,7 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                         },
                     })),
                 },
+                */
             },
             {
                 '@type': 'BreadcrumbList',
@@ -60,6 +63,8 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                     },
                 ],
             },
+            /*
+            Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
             {
                 '@type': 'FAQPage',
                 '@id': `${canonicalUrl}#faq`,
@@ -72,6 +77,7 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                     },
                 })),
             },
+            */
         ],
     };
 
@@ -99,8 +105,9 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
 
             <main className="w-full bg-[#f3f1ec]">
                 <section className="border-b border-[#dad5cb] bg-white">
-                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-20 sm:px-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:py-24">
+                    <div className="mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-24">
                         <div>
+                            {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                             <div className="mb-7 flex flex-wrap gap-3">
                                 <span className="border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]">
                                     Brokerage Services
@@ -109,14 +116,14 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                                     Field-Aware Support
                                 </span>
                             </div>
+                            */}
 
                             <h1 className="max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.35rem] lg:text-[4.1rem]">
-                                Oilfield Equipment Brokerage Services
+                                Services
                             </h1>
 
                             <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg">
-                                Petra helps buyers and sellers move used oilfield and industrial equipment through
-                                practical brokerage, sourcing, market review, and deal coordination.
+                                Just straight brokerage work between people who actually understand field equipment.
                             </p>
 
                             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -135,6 +142,7 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                             </div>
                         </div>
 
+                        {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                         <figure className="relative min-h-[300px] overflow-hidden border border-[#dad5cb] bg-neutral-950 lg:min-h-[420px]">
                             <img
                                 src={heroImage}
@@ -151,9 +159,79 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                                 </p>
                             </figcaption>
                         </figure>
+                        */}
                     </div>
                 </section>
 
+                <section className="border-y border-[#dad5cb] bg-white">
+                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 px-5 sm:px-10 md:grid-cols-2">
+                        <div className="flex flex-col border-b border-[#dad5cb] py-20 md:border-b-0 md:border-r md:py-28 md:pr-16 lg:pr-20">
+                            <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
+                                Selling Equipment
+                            </span>
+                            <h2 className="mb-8 font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950">
+                                Sell Your Equipment
+                            </h2>
+                            <p className="mb-10 text-lg leading-8 text-neutral-600">
+                                Most companies do not lose money because the equipment is bad. They lose money because
+                                it sits too long, nobody markets it properly, or it is only shown to a small local
+                                network.
+                            </p>
+                            <ul className="mb-12 space-y-6">
+                                {[
+                                    'Get equipment in front of active buyers.',
+                                    'Price it based on actual market movement, not guesswork.',
+                                    'Handle buyer calls and negotiation.',
+                                    'Move equipment without tying up your team.',
+                                ].map((item) => (
+                                    <li key={item} className="flex items-start gap-4">
+                                        <FeatureIcon type="check" className="mt-0.5 h-5 w-5" />
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                            <p className="mb-12 text-lg leading-8 text-neutral-600">
+                                If you've got surplus iron sitting in a yard in Wyoming, North Dakota, or Colorado—we'll
+                                help you turn it into capital again.
+                            </p>
+                            <a href="/sell-equipment" className="mt-auto inline-flex h-16 w-fit items-center self-start bg-[#a56437] px-12 font-heading text-base font-semibold uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-90">
+                                Sell Equipment
+                            </a>
+                        </div>
+
+                        <div className="flex flex-col py-20 md:py-28 md:pl-16 lg:pl-20">
+                            <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
+                                Looking for Equipment
+                            </span>
+                            <h2 className="mb-8 font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950">
+                                Request Equipment
+                            </h2>
+                            <p className="mb-10 text-lg leading-8 text-neutral-600">
+                                Most buyers do not need more listings. They need:
+                            </p>
+                            <ul className="mb-12 space-y-6">
+                                {[
+                                    'The right size',
+                                    'The right spec',
+                                    'The right condition',
+                                    'And someone who actually knows where to find it',
+                                    "Tell us what you're trying to source.",
+                                    'We work our network and come back with real options.',
+                                ].map((item) => (
+                                    <li key={item} className="flex items-start gap-4">
+                                        <FeatureIcon type="check" className="mt-0.5 h-5 w-5" />
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                            <a href="/request-equipment" className="mt-auto inline-flex h-16 w-fit items-center self-start border border-neutral-950 px-12 font-heading text-base font-semibold uppercase tracking-[0.12em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
+                                Request Equipment
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
                     <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
                         <div className="mx-auto mb-9 max-w-3xl text-center">
@@ -188,7 +266,9 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                         </div>
                     </div>
                 </section>
+                */}
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
                         <div className="mb-12 max-w-3xl">
@@ -215,7 +295,9 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                         </div>
                     </div>
                 </section>
+                */}
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="bg-[#f3f1ec] py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 sm:px-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,1.1fr)]">
                         <div>
@@ -258,7 +340,9 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                         </aside>
                     </div>
                 </section>
+                */}
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-y border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
                         <div className="mb-12 max-w-3xl">
@@ -282,6 +366,7 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                         </div>
                     </div>
                 </section>
+                */}
             </main>
         </>
     );

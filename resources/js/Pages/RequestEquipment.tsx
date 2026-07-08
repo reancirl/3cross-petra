@@ -8,9 +8,9 @@ type RequestEquipmentProps = {
 };
 
 const { heroImage, requestedAssets, processSteps, requirements, buyerBenefits, regions, faqs } = requestEquipmentData;
-const pageTitle = 'Request Used Oilfield Equipment | Petra Equipment Sourcing';
+const pageTitle = 'Request Equipment | Petra Equipment Sourcing';
 const pageDescription =
-    'Request used oilfield and industrial equipment through Petra. Sourcing support for compressors, separators, pump packages, tank batteries, and regional surplus across producing regions.';
+    'Most buyers do not need more listings. Petra helps source the right size, spec, condition, and equipment fit through people who know where to find it.';
 
 export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEquipmentProps) {
     const structuredData = {
@@ -48,6 +48,8 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                     },
                 ],
             },
+            /*
+            Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
             {
                 '@type': 'FAQPage',
                 '@id': `${canonicalUrl}#faq`,
@@ -60,6 +62,7 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                     },
                 })),
             },
+            */
         ],
     };
 
@@ -87,8 +90,9 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
 
             <main className="w-full bg-[#f3f1ec]">
                 <section className="border-b border-[#dad5cb] bg-white">
-                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-20 sm:px-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:py-24">
+                    <div className="mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-24">
                         <div>
+                            {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                             <div className="mb-7 flex flex-wrap gap-3">
                                 <span className="border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]">
                                     Procurement Service
@@ -97,14 +101,15 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                                     Specific Asset Sourcing
                                 </span>
                             </div>
+                            */}
 
                             <h1 className="max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.35rem] lg:text-[4.1rem]">
-                                Request Used Oilfield Equipment
+                                Request Equipment
                             </h1>
 
                             <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg">
-                                Petra helps buyers source specific used oilfield and industrial equipment through a
-                                practical network of operators, sellers, surplus yards, and regional relationships.
+                                Most buyers do not need more listings. They need the right size, the right spec, the
+                                right condition, and someone who actually knows where to find it.
                             </p>
 
                             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -112,7 +117,7 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                                     href="#buyer-request"
                                     className="inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
                                 >
-                                    Build Request
+                                    Request Equipment
                                 </a>
                                 <a
                                     href="/equipment"
@@ -123,6 +128,7 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                             </div>
                         </div>
 
+                        {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                         <figure className="relative min-h-[300px] overflow-hidden border border-[#dad5cb] bg-neutral-950 lg:min-h-[420px]">
                             <img
                                 src={heroImage}
@@ -139,9 +145,11 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                                 </p>
                             </figcaption>
                         </figure>
+                        */}
                     </div>
                 </section>
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
                     <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
                         <div className="mx-auto mb-9 max-w-3xl text-center">
@@ -165,6 +173,7 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                         </div>
                     </div>
                 </section>
+                */}
 
                 <section className="border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
@@ -194,6 +203,42 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                 </section>
 
                 <section id="buyer-request" className="bg-[#f3f1ec] py-20 sm:py-24 lg:py-28">
+                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-5 sm:px-10 lg:grid-cols-12 lg:items-start lg:gap-14">
+                        <div className="max-w-3xl lg:col-span-5">
+                            <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
+                                What Buyers Need
+                            </span>
+                            <h2 className="font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl">
+                                Most buyers do not need more listings.
+                            </h2>
+                            <p className="mt-6 text-lg leading-8 text-neutral-600">
+                                They need:
+                            </p>
+                        </div>
+
+                        <div className="lg:col-span-7">
+                            <div className="border border-[#dad5cb] bg-white p-6 sm:p-8">
+                                <div className="grid grid-cols-1 gap-px bg-[#dad5cb] sm:grid-cols-2">
+                                    {requirements.map((requirement) => (
+                                        <article key={requirement} className="flex min-h-24 items-start gap-4 bg-white p-5">
+                                            <FeatureIcon type="check" className="mt-1 h-5 w-5 shrink-0" />
+                                            <h3 className="font-heading text-lg font-semibold uppercase leading-snug tracking-[0.08em] text-neutral-950">
+                                                {requirement}
+                                            </h3>
+                                        </article>
+                                    ))}
+                                </div>
+
+                                <p className="mt-6 border-t border-[#dad5cb] pt-6 text-lg leading-8 text-neutral-600">
+                                    Tell us what you're trying to source.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
+                <section id="buyer-request-creative" className="bg-[#f3f1ec] py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 sm:px-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,1.1fr)]">
                         <div>
                             <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
@@ -251,7 +296,9 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                         </aside>
                     </div>
                 </section>
+                */}
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-y border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
                         <div className="mb-12 max-w-3xl">
@@ -275,6 +322,7 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                         </div>
                     </div>
                 </section>
+                */}
             </main>
         </>
     );

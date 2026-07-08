@@ -150,8 +150,8 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                 </section>
 
                 <section className="border-b border-[#dad5cb] bg-[#f3f1ec] py-20 sm:py-24 lg:py-28">
-                    <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
-                        <div className="max-w-4xl">
+                    <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-5 sm:px-10 lg:grid-cols-12 lg:items-start lg:gap-14">
+                        <div className="max-w-4xl lg:col-span-5">
                             <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
                                 Reality Check
                             </span>
@@ -163,18 +163,22 @@ export default function SellEquipment({ canonicalUrl, ogImageUrl }: SellEquipmen
                             </p>
                         </div>
 
-                        <div className="mt-10 grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-3">
-                            {["nobody is actively marketing it", "it's stuck in a small network", "or pricing isn't aligned with the market"].map((item) => (
-                                <article key={item} className="bg-white p-7">
-                                    <FeatureIcon type="check" className="mb-6 h-5 w-5" />
-                                    <p className="text-lg leading-8 text-neutral-700">{item}</p>
-                                </article>
-                            ))}
-                        </div>
+                        <div className="lg:col-span-7">
+                            <div className="border border-[#dad5cb] bg-white p-6 sm:p-8">
+                                <div className="grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-3">
+                                    {["nobody is actively marketing it", "it's stuck in a small network", "or pricing isn't aligned with the market"].map((item) => (
+                                        <article key={item} className="flex min-h-24 items-start gap-4 bg-white p-5">
+                                            <FeatureIcon type="check" className="mt-1 h-5 w-5 shrink-0" />
+                                            <p className="text-base leading-7 text-neutral-700">{item}</p>
+                                        </article>
+                                    ))}
+                                </div>
 
-                        <p className="mt-10 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
-                            We fix that.
-                        </p>
+                                <p className="mt-6 border-t border-[#dad5cb] pt-6 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
+                                    We fix that.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
