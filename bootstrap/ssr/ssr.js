@@ -300,9 +300,9 @@ var equipment_default = {
 //#endregion
 //#region resources/js/Pages/Equipment.tsx
 var Equipment_exports = /* @__PURE__ */ __exportAll({ default: () => Equipment });
-var { heroImage: heroImage$6, categories: categories$2, listings, regions: regions$2 } = equipment_default;
-var pageTitle$3 = "Used Oilfield Equipment Marketplace | Petra";
-var pageDescription$3 = "Browse used oilfield and industrial equipment handled by Petra, including compressors, separators, tank batteries, and pump packages across Wyoming, the Rockies, and the Bakken.";
+var { heroImage: heroImage$8, categories: categories$2, listings, regions: regions$4 } = equipment_default;
+var pageTitle$4 = "Used Oilfield Equipment Marketplace | Petra";
+var pageDescription$4 = "Browse used oilfield and industrial equipment handled by Petra, including compressors, separators, tank batteries, and pump packages across Wyoming, the Rockies, and the Bakken.";
 function Equipment({ canonicalUrl, ogImageUrl }) {
 	const structuredData = {
 		"@context": "https://schema.org",
@@ -312,7 +312,7 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 				"@id": `${canonicalUrl}#equipment-marketplace`,
 				name: "Used Oilfield Equipment Marketplace",
 				url: canonicalUrl,
-				description: pageDescription$3,
+				description: pageDescription$4,
 				isPartOf: {
 					"@type": "WebSite",
 					name: "Petra",
@@ -358,11 +358,11 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 		]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$3,
+		title: pageTitle$4,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$3
+				content: pageDescription$4
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -374,11 +374,11 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$3
+				content: pageTitle$4
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$3
+				content: pageDescription$4
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -402,11 +402,11 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$3
+				content: pageTitle$4
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$3
+				content: pageDescription$4
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -558,7 +558,7 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 								className: "relative min-h-[260px] overflow-hidden bg-neutral-950 sm:min-h-[330px] lg:min-h-[390px]",
 								children: [
 									/* @__PURE__ */ jsx("img", {
-										src: heroImage$6,
+										src: heroImage$8,
 										alt: `${listing.name} represented in Petra's used oilfield equipment marketplace.`,
 										loading: "lazy",
 										className: "absolute inset-0 h-full w-full object-cover opacity-95 transition-transform duration-700 group-hover:scale-105",
@@ -657,7 +657,7 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 						]
 					}), /* @__PURE__ */ jsx("div", {
 						className: "grid grid-cols-1 gap-4 sm:grid-cols-3 lg:col-span-7",
-						children: regions$2.map((region) => /* @__PURE__ */ jsxs("div", {
+						children: regions$4.map((region) => /* @__PURE__ */ jsxs("div", {
 							className: "border border-[#dad5cb] bg-[#f3f1ec] p-6",
 							children: [/* @__PURE__ */ jsx("div", { className: "mb-5 h-1.5 w-1.5 bg-[#a56437]" }), /* @__PURE__ */ jsx("h3", {
 								className: "font-heading text-xl font-semibold uppercase tracking-[0.1em] text-neutral-950",
@@ -879,9 +879,9 @@ var home_default = {
 //#endregion
 //#region resources/js/Pages/Home.tsx
 var Home_exports = /* @__PURE__ */ __exportAll({ default: () => Home });
-var { heroImage: heroImage$4, stats, featureItems, categories, processSteps: processSteps$4, inventoryItems, states } = home_default;
-var pageTitle$2 = "Petra | Used Oilfield & Industrial Equipment Brokerage";
-var pageDescription$2 = "Petra connects real buyers and sellers of used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.";
+var { heroImage: heroImage$6, stats, featureItems, categories, processSteps: processSteps$4, inventoryItems, states } = home_default;
+var pageTitle$3 = "Petra | Used Oilfield & Industrial Equipment Brokerage";
+var pageDescription$3 = "Petra connects real buyers and sellers of used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.";
 function Home({ canonicalUrl, ogImageUrl }) {
 	const structuredData = {
 		"@context": "https://schema.org",
@@ -914,15 +914,15 @@ function Home({ canonicalUrl, ogImageUrl }) {
 			name: "Petra",
 			url: canonicalUrl,
 			publisher: { "@id": `${canonicalUrl}#organization` },
-			description: pageDescription$2
+			description: pageDescription$3
 		}]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$2,
+		title: pageTitle$3,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$2
+				content: pageDescription$3
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -934,11 +934,11 @@ function Home({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$2
+				content: pageTitle$3
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$2
+				content: pageDescription$3
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -962,11 +962,11 @@ function Home({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$2
+				content: pageTitle$3
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$2
+				content: pageDescription$3
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -983,7 +983,7 @@ function Home({ canonicalUrl, ogImageUrl }) {
 			/* @__PURE__ */ jsxs("section", {
 				className: "relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-neutral-950 px-5 py-20 text-center text-white sm:px-10",
 				style: {
-					backgroundImage: `url('${heroImage$4}')`,
+					backgroundImage: `url('${heroImage$6}')`,
 					backgroundPosition: "center",
 					backgroundSize: "cover"
 				},
@@ -1113,7 +1113,7 @@ function Home({ canonicalUrl, ogImageUrl }) {
 								/* @__PURE__ */ jsx("div", {
 									className: "absolute inset-0 bg-cover grayscale transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0",
 									style: {
-										backgroundImage: `url('${heroImage$4}')`,
+										backgroundImage: `url('${heroImage$6}')`,
 										backgroundPosition: category.imagePosition
 									},
 									"aria-hidden": "true"
@@ -1212,7 +1212,7 @@ function Home({ canonicalUrl, ogImageUrl }) {
 									/* @__PURE__ */ jsx("div", {
 										className: "absolute inset-0 bg-cover grayscale opacity-80 transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0",
 										style: {
-											backgroundImage: `url('${heroImage$4}')`,
+											backgroundImage: `url('${heroImage$6}')`,
 											backgroundPosition: item.imagePosition
 										},
 										"aria-hidden": "true"
@@ -1510,9 +1510,9 @@ var request_equipment_default = {
 //#endregion
 //#region resources/js/Pages/RequestEquipment.tsx
 var RequestEquipment_exports = /* @__PURE__ */ __exportAll({ default: () => RequestEquipment });
-var { heroImage: heroImage$2, requestedAssets, processSteps: processSteps$2, requirements: requirements$2, buyerBenefits, regions, faqs: faqs$2 } = request_equipment_default;
-var pageTitle$1 = "Request Used Oilfield Equipment | Petra Equipment Sourcing";
-var pageDescription$1 = "Request used oilfield and industrial equipment through Petra. Sourcing support for compressors, separators, pump packages, tank batteries, and regional surplus across producing regions.";
+var { heroImage: heroImage$4, requestedAssets, processSteps: processSteps$2, requirements: requirements$2, buyerBenefits, regions: regions$2, faqs: faqs$4 } = request_equipment_default;
+var pageTitle$2 = "Request Used Oilfield Equipment | Petra Equipment Sourcing";
+var pageDescription$2 = "Request used oilfield and industrial equipment through Petra. Sourcing support for compressors, separators, pump packages, tank batteries, and regional surplus across producing regions.";
 function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 	const structuredData = {
 		"@context": "https://schema.org",
@@ -1522,13 +1522,13 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 				"@id": `${canonicalUrl}#equipment-sourcing-service`,
 				name: "Used oilfield equipment sourcing for buyers",
 				url: canonicalUrl,
-				description: pageDescription$1,
+				description: pageDescription$2,
 				provider: {
 					"@type": "Organization",
 					name: "Petra",
 					url: canonicalUrl.replace(/\/request-equipment$/, "")
 				},
-				areaServed: regions,
+				areaServed: regions$2,
 				serviceType: "Used oilfield and industrial equipment sourcing"
 			},
 			{
@@ -1549,7 +1549,7 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 			{
 				"@type": "FAQPage",
 				"@id": `${canonicalUrl}#faq`,
-				mainEntity: faqs$2.map((faq) => ({
+				mainEntity: faqs$4.map((faq) => ({
 					"@type": "Question",
 					name: faq.question,
 					acceptedAnswer: {
@@ -1561,11 +1561,11 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 		]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$1,
+		title: pageTitle$2,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$1
+				content: pageDescription$2
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -1577,11 +1577,11 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$1
+				content: pageTitle$2
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$1
+				content: pageDescription$2
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -1605,11 +1605,11 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$1
+				content: pageTitle$2
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$1
+				content: pageDescription$2
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -1662,7 +1662,7 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 						className: "relative min-h-[300px] overflow-hidden border border-[#dad5cb] bg-neutral-950 lg:min-h-[420px]",
 						children: [
 							/* @__PURE__ */ jsx("img", {
-								src: heroImage$2,
+								src: heroImage$4,
 								alt: "Used oilfield equipment yard for buyers sourcing through Petra.",
 								className: "absolute inset-0 h-full w-full object-cover grayscale"
 							}),
@@ -1834,7 +1834,7 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 						})]
 					}), /* @__PURE__ */ jsx("div", {
 						className: "grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-3",
-						children: faqs$2.map((faq) => /* @__PURE__ */ jsxs("article", {
+						children: faqs$4.map((faq) => /* @__PURE__ */ jsxs("article", {
 							className: "bg-white p-7",
 							children: [/* @__PURE__ */ jsx("h3", {
 								className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
@@ -1922,9 +1922,9 @@ var sell_equipment_default = {
 //#endregion
 //#region resources/js/Pages/SellEquipment.tsx
 var SellEquipment_exports = /* @__PURE__ */ __exportAll({ default: () => SellEquipment });
-var { heroImage, assetTypes, processSteps, requirements, sellerBenefits, faqs } = sell_equipment_default;
-var pageTitle = "Sell Used Oilfield Equipment | Petra Equipment Brokerage";
-var pageDescription = "Sell used oilfield and industrial equipment through Petra. Brokerage support for compressors, separators, tank batteries, pump packages, and surplus assets across producing regions.";
+var { heroImage: heroImage$2, assetTypes, processSteps, requirements, sellerBenefits, faqs: faqs$2 } = sell_equipment_default;
+var pageTitle$1 = "Sell Used Oilfield Equipment | Petra Equipment Brokerage";
+var pageDescription$1 = "Sell used oilfield and industrial equipment through Petra. Brokerage support for compressors, separators, tank batteries, pump packages, and surplus assets across producing regions.";
 function SellEquipment({ canonicalUrl, ogImageUrl }) {
 	const structuredData = {
 		"@context": "https://schema.org",
@@ -1934,7 +1934,7 @@ function SellEquipment({ canonicalUrl, ogImageUrl }) {
 				"@id": `${canonicalUrl}#sell-equipment-service`,
 				name: "Used oilfield equipment brokerage for sellers",
 				url: canonicalUrl,
-				description: pageDescription,
+				description: pageDescription$1,
 				provider: {
 					"@type": "Organization",
 					name: "Petra",
@@ -1970,7 +1970,7 @@ function SellEquipment({ canonicalUrl, ogImageUrl }) {
 			{
 				"@type": "FAQPage",
 				"@id": `${canonicalUrl}#faq`,
-				mainEntity: faqs.map((faq) => ({
+				mainEntity: faqs$2.map((faq) => ({
 					"@type": "Question",
 					name: faq.question,
 					acceptedAnswer: {
@@ -1982,11 +1982,11 @@ function SellEquipment({ canonicalUrl, ogImageUrl }) {
 		]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle,
+		title: pageTitle$1,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription
+				content: pageDescription$1
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -1998,11 +1998,11 @@ function SellEquipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle
+				content: pageTitle$1
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription
+				content: pageDescription$1
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -2026,11 +2026,11 @@ function SellEquipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle
+				content: pageTitle$1
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription
+				content: pageDescription$1
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -2083,7 +2083,7 @@ function SellEquipment({ canonicalUrl, ogImageUrl }) {
 						className: "relative min-h-[300px] overflow-hidden border border-[#dad5cb] bg-neutral-950 lg:min-h-[420px]",
 						children: [
 							/* @__PURE__ */ jsx("img", {
-								src: heroImage,
+								src: heroImage$2,
 								alt: "Used oilfield equipment yard for sellers working with Petra brokerage.",
 								className: "absolute inset-0 h-full w-full object-cover grayscale"
 							}),
@@ -2252,6 +2252,435 @@ function SellEquipment({ canonicalUrl, ogImageUrl }) {
 						}), /* @__PURE__ */ jsx("h2", {
 							className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
 							children: "Common Sale Questions"
+						})]
+					}), /* @__PURE__ */ jsx("div", {
+						className: "grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-3",
+						children: faqs$2.map((faq) => /* @__PURE__ */ jsxs("article", {
+							className: "bg-white p-7",
+							children: [/* @__PURE__ */ jsx("h3", {
+								className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+								children: faq.question
+							}), /* @__PURE__ */ jsx("p", {
+								className: "mt-5 text-base leading-7 text-neutral-600",
+								children: faq.answer
+							})]
+						}, faq.question))
+					})]
+				})
+			})
+		]
+	})] });
+}
+var services_default = {
+	heroImage: "/images/petra-equipment-yard-hero.png",
+	services: [
+		{
+			"title": "Equipment Brokerage",
+			"summary": "Petra connects sellers and buyers around used oilfield and industrial equipment without a public auction process.",
+			"details": [
+				"Seller positioning",
+				"Buyer qualification",
+				"Negotiation support"
+			]
+		},
+		{
+			"title": "Asset Sourcing",
+			"summary": "Petra helps buyers locate specific equipment through regional sellers, operator relationships, and quiet-market opportunities.",
+			"details": [
+				"Spec review",
+				"Network search",
+				"Fit verification"
+			]
+		},
+		{
+			"title": "Market Review",
+			"summary": "Petra reviews equipment condition, documentation, field use, and practical market fit before a buyer or seller commits time.",
+			"details": [
+				"Condition context",
+				"Regional demand",
+				"Deal readiness"
+			]
+		},
+		{
+			"title": "Logistics Coordination",
+			"summary": "Petra keeps logistics visible early so equipment movement, access, timing, and buyer expectations do not derail a deal.",
+			"details": [
+				"Location review",
+				"Access notes",
+				"Timing support"
+			]
+		}
+	],
+	workflow: [
+		{
+			"number": "01",
+			"title": "Understand the Asset",
+			"description": "We start with the equipment, region, condition, specs, documentation, and what the seller or buyer is trying to accomplish."
+		},
+		{
+			"number": "02",
+			"title": "Position the Opportunity",
+			"description": "Petra frames the deal around field reality: use case, market fit, condition, logistics, and practical buyer questions."
+		},
+		{
+			"number": "03",
+			"title": "Connect the Right Side",
+			"description": "We put sellers and buyers into relevant conversations instead of broadcasting equipment to everyone."
+		},
+		{
+			"number": "04",
+			"title": "Support the Deal",
+			"description": "Petra helps carry the conversation through documentation, negotiation, timing, and movement planning."
+		}
+	],
+	regions: [
+		"Wyoming",
+		"Powder River",
+		"Rockies",
+		"Bakken",
+		"North Dakota",
+		"Colorado",
+		"Utah",
+		"New Mexico",
+		"Montana"
+	],
+	faqs: [
+		{
+			"question": "Is Petra an auction company?",
+			"answer": "No. Petra is a brokerage-focused equipment firm built around direct buyer and seller conversations, practical equipment review, and controlled deal support."
+		},
+		{
+			"question": "Can Petra help both buyers and sellers?",
+			"answer": "Yes. Petra supports sellers looking to move used equipment and buyers looking to source specific oilfield or industrial assets."
+		},
+		{
+			"question": "What regions does Petra serve?",
+			"answer": "Petra works across Wyoming, the Powder River, the Rockies, the Bakken, North Dakota, Colorado, Utah, New Mexico, Montana, and surrounding producing regions."
+		}
+	]
+};
+//#endregion
+//#region resources/js/Pages/Services.tsx
+var Services_exports = /* @__PURE__ */ __exportAll({ default: () => Services });
+var { heroImage, services, workflow, regions, faqs } = services_default;
+var pageTitle = "Oilfield Equipment Brokerage Services | Petra";
+var pageDescription = "Petra provides used oilfield and industrial equipment brokerage, sourcing, market review, and logistics coordination across Wyoming, the Rockies, and producing regions.";
+function Services({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [
+			{
+				"@type": "Service",
+				"@id": `${canonicalUrl}#equipment-brokerage-services`,
+				name: "Oilfield equipment brokerage services",
+				url: canonicalUrl,
+				description: pageDescription,
+				provider: {
+					"@type": "Organization",
+					name: "Petra",
+					url: canonicalUrl.replace(/\/services$/, "")
+				},
+				areaServed: regions,
+				serviceType: services.map((service) => service.title),
+				hasOfferCatalog: {
+					"@type": "OfferCatalog",
+					name: "Petra equipment brokerage services",
+					itemListElement: services.map((service) => ({
+						"@type": "Offer",
+						itemOffered: {
+							"@type": "Service",
+							name: service.title,
+							description: service.summary
+						}
+					}))
+				}
+			},
+			{
+				"@type": "BreadcrumbList",
+				"@id": `${canonicalUrl}#breadcrumbs`,
+				itemListElement: [{
+					"@type": "ListItem",
+					position: 1,
+					name: "Home",
+					item: canonicalUrl.replace(/\/services$/, "")
+				}, {
+					"@type": "ListItem",
+					position: 2,
+					name: "Services",
+					item: canonicalUrl
+				}]
+			},
+			{
+				"@type": "FAQPage",
+				"@id": `${canonicalUrl}#faq`,
+				mainEntity: faqs.map((faq) => ({
+					"@type": "Question",
+					name: faq.question,
+					acceptedAnswer: {
+						"@type": "Answer",
+						text: faq.answer
+					}
+				}))
+			}
+		]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
+		title: pageTitle,
+		children: [
+			/* @__PURE__ */ jsx("meta", {
+				name: "description",
+				content: pageDescription
+			}),
+			/* @__PURE__ */ jsx("link", {
+				rel: "canonical",
+				href: canonicalUrl
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "robots",
+				content: "index, follow"
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:title",
+				content: pageTitle
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:description",
+				content: pageDescription
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:type",
+				content: "website"
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:url",
+				content: canonicalUrl
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:image",
+				content: ogImageUrl
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				property: "og:image:alt",
+				content: "Oilfield equipment yard represented by Petra brokerage services."
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "twitter:card",
+				content: "summary_large_image"
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "twitter:title",
+				content: pageTitle
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "twitter:description",
+				content: pageDescription
+			}),
+			/* @__PURE__ */ jsx("meta", {
+				name: "twitter:image",
+				content: ogImageUrl
+			}),
+			/* @__PURE__ */ jsx("script", {
+				type: "application/ld+json",
+				children: JSON.stringify(structuredData)
+			})
+		]
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [
+			/* @__PURE__ */ jsx("section", {
+				className: "border-b border-[#dad5cb] bg-white",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-20 sm:px-10 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-center lg:py-24",
+					children: [/* @__PURE__ */ jsxs("div", { children: [
+						/* @__PURE__ */ jsxs("div", {
+							className: "mb-7 flex flex-wrap gap-3",
+							children: [/* @__PURE__ */ jsx("span", {
+								className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]",
+								children: "Brokerage Services"
+							}), /* @__PURE__ */ jsx("span", {
+								className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600",
+								children: "Field-Aware Support"
+							})]
+						}),
+						/* @__PURE__ */ jsx("h1", {
+							className: "max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.35rem] lg:text-[4.1rem]",
+							children: "Oilfield Equipment Brokerage Services"
+						}),
+						/* @__PURE__ */ jsx("p", {
+							className: "mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg",
+							children: "Petra helps buyers and sellers move used oilfield and industrial equipment through practical brokerage, sourcing, market review, and deal coordination."
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "mt-10 flex flex-col gap-4 sm:flex-row",
+							children: [/* @__PURE__ */ jsx("a", {
+								href: "/sell-equipment",
+								className: "inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
+								children: "Sell Equipment"
+							}), /* @__PURE__ */ jsx("a", {
+								href: "/request-equipment",
+								className: "inline-flex h-14 items-center justify-center border border-neutral-500 px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
+								children: "Request Equipment"
+							})]
+						})
+					] }), /* @__PURE__ */ jsxs("figure", {
+						className: "relative min-h-[300px] overflow-hidden border border-[#dad5cb] bg-neutral-950 lg:min-h-[420px]",
+						children: [
+							/* @__PURE__ */ jsx("img", {
+								src: heroImage,
+								alt: "Oilfield equipment yard showing assets supported by Petra brokerage services.",
+								className: "absolute inset-0 h-full w-full object-cover grayscale"
+							}),
+							/* @__PURE__ */ jsx("div", {
+								className: "absolute inset-0 bg-black/35",
+								"aria-hidden": "true"
+							}),
+							/* @__PURE__ */ jsxs("figcaption", {
+								className: "absolute bottom-0 left-0 right-0 border-t border-white/20 bg-black/55 p-6 backdrop-blur-sm",
+								children: [/* @__PURE__ */ jsx("span", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#b06b3d]",
+									children: "No Auction Runaround"
+								}), /* @__PURE__ */ jsx("p", {
+									className: "mt-2 text-sm leading-6 text-white/75",
+									children: "Brokerage support built around equipment fit, buyer relevance, documentation, and logistics."
+								})]
+							})
+						]
+					})]
+				})
+			}),
+			/* @__PURE__ */ jsx("section", {
+				className: "border-b border-[#dad5cb] bg-[#1c1a16] text-white",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "mx-auto max-w-[1280px] px-5 py-12 sm:px-10",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "mx-auto mb-9 max-w-3xl text-center",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]",
+							children: "Service Lines"
+						}), /* @__PURE__ */ jsx("h2", {
+							className: "mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-white sm:text-4xl",
+							children: "How Petra Supports Equipment Deals"
+						})]
+					}), /* @__PURE__ */ jsx("div", {
+						className: "grid grid-cols-1 gap-px bg-white/15 md:grid-cols-2 lg:grid-cols-4",
+						children: services.map((service) => /* @__PURE__ */ jsxs("article", {
+							className: "bg-[#1c1a16] p-6 transition-colors hover:bg-[#24211c]",
+							children: [
+								/* @__PURE__ */ jsx("div", { className: "mb-5 h-1.5 w-1.5 bg-[#a56437]" }),
+								/* @__PURE__ */ jsx("h3", {
+									className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-white",
+									children: service.title
+								}),
+								/* @__PURE__ */ jsx("p", {
+									className: "mt-4 text-sm leading-6 text-white/65",
+									children: service.summary
+								}),
+								/* @__PURE__ */ jsx("ul", {
+									className: "mt-6 space-y-3",
+									children: service.details.map((detail) => /* @__PURE__ */ jsxs("li", {
+										className: "flex items-center gap-3",
+										children: [/* @__PURE__ */ jsx(FeatureIcon, {
+											type: "check",
+											className: "h-4 w-4 shrink-0"
+										}), /* @__PURE__ */ jsx("span", {
+											className: "font-heading text-sm font-semibold uppercase tracking-[0.08em] text-white/75",
+											children: detail
+										})]
+									}, detail))
+								})
+							]
+						}, service.title))
+					})]
+				})
+			}),
+			/* @__PURE__ */ jsx("section", {
+				className: "border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "mx-auto max-w-[1280px] px-5 sm:px-10",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "mb-12 max-w-3xl",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+							children: "Workflow"
+						}), /* @__PURE__ */ jsx("h2", {
+							className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+							children: "From Equipment Review to Deal Support"
+						})]
+					}), /* @__PURE__ */ jsx("div", {
+						className: "grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-4",
+						children: workflow.map((step) => /* @__PURE__ */ jsxs("article", {
+							className: "bg-white p-7",
+							children: [
+								/* @__PURE__ */ jsx("span", {
+									className: "font-heading text-3xl font-semibold uppercase tracking-[0.05em] text-[#a56437]",
+									children: step.number
+								}),
+								/* @__PURE__ */ jsx("h3", {
+									className: "mt-8 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+									children: step.title
+								}),
+								/* @__PURE__ */ jsx("p", {
+									className: "mt-4 text-base leading-7 text-neutral-600",
+									children: step.description
+								})
+							]
+						}, step.number))
+					})]
+				})
+			}),
+			/* @__PURE__ */ jsx("section", {
+				className: "bg-[#f3f1ec] py-20 sm:py-24 lg:py-28",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 sm:px-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,1.1fr)]",
+					children: [/* @__PURE__ */ jsxs("div", { children: [
+						/* @__PURE__ */ jsx("span", {
+							className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+							children: "Regional Fit"
+						}),
+						/* @__PURE__ */ jsx("h2", {
+							className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+							children: "Built Around Producing Regions"
+						}),
+						/* @__PURE__ */ jsx("p", {
+							className: "mt-6 text-lg leading-8 text-neutral-600",
+							children: "Petra works where used equipment actually moves: producing basins, regional yards, industrial surplus channels, and operator networks."
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "mt-10 flex flex-col gap-4 sm:flex-row",
+							children: [/* @__PURE__ */ jsx("a", {
+								href: "/equipment",
+								className: "inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
+								children: "View Equipment"
+							}), /* @__PURE__ */ jsx("a", {
+								href: "/request-equipment",
+								className: "inline-flex h-14 items-center justify-center border border-neutral-500 px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
+								children: "Source Equipment"
+							})]
+						})
+					] }), /* @__PURE__ */ jsx("aside", {
+						className: "grid grid-cols-1 gap-px bg-[#dad5cb] sm:grid-cols-3",
+						children: regions.map((region) => /* @__PURE__ */ jsxs("div", {
+							className: "bg-white p-6",
+							children: [/* @__PURE__ */ jsx("div", { className: "mb-5 h-1.5 w-1.5 bg-[#a56437]" }), /* @__PURE__ */ jsx("h3", {
+								className: "font-heading text-xl font-semibold uppercase tracking-[0.1em] text-neutral-950",
+								children: region
+							})]
+						}, region))
+					})]
+				})
+			}),
+			/* @__PURE__ */ jsx("section", {
+				className: "border-y border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "mx-auto max-w-[1280px] px-5 sm:px-10",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "mb-12 max-w-3xl",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+							children: "Service Questions"
+						}), /* @__PURE__ */ jsx("h2", {
+							className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+							children: "Common Brokerage Questions"
 						})]
 					}), /* @__PURE__ */ jsx("div", {
 						className: "grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-3",
@@ -2521,7 +2950,8 @@ createServer((page) => createInertiaApp({
 			"./Pages/Errors/NotFound.tsx": NotFound_exports,
 			"./Pages/Home.tsx": Home_exports,
 			"./Pages/RequestEquipment.tsx": RequestEquipment_exports,
-			"./Pages/SellEquipment.tsx": SellEquipment_exports
+			"./Pages/SellEquipment.tsx": SellEquipment_exports,
+			"./Pages/Services.tsx": Services_exports
 		}))[`./Pages/${name}.tsx`];
 		resolvedPage.default.layout ??= (pageContent) => /* @__PURE__ */ jsx(AppLayout, { children: pageContent });
 		return resolvedPage;

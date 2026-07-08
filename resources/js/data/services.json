@@ -1,0 +1,62 @@
+{
+    "heroImage": "/images/petra-equipment-yard-hero.png",
+    "services": [
+        {
+            "title": "Equipment Brokerage",
+            "summary": "Petra connects sellers and buyers around used oilfield and industrial equipment without a public auction process.",
+            "details": ["Seller positioning", "Buyer qualification", "Negotiation support"]
+        },
+        {
+            "title": "Asset Sourcing",
+            "summary": "Petra helps buyers locate specific equipment through regional sellers, operator relationships, and quiet-market opportunities.",
+            "details": ["Spec review", "Network search", "Fit verification"]
+        },
+        {
+            "title": "Market Review",
+            "summary": "Petra reviews equipment condition, documentation, field use, and practical market fit before a buyer or seller commits time.",
+            "details": ["Condition context", "Regional demand", "Deal readiness"]
+        },
+        {
+            "title": "Logistics Coordination",
+            "summary": "Petra keeps logistics visible early so equipment movement, access, timing, and buyer expectations do not derail a deal.",
+            "details": ["Location review", "Access notes", "Timing support"]
+        }
+    ],
+    "workflow": [
+        {
+            "number": "01",
+            "title": "Understand the Asset",
+            "description": "We start with the equipment, region, condition, specs, documentation, and what the seller or buyer is trying to accomplish."
+        },
+        {
+            "number": "02",
+            "title": "Position the Opportunity",
+            "description": "Petra frames the deal around field reality: use case, market fit, condition, logistics, and practical buyer questions."
+        },
+        {
+            "number": "03",
+            "title": "Connect the Right Side",
+            "description": "We put sellers and buyers into relevant conversations instead of broadcasting equipment to everyone."
+        },
+        {
+            "number": "04",
+            "title": "Support the Deal",
+            "description": "Petra helps carry the conversation through documentation, negotiation, timing, and movement planning."
+        }
+    ],
+    "regions": ["Wyoming", "Powder River", "Rockies", "Bakken", "North Dakota", "Colorado", "Utah", "New Mexico", "Montana"],
+    "faqs": [
+        {
+            "question": "Is Petra an auction company?",
+            "answer": "No. Petra is a brokerage-focused equipment firm built around direct buyer and seller conversations, practical equipment review, and controlled deal support."
+        },
+        {
+            "question": "Can Petra help both buyers and sellers?",
+            "answer": "Yes. Petra supports sellers looking to move used equipment and buyers looking to source specific oilfield or industrial assets."
+        },
+        {
+            "question": "What regions does Petra serve?",
+            "answer": "Petra works across Wyoming, the Powder River, the Rockies, the Bakken, North Dakota, Colorado, Utah, New Mexico, Montana, and surrounding producing regions."
+        }
+    ]
+}

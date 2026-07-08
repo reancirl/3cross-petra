@@ -10,9 +10,11 @@
   "resources/js/Pages/Home.tsx": [],
   "resources/js/Pages/RequestEquipment.tsx": [],
   "resources/js/Pages/SellEquipment.tsx": [],
+  "resources/js/Pages/Services.tsx": [],
   "resources/js/data/equipment.json": [],
   "resources/js/data/home.json": [],
   "resources/js/data/request-equipment.json": [],
   "resources/js/data/sell-equipment.json": [],
+  "resources/js/data/services.json": [],
   "resources/js/ssr.tsx": []
 }
