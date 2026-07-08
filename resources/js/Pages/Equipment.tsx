@@ -164,7 +164,7 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
 
                             {/* TODO(client-confirm): Content doc specifies hero heading "Available Equipment" and body "Real equipment currently available through Petra brokerage network. Inventory changes quickly—availability is subject to market movement." Current copy appears to be a broader creative rewrite, so leave it until client sign-off. */}
                             <h1 className="max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.4rem] lg:text-[4.2rem]">
-                                Used Oilfield Equipments
+                                Used Oilfield Equipment
                             </h1>
 
                             <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg">
@@ -190,9 +190,10 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                     </div>
                 </section>
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
                     <div className="mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-24">
-                        {/* TODO(client-confirm): Sitemap also names "Pumps" and "Tanks"; those may duplicate existing "Pump Packages" and "Tank Batteries" groupings, so they are not added as separate cards until confirmed. */}
+                        TODO(client-confirm): Sitemap also names "Pumps" and "Tanks"; those may duplicate existing "Pump Packages" and "Tank Batteries" groupings, so they are not added as separate cards until confirmed.
                         <div className="grid grid-cols-1 gap-14 lg:grid-cols-[minmax(280px,0.38fr)_minmax(0,1fr)] lg:items-start">
                             <div className="lg:sticky lg:top-8">
                                 <span className="font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]">
@@ -280,7 +281,9 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                         </div>
                     </div>
                 </section>
+                */}
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-white">
                     <div className="mx-auto flex max-w-[1280px] flex-col gap-8 px-5 py-8 sm:px-10 lg:flex-row lg:items-center lg:justify-between">
                         <p className="font-heading text-base font-semibold tracking-[0.08em] text-neutral-600">
@@ -298,6 +301,7 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                         </div>
                     </div>
                 </section>
+                */}
 
                 <section id="featured-equipment" className="py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
@@ -456,6 +460,7 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                     </div>
                 </section>
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-y border-[#dad5cb] bg-white py-28 sm:py-36 lg:py-40">
                     <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-16 px-5 sm:px-10 lg:grid-cols-12">
                         <div className="lg:col-span-5">
@@ -483,7 +488,9 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                         </div>
                     </div>
                 </section>
+                */}
 
+                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="bg-[#1c1a16] py-32 text-center text-white sm:py-40">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
                         <span className="mb-6 block font-heading text-sm font-semibold uppercase tracking-[0.3em] text-[#a56437]">
@@ -512,6 +519,7 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                         </div>
                     </div>
                 </section>
+                */}
             </main>
         </>
     );
