@@ -101,14 +101,12 @@ Route::get('/sitemap.xml', function () {
             'priority' => '0.6',
         ],
     ];
-    $lastModified = now()->toDateString();
-    $entries = collect($urls)->map(function ($url) use ($lastModified) {
+    $entries = collect($urls)->map(function ($url) {
         $loc = htmlspecialchars($url['loc'], ENT_XML1);
 
         return <<<XML
     <url>
         <loc>{$loc}</loc>
-        <lastmod>{$lastModified}</lastmod>
         <changefreq>{$url['changefreq']}</changefreq>
         <priority>{$url['priority']}</priority>
     </url>
