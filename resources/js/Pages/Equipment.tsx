@@ -326,7 +326,7 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                             </a>
                         </div>
 
-                        <div className="mb-12 border border-[#dad5cb] bg-white p-6 sm:p-8">
+                        <div data-polish-reveal className="mb-12 border border-[#dad5cb] bg-white p-6 shadow-[0_18px_45px_rgba(28,26,22,0.06)] sm:p-8">
                             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-5">
                                 {filterControls.map((filter) => (
                                     <label key={filter.key} className="flex flex-col gap-2">
@@ -341,7 +341,7 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                                                     [filter.key]: event.target.value,
                                                 }))
                                             }
-                                            className="h-12 border border-[#dad5cb] bg-[#f3f1ec] px-3 font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950 outline-none transition-colors focus:border-[#a56437]"
+                                            className="h-12 border border-[#dad5cb] bg-[#f3f1ec] px-3 pr-9 font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950 outline-none transition-colors duration-200 hover:border-[#a56437]/60 focus:border-[#a56437]"
                                         >
                                             <option value="">All {filter.label}</option>
                                             {filter.options.map((option) => (
@@ -374,14 +374,15 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                             {filteredListings.map((listing) => (
                                 <article
                                     key={listing.id}
-                                    className="group grid grid-cols-1 overflow-hidden border border-[#dad5cb] bg-white transition-colors duration-500 hover:border-[#a56437] lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]"
+                                    data-polish-reveal
+                                    className="listing-transition group grid grid-cols-1 overflow-hidden border border-[#dad5cb] bg-white transition-[border-color,box-shadow,transform] duration-500 hover:-translate-y-1 hover:border-[#a56437] hover:shadow-[0_24px_55px_rgba(28,26,22,0.12)] lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]"
                                 >
                                     <figure className="relative min-h-[260px] overflow-hidden bg-neutral-950 sm:min-h-[330px] lg:min-h-[390px]">
                                         <img
                                             src={heroImage}
                                             alt={`${listing.name} represented in Petra's used oilfield equipment marketplace.`}
                                             loading="lazy"
-                                            className="absolute inset-0 h-full w-full object-cover opacity-95 transition-transform duration-700 group-hover:scale-105"
+                                            className="image-lift absolute inset-0 h-full w-full object-cover opacity-95"
                                             style={{ objectPosition: listing.imagePosition }}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" aria-hidden="true" />

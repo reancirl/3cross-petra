@@ -1,3 +1,5 @@
+import { CtaLink } from '../../Components/polish';
+
 export default function NotFound() {
     return (
         <main className="flex min-h-[calc(100vh-4.5rem)] w-full items-center px-5 py-16 sm:px-10">
@@ -9,12 +11,12 @@ export default function NotFound() {
                 <p className="mt-5 max-w-xl text-base leading-7 text-neutral-600">
                     This route does not exist or has moved. Head back to the homepage to continue browsing Petra.
                 </p>
-                <a
+                <CtaLink
                     href="/"
-                    className="mt-8 inline-flex h-11 items-center bg-[#9d5f35] px-6 font-heading text-base font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-[#874d29]"
+                    className="mt-8 h-11 bg-[#9d5f35] px-6 hover:bg-[#874d29]"
                 >
                     Back to Homepage
-                </a>
+                </CtaLink>
             </section>
         </main>
     );

@@ -69,10 +69,9 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
 
             <main className="w-full">
                 <section
-                    className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-neutral-950 px-5 py-20 text-center text-white sm:px-10"
+                    className="hero-parallax relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-neutral-950 px-5 py-20 text-center text-white sm:px-10"
                     style={{
                         backgroundImage: `url('${heroImage}')`,
-                        backgroundPosition: 'center',
                         backgroundSize: 'cover',
                     }}
                 >

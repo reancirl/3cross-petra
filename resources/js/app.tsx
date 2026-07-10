@@ -12,6 +12,11 @@ type InertiaPageModule = {
 };
 
 createInertiaApp({
+    progress: {
+        color: '#a56437',
+        delay: 120,
+        showSpinner: false,
+    },
     resolve: (name) => {
         const pages = import.meta.glob<InertiaPageModule>('./Pages/**/*.tsx', { eager: true });
         const page = pages[`./Pages/${name}.tsx`];

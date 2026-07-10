@@ -14,8 +14,8 @@ function AccentIcon({ type }: { type: 'globe' | 'mail' | 'call' }) {
 
 export default function Footer() {
     return (
-        <footer className="w-full border-t border-[#dad5cb] bg-white">
-            <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-14 px-5 py-20 sm:px-10 md:grid-cols-4 lg:py-24">
+        <footer className="reveal-up w-full border-t border-[#dad5cb] bg-white">
+            <div className="stagger-children mx-auto grid max-w-[1280px] grid-cols-1 gap-14 px-5 py-20 sm:px-10 md:grid-cols-4 lg:py-24">
                 <div className="flex flex-col gap-8">
                     <div>
                         <div className="font-heading text-3xl font-semibold uppercase tracking-[0.2em] text-neutral-950">
@@ -34,16 +34,16 @@ export default function Footer() {
                         Navigation
                     </h3>
                     <nav className="flex flex-col gap-4 text-neutral-600">
-                        <a className="transition-colors hover:text-[#a56437]" href="/equipment">
+                        <a className="focus-copper transition-colors hover:text-[#a56437]" href="/equipment">
                             Browse Equipment
                         </a>
-                        <a className="transition-colors hover:text-[#a56437]" href="/sell-equipment">
+                        <a className="focus-copper transition-colors hover:text-[#a56437]" href="/sell-equipment">
                             Sell Equipment
                         </a>
-                        <a className="transition-colors hover:text-[#a56437]" href="/request-equipment">
+                        <a className="focus-copper transition-colors hover:text-[#a56437]" href="/request-equipment">
                             Request Equipment
                         </a>
-                        <a className="transition-colors hover:text-[#a56437]" href="/contact">
+                        <a className="focus-copper transition-colors hover:text-[#a56437]" href="/contact">
                             Contact
                         </a>
                     </nav>
@@ -54,16 +54,16 @@ export default function Footer() {
                         Legal
                     </h3>
                     <nav className="flex flex-col gap-4 text-neutral-600">
-                        <a className="transition-colors hover:text-[#a56437]" href="/privacy">
+                        <a className="focus-copper transition-colors hover:text-[#a56437]" href="/privacy">
                             Privacy Policy
                         </a>
-                        <a className="transition-colors hover:text-[#a56437]" href="/terms">
+                        <a className="focus-copper transition-colors hover:text-[#a56437]" href="/terms">
                             Terms of Service
                         </a>
-                        <a className="transition-colors hover:text-[#a56437]" href="/cookies">
+                        <a className="focus-copper transition-colors hover:text-[#a56437]" href="/cookies">
                             Cookie Policy
                         </a>
-                        <a className="transition-colors hover:text-[#a56437]" href="/disclaimer">
+                        <a className="focus-copper transition-colors hover:text-[#a56437]" href="/disclaimer">
                             Disclaimer
                         </a>
                     </nav>
