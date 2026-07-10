@@ -1,4 +1,6 @@
+import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import type { SharedPageProps } from '../types';
 
 const navItems = [
     { label: 'Home', href: '/' },
@@ -25,6 +27,11 @@ function isActivePath(href: string) {
 
 export default function NavBar() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const { auth } = usePage<SharedPageProps>().props;
+
+    function logout() {
+        router.post('/logout');
+    }
 
     return (
         <header className="reveal-down sticky top-0 z-50 w-full border-b border-neutral-300 bg-[#f8f8f6]/95 shadow-[0_1px_0_rgba(255,255,255,0.7)_inset] backdrop-blur-sm">
@@ -64,6 +71,22 @@ export default function NavBar() {
                 </div>
 
                 <div className="flex items-center justify-end gap-3">
+                    {auth.user ? (
+                        <Link
+                            href={auth.user.dashboard_url}
+                            className="button-press focus-copper hidden h-10 items-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800 transition-colors hover:border-[#9d5f35] hover:text-[#9d5f35] md:flex"
+                        >
+                            Portal
+                        </Link>
+                    ) : (
+                        <Link
+                            href="/login"
+                            className="button-press focus-copper hidden h-10 items-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800 transition-colors hover:border-[#9d5f35] hover:text-[#9d5f35] md:flex"
+                        >
+                            Login
+                        </Link>
+                    )}
+
                     <a
                         href="/contact"
                         className="button-press focus-copper hidden h-10 items-center bg-[#9d5f35] px-6 font-heading text-base font-semibold uppercase tracking-[0.08em] text-white hover:bg-[#874d29] md:flex"
@@ -111,6 +134,39 @@ export default function NavBar() {
                             );
                         })}
                     </div>
+
+                    {auth.user ? (
+                        <div className="mt-3 grid grid-cols-2 gap-3 md:hidden">
+                            <Link
+                                href={auth.user.dashboard_url}
+                                className="button-press focus-copper flex h-10 items-center justify-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800"
+                            >
+                                Portal
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={logout}
+                                className="button-press focus-copper flex h-10 items-center justify-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="mt-3 grid grid-cols-2 gap-3 md:hidden">
+                            <Link
+                                href="/login"
+                                className="button-press focus-copper flex h-10 items-center justify-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800"
+                            >
+                                Login
+                            </Link>
+                            <Link
+                                href="/register"
+                                className="button-press focus-copper flex h-10 items-center justify-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800"
+                            >
+                                Register
+                            </Link>
+                        </div>
+                    )}
 
                     <a
                         href="/contact"

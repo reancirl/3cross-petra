@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Portal\DashboardController;
+use App\Http\Controllers\Portal\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -62,6 +68,58 @@ Route::redirect('/services/equipment-brokerage', '/services', 301);
 Route::redirect('/industries/oil-and-gas-production', '/industries', 301);
 
 Route::redirect('/inventory', '/equipment', 301);
+
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('throttle:6,1');
+
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('throttle:6,1');
+
+    Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->middleware('throttle:6,1')->name('password.email');
+
+    Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::post('/reset-password', [NewPasswordController::class, 'store'])->middleware('throttle:6,1')->name('password.store');
+});
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+Route::get('/dashboard', fn () => redirect()->route(request()->user()->portalRouteName()))
+    ->middleware('auth')
+    ->name('dashboard');
+
+$portalSections = ['saved-equipment', 'quotes', 'offers', 'documents', 'messages', 'notifications'];
+
+Route::middleware(['auth', 'user.type:seller'])
+    ->prefix('seller')
+    ->name('portal.seller.')
+    ->group(function () use ($portalSections) {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->defaults('userType', 'seller')->name('dashboard');
+        Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'seller')->name('profile');
+        Route::patch('/profile', [ProfileController::class, 'update'])->defaults('userType', 'seller')->name('profile.update');
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->defaults('userType', 'seller')->name('profile.password');
+        Route::get('/{section}', [DashboardController::class, 'placeholder'])
+            ->whereIn('section', $portalSections)
+            ->defaults('userType', 'seller')
+            ->name('placeholder');
+    });
+
+Route::middleware(['auth', 'user.type:buyer'])
+    ->prefix('buyer')
+    ->name('portal.buyer.')
+    ->group(function () use ($portalSections) {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->defaults('userType', 'buyer')->name('dashboard');
+        Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'buyer')->name('profile');
+        Route::patch('/profile', [ProfileController::class, 'update'])->defaults('userType', 'buyer')->name('profile.update');
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->defaults('userType', 'buyer')->name('profile.password');
+        Route::get('/{section}', [DashboardController::class, 'placeholder'])
+            ->whereIn('section', $portalSections)
+            ->defaults('userType', 'buyer')
+            ->name('placeholder');
+    });
 
 Route::get('/sitemap.xml', function () {
     $urls = [
