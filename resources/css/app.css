@@ -245,6 +245,24 @@
         transform: translateY(0) scale(0.985);
     }
 
+    .portal-input {
+        height: 3rem;
+        border: 1px solid #dad5cb;
+        background-color: #ffffff;
+        padding: 0 1rem;
+        font-size: 1rem;
+        color: #0a0a0a;
+        outline: none;
+        transition:
+            border-color 180ms ease,
+            box-shadow 180ms ease;
+    }
+
+    .portal-input:focus {
+        border-color: #a56437;
+        box-shadow: 0 0 0 3px rgba(165, 100, 55, 0.12);
+    }
+
     .interactive-lift {
         transition:
             transform 260ms ease,

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Middleware\EnsureUserType;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\PreventBackHistory;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,7 +18,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
-            \App\Http\Middleware\HandleInertiaRequests::class,
+            HandleInertiaRequests::class,
+        ]);
+
+        $middleware->alias([
+            'no.back.history' => PreventBackHistory::class,
+            'user.type' => EnsureUserType::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -23,7 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*'),
         );
 
-        $exceptions->respond(function (Response $response, \Throwable $exception, Request $request): Response {
+        $exceptions->respond(function (Response $response, Throwable $exception, Request $request): Response {
             if ($response->getStatusCode() !== 404 || $request->is('api/*')) {
                 return $response;
             }

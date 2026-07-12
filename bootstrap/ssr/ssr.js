@@ -1,6 +1,6 @@
-import { Head, createInertiaApp } from "@inertiajs/react";
+import { Head, Link, createInertiaApp, router, useForm, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import createServer from "@inertiajs/react/server";
 import { renderToString } from "react-dom/server";
 //#region \0rolldown/runtime.js
@@ -14,6 +14,509 @@ var __exportAll = (all, no_symbols) => {
 	if (!no_symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
 	return target;
 };
+//#endregion
+//#region resources/js/Pages/Auth/ForgotPassword.tsx
+var ForgotPassword_exports = /* @__PURE__ */ __exportAll({ default: () => ForgotPassword });
+function ForgotPassword() {
+	const { status } = usePage().props;
+	const { data, setData, post, processing, errors } = useForm({ email: "" });
+	function submit(event) {
+		event.preventDefault();
+		post("/forgot-password");
+	}
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Forgot Password" }), /* @__PURE__ */ jsx("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: /* @__PURE__ */ jsx("section", {
+			className: "border-b border-[#dad5cb] bg-white",
+			children: /* @__PURE__ */ jsxs("div", {
+				className: "mx-auto max-w-[760px] px-5 py-20 sm:px-10 lg:py-24",
+				children: [
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+						children: "Account Access"
+					}),
+					/* @__PURE__ */ jsx("h1", {
+						className: "mt-5 font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+						children: "Reset Password"
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-5 text-base leading-7 text-neutral-600",
+						children: "Enter your email and Petra will send a password reset link if the account exists."
+					}),
+					status && /* @__PURE__ */ jsx("div", {
+						className: "mt-8 border border-[#a56437] bg-[#f3f1ec] p-4 text-base leading-7 text-neutral-700",
+						children: status
+					}),
+					/* @__PURE__ */ jsxs("form", {
+						onSubmit: submit,
+						className: "mt-8 grid gap-5 border border-[#dad5cb] bg-[#f8f8f6] p-6 sm:p-8",
+						children: [/* @__PURE__ */ jsxs("label", {
+							className: "grid gap-2",
+							children: [
+								/* @__PURE__ */ jsx("span", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+									children: "Email"
+								}),
+								/* @__PURE__ */ jsx("input", {
+									type: "email",
+									value: data.email,
+									onChange: (event) => setData("email", event.target.value),
+									className: "portal-input",
+									autoComplete: "email",
+									required: true
+								}),
+								errors.email && /* @__PURE__ */ jsx("span", {
+									className: "text-sm text-red-700",
+									children: errors.email
+								})
+							]
+						}), /* @__PURE__ */ jsxs("div", {
+							className: "flex flex-wrap items-center gap-4",
+							children: [/* @__PURE__ */ jsx("button", {
+								type: "submit",
+								disabled: processing,
+								className: "button-press focus-copper inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+								children: processing ? "Sending" : "Send reset link"
+							}), /* @__PURE__ */ jsx(Link, {
+								href: "/login",
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-700 hover:text-neutral-950",
+								children: "Back to login"
+							})]
+						})]
+					})
+				]
+			})
+		})
+	})] });
+}
+//#endregion
+//#region resources/js/Pages/Auth/Login.tsx
+var Login_exports = /* @__PURE__ */ __exportAll({ default: () => Login });
+function Login() {
+	const { data, setData, post, processing, errors } = useForm({
+		email: "",
+		password: "",
+		remember: false
+	});
+	function submit(event) {
+		event.preventDefault();
+		post("/login");
+	}
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Customer Login" }), /* @__PURE__ */ jsx("main", {
+		className: "flex min-h-screen items-center justify-center bg-[#f3f1ec] px-5 py-8 text-neutral-950 sm:px-8 lg:px-10",
+		children: /* @__PURE__ */ jsxs("section", {
+			className: "grid w-full max-w-[1120px] overflow-hidden border border-[#dad5cb] bg-white shadow-[0_24px_80px_rgba(15,15,15,0.06)] lg:min-h-[560px] lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,0.8fr)]",
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "flex flex-col justify-between gap-12 border-b border-[#dad5cb] bg-[#fbfaf7] p-7 sm:p-10 lg:border-b-0 lg:border-r lg:p-12",
+				children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx(Link, {
+					href: "/",
+					className: "focus-copper inline-block font-heading text-[2rem] font-semibold uppercase tracking-[0.22em] text-neutral-950",
+					children: "Petra"
+				}), /* @__PURE__ */ jsxs("div", {
+					className: "mt-16 max-w-[560px] lg:mt-20",
+					children: [
+						/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+							children: "Customer Portal"
+						}),
+						/* @__PURE__ */ jsx("h1", {
+							className: "mt-5 font-heading text-5xl font-bold uppercase leading-none tracking-[0.08em] text-neutral-950 sm:text-6xl lg:text-7xl",
+							children: "Login"
+						}),
+						/* @__PURE__ */ jsx("p", {
+							className: "mt-6 text-base font-medium leading-7 text-neutral-600 sm:text-lg",
+							children: "Access seller and buyer workspace tools for saved equipment, quotes, offers, documents, and account details."
+						})
+					]
+				})] }), /* @__PURE__ */ jsxs("div", {
+					className: "grid gap-3 text-sm leading-6 text-neutral-600 sm:grid-cols-2",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "border border-[#dad5cb] bg-white p-4",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-950",
+							children: "Sellers"
+						}), /* @__PURE__ */ jsx("p", {
+							className: "mt-2",
+							children: "Manage activity, saved equipment, profile details, and future deal workflows."
+						})]
+					}), /* @__PURE__ */ jsxs("div", {
+						className: "border border-[#dad5cb] bg-white p-4",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-950",
+							children: "Buyers"
+						}), /* @__PURE__ */ jsx("p", {
+							className: "mt-2",
+							children: "Track watched equipment, account details, and portal updates as features come online."
+						})]
+					})]
+				})]
+			}), /* @__PURE__ */ jsx("div", {
+				className: "flex items-center bg-white p-7 sm:p-10 lg:p-12",
+				children: /* @__PURE__ */ jsxs("form", {
+					onSubmit: submit,
+					className: "grid w-full gap-5",
+					children: [
+						/* @__PURE__ */ jsxs("div", {
+							className: "mb-2",
+							children: [/* @__PURE__ */ jsx("span", {
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.18em] text-[#a56437]",
+								children: "Secure Access"
+							}), /* @__PURE__ */ jsx("h2", {
+								className: "mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+								children: "Sign in"
+							})]
+						}),
+						/* @__PURE__ */ jsxs("label", {
+							className: "grid gap-2",
+							children: [
+								/* @__PURE__ */ jsx("span", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+									children: "Email"
+								}),
+								/* @__PURE__ */ jsx("input", {
+									type: "email",
+									value: data.email,
+									onChange: (event) => setData("email", event.target.value),
+									className: "portal-input bg-[#fbfaf7]",
+									autoComplete: "email",
+									required: true
+								}),
+								errors.email && /* @__PURE__ */ jsx("span", {
+									className: "text-sm text-red-700",
+									children: errors.email
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("label", {
+							className: "grid gap-2",
+							children: [
+								/* @__PURE__ */ jsx("span", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+									children: "Password"
+								}),
+								/* @__PURE__ */ jsx("input", {
+									type: "password",
+									value: data.password,
+									onChange: (event) => setData("password", event.target.value),
+									className: "portal-input bg-[#fbfaf7]",
+									autoComplete: "current-password",
+									required: true
+								}),
+								errors.password && /* @__PURE__ */ jsx("span", {
+									className: "text-sm text-red-700",
+									children: errors.password
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "flex flex-wrap items-center justify-between gap-4",
+							children: [/* @__PURE__ */ jsxs("label", {
+								className: "flex items-center gap-3 text-sm font-medium text-neutral-700",
+								children: [/* @__PURE__ */ jsx("input", {
+									type: "checkbox",
+									checked: data.remember,
+									onChange: (event) => setData("remember", event.target.checked),
+									className: "h-4 w-4 accent-[#a56437]"
+								}), "Remember me"]
+							}), /* @__PURE__ */ jsx(Link, {
+								href: "/forgot-password",
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]",
+								children: "Forgot password"
+							})]
+						}),
+						/* @__PURE__ */ jsx("button", {
+							type: "submit",
+							disabled: processing,
+							className: "button-press focus-copper mt-2 inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+							children: processing ? "Signing in" : "Sign in"
+						}),
+						/* @__PURE__ */ jsxs("p", {
+							className: "mt-2 border-t border-[#dad5cb] pt-5 text-base leading-7 text-neutral-600",
+							children: [
+								"Need portal access?",
+								" ",
+								/* @__PURE__ */ jsx(Link, {
+									href: "/register",
+									className: "font-heading font-semibold uppercase tracking-[0.08em] text-neutral-950",
+									children: "Register"
+								})
+							]
+						})
+					]
+				})
+			})]
+		})
+	})] });
+}
+//#endregion
+//#region resources/js/Pages/Auth/Register.tsx
+var Register_exports = /* @__PURE__ */ __exportAll({ default: () => Register });
+function Register() {
+	const { data, setData, post, processing, errors } = useForm({
+		name: "",
+		email: "",
+		phone: "",
+		company_name: "",
+		user_type: "buyer",
+		password: "",
+		password_confirmation: ""
+	});
+	function submit(event) {
+		event.preventDefault();
+		post("/register");
+	}
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Register" }), /* @__PURE__ */ jsx("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: /* @__PURE__ */ jsx("section", {
+			className: "border-b border-[#dad5cb] bg-white",
+			children: /* @__PURE__ */ jsxs("div", {
+				className: "mx-auto max-w-[900px] px-5 py-20 sm:px-10 lg:py-24",
+				children: [
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+						children: "Customer Portal"
+					}),
+					/* @__PURE__ */ jsx("h1", {
+						className: "mt-5 font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+						children: "Register"
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-5 text-base leading-7 text-neutral-600",
+						children: "Create one Petra account and choose whether your primary portal context is seller or buyer. This can be extended later if the client wants fully separate account types."
+					}),
+					/* @__PURE__ */ jsxs("form", {
+						onSubmit: submit,
+						className: "mt-10 grid gap-5 border border-[#dad5cb] bg-[#f8f8f6] p-6 sm:grid-cols-2 sm:p-8",
+						children: [
+							/* @__PURE__ */ jsx(Field$2, {
+								label: "Name",
+								error: errors.name,
+								children: /* @__PURE__ */ jsx("input", {
+									value: data.name,
+									onChange: (event) => setData("name", event.target.value),
+									className: "portal-input",
+									autoComplete: "name",
+									required: true
+								})
+							}),
+							/* @__PURE__ */ jsx(Field$2, {
+								label: "Email",
+								error: errors.email,
+								children: /* @__PURE__ */ jsx("input", {
+									type: "email",
+									value: data.email,
+									onChange: (event) => setData("email", event.target.value),
+									className: "portal-input",
+									autoComplete: "email",
+									required: true
+								})
+							}),
+							/* @__PURE__ */ jsx(Field$2, {
+								label: "Phone",
+								error: errors.phone,
+								children: /* @__PURE__ */ jsx("input", {
+									value: data.phone,
+									onChange: (event) => setData("phone", event.target.value),
+									className: "portal-input",
+									autoComplete: "tel"
+								})
+							}),
+							/* @__PURE__ */ jsx(Field$2, {
+								label: "Company",
+								error: errors.company_name,
+								children: /* @__PURE__ */ jsx("input", {
+									value: data.company_name,
+									onChange: (event) => setData("company_name", event.target.value),
+									className: "portal-input",
+									autoComplete: "organization"
+								})
+							}),
+							/* @__PURE__ */ jsx(Field$2, {
+								label: "Portal type",
+								error: errors.user_type,
+								children: /* @__PURE__ */ jsxs("select", {
+									value: data.user_type,
+									onChange: (event) => setData("user_type", event.target.value),
+									className: "portal-input",
+									children: [/* @__PURE__ */ jsx("option", {
+										value: "buyer",
+										children: "Buyer"
+									}), /* @__PURE__ */ jsx("option", {
+										value: "seller",
+										children: "Seller"
+									})]
+								})
+							}),
+							/* @__PURE__ */ jsx("div", {}),
+							/* @__PURE__ */ jsx(Field$2, {
+								label: "Password",
+								error: errors.password,
+								children: /* @__PURE__ */ jsx("input", {
+									type: "password",
+									value: data.password,
+									onChange: (event) => setData("password", event.target.value),
+									className: "portal-input",
+									autoComplete: "new-password",
+									required: true
+								})
+							}),
+							/* @__PURE__ */ jsx(Field$2, {
+								label: "Confirm password",
+								error: errors.password_confirmation,
+								children: /* @__PURE__ */ jsx("input", {
+									type: "password",
+									value: data.password_confirmation,
+									onChange: (event) => setData("password_confirmation", event.target.value),
+									className: "portal-input",
+									autoComplete: "new-password",
+									required: true
+								})
+							}),
+							/* @__PURE__ */ jsxs("div", {
+								className: "sm:col-span-2",
+								children: [/* @__PURE__ */ jsx("button", {
+									type: "submit",
+									disabled: processing,
+									className: "button-press focus-copper inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+									children: processing ? "Creating account" : "Create account"
+								}), /* @__PURE__ */ jsxs("p", {
+									className: "mt-5 text-base leading-7 text-neutral-600",
+									children: [
+										"Already have access?",
+										" ",
+										/* @__PURE__ */ jsx(Link, {
+											href: "/login",
+											className: "font-heading font-semibold uppercase tracking-[0.08em] text-neutral-950",
+											children: "Login"
+										})
+									]
+								})]
+							})
+						]
+					})
+				]
+			})
+		})
+	})] });
+}
+function Field$2({ label, error, children }) {
+	return /* @__PURE__ */ jsxs("label", {
+		className: "grid gap-2",
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: label
+			}),
+			children,
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-red-700",
+				children: error
+			})
+		]
+	});
+}
+//#endregion
+//#region resources/js/Pages/Auth/ResetPassword.tsx
+var ResetPassword_exports = /* @__PURE__ */ __exportAll({ default: () => ResetPassword });
+function ResetPassword({ email, token }) {
+	const { data, setData, post, processing, errors } = useForm({
+		token,
+		email,
+		password: "",
+		password_confirmation: ""
+	});
+	function submit(event) {
+		event.preventDefault();
+		post("/reset-password");
+	}
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Set New Password" }), /* @__PURE__ */ jsx("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: /* @__PURE__ */ jsx("section", {
+			className: "border-b border-[#dad5cb] bg-white",
+			children: /* @__PURE__ */ jsxs("div", {
+				className: "mx-auto max-w-[760px] px-5 py-20 sm:px-10 lg:py-24",
+				children: [
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+						children: "Account Access"
+					}),
+					/* @__PURE__ */ jsx("h1", {
+						className: "mt-5 font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+						children: "New Password"
+					}),
+					/* @__PURE__ */ jsxs("form", {
+						onSubmit: submit,
+						className: "mt-8 grid gap-5 border border-[#dad5cb] bg-[#f8f8f6] p-6 sm:p-8",
+						children: [
+							/* @__PURE__ */ jsx("input", {
+								type: "hidden",
+								value: data.token
+							}),
+							/* @__PURE__ */ jsx(Field$1, {
+								label: "Email",
+								error: errors.email,
+								children: /* @__PURE__ */ jsx("input", {
+									type: "email",
+									value: data.email,
+									onChange: (event) => setData("email", event.target.value),
+									className: "portal-input",
+									autoComplete: "email",
+									required: true
+								})
+							}),
+							/* @__PURE__ */ jsx(Field$1, {
+								label: "Password",
+								error: errors.password,
+								children: /* @__PURE__ */ jsx("input", {
+									type: "password",
+									value: data.password,
+									onChange: (event) => setData("password", event.target.value),
+									className: "portal-input",
+									autoComplete: "new-password",
+									required: true
+								})
+							}),
+							/* @__PURE__ */ jsx(Field$1, {
+								label: "Confirm password",
+								error: errors.password_confirmation,
+								children: /* @__PURE__ */ jsx("input", {
+									type: "password",
+									value: data.password_confirmation,
+									onChange: (event) => setData("password_confirmation", event.target.value),
+									className: "portal-input",
+									autoComplete: "new-password",
+									required: true
+								})
+							}),
+							/* @__PURE__ */ jsx("button", {
+								type: "submit",
+								disabled: processing,
+								className: "button-press focus-copper inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+								children: processing ? "Saving" : "Save password"
+							})
+						]
+					})
+				]
+			})
+		})
+	})] });
+}
+function Field$1({ label, error, children }) {
+	return /* @__PURE__ */ jsxs("label", {
+		className: "grid gap-2",
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: label
+			}),
+			children,
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-red-700",
+				children: error
+			})
+		]
+	});
+}
 //#endregion
 //#region resources/js/Pages/Contact.tsx
 var Contact_exports = /* @__PURE__ */ __exportAll({ default: () => Contact });
@@ -533,7 +1036,8 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 						})]
 					}),
 					/* @__PURE__ */ jsxs("div", {
-						className: "mb-12 border border-[#dad5cb] bg-white p-6 sm:p-8",
+						"data-polish-reveal": true,
+						className: "mb-12 border border-[#dad5cb] bg-white p-6 shadow-[0_18px_45px_rgba(28,26,22,0.06)] sm:p-8",
 						children: [/* @__PURE__ */ jsx("div", {
 							className: "grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-5",
 							children: filterControls.map((filter) => /* @__PURE__ */ jsxs("label", {
@@ -547,7 +1051,7 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 										...current,
 										[filter.key]: event.target.value
 									})),
-									className: "h-12 border border-[#dad5cb] bg-[#f3f1ec] px-3 font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950 outline-none transition-colors focus:border-[#a56437]",
+									className: "h-12 border border-[#dad5cb] bg-[#f3f1ec] px-3 pr-9 font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950 outline-none transition-colors duration-200 hover:border-[#a56437]/60 focus:border-[#a56437]",
 									children: [/* @__PURE__ */ jsxs("option", {
 										value: "",
 										children: ["All ", filter.label]
@@ -579,7 +1083,8 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 					/* @__PURE__ */ jsx("div", {
 						className: "space-y-8",
 						children: filteredListings.map((listing) => /* @__PURE__ */ jsxs("article", {
-							className: "group grid grid-cols-1 overflow-hidden border border-[#dad5cb] bg-white transition-colors duration-500 hover:border-[#a56437] lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]",
+							"data-polish-reveal": true,
+							className: "listing-transition group grid grid-cols-1 overflow-hidden border border-[#dad5cb] bg-white transition-[border-color,box-shadow,transform] duration-500 hover:-translate-y-1 hover:border-[#a56437] hover:shadow-[0_24px_55px_rgba(28,26,22,0.12)] lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]",
 							children: [/* @__PURE__ */ jsxs("figure", {
 								className: "relative min-h-[260px] overflow-hidden bg-neutral-950 sm:min-h-[330px] lg:min-h-[390px]",
 								children: [
@@ -587,7 +1092,7 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 										src: heroImage$10,
 										alt: `${listing.name} represented in Petra's used oilfield equipment marketplace.`,
 										loading: "lazy",
-										className: "absolute inset-0 h-full w-full object-cover opacity-95 transition-transform duration-700 group-hover:scale-105",
+										className: "image-lift absolute inset-0 h-full w-full object-cover opacity-95",
 										style: { objectPosition: listing.imagePosition }
 									}),
 									/* @__PURE__ */ jsx("div", {
@@ -676,6 +1181,72 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 	})] });
 }
 //#endregion
+//#region resources/js/Components/polish.tsx
+function classes(...values) {
+	return values.filter(Boolean).join(" ");
+}
+function AnimatedPage({ busy = false, children, className, ...props }) {
+	const pageRef = useRef(null);
+	useEffect(() => {
+		const page = pageRef.current;
+		if (!page || !("IntersectionObserver" in window)) return;
+		const targets = Array.from(page.querySelectorAll([
+			"main > section:first-child h1",
+			"main > section:first-child p",
+			"main > section:first-child a",
+			"main > section:first-child button",
+			"main > section:first-child span",
+			"main > section:not(:first-child) h2",
+			"main > section:not(:first-child) h3",
+			"main > section:not(:first-child) article",
+			"main > section:not(:first-child) figure",
+			"main > section:not(:first-child) li",
+			"[data-polish-reveal]"
+		].join(", ")));
+		targets.forEach((target, index) => {
+			target.classList.add("polish-reveal");
+			target.style.setProperty("--reveal-delay", `${Math.min(index % 8, 7) * 45}ms`);
+		});
+		page.querySelectorAll("main a, main button").forEach((target) => {
+			target.classList.add("button-press", "focus-copper");
+		});
+		page.querySelectorAll("main select").forEach((target) => {
+			target.classList.add("polished-select", "focus-copper");
+		});
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add("is-visible");
+					observer.unobserve(entry.target);
+				}
+			});
+		}, {
+			rootMargin: "0px 0px -10% 0px",
+			threshold: .12
+		});
+		targets.forEach((target) => observer.observe(target));
+		return () => observer.disconnect();
+	}, [children]);
+	return /* @__PURE__ */ jsx("div", {
+		ref: pageRef,
+		className: classes("animated-page transition-opacity duration-200", busy && "page-is-busy", className),
+		"aria-busy": busy,
+		...props,
+		children
+	});
+}
+function CtaLink({ variant = "primary", className, children, ...props }) {
+	return /* @__PURE__ */ jsx("a", {
+		className: classes("button-press focus-copper inline-flex h-14 items-center justify-center px-8 font-heading text-base font-semibold uppercase tracking-[0.1em]", {
+			primary: "bg-[#a56437] text-white hover:bg-[#874d29]",
+			outline: "border border-neutral-500 text-neutral-950 hover:bg-neutral-950 hover:text-white",
+			dark: "border border-white/50 text-white hover:bg-white/10"
+		}[variant], className),
+		...props,
+		children
+	});
+}
+//#endregion
 //#region resources/js/Pages/Errors/NotFound.tsx
 var NotFound_exports = /* @__PURE__ */ __exportAll({ default: () => NotFound });
 function NotFound() {
@@ -696,9 +1267,9 @@ function NotFound() {
 					className: "mt-5 max-w-xl text-base leading-7 text-neutral-600",
 					children: "This route does not exist or has moved. Head back to the homepage to continue browsing Petra."
 				}),
-				/* @__PURE__ */ jsx("a", {
+				/* @__PURE__ */ jsx(CtaLink, {
 					href: "/",
-					className: "mt-8 inline-flex h-11 items-center bg-[#9d5f35] px-6 font-heading text-base font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-[#874d29]",
+					className: "mt-8 h-11 bg-[#9d5f35] px-6 hover:bg-[#874d29]",
 					children: "Back to Homepage"
 				})
 			]
@@ -1171,10 +1742,9 @@ function Home({ canonicalUrl, ogImageUrl }) {
 		className: "w-full",
 		children: [
 			/* @__PURE__ */ jsxs("section", {
-				className: "relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-neutral-950 px-5 py-20 text-center text-white sm:px-10",
+				className: "hero-parallax relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-neutral-950 px-5 py-20 text-center text-white sm:px-10",
 				style: {
 					backgroundImage: `url('${heroImage$8}')`,
-					backgroundPosition: "center",
 					backgroundSize: "cover"
 				},
 				children: [
@@ -2222,6 +2792,427 @@ function LegalPage({ pageKey, canonicalUrl }) {
 		})]
 	})] });
 }
+//#endregion
+//#region resources/js/Components/portal-shell.tsx
+var navItems$1 = [
+	{
+		label: "Dashboard",
+		path: "dashboard",
+		real: true
+	},
+	{
+		label: "Saved Equipment",
+		path: "saved-equipment",
+		real: false
+	},
+	{
+		label: "Quotes",
+		path: "quotes",
+		real: false
+	},
+	{
+		label: "Offers",
+		path: "offers",
+		real: false
+	},
+	{
+		label: "Documents",
+		path: "documents",
+		real: false
+	},
+	{
+		label: "Messages",
+		path: "messages",
+		real: false
+	},
+	{
+		label: "Notifications",
+		path: "notifications",
+		real: false
+	},
+	{
+		label: "Profile",
+		path: "profile",
+		real: true
+	}
+];
+function hrefFor(portal, path) {
+	if (path === "dashboard") return `/${portal.userType}/dashboard`;
+	return `/${portal.userType}/${path}`;
+}
+function PortalShell({ portal, title, eyebrow, children }) {
+	const page = usePage();
+	const { auth } = page.props;
+	const currentPath = page.url.split("?")[0];
+	function logout() {
+		router.post("/logout");
+	}
+	return /* @__PURE__ */ jsxs("main", {
+		className: "min-h-screen bg-[#f3f1ec] text-neutral-950 lg:grid lg:grid-cols-[288px_minmax(0,1fr)]",
+		children: [/* @__PURE__ */ jsxs("aside", {
+			className: "border-b border-[#dad5cb] bg-white lg:min-h-screen lg:border-b-0 lg:border-r",
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "flex items-center justify-between border-b border-[#dad5cb] px-5 py-4 lg:block lg:px-6 lg:py-7",
+				children: [/* @__PURE__ */ jsxs(Link, {
+					href: `/${portal.userType}/dashboard`,
+					className: "focus-copper block w-fit",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "block font-heading text-[1.65rem] font-semibold uppercase tracking-[0.22em] text-neutral-950",
+						children: "Petra"
+					}), /* @__PURE__ */ jsx("span", {
+						className: "mt-1 block font-heading text-xs font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+						children: eyebrow ?? `${portal.roleLabel} Portal`
+					})]
+				}), /* @__PURE__ */ jsx("span", {
+					className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-neutral-600 lg:mt-6 lg:inline-block",
+					children: portal.roleLabel
+				})]
+			}), /* @__PURE__ */ jsx("nav", {
+				"aria-label": `${portal.roleLabel} portal navigation`,
+				className: "overflow-x-auto lg:overflow-visible",
+				children: /* @__PURE__ */ jsx("div", {
+					className: "flex min-w-max lg:grid lg:min-w-0",
+					children: navItems$1.map((item) => {
+						const href = hrefFor(portal, item.path);
+						const active = currentPath === href;
+						return /* @__PURE__ */ jsxs(Link, {
+							href,
+							"aria-current": active ? "page" : void 0,
+							className: `flex min-h-14 items-center justify-between gap-4 border-r border-[#dad5cb] px-5 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] transition-colors last:border-r-0 lg:border-r-0 lg:border-b ${active ? "bg-[#f3f1ec] text-[#a56437] lg:shadow-[inset_4px_0_0_#a56437]" : "bg-white text-neutral-700 hover:bg-[#f8f8f6] hover:text-neutral-950"}`,
+							children: [/* @__PURE__ */ jsx("span", { children: item.label }), !item.real && /* @__PURE__ */ jsx("span", {
+								className: "text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400 lg:block",
+								children: "Soon"
+							})]
+						}, item.path);
+					})
+				})
+			})]
+		}), /* @__PURE__ */ jsxs("section", {
+			className: "min-w-0",
+			children: [/* @__PURE__ */ jsx("header", {
+				className: "border-b border-[#dad5cb] bg-white",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "flex flex-col gap-5 px-5 py-6 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "min-w-0",
+						children: [
+							/* @__PURE__ */ jsx("span", {
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.18em] text-[#a56437]",
+								children: eyebrow ?? `${portal.roleLabel} Portal`
+							}),
+							/* @__PURE__ */ jsx("h1", {
+								className: "mt-2 break-words font-heading text-3xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl",
+								children: title
+							}),
+							/* @__PURE__ */ jsxs("p", {
+								className: "mt-2 text-sm leading-6 text-neutral-600 sm:text-base",
+								children: ["Signed in as ", auth.user?.name ?? portal.profileName]
+							})
+						]
+					}), /* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: logout,
+						className: "button-press focus-copper inline-flex h-11 w-fit items-center justify-center border border-neutral-500 px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
+						children: "Log out"
+					})]
+				})
+			}), /* @__PURE__ */ jsx("div", {
+				className: "px-5 py-6 sm:px-8 lg:px-10 lg:py-8",
+				children
+			})]
+		})]
+	});
+}
+//#endregion
+//#region resources/js/Pages/Portal/Dashboard.tsx
+var Dashboard_exports = /* @__PURE__ */ __exportAll({ default: () => Dashboard });
+function Dashboard({ portal }) {
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: `${portal.roleLabel} Dashboard` }), /* @__PURE__ */ jsx(PortalShell, {
+		portal,
+		title: `${portal.roleLabel} Dashboard`,
+		children: /* @__PURE__ */ jsxs("section", {
+			className: "grid gap-6",
+			children: [/* @__PURE__ */ jsxs("article", {
+				className: "border border-[#dad5cb] bg-white p-7 sm:p-8",
+				children: [
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+						children: "Overview"
+					}),
+					/* @__PURE__ */ jsx("h2", {
+						className: "mt-4 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+						children: "Activity Summary"
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-5 max-w-3xl text-base leading-7 text-neutral-600",
+						children: portal.summary
+					})
+				]
+			}), /* @__PURE__ */ jsx("div", {
+				className: "grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-3",
+				children: [
+					"Saved Equipment",
+					"Quotes",
+					"Messages"
+				].map((label) => /* @__PURE__ */ jsxs("article", {
+					className: "bg-white p-6",
+					children: [
+						/* @__PURE__ */ jsx("div", { className: "mb-5 h-1.5 w-1.5 bg-[#a56437]" }),
+						/* @__PURE__ */ jsx("h3", {
+							className: "font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+							children: label
+						}),
+						/* @__PURE__ */ jsxs("p", {
+							className: "mt-4 text-sm leading-6 text-neutral-600",
+							children: [
+								"Coming soon once the ",
+								label.toLowerCase(),
+								" data model is defined."
+							]
+						})
+					]
+				}, label))
+			})]
+		})
+	})] });
+}
+//#endregion
+//#region resources/js/Pages/Portal/Placeholder.tsx
+var Placeholder_exports = /* @__PURE__ */ __exportAll({ default: () => Placeholder });
+var sectionLabels = {
+	"saved-equipment": "Saved Equipment",
+	quotes: "Quotes",
+	offers: "Offers",
+	documents: "Documents",
+	messages: "Messages",
+	notifications: "Notifications"
+};
+function Placeholder({ portal, section }) {
+	const title = sectionLabels[section] ?? "Coming Soon";
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: `${title} | ${portal.roleLabel} Portal` }), /* @__PURE__ */ jsx(PortalShell, {
+		portal,
+		title,
+		children: /* @__PURE__ */ jsxs("article", {
+			className: "border border-[#dad5cb] bg-white p-7 sm:p-8",
+			children: [
+				/* @__PURE__ */ jsx("span", {
+					className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+					children: "Coming Soon"
+				}),
+				/* @__PURE__ */ jsxs("h2", {
+					className: "mt-4 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+					children: [title, " is a later phase"]
+				}),
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-5 max-w-3xl text-base leading-7 text-neutral-600",
+					children: "The sitemap names this section, but it does not yet define the underlying object model, workflow states, or permissions. This pass only reserves the route and navigation entry."
+				}),
+				section === "saved-equipment" && /* @__PURE__ */ jsxs("p", {
+					className: "mt-4 max-w-3xl text-base leading-7 text-neutral-600",
+					children: [
+						"For ",
+						portal.roleLabel.toLowerCase(),
+						" accounts, the saved-equipment behavior still needs a product decision before data is wired."
+					]
+				})
+			]
+		})
+	})] });
+}
+//#endregion
+//#region resources/js/Pages/Portal/Profile.tsx
+var Profile_exports = /* @__PURE__ */ __exportAll({ default: () => Profile });
+function Profile({ portal }) {
+	const { auth, status } = usePage().props;
+	const user = auth.user;
+	const profileForm = useForm({
+		name: user?.name ?? "",
+		email: user?.email ?? "",
+		phone: user?.phone ?? "",
+		company_name: user?.company_name ?? ""
+	});
+	const passwordForm = useForm({
+		current_password: "",
+		password: "",
+		password_confirmation: ""
+	});
+	function updateProfile(event) {
+		event.preventDefault();
+		profileForm.patch(`/${portal.userType}/profile`, { preserveScroll: true });
+	}
+	function updatePassword(event) {
+		event.preventDefault();
+		passwordForm.put(`/${portal.userType}/profile/password`, {
+			preserveScroll: true,
+			onSuccess: () => passwordForm.reset()
+		});
+	}
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Profile" }), /* @__PURE__ */ jsx(PortalShell, {
+		portal,
+		title: "Profile",
+		children: /* @__PURE__ */ jsxs("div", {
+			className: "grid gap-6",
+			children: [
+				status && /* @__PURE__ */ jsx("div", {
+					className: "border border-[#a56437] bg-white p-4 text-base leading-7 text-neutral-700",
+					children: status
+				}),
+				/* @__PURE__ */ jsxs("form", {
+					onSubmit: updateProfile,
+					className: "grid gap-5 border border-[#dad5cb] bg-white p-7 sm:grid-cols-2 sm:p-8",
+					children: [
+						/* @__PURE__ */ jsxs("div", {
+							className: "sm:col-span-2",
+							children: [/* @__PURE__ */ jsx("span", {
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+								children: "Account"
+							}), /* @__PURE__ */ jsx("h2", {
+								className: "mt-4 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+								children: "Contact Details"
+							})]
+						}),
+						/* @__PURE__ */ jsx(Field, {
+							label: "Name",
+							error: profileForm.errors.name,
+							children: /* @__PURE__ */ jsx("input", {
+								value: profileForm.data.name,
+								onChange: (event) => profileForm.setData("name", event.target.value),
+								className: "portal-input",
+								autoComplete: "name",
+								required: true
+							})
+						}),
+						/* @__PURE__ */ jsx(Field, {
+							label: "Email",
+							error: profileForm.errors.email,
+							children: /* @__PURE__ */ jsx("input", {
+								type: "email",
+								value: profileForm.data.email,
+								onChange: (event) => profileForm.setData("email", event.target.value),
+								className: "portal-input",
+								autoComplete: "email",
+								required: true
+							})
+						}),
+						/* @__PURE__ */ jsx(Field, {
+							label: "Phone",
+							error: profileForm.errors.phone,
+							children: /* @__PURE__ */ jsx("input", {
+								value: profileForm.data.phone,
+								onChange: (event) => profileForm.setData("phone", event.target.value),
+								className: "portal-input",
+								autoComplete: "tel"
+							})
+						}),
+						/* @__PURE__ */ jsx(Field, {
+							label: "Company",
+							error: profileForm.errors.company_name,
+							children: /* @__PURE__ */ jsx("input", {
+								value: profileForm.data.company_name,
+								onChange: (event) => profileForm.setData("company_name", event.target.value),
+								className: "portal-input",
+								autoComplete: "organization"
+							})
+						}),
+						/* @__PURE__ */ jsx(Field, {
+							label: "Role",
+							children: /* @__PURE__ */ jsx("input", {
+								value: user?.user_type_label ?? portal.roleLabel,
+								className: "portal-input bg-[#f3f1ec] text-neutral-600",
+								readOnly: true
+							})
+						}),
+						/* @__PURE__ */ jsx("div", {
+							className: "self-end",
+							children: /* @__PURE__ */ jsx("button", {
+								type: "submit",
+								disabled: profileForm.processing,
+								className: "button-press focus-copper inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+								children: profileForm.processing ? "Saving" : "Save profile"
+							})
+						})
+					]
+				}),
+				/* @__PURE__ */ jsxs("form", {
+					onSubmit: updatePassword,
+					className: "grid gap-5 border border-[#dad5cb] bg-white p-7 sm:p-8",
+					children: [
+						/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+							children: "Security"
+						}), /* @__PURE__ */ jsx("h2", {
+							className: "mt-4 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+							children: "Change Password"
+						})] }),
+						/* @__PURE__ */ jsxs("div", {
+							className: "grid gap-5 sm:grid-cols-3",
+							children: [
+								/* @__PURE__ */ jsx(Field, {
+									label: "Current password",
+									error: passwordForm.errors.current_password,
+									children: /* @__PURE__ */ jsx("input", {
+										type: "password",
+										value: passwordForm.data.current_password,
+										onChange: (event) => passwordForm.setData("current_password", event.target.value),
+										className: "portal-input",
+										autoComplete: "current-password",
+										required: true
+									})
+								}),
+								/* @__PURE__ */ jsx(Field, {
+									label: "New password",
+									error: passwordForm.errors.password,
+									children: /* @__PURE__ */ jsx("input", {
+										type: "password",
+										value: passwordForm.data.password,
+										onChange: (event) => passwordForm.setData("password", event.target.value),
+										className: "portal-input",
+										autoComplete: "new-password",
+										required: true
+									})
+								}),
+								/* @__PURE__ */ jsx(Field, {
+									label: "Confirm password",
+									error: passwordForm.errors.password_confirmation,
+									children: /* @__PURE__ */ jsx("input", {
+										type: "password",
+										value: passwordForm.data.password_confirmation,
+										onChange: (event) => passwordForm.setData("password_confirmation", event.target.value),
+										className: "portal-input",
+										autoComplete: "new-password",
+										required: true
+									})
+								})
+							]
+						}),
+						/* @__PURE__ */ jsx("button", {
+							type: "submit",
+							disabled: passwordForm.processing,
+							className: "button-press focus-copper inline-flex h-12 w-fit items-center justify-center border border-neutral-500 px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white disabled:opacity-60",
+							children: passwordForm.processing ? "Updating" : "Update password"
+						})
+					]
+				})
+			]
+		})
+	})] });
+}
+function Field({ label, error, children }) {
+	return /* @__PURE__ */ jsxs("label", {
+		className: "grid gap-2",
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: label
+			}),
+			children,
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-red-700",
+				children: error
+			})
+		]
+	});
+}
 var request_equipment_default = {
 	heroImage: "/images/petra-equipment-yard-hero.png",
 	requestedAssets: [
@@ -3204,9 +4195,9 @@ function AccentIcon({ type }) {
 }
 function Footer() {
 	return /* @__PURE__ */ jsxs("footer", {
-		className: "w-full border-t border-[#dad5cb] bg-white",
+		className: "reveal-up w-full border-t border-[#dad5cb] bg-white",
 		children: [/* @__PURE__ */ jsxs("div", {
-			className: "mx-auto grid max-w-[1280px] grid-cols-1 gap-14 px-5 py-20 sm:px-10 md:grid-cols-4 lg:py-24",
+			className: "stagger-children mx-auto grid max-w-[1280px] grid-cols-1 gap-14 px-5 py-20 sm:px-10 md:grid-cols-4 lg:py-24",
 			children: [
 				/* @__PURE__ */ jsxs("div", {
 					className: "flex flex-col gap-8",
@@ -3225,22 +4216,22 @@ function Footer() {
 					className: "flex flex-col gap-4 text-neutral-600",
 					children: [
 						/* @__PURE__ */ jsx("a", {
-							className: "transition-colors hover:text-[#a56437]",
+							className: "focus-copper transition-colors hover:text-[#a56437]",
 							href: "/equipment",
 							children: "Browse Equipment"
 						}),
 						/* @__PURE__ */ jsx("a", {
-							className: "transition-colors hover:text-[#a56437]",
+							className: "focus-copper transition-colors hover:text-[#a56437]",
 							href: "/sell-equipment",
 							children: "Sell Equipment"
 						}),
 						/* @__PURE__ */ jsx("a", {
-							className: "transition-colors hover:text-[#a56437]",
+							className: "focus-copper transition-colors hover:text-[#a56437]",
 							href: "/request-equipment",
 							children: "Request Equipment"
 						}),
 						/* @__PURE__ */ jsx("a", {
-							className: "transition-colors hover:text-[#a56437]",
+							className: "focus-copper transition-colors hover:text-[#a56437]",
 							href: "/contact",
 							children: "Contact"
 						})
@@ -3253,22 +4244,22 @@ function Footer() {
 					className: "flex flex-col gap-4 text-neutral-600",
 					children: [
 						/* @__PURE__ */ jsx("a", {
-							className: "transition-colors hover:text-[#a56437]",
+							className: "focus-copper transition-colors hover:text-[#a56437]",
 							href: "/privacy",
 							children: "Privacy Policy"
 						}),
 						/* @__PURE__ */ jsx("a", {
-							className: "transition-colors hover:text-[#a56437]",
+							className: "focus-copper transition-colors hover:text-[#a56437]",
 							href: "/terms",
 							children: "Terms of Service"
 						}),
 						/* @__PURE__ */ jsx("a", {
-							className: "transition-colors hover:text-[#a56437]",
+							className: "focus-copper transition-colors hover:text-[#a56437]",
 							href: "/cookies",
 							children: "Cookie Policy"
 						}),
 						/* @__PURE__ */ jsx("a", {
-							className: "transition-colors hover:text-[#a56437]",
+							className: "focus-copper transition-colors hover:text-[#a56437]",
 							href: "/disclaimer",
 							children: "Disclaimer"
 						})
@@ -3344,8 +4335,12 @@ function isActivePath(href) {
 }
 function NavBar() {
 	const [menuOpen, setMenuOpen] = useState(false);
+	const { auth } = usePage().props;
+	function logout() {
+		router.post("/logout");
+	}
 	return /* @__PURE__ */ jsxs("header", {
-		className: "sticky top-0 z-50 w-full border-b border-neutral-300 bg-[#f8f8f6] shadow-[0_1px_0_rgba(255,255,255,0.7)_inset]",
+		className: "reveal-down sticky top-0 z-50 w-full border-b border-neutral-300 bg-[#f8f8f6]/95 shadow-[0_1px_0_rgba(255,255,255,0.7)_inset] backdrop-blur-sm",
 		children: [/* @__PURE__ */ jsxs("nav", {
 			"aria-label": "Primary navigation",
 			className: "mx-auto grid min-h-18 w-full max-w-[1200px] grid-cols-[auto_1fr_auto] items-center gap-6 px-5 sm:px-10 xl:px-0",
@@ -3363,9 +4358,9 @@ function NavBar() {
 						return /* @__PURE__ */ jsxs("a", {
 							href: item.href,
 							"aria-current": active ? "page" : void 0,
-							className: "relative flex items-center font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-600 transition-colors hover:text-neutral-950",
-							children: [/* @__PURE__ */ jsx("span", { children: item.label }), active && /* @__PURE__ */ jsx("span", {
-								className: "absolute bottom-4 left-0 h-0.5 w-full bg-[#9d5f35]",
+							className: "group relative flex items-center font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-600 transition-colors duration-200 hover:text-neutral-950 focus-copper",
+							children: [/* @__PURE__ */ jsx("span", { children: item.label }), /* @__PURE__ */ jsx("span", {
+								className: `absolute bottom-4 left-0 h-0.5 w-full origin-left bg-[#9d5f35] transition-transform duration-300 ${active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`,
 								"aria-hidden": "true"
 							})]
 						}, item.href);
@@ -3373,51 +4368,122 @@ function NavBar() {
 				}),
 				/* @__PURE__ */ jsxs("div", {
 					className: "flex items-center justify-end gap-3",
-					children: [/* @__PURE__ */ jsx("a", {
-						href: "/contact",
-						className: "hidden h-10 items-center bg-[#9d5f35] px-6 font-heading text-base font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-[#874d29] md:flex",
-						children: "Talk to a Broker"
-					}), /* @__PURE__ */ jsx("button", {
-						type: "button",
-						"aria-expanded": menuOpen,
-						className: "flex h-10 w-10 items-center justify-center border border-neutral-300 text-neutral-800 lg:hidden",
-						"aria-label": "Open menu",
-						onClick: () => setMenuOpen((isOpen) => !isOpen),
-						children: /* @__PURE__ */ jsx("span", { className: "block h-0.5 w-5 bg-current before:block before:h-0.5 before:w-5 before:-translate-y-1.5 before:bg-current before:content-[''] after:block after:h-0.5 after:w-5 after:translate-y-1 after:bg-current after:content-['']" })
-					})]
+					children: [
+						auth.user ? /* @__PURE__ */ jsx(Link, {
+							href: auth.user.dashboard_url,
+							className: "button-press focus-copper hidden h-10 items-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800 transition-colors hover:border-[#9d5f35] hover:text-[#9d5f35] md:flex",
+							children: "Portal"
+						}) : /* @__PURE__ */ jsx(Link, {
+							href: "/login",
+							className: "button-press focus-copper hidden h-10 items-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800 transition-colors hover:border-[#9d5f35] hover:text-[#9d5f35] md:flex",
+							children: "Login"
+						}),
+						/* @__PURE__ */ jsx("a", {
+							href: "/contact",
+							className: "button-press focus-copper hidden h-10 items-center bg-[#9d5f35] px-6 font-heading text-base font-semibold uppercase tracking-[0.08em] text-white hover:bg-[#874d29] md:flex",
+							children: "Talk to a Broker"
+						}),
+						/* @__PURE__ */ jsx("button", {
+							type: "button",
+							"aria-expanded": menuOpen,
+							className: "button-press focus-copper flex h-10 w-10 items-center justify-center border border-neutral-300 text-neutral-800 transition-colors hover:border-[#9d5f35] hover:text-[#9d5f35] lg:hidden",
+							"aria-label": "Open menu",
+							onClick: () => setMenuOpen((isOpen) => !isOpen),
+							children: /* @__PURE__ */ jsx("span", { className: `block h-0.5 w-5 bg-current transition-transform before:block before:h-0.5 before:w-5 before:bg-current before:transition-transform before:content-[''] after:block after:h-0.5 after:w-5 after:bg-current after:transition-transform after:content-[''] ${menuOpen ? "rotate-45 before:translate-y-0 after:-translate-y-0.5 after:-rotate-90" : "before:-translate-y-1.5 after:translate-y-1"}` })
+						})
+					]
 				})
 			]
 		}), menuOpen && /* @__PURE__ */ jsxs("div", {
-			className: "w-full border-b border-neutral-300 bg-[#f8f8f6] px-5 py-4 shadow-sm sm:px-10 lg:hidden",
-			children: [/* @__PURE__ */ jsx("div", {
-				className: "flex flex-col gap-1",
-				children: navItems.map((item) => {
-					const active = isActivePath(item.href);
-					return /* @__PURE__ */ jsx("a", {
-						href: item.href,
-						"aria-current": active ? "page" : void 0,
-						className: `border-l-2 px-3 py-2 font-heading text-base font-semibold uppercase tracking-[0.08em] transition-colors ${active ? "border-[#9d5f35] text-neutral-950" : "border-transparent text-neutral-600 hover:text-neutral-950"}`,
-						children: item.label
-					}, item.href);
+			className: "reveal-down w-full border-b border-neutral-300 bg-[#f8f8f6] px-5 py-4 shadow-sm sm:px-10 lg:hidden",
+			children: [
+				/* @__PURE__ */ jsx("div", {
+					className: "flex flex-col gap-1",
+					children: navItems.map((item) => {
+						const active = isActivePath(item.href);
+						return /* @__PURE__ */ jsx("a", {
+							href: item.href,
+							"aria-current": active ? "page" : void 0,
+							className: `focus-copper border-l-2 px-3 py-2 font-heading text-base font-semibold uppercase tracking-[0.08em] transition-colors ${active ? "border-[#9d5f35] text-neutral-950" : "border-transparent text-neutral-600 hover:text-neutral-950"}`,
+							children: item.label
+						}, item.href);
+					})
+				}),
+				auth.user ? /* @__PURE__ */ jsxs("div", {
+					className: "mt-3 grid grid-cols-2 gap-3 md:hidden",
+					children: [/* @__PURE__ */ jsx(Link, {
+						href: auth.user.dashboard_url,
+						className: "button-press focus-copper flex h-10 items-center justify-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800",
+						children: "Portal"
+					}), /* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: logout,
+						className: "button-press focus-copper flex h-10 items-center justify-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800",
+						children: "Logout"
+					})]
+				}) : /* @__PURE__ */ jsxs("div", {
+					className: "mt-3 grid grid-cols-2 gap-3 md:hidden",
+					children: [/* @__PURE__ */ jsx(Link, {
+						href: "/login",
+						className: "button-press focus-copper flex h-10 items-center justify-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800",
+						children: "Login"
+					}), /* @__PURE__ */ jsx(Link, {
+						href: "/register",
+						className: "button-press focus-copper flex h-10 items-center justify-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800",
+						children: "Register"
+					})]
+				}),
+				/* @__PURE__ */ jsx("a", {
+					href: "/contact",
+					className: "button-press focus-copper mt-3 flex h-10 items-center justify-center bg-[#9d5f35] px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-white hover:bg-[#874d29] md:hidden",
+					children: "Talk to a Broker"
 				})
-			}), /* @__PURE__ */ jsx("a", {
-				href: "/contact",
-				className: "mt-3 flex h-10 items-center justify-center bg-[#9d5f35] px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-[#874d29] md:hidden",
-				children: "Talk to a Broker"
-			})]
+			]
 		})]
 	});
 }
 //#endregion
 //#region resources/js/Layouts/AppLayout.tsx
 function AppLayout({ children }) {
+	const [isNavigating, setIsNavigating] = useState(false);
+	useEffect(() => {
+		const removeStartListener = router.on("start", () => setIsNavigating(true));
+		const removeFinishListener = router.on("finish", () => setIsNavigating(false));
+		return () => {
+			removeStartListener();
+			removeFinishListener();
+		};
+	}, []);
 	return /* @__PURE__ */ jsxs("div", {
 		className: "min-h-screen bg-transparent text-neutral-950",
 		children: [
 			/* @__PURE__ */ jsx(NavBar, {}),
-			children,
+			/* @__PURE__ */ jsx(AnimatedPage, {
+				busy: isNavigating,
+				children
+			}),
 			/* @__PURE__ */ jsx(Footer, {})
 		]
+	});
+}
+//#endregion
+//#region resources/js/Layouts/BlankLayout.tsx
+function BlankLayout({ children }) {
+	const [isNavigating, setIsNavigating] = useState(false);
+	useEffect(() => {
+		const removeStartListener = router.on("start", () => setIsNavigating(true));
+		const removeFinishListener = router.on("finish", () => setIsNavigating(false));
+		return () => {
+			removeStartListener();
+			removeFinishListener();
+		};
+	}, []);
+	return /* @__PURE__ */ jsx("div", {
+		className: "min-h-screen bg-[#f3f1ec] text-neutral-950",
+		children: /* @__PURE__ */ jsx(AnimatedPage, {
+			busy: isNavigating,
+			children
+		})
 	});
 }
 //#endregion
@@ -3427,17 +4493,26 @@ createServer((page) => createInertiaApp({
 	render: renderToString,
 	resolve: (name) => {
 		const resolvedPage = (/* @__PURE__ */ Object.assign({
+			"./Pages/Auth/ForgotPassword.tsx": ForgotPassword_exports,
+			"./Pages/Auth/Login.tsx": Login_exports,
+			"./Pages/Auth/Register.tsx": Register_exports,
+			"./Pages/Auth/ResetPassword.tsx": ResetPassword_exports,
 			"./Pages/Contact.tsx": Contact_exports,
 			"./Pages/Equipment.tsx": Equipment_exports,
 			"./Pages/Errors/NotFound.tsx": NotFound_exports,
 			"./Pages/Home.tsx": Home_exports,
 			"./Pages/Industries.tsx": Industries_exports,
 			"./Pages/LegalPage.tsx": LegalPage_exports,
+			"./Pages/Portal/Dashboard.tsx": Dashboard_exports,
+			"./Pages/Portal/Placeholder.tsx": Placeholder_exports,
+			"./Pages/Portal/Profile.tsx": Profile_exports,
 			"./Pages/RequestEquipment.tsx": RequestEquipment_exports,
 			"./Pages/SellEquipment.tsx": SellEquipment_exports,
 			"./Pages/Services.tsx": Services_exports
 		}))[`./Pages/${name}.tsx`];
-		resolvedPage.default.layout ??= (pageContent) => /* @__PURE__ */ jsx(AppLayout, { children: pageContent });
+		resolvedPage.default.layout ??= (pageContent) => {
+			return /* @__PURE__ */ jsx(name.startsWith("Auth/") || name.startsWith("Portal/") ? BlankLayout : AppLayout, { children: pageContent });
+		};
 		return resolvedPage;
 	},
 	setup({ App, props }) {
