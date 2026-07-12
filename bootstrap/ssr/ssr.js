@@ -103,110 +103,148 @@ function Login() {
 		post("/login");
 	}
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Customer Login" }), /* @__PURE__ */ jsx("main", {
-		className: "w-full bg-[#f3f1ec]",
-		children: /* @__PURE__ */ jsx("section", {
-			className: "border-b border-[#dad5cb] bg-white",
-			children: /* @__PURE__ */ jsxs("div", {
-				className: "mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-5 py-20 sm:px-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(420px,0.7fr)] lg:py-24",
-				children: [/* @__PURE__ */ jsxs("div", { children: [
-					/* @__PURE__ */ jsx("span", {
-						className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-						children: "Customer Portal"
-					}),
-					/* @__PURE__ */ jsx("h1", {
-						className: "mt-5 max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.35rem] lg:text-[4.1rem]",
-						children: "Login"
-					}),
-					/* @__PURE__ */ jsx("p", {
-						className: "mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg",
-						children: "Access seller and buyer workspace tools for saved equipment, quotes, offers, documents, and account details."
-					})
-				] }), /* @__PURE__ */ jsx("form", {
-					onSubmit: submit,
-					className: "border border-[#dad5cb] bg-[#f8f8f6] p-6 sm:p-8",
-					children: /* @__PURE__ */ jsxs("div", {
-						className: "grid gap-5",
-						children: [
-							/* @__PURE__ */ jsxs("label", {
-								className: "grid gap-2",
-								children: [
-									/* @__PURE__ */ jsx("span", {
-										className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
-										children: "Email"
-									}),
-									/* @__PURE__ */ jsx("input", {
-										type: "email",
-										value: data.email,
-										onChange: (event) => setData("email", event.target.value),
-										className: "h-12 border border-[#dad5cb] bg-white px-4 text-base text-neutral-950 outline-none focus:border-[#a56437]",
-										autoComplete: "email",
-										required: true
-									}),
-									errors.email && /* @__PURE__ */ jsx("span", {
-										className: "text-sm text-red-700",
-										children: errors.email
-									})
-								]
-							}),
-							/* @__PURE__ */ jsxs("label", {
-								className: "grid gap-2",
-								children: [
-									/* @__PURE__ */ jsx("span", {
-										className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
-										children: "Password"
-									}),
-									/* @__PURE__ */ jsx("input", {
-										type: "password",
-										value: data.password,
-										onChange: (event) => setData("password", event.target.value),
-										className: "h-12 border border-[#dad5cb] bg-white px-4 text-base text-neutral-950 outline-none focus:border-[#a56437]",
-										autoComplete: "current-password",
-										required: true
-									}),
-									errors.password && /* @__PURE__ */ jsx("span", {
-										className: "text-sm text-red-700",
-										children: errors.password
-									})
-								]
-							}),
-							/* @__PURE__ */ jsxs("div", {
-								className: "flex flex-wrap items-center justify-between gap-4",
-								children: [/* @__PURE__ */ jsxs("label", {
-									className: "flex items-center gap-3 text-sm font-medium text-neutral-700",
-									children: [/* @__PURE__ */ jsx("input", {
-										type: "checkbox",
-										checked: data.remember,
-										onChange: (event) => setData("remember", event.target.checked),
-										className: "h-4 w-4 accent-[#a56437]"
-									}), "Remember me"]
-								}), /* @__PURE__ */ jsx(Link, {
-									href: "/forgot-password",
-									className: "font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]",
-									children: "Forgot password"
-								})]
-							}),
-							/* @__PURE__ */ jsx("button", {
-								type: "submit",
-								disabled: processing,
-								className: "button-press focus-copper mt-2 inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
-								children: processing ? "Signing in" : "Sign in"
-							}),
-							/* @__PURE__ */ jsxs("p", {
-								className: "border-t border-[#dad5cb] pt-5 text-base leading-7 text-neutral-600",
-								children: [
-									"Need portal access?",
-									" ",
-									/* @__PURE__ */ jsx(Link, {
-										href: "/register",
-										className: "font-heading font-semibold uppercase tracking-[0.08em] text-neutral-950",
-										children: "Register"
-									})
-								]
-							})
-						]
-					})
+		className: "flex min-h-screen items-center justify-center bg-[#f3f1ec] px-5 py-8 text-neutral-950 sm:px-8 lg:px-10",
+		children: /* @__PURE__ */ jsxs("section", {
+			className: "grid w-full max-w-[1120px] overflow-hidden border border-[#dad5cb] bg-white shadow-[0_24px_80px_rgba(15,15,15,0.06)] lg:min-h-[560px] lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,0.8fr)]",
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "flex flex-col justify-between gap-12 border-b border-[#dad5cb] bg-[#fbfaf7] p-7 sm:p-10 lg:border-b-0 lg:border-r lg:p-12",
+				children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx(Link, {
+					href: "/",
+					className: "focus-copper inline-block font-heading text-[2rem] font-semibold uppercase tracking-[0.22em] text-neutral-950",
+					children: "Petra"
+				}), /* @__PURE__ */ jsxs("div", {
+					className: "mt-16 max-w-[560px] lg:mt-20",
+					children: [
+						/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+							children: "Customer Portal"
+						}),
+						/* @__PURE__ */ jsx("h1", {
+							className: "mt-5 font-heading text-5xl font-bold uppercase leading-none tracking-[0.08em] text-neutral-950 sm:text-6xl lg:text-7xl",
+							children: "Login"
+						}),
+						/* @__PURE__ */ jsx("p", {
+							className: "mt-6 text-base font-medium leading-7 text-neutral-600 sm:text-lg",
+							children: "Access seller and buyer workspace tools for saved equipment, quotes, offers, documents, and account details."
+						})
+					]
+				})] }), /* @__PURE__ */ jsxs("div", {
+					className: "grid gap-3 text-sm leading-6 text-neutral-600 sm:grid-cols-2",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "border border-[#dad5cb] bg-white p-4",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-950",
+							children: "Sellers"
+						}), /* @__PURE__ */ jsx("p", {
+							className: "mt-2",
+							children: "Manage activity, saved equipment, profile details, and future deal workflows."
+						})]
+					}), /* @__PURE__ */ jsxs("div", {
+						className: "border border-[#dad5cb] bg-white p-4",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-950",
+							children: "Buyers"
+						}), /* @__PURE__ */ jsx("p", {
+							className: "mt-2",
+							children: "Track watched equipment, account details, and portal updates as features come online."
+						})]
+					})]
 				})]
-			})
+			}), /* @__PURE__ */ jsx("div", {
+				className: "flex items-center bg-white p-7 sm:p-10 lg:p-12",
+				children: /* @__PURE__ */ jsxs("form", {
+					onSubmit: submit,
+					className: "grid w-full gap-5",
+					children: [
+						/* @__PURE__ */ jsxs("div", {
+							className: "mb-2",
+							children: [/* @__PURE__ */ jsx("span", {
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.18em] text-[#a56437]",
+								children: "Secure Access"
+							}), /* @__PURE__ */ jsx("h2", {
+								className: "mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+								children: "Sign in"
+							})]
+						}),
+						/* @__PURE__ */ jsxs("label", {
+							className: "grid gap-2",
+							children: [
+								/* @__PURE__ */ jsx("span", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+									children: "Email"
+								}),
+								/* @__PURE__ */ jsx("input", {
+									type: "email",
+									value: data.email,
+									onChange: (event) => setData("email", event.target.value),
+									className: "portal-input bg-[#fbfaf7]",
+									autoComplete: "email",
+									required: true
+								}),
+								errors.email && /* @__PURE__ */ jsx("span", {
+									className: "text-sm text-red-700",
+									children: errors.email
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("label", {
+							className: "grid gap-2",
+							children: [
+								/* @__PURE__ */ jsx("span", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+									children: "Password"
+								}),
+								/* @__PURE__ */ jsx("input", {
+									type: "password",
+									value: data.password,
+									onChange: (event) => setData("password", event.target.value),
+									className: "portal-input bg-[#fbfaf7]",
+									autoComplete: "current-password",
+									required: true
+								}),
+								errors.password && /* @__PURE__ */ jsx("span", {
+									className: "text-sm text-red-700",
+									children: errors.password
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "flex flex-wrap items-center justify-between gap-4",
+							children: [/* @__PURE__ */ jsxs("label", {
+								className: "flex items-center gap-3 text-sm font-medium text-neutral-700",
+								children: [/* @__PURE__ */ jsx("input", {
+									type: "checkbox",
+									checked: data.remember,
+									onChange: (event) => setData("remember", event.target.checked),
+									className: "h-4 w-4 accent-[#a56437]"
+								}), "Remember me"]
+							}), /* @__PURE__ */ jsx(Link, {
+								href: "/forgot-password",
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]",
+								children: "Forgot password"
+							})]
+						}),
+						/* @__PURE__ */ jsx("button", {
+							type: "submit",
+							disabled: processing,
+							className: "button-press focus-copper mt-2 inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+							children: processing ? "Signing in" : "Sign in"
+						}),
+						/* @__PURE__ */ jsxs("p", {
+							className: "mt-2 border-t border-[#dad5cb] pt-5 text-base leading-7 text-neutral-600",
+							children: [
+								"Need portal access?",
+								" ",
+								/* @__PURE__ */ jsx(Link, {
+									href: "/register",
+									className: "font-heading font-semibold uppercase tracking-[0.08em] text-neutral-950",
+									children: "Register"
+								})
+							]
+						})
+					]
+				})
+			})]
 		})
 	})] });
 }
@@ -2802,68 +2840,86 @@ function hrefFor(portal, path) {
 	if (path === "dashboard") return `/${portal.userType}/dashboard`;
 	return `/${portal.userType}/${path}`;
 }
-function isActive(href) {
-	if (typeof window === "undefined") return false;
-	return window.location.pathname === href;
-}
 function PortalShell({ portal, title, eyebrow, children }) {
-	const { auth } = usePage().props;
+	const page = usePage();
+	const { auth } = page.props;
+	const currentPath = page.url.split("?")[0];
 	function logout() {
 		router.post("/logout");
 	}
 	return /* @__PURE__ */ jsxs("main", {
-		className: "min-h-screen bg-[#f3f1ec]",
-		children: [/* @__PURE__ */ jsx("section", {
-			className: "border-b border-[#dad5cb] bg-white",
-			children: /* @__PURE__ */ jsxs("div", {
-				className: "mx-auto flex max-w-[1280px] flex-col gap-8 px-5 py-10 sm:px-10 lg:flex-row lg:items-end lg:justify-between",
-				children: [/* @__PURE__ */ jsxs("div", { children: [
-					/* @__PURE__ */ jsx("span", {
-						className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+		className: "min-h-screen bg-[#f3f1ec] text-neutral-950 lg:grid lg:grid-cols-[288px_minmax(0,1fr)]",
+		children: [/* @__PURE__ */ jsxs("aside", {
+			className: "border-b border-[#dad5cb] bg-white lg:min-h-screen lg:border-b-0 lg:border-r",
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "flex items-center justify-between border-b border-[#dad5cb] px-5 py-4 lg:block lg:px-6 lg:py-7",
+				children: [/* @__PURE__ */ jsxs(Link, {
+					href: `/${portal.userType}/dashboard`,
+					className: "focus-copper block w-fit",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "block font-heading text-[1.65rem] font-semibold uppercase tracking-[0.22em] text-neutral-950",
+						children: "Petra"
+					}), /* @__PURE__ */ jsx("span", {
+						className: "mt-1 block font-heading text-xs font-semibold uppercase tracking-[0.2em] text-[#a56437]",
 						children: eyebrow ?? `${portal.roleLabel} Portal`
-					}),
-					/* @__PURE__ */ jsx("h1", {
-						className: "mt-4 font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
-						children: title
-					}),
-					/* @__PURE__ */ jsxs("p", {
-						className: "mt-4 max-w-2xl text-base leading-7 text-neutral-600",
-						children: [
-							"Signed in as ",
-							auth.user?.name ?? portal.profileName,
-							" · ",
-							portal.roleLabel
-						]
-					})
-				] }), /* @__PURE__ */ jsx("button", {
-					type: "button",
-					onClick: logout,
-					className: "button-press focus-copper inline-flex h-12 items-center justify-center border border-neutral-500 px-7 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
-					children: "Log out"
+					})]
+				}), /* @__PURE__ */ jsx("span", {
+					className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-neutral-600 lg:mt-6 lg:inline-block",
+					children: portal.roleLabel
 				})]
-			})
-		}), /* @__PURE__ */ jsxs("section", {
-			className: "mx-auto grid max-w-[1280px] grid-cols-1 gap-8 px-5 py-8 sm:px-10 lg:grid-cols-[280px_minmax(0,1fr)] lg:py-10",
-			children: [/* @__PURE__ */ jsx("aside", {
-				className: "border border-[#dad5cb] bg-white",
-				children: /* @__PURE__ */ jsx("nav", {
-					"aria-label": `${portal.roleLabel} portal navigation`,
-					className: "grid gap-px bg-[#dad5cb]",
+			}), /* @__PURE__ */ jsx("nav", {
+				"aria-label": `${portal.roleLabel} portal navigation`,
+				className: "overflow-x-auto lg:overflow-visible",
+				children: /* @__PURE__ */ jsx("div", {
+					className: "flex min-w-max lg:grid lg:min-w-0",
 					children: navItems$1.map((item) => {
 						const href = hrefFor(portal, item.path);
-						const active = isActive(href);
+						const active = currentPath === href;
 						return /* @__PURE__ */ jsxs(Link, {
 							href,
 							"aria-current": active ? "page" : void 0,
-							className: `flex items-center justify-between bg-white px-5 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] transition-colors ${active ? "text-[#a56437]" : "text-neutral-700 hover:text-neutral-950"}`,
+							className: `flex min-h-14 items-center justify-between gap-4 border-r border-[#dad5cb] px-5 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] transition-colors last:border-r-0 lg:border-r-0 lg:border-b ${active ? "bg-[#f3f1ec] text-[#a56437] lg:shadow-[inset_4px_0_0_#a56437]" : "bg-white text-neutral-700 hover:bg-[#f8f8f6] hover:text-neutral-950"}`,
 							children: [/* @__PURE__ */ jsx("span", { children: item.label }), !item.real && /* @__PURE__ */ jsx("span", {
-								className: "text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400",
+								className: "text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400 lg:block",
 								children: "Soon"
 							})]
 						}, item.path);
 					})
 				})
-			}), /* @__PURE__ */ jsx("div", { children })]
+			})]
+		}), /* @__PURE__ */ jsxs("section", {
+			className: "min-w-0",
+			children: [/* @__PURE__ */ jsx("header", {
+				className: "border-b border-[#dad5cb] bg-white",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "flex flex-col gap-5 px-5 py-6 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "min-w-0",
+						children: [
+							/* @__PURE__ */ jsx("span", {
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.18em] text-[#a56437]",
+								children: eyebrow ?? `${portal.roleLabel} Portal`
+							}),
+							/* @__PURE__ */ jsx("h1", {
+								className: "mt-2 break-words font-heading text-3xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl",
+								children: title
+							}),
+							/* @__PURE__ */ jsxs("p", {
+								className: "mt-2 text-sm leading-6 text-neutral-600 sm:text-base",
+								children: ["Signed in as ", auth.user?.name ?? portal.profileName]
+							})
+						]
+					}), /* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: logout,
+						className: "button-press focus-copper inline-flex h-11 w-fit items-center justify-center border border-neutral-500 px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
+						children: "Log out"
+					})]
+				})
+			}), /* @__PURE__ */ jsx("div", {
+				className: "px-5 py-6 sm:px-8 lg:px-10 lg:py-8",
+				children
+			})]
 		})]
 	});
 }
@@ -4411,6 +4467,26 @@ function AppLayout({ children }) {
 	});
 }
 //#endregion
+//#region resources/js/Layouts/BlankLayout.tsx
+function BlankLayout({ children }) {
+	const [isNavigating, setIsNavigating] = useState(false);
+	useEffect(() => {
+		const removeStartListener = router.on("start", () => setIsNavigating(true));
+		const removeFinishListener = router.on("finish", () => setIsNavigating(false));
+		return () => {
+			removeStartListener();
+			removeFinishListener();
+		};
+	}, []);
+	return /* @__PURE__ */ jsx("div", {
+		className: "min-h-screen bg-[#f3f1ec] text-neutral-950",
+		children: /* @__PURE__ */ jsx(AnimatedPage, {
+			busy: isNavigating,
+			children
+		})
+	});
+}
+//#endregion
 //#region resources/js/ssr.tsx
 createServer((page) => createInertiaApp({
 	page,
@@ -4434,7 +4510,9 @@ createServer((page) => createInertiaApp({
 			"./Pages/SellEquipment.tsx": SellEquipment_exports,
 			"./Pages/Services.tsx": Services_exports
 		}))[`./Pages/${name}.tsx`];
-		resolvedPage.default.layout ??= (pageContent) => /* @__PURE__ */ jsx(AppLayout, { children: pageContent });
+		resolvedPage.default.layout ??= (pageContent) => {
+			return /* @__PURE__ */ jsx(name.startsWith("Auth/") || name.startsWith("Portal/") ? BlankLayout : AppLayout, { children: pageContent });
+		};
 		return resolvedPage;
 	},
 	setup({ App, props }) {

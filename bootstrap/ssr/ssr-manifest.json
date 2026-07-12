@@ -7,6 +7,7 @@
   "resources/js/Components/polish.tsx": [],
   "resources/js/Components/portal-shell.tsx": [],
   "resources/js/Layouts/AppLayout.tsx": [],
+  "resources/js/Layouts/BlankLayout.tsx": [],
   "resources/js/Pages/Auth/ForgotPassword.tsx": [],
   "resources/js/Pages/Auth/Login.tsx": [],
   "resources/js/Pages/Auth/Register.tsx": [],

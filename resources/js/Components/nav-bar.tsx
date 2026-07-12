@@ -30,6 +30,10 @@ export default function NavBar() {
     const { auth } = usePage<SharedPageProps>().props;
 
     function logout() {
+        if (! window.confirm('Log out of your Petra portal session?')) {
+            return;
+        }
+
         router.post('/logout');
     }
 
