@@ -1,5 +1,7 @@
 import { Link, router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
+import ConfirmDialog from './confirm-dialog';
 import type { PortalData, SharedPageProps } from '../types';
 
 const navItems = [
@@ -31,6 +33,7 @@ function hrefFor(portal: PortalData, path: string) {
 }
 
 export default function PortalShell({ portal, title, eyebrow, children }: PortalShellProps) {
+    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
     const page = usePage<SharedPageProps>();
     const { auth } = page.props;
     const currentPath = page.url.split('?')[0];
@@ -38,11 +41,8 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
     const userInitial = (userName ?? portal.roleLabel).charAt(0).toUpperCase();
 
     function logout() {
-        if (! window.confirm('Log out of your Petra portal session?')) {
-            return;
-        }
-
-        router.post('/logout');
+        setLogoutDialogOpen(false);
+        router.post('/logout', {}, { replace: true });
     }
 
     return (
@@ -120,7 +120,7 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
 
                         <button
                             type="button"
-                            onClick={logout}
+                            onClick={() => setLogoutDialogOpen(true)}
                             className="button-press focus-copper inline-flex h-10 w-fit items-center justify-center border border-neutral-500 px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white"
                         >
                             Log out
@@ -130,6 +130,15 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
 
                 <div className="px-5 py-6 sm:px-8 lg:px-10 lg:py-8">{children}</div>
             </section>
+
+            <ConfirmDialog
+                open={logoutDialogOpen}
+                title="Log out?"
+                description="You will be signed out of your Petra portal session and returned to the login page."
+                confirmLabel="Log out"
+                onCancel={() => setLogoutDialogOpen(false)}
+                onConfirm={logout}
+            />
         </main>
     );
 }

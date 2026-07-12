@@ -16,7 +16,7 @@ export default function Login() {
 
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        post('/login');
+        post('/login', { replace: true });
     }
 
     return (

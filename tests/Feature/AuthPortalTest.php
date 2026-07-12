@@ -99,6 +99,41 @@ class AuthPortalTest extends TestCase
             ->assertOk();
     }
 
+    public function test_portal_responses_prevent_browser_back_cache(): void
+    {
+        $user = User::factory()->create([
+            'user_type' => User::TYPE_SELLER,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get('/seller/dashboard')
+            ->assertOk()
+            ->assertHeader('Pragma', 'no-cache')
+            ->assertHeader('Expires', 'Fri, 01 Jan 1990 00:00:00 GMT');
+
+        $cacheControl = $response->headers->get('Cache-Control');
+
+        $this->assertStringContainsString('no-store', $cacheControl);
+        $this->assertStringContainsString('no-cache', $cacheControl);
+        $this->assertStringContainsString('must-revalidate', $cacheControl);
+        $this->assertStringContainsString('max-age=0', $cacheControl);
+    }
+
+    public function test_auth_pages_prevent_browser_back_cache(): void
+    {
+        $response = $this->get('/login')
+            ->assertOk()
+            ->assertHeader('Pragma', 'no-cache')
+            ->assertHeader('Expires', 'Fri, 01 Jan 1990 00:00:00 GMT');
+
+        $cacheControl = $response->headers->get('Cache-Control');
+
+        $this->assertStringContainsString('no-store', $cacheControl);
+        $this->assertStringContainsString('no-cache', $cacheControl);
+        $this->assertStringContainsString('must-revalidate', $cacheControl);
+        $this->assertStringContainsString('max-age=0', $cacheControl);
+    }
+
     public function test_password_reset_link_can_be_requested(): void
     {
         Notification::fake();

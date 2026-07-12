@@ -1,5 +1,6 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import ConfirmDialog from './confirm-dialog';
 import type { SharedPageProps } from '../types';
 
 const navItems = [
@@ -27,14 +28,12 @@ function isActivePath(href: string) {
 
 export default function NavBar() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
     const { auth } = usePage<SharedPageProps>().props;
 
     function logout() {
-        if (! window.confirm('Log out of your Petra portal session?')) {
-            return;
-        }
-
-        router.post('/logout');
+        setLogoutDialogOpen(false);
+        router.post('/logout', {}, { replace: true });
     }
 
     return (
@@ -149,7 +148,7 @@ export default function NavBar() {
                             </Link>
                             <button
                                 type="button"
-                                onClick={logout}
+                                onClick={() => setLogoutDialogOpen(true)}
                                 className="button-press focus-copper flex h-10 items-center justify-center border border-neutral-300 px-5 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-800"
                             >
                                 Logout
@@ -180,6 +179,15 @@ export default function NavBar() {
                     </a>
                 </div>
             )}
+
+            <ConfirmDialog
+                open={logoutDialogOpen}
+                title="Log out?"
+                description="You will be signed out of your Petra portal session and returned to the login page."
+                confirmLabel="Log out"
+                onCancel={() => setLogoutDialogOpen(false)}
+                onConfirm={logout}
+            />
         </header>
     );
 }

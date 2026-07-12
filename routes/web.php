@@ -69,7 +69,7 @@ Route::redirect('/industries/oil-and-gas-production', '/industries', 301);
 
 Route::redirect('/inventory', '/equipment', 301);
 
-Route::middleware('guest')->group(function () {
+Route::middleware(['guest', 'no.back.history'])->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('throttle:6,1');
 
@@ -84,16 +84,16 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->middleware('auth')
+    ->middleware(['auth', 'no.back.history'])
     ->name('logout');
 
 Route::get('/dashboard', fn () => redirect()->route(request()->user()->portalRouteName()))
-    ->middleware('auth')
+    ->middleware(['auth', 'no.back.history'])
     ->name('dashboard');
 
 $portalSections = ['saved-equipment', 'quotes', 'offers', 'documents', 'messages', 'notifications'];
 
-Route::middleware(['auth', 'user.type:seller'])
+Route::middleware(['auth', 'no.back.history', 'user.type:seller'])
     ->prefix('seller')
     ->name('portal.seller.')
     ->group(function () use ($portalSections) {
@@ -107,7 +107,7 @@ Route::middleware(['auth', 'user.type:seller'])
             ->name('placeholder');
     });
 
-Route::middleware(['auth', 'user.type:buyer'])
+Route::middleware(['auth', 'no.back.history', 'user.type:buyer'])
     ->prefix('buyer')
     ->name('portal.buyer.')
     ->group(function () use ($portalSections) {

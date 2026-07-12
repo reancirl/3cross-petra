@@ -25,7 +25,7 @@ export default function Register() {
 
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        post('/register');
+        post('/register', { replace: true });
     }
 
     return (
