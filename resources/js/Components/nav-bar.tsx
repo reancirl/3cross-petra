@@ -10,6 +10,8 @@ const navItems = [
     { label: 'Request Equipment', href: '/request-equipment' },
     { label: 'Services', href: '/services' },
     { label: 'Industries', href: '/industries' },
+    { label: 'About', href: '/about' },
+    { label: 'Resources', href: '/resources' },
 ];
 
 function isActivePath(href: string) {
@@ -40,7 +42,7 @@ export default function NavBar() {
         <header className="reveal-down sticky top-0 z-50 w-full border-b border-neutral-300 bg-[#f8f8f6]/95 shadow-[0_1px_0_rgba(255,255,255,0.7)_inset] backdrop-blur-sm">
             <nav
                 aria-label="Primary navigation"
-                className="mx-auto grid min-h-18 w-full max-w-[1200px] grid-cols-[auto_1fr_auto] items-center gap-6 px-5 sm:px-10 xl:px-0"
+                className="mx-auto grid min-h-18 w-full max-w-[1280px] grid-cols-[auto_1fr_auto] items-center gap-6 px-5 sm:px-10 2xl:px-0"
             >
                 <a
                     href="/"
@@ -50,7 +52,7 @@ export default function NavBar() {
                     PETRA
                 </a>
 
-                <div className="hidden items-stretch justify-center gap-8 self-stretch lg:flex">
+                <div className="hidden items-stretch justify-center gap-5 self-stretch xl:flex 2xl:gap-7">
                     {navItems.map((item) => {
                         const active = isActivePath(item.href);
 
@@ -59,7 +61,7 @@ export default function NavBar() {
                                 key={item.href}
                                 href={item.href}
                                 aria-current={active ? 'page' : undefined}
-                                className="group relative flex items-center font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-600 transition-colors duration-200 hover:text-neutral-950 focus-copper"
+                                className="group relative flex items-center whitespace-nowrap font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-600 transition-colors duration-200 hover:text-neutral-950 focus-copper"
                             >
                                 <span>{item.label}</span>
                                 <span
@@ -100,7 +102,7 @@ export default function NavBar() {
                     <button
                         type="button"
                         aria-expanded={menuOpen}
-                        className="button-press focus-copper flex h-10 w-10 items-center justify-center border border-neutral-300 text-neutral-800 transition-colors hover:border-[#9d5f35] hover:text-[#9d5f35] lg:hidden"
+                        className="button-press focus-copper flex h-10 w-10 items-center justify-center border border-neutral-300 text-neutral-800 transition-colors hover:border-[#9d5f35] hover:text-[#9d5f35] xl:hidden"
                         aria-label="Open menu"
                         onClick={() => setMenuOpen((isOpen) => !isOpen)}
                     >
@@ -116,7 +118,7 @@ export default function NavBar() {
             </nav>
 
             {menuOpen && (
-                <div className="reveal-down w-full border-b border-neutral-300 bg-[#f8f8f6] px-5 py-4 shadow-sm sm:px-10 lg:hidden">
+                <div className="reveal-down w-full border-b border-neutral-300 bg-[#f8f8f6] px-5 py-4 shadow-sm sm:px-10 xl:hidden">
                     <div className="flex flex-col gap-1">
                         {navItems.map((item) => {
                             const active = isActivePath(item.href);

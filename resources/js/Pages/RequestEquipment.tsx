@@ -108,8 +108,8 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                             </h1>
 
                             <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg">
-                                Most buyers do not need more listings. They need the right size, the right spec, the
-                                right condition, and someone who actually knows where to find it.
+                                Looking for specific equipment? We source directly through regional networks instead of
+                                relying only on listings.
                             </p>
 
                             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -117,7 +117,7 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                                     href="#buyer-request"
                                     className="inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
                                 >
-                                    Request Equipment
+                                    Submit Request
                                 </a>
                                 <a
                                     href="/equipment"
@@ -149,7 +149,6 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                     </div>
                 </section>
 
-                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
                     <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
                         <div className="mx-auto mb-9 max-w-3xl text-center">
@@ -157,11 +156,11 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                                 Equipment Requests
                             </span>
                             <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-white sm:text-4xl">
-                                What Buyers Ask Petra to Source
+                                What We Help Source
                             </h2>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-px bg-white/15 md:grid-cols-3 lg:grid-cols-6">
+                        <div className="grid grid-cols-2 gap-px bg-white/15 md:grid-cols-3 lg:grid-cols-5">
                             {requestedAssets.map((assetType) => (
                                 <div key={assetType} className="bg-[#1c1a16] p-5 text-center transition-colors hover:bg-[#24211c]">
                                     <div className="mx-auto mb-4 h-1.5 w-1.5 bg-[#a56437]" />
@@ -173,7 +172,6 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                         </div>
                     </div>
                 </section>
-                */}
 
                 <section className="border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
@@ -186,7 +184,7 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                             </h2>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-2 lg:grid-cols-5">
                             {processSteps.map((step) => (
                                 <article key={step.number} className="bg-white p-7">
                                     <span className="font-heading text-3xl font-semibold uppercase tracking-[0.05em] text-[#a56437]">
@@ -206,13 +204,13 @@ export default function RequestEquipment({ canonicalUrl, ogImageUrl }: RequestEq
                     <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-5 sm:px-10 lg:grid-cols-12 lg:items-start lg:gap-14">
                         <div className="max-w-3xl lg:col-span-5">
                             <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
-                                What Buyers Need
+                                Buyer Requirements
                             </span>
                             <h2 className="font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl">
-                                Most buyers do not need more listings.
+                                What to Include
                             </h2>
                             <p className="mt-6 text-lg leading-8 text-neutral-600">
-                                They need:
+                                The more of this you can share up front, the faster we can work the network:
                             </p>
                         </div>
 

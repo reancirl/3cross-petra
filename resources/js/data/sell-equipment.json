@@ -13,23 +13,23 @@
     "processSteps": [
         {
             "number": "01",
-            "title": "Send equipment info",
-            "description": "Share what you have: equipment details, location, condition, photos, and available documents."
+            "title": "Submit equipment",
+            "description": "Share what you have: equipment details, location, condition, photos, and any available documents."
         },
         {
             "number": "02",
-            "title": "We review the asset",
-            "description": "Petra reviews the equipment, market fit, likely buyers, and whether the pricing aligns with current demand."
+            "title": "We review and assess market fit",
+            "description": "Petra reviews the equipment, where it fits in the current market, and whether pricing aligns with real demand."
         },
         {
             "number": "03",
-            "title": "We position it",
-            "description": "We represent the equipment clearly so serious buyers understand condition, specs, location, and practical value."
+            "title": "We identify real buyers",
+            "description": "We work regional sellers, operator relationships, and yard networks to find buyers who are actually in the market."
         },
         {
             "number": "04",
-            "title": "We handle negotiation",
-            "description": "Petra works the buyer conversations, answers practical questions, and keeps the deal moving."
+            "title": "We handle outreach and negotiation",
+            "description": "Petra carries the buyer conversations, answers practical questions, and keeps the deal moving."
         },
         {
             "number": "05",
@@ -41,8 +41,8 @@
         "Equipment details",
         "Location",
         "Condition (rough is fine)",
-        "Photos",
-        "Documents"
+        "Photos (if available)",
+        "Any documents (optional)"
     ],
     "sellerBenefits": [
         {

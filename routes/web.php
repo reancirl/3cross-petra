@@ -45,6 +45,16 @@ Route::get('/industries', fn () => Inertia::render('Industries', [
     'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
 ]));
 
+Route::get('/about', fn () => Inertia::render('About', [
+    'canonicalUrl' => url('/about'),
+    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+]));
+
+Route::get('/resources', fn () => Inertia::render('Resources', [
+    'canonicalUrl' => url('/resources'),
+    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+]));
+
 Route::get('/contact', fn () => Inertia::render('Contact', [
     'canonicalUrl' => url('/contact'),
     'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
@@ -134,6 +144,16 @@ Route::get('/sitemap.xml', function () {
             'loc' => url('/industries'),
             'changefreq' => 'weekly',
             'priority' => '0.7',
+        ],
+        [
+            'loc' => url('/about'),
+            'changefreq' => 'monthly',
+            'priority' => '0.6',
+        ],
+        [
+            'loc' => url('/resources'),
+            'changefreq' => 'monthly',
+            'priority' => '0.6',
         ],
         [
             'loc' => url('/contact'),

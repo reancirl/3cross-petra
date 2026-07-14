@@ -162,14 +162,13 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                                 </span>
                             </div>
 
-                            {/* TODO(client-confirm): Content doc specifies hero heading "Available Equipment" and body "Real equipment currently available through Petra brokerage network. Inventory changes quickly—availability is subject to market movement." Current copy appears to be a broader creative rewrite, so leave it until client sign-off. */}
                             <h1 className="max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.4rem] lg:text-[4.2rem]">
-                                Used Oilfield Equipment
+                                Available Equipment
                             </h1>
 
                             <p className="mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg">
-                                Browse representative listings, active categories, and broker-reviewed used oilfield
-                                equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.
+                                Real equipment currently available through Petra brokerage network. Inventory changes
+                                quickly—availability is subject to market movement.
                             </p>
                         </div>
 
