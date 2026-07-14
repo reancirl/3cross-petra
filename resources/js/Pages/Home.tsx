@@ -441,7 +441,7 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                                     <span>We work our network and come back with real options.</span>
                                 </li>
                             </ul>
-                            <a href="/contact" className="mt-auto inline-flex h-16 w-fit items-center self-start border border-neutral-950 px-12 font-heading text-base font-semibold uppercase tracking-[0.12em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
+                            <a href="/request-equipment" className="mt-auto inline-flex h-16 w-fit items-center self-start border border-neutral-950 px-12 font-heading text-base font-semibold uppercase tracking-[0.12em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
                                 Request Equipment
                             </a>
                         </div>

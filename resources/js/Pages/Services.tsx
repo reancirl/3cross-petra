@@ -11,6 +11,13 @@ const { heroImage, services, workflow, regions, faqs } = servicesData;
 const pageTitle = 'Services | Petra';
 const pageDescription =
     'Straight brokerage work between people who actually understand field equipment. Petra helps sellers move surplus equipment and buyers source the right assets.';
+const docServices = [
+    ['Equipment Brokerage', 'Connecting sellers with qualified buyers.'],
+    ['Equipment Sourcing', 'Finding hard-to-locate equipment through active networks.'],
+    ['Asset Liquidation', 'Helping companies clear surplus or idle equipment.'],
+    ['Equipment Valuation', 'Real market-based pricing guidance.'],
+    ['Buyer Representation', 'Helping buyers source and negotiate equipment.'],
+];
 
 export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
     const structuredData = {
@@ -231,7 +238,33 @@ export default function Services({ canonicalUrl, ogImageUrl }: ServicesProps) {
                     </div>
                 </section>
 
-                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
+                <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
+                    <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
+                        <div className="mx-auto mb-9 max-w-3xl text-center">
+                            <span className="font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]">
+                                Service Lines
+                            </span>
+                            <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-white sm:text-4xl">
+                                How Petra Supports Equipment Deals
+                            </h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-px bg-white/15 md:grid-cols-2 lg:grid-cols-5">
+                            {docServices.map(([title, summary]) => (
+                                <article key={title} className="bg-[#1c1a16] p-6 transition-colors hover:bg-[#24211c]">
+                                    <div className="mb-5 h-1.5 w-1.5 bg-[#a56437]" />
+                                    <h3 className="font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-white">
+                                        {title}
+                                    </h3>
+                                    <p className="mt-4 text-sm leading-6 text-white/65">{summary}</p>
+                                </article>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Previous alternate service-line grid existed here and remains commented out in case the client intentionally wanted the alternate copy.
+                Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
                     <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
                         <div className="mx-auto mb-9 max-w-3xl text-center">
