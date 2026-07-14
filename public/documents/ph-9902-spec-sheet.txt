@@ -1,0 +1,12 @@
+Petra placeholder spec sheet
+
+Equipment ID: PH-9902
+Equipment: 3-Phase Production Separator
+
+Representative specs:
+- Horizontal 3-phase production separator
+- 36 in x 10 ft
+- 1440 WP
+- Skid-mounted package
+
+This placeholder file is for preview only and should be replaced with the client-approved spec sheet.

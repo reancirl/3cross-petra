@@ -38,7 +38,7 @@ class DashboardController extends Controller
             'dashboardUrl' => route("portal.{$userType}.dashboard"),
             'summary' => $userType === User::TYPE_SELLER
                 ? 'Your seller activity will appear here as listings, quotes, and offer workflows come online.'
-                : 'Your buyer activity will appear here as watched equipment, quotes, and offer workflows come online.',
+                : 'Your buyer activity will appear here as equipment requests, saved listings, quotes, and offer workflows come online.',
             'profileName' => $request->user()->name,
         ];
     }

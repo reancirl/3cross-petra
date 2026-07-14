@@ -5,7 +5,9 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AuthPortalTest extends TestCase
@@ -97,6 +99,191 @@ class AuthPortalTest extends TestCase
         $this->actingAs($user)
             ->get('/seller/quotes')
             ->assertOk();
+    }
+
+    public function test_seller_can_submit_equipment_and_see_it_on_saved_equipment(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->seller()->create();
+
+        $this->actingAs($user)
+            ->post('/seller/saved-equipment', [
+                'equipment_type' => 'Pump jack',
+                'location' => 'Casper, WY',
+                'condition' => 'Rough but complete',
+                'photos' => [
+                    UploadedFile::fake()->image('pump.jpg'),
+                ],
+                'documents' => [
+                    UploadedFile::fake()->create('spec-sheet.pdf', 128, 'application/pdf'),
+                ],
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status', 'Equipment submitted.');
+
+        $this->assertDatabaseHas('equipment_submissions', [
+            'user_id' => $user->id,
+            'equipment_type' => 'Pump jack',
+            'location' => 'Casper, WY',
+            'condition' => 'Rough but complete',
+            'status' => 'submitted',
+        ]);
+
+        $this->actingAs($user)
+            ->get('/seller/saved-equipment')
+            ->assertOk()
+            ->assertSee('Pump jack');
+    }
+
+    public function test_buyer_can_submit_equipment_request_and_see_it_on_saved_equipment(): void
+    {
+        $user = User::factory()->buyer()->create();
+
+        $this->actingAs($user)
+            ->post('/buyer/saved-equipment', [
+                'equipment_type' => 'Separator',
+                'specifications' => 'Three phase if available',
+                'budget_range' => '40,000',
+                'location_preference' => 'Rockies',
+                'timeline' => 'Aug 1, 2026 - Aug 31, 2026',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status', 'Equipment request submitted.');
+
+        $this->assertDatabaseHas('equipment_requests', [
+            'user_id' => $user->id,
+            'equipment_type' => 'Separator',
+            'budget_range' => '40,000',
+            'location_preference' => 'Rockies',
+            'timeline' => 'Aug 1, 2026 - Aug 31, 2026',
+            'status' => 'submitted',
+        ]);
+
+        $this->actingAs($user)
+            ->get('/buyer/saved-equipment')
+            ->assertOk()
+            ->assertSee('Separator');
+    }
+
+    public function test_buyer_equipment_request_budget_must_be_numeric(): void
+    {
+        $user = User::factory()->buyer()->create();
+
+        $this->actingAs($user)
+            ->from('/buyer/saved-equipment')
+            ->post('/buyer/saved-equipment', [
+                'equipment_type' => 'Separator',
+                'specifications' => 'Three phase if available',
+                'budget_range' => '$25k-$40k',
+                'location_preference' => 'Rockies',
+                'timeline' => 'Aug 1, 2026 - Aug 31, 2026',
+            ])
+            ->assertRedirect('/buyer/saved-equipment')
+            ->assertSessionHasErrors('budget_range');
+
+        $this->assertDatabaseMissing('equipment_requests', [
+            'user_id' => $user->id,
+            'equipment_type' => 'Separator',
+            'budget_range' => '$25k-$40k',
+        ]);
+    }
+
+    public function test_broker_can_update_submission_and_request_statuses(): void
+    {
+        $broker = User::factory()->broker()->create();
+        $seller = User::factory()->seller()->create();
+        $buyer = User::factory()->buyer()->create();
+
+        $submission = $seller->equipmentSubmissions()->create([
+            'equipment_type' => 'Tank battery',
+            'location' => 'Midland, TX',
+            'condition' => 'Usable',
+        ]);
+
+        $equipmentRequest = $buyer->equipmentRequests()->create([
+            'equipment_type' => 'Compressor',
+            'budget_range' => '$50k-$80k',
+            'location_preference' => 'Permian',
+            'timeline' => 'Q3',
+        ]);
+
+        $this->actingAs($broker)
+            ->patch("/broker/seller-submissions/{$submission->id}", [
+                'status' => 'buyers_identified',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status', 'Seller submission status updated.');
+
+        $this->actingAs($broker)
+            ->patch("/broker/buyer-requests/{$equipmentRequest->id}", [
+                'status' => 'options_presented',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status', 'Buyer request status updated.');
+
+        $this->assertDatabaseHas('equipment_submissions', [
+            'id' => $submission->id,
+            'status' => 'buyers_identified',
+        ]);
+
+        $this->assertDatabaseHas('equipment_requests', [
+            'id' => $equipmentRequest->id,
+            'status' => 'options_presented',
+        ]);
+    }
+
+    public function test_broker_status_updates_are_visible_in_customer_portal_lists(): void
+    {
+        $broker = User::factory()->broker()->create();
+        $seller = User::factory()->seller()->create();
+        $buyer = User::factory()->buyer()->create();
+
+        $submission = $seller->equipmentSubmissions()->create([
+            'equipment_type' => 'Tank battery',
+            'location' => 'Midland, TX',
+            'condition' => 'Usable',
+        ]);
+
+        $equipmentRequest = $buyer->equipmentRequests()->create([
+            'equipment_type' => 'Compressor',
+            'budget_range' => '$50k-$80k',
+            'location_preference' => 'Permian',
+            'timeline' => 'Q3',
+        ]);
+
+        $this->actingAs($broker)
+            ->patch("/broker/seller-submissions/{$submission->id}", [
+                'status' => 'buyers_identified',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->actingAs($broker)
+            ->patch("/broker/buyer-requests/{$equipmentRequest->id}", [
+                'status' => 'options_presented',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->actingAs($seller)
+            ->get('/seller/saved-equipment')
+            ->assertOk()
+            ->assertSee('Tank battery')
+            ->assertSee('Buyers Identified');
+
+        $this->actingAs($buyer)
+            ->get('/buyer/saved-equipment')
+            ->assertOk()
+            ->assertSee('Compressor')
+            ->assertSee('Options Presented');
+    }
+
+    public function test_customer_cannot_access_broker_review_page(): void
+    {
+        $user = User::factory()->seller()->create();
+
+        $this->actingAs($user)
+            ->get('/broker/submissions')
+            ->assertRedirect('/seller/dashboard');
     }
 
     public function test_portal_responses_prevent_browser_back_cache(): void

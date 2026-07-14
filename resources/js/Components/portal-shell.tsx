@@ -4,9 +4,9 @@ import type { ReactNode } from 'react';
 import ConfirmDialog from './confirm-dialog';
 import type { PortalData, SharedPageProps } from '../types';
 
-const navItems = [
+const sellerNavItems = [
     { label: 'Dashboard', path: 'dashboard', real: true, icon: 'dashboard' },
-    { label: 'Saved Equipment', path: 'saved-equipment', real: false, icon: 'equipment' },
+    { label: 'My Listings', path: 'saved-equipment', real: true, icon: 'equipment' },
     { label: 'Quotes', path: 'quotes', real: false, icon: 'quotes' },
     { label: 'Offers', path: 'offers', real: false, icon: 'offers' },
     { label: 'Documents', path: 'documents', real: false, icon: 'documents' },
@@ -15,7 +15,20 @@ const navItems = [
     { label: 'Profile', path: 'profile', real: true, icon: 'profile' },
 ];
 
-type PortalNavIconName = (typeof navItems)[number]['icon'];
+const buyerNavItems = [
+    { label: 'Dashboard', path: 'dashboard', real: true, icon: 'dashboard' },
+    { label: 'My Requests', path: 'saved-equipment', real: true, icon: 'equipment' },
+    { label: 'Saved Equipment', path: 'saved-equipment-watchlist', real: false, icon: 'equipment' },
+    { label: 'Quotes', path: 'quotes', real: false, icon: 'quotes' },
+    { label: 'Offers', path: 'offers', real: false, icon: 'offers' },
+    { label: 'Documents', path: 'documents', real: false, icon: 'documents' },
+    { label: 'Messages', path: 'messages', real: false, icon: 'messages' },
+    { label: 'Notifications', path: 'notifications', real: false, icon: 'notifications' },
+    { label: 'Profile', path: 'profile', real: true, icon: 'profile' },
+];
+
+type PortalNavItem = (typeof sellerNavItems | typeof buyerNavItems)[number];
+type PortalNavIconName = PortalNavItem['icon'];
 
 type PortalShellProps = {
     portal: PortalData;
@@ -39,6 +52,7 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
     const currentPath = page.url.split('?')[0];
     const userName = auth.user?.name ?? portal.profileName;
     const userInitial = (userName ?? portal.roleLabel).charAt(0).toUpperCase();
+    const navItems = portal.userType === 'seller' ? sellerNavItems : buyerNavItems;
 
     function logout() {
         setLogoutDialogOpen(false);

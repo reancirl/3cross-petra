@@ -437,7 +437,7 @@ export default function Equipment({ canonicalUrl, ogImageUrl }: EquipmentProps) 
                                         </dl>
 
                                         <a
-                                            href={`/request-equipment?asset=${listing.id}`}
+                                            href={`/equipment/${listing.id}`}
                                             className="mt-auto flex h-14 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
                                         >
                                             Request Details
