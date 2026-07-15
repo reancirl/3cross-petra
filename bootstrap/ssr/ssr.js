@@ -978,60 +978,73 @@ function BrokerSubmissions({ sellerSubmissions, buyerRequests, sellerStatusOptio
 					onSortDirectionChange: setSellerSortDirection,
 					children: [sortedSellerSubmissions.map((submission) => /* @__PURE__ */ jsxs("article", {
 						className: "border border-[#dad5cb] p-5",
-						children: [/* @__PURE__ */ jsxs("div", {
-							className: "flex flex-wrap items-start justify-between gap-4",
-							children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
-								className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-								children: submission.title
-							}), /* @__PURE__ */ jsxs("p", {
-								className: "mt-1 text-sm leading-6 text-neutral-500",
-								children: [
-									submission.seller,
-									" · ",
-									submission.email,
-									" · ",
-									submission.created_at
-								]
-							})] }), /* @__PURE__ */ jsx(StatusForm, {
-								value: submission.status,
-								options: sellerStatusOptions,
-								action: `/broker/seller-submissions/${submission.id}`
-							})]
-						}), /* @__PURE__ */ jsxs("dl", {
-							className: "mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
-							children: [
-								/* @__PURE__ */ jsx(Detail$2, {
-									label: "Category",
-									value: submission.category
-								}),
-								/* @__PURE__ */ jsx(Detail$2, {
-									label: "Region",
-									value: submission.city ? `${submission.region} — ${submission.city}` : submission.region
-								}),
-								/* @__PURE__ */ jsx(Detail$2, {
-									label: "Condition",
-									value: submission.condition_label
-								}),
-								/* @__PURE__ */ jsx(Detail$2, {
-									label: "Asking price",
-									value: submission.needs_valuation ? "Valuation requested" : submission.asking_price ? Number(submission.asking_price).toLocaleString("en-US", {
-										style: "currency",
-										currency: "USD",
-										maximumFractionDigits: 0
-									}) : null
-								}),
-								submission.condition_notes && /* @__PURE__ */ jsxs("div", {
-									className: "sm:col-span-2",
-									children: [/* @__PURE__ */ jsx("dt", {
-										className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
-										children: "Condition notes"
-									}), /* @__PURE__ */ jsx("dd", {
-										className: "mt-1 whitespace-pre-line text-neutral-700",
-										children: submission.condition_notes
+						children: [
+							/* @__PURE__ */ jsxs("div", {
+								className: "flex flex-wrap items-start justify-between gap-4",
+								children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("h3", {
+									className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+									children: [submission.title, submission.public_id && /* @__PURE__ */ jsx("span", {
+										className: "ml-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-[#a56437]",
+										children: submission.public_id
 									})]
-								})
-							]
-						})]
+								}), /* @__PURE__ */ jsxs("p", {
+									className: "mt-1 text-sm leading-6 text-neutral-500",
+									children: [
+										submission.seller,
+										" · ",
+										submission.email,
+										" · ",
+										submission.created_at
+									]
+								})] }), /* @__PURE__ */ jsx(StatusBadge$2, {
+									status: submission.status,
+									label: submission.status_label
+								})]
+							}),
+							/* @__PURE__ */ jsxs("dl", {
+								className: "mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
+								children: [
+									/* @__PURE__ */ jsx(Detail$2, {
+										label: "Category",
+										value: submission.category
+									}),
+									/* @__PURE__ */ jsx(Detail$2, {
+										label: "Region",
+										value: submission.city ? `${submission.region} — ${submission.city}` : submission.region
+									}),
+									/* @__PURE__ */ jsx(Detail$2, {
+										label: "Condition",
+										value: submission.condition_label
+									}),
+									/* @__PURE__ */ jsx(Detail$2, {
+										label: "Asking price",
+										value: submission.needs_valuation ? "Valuation requested" : submission.asking_price ? Number(submission.asking_price).toLocaleString("en-US", {
+											style: "currency",
+											currency: "USD",
+											maximumFractionDigits: 0
+										}) : null
+									}),
+									/* @__PURE__ */ jsx(Detail$2, {
+										label: "Photos",
+										value: `${submission.photo_count} uploaded`
+									}),
+									submission.condition_notes && /* @__PURE__ */ jsxs("div", {
+										className: "sm:col-span-2",
+										children: [/* @__PURE__ */ jsx("dt", {
+											className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+											children: "Condition notes (private)"
+										}), /* @__PURE__ */ jsx("dd", {
+											className: "mt-1 whitespace-pre-line text-neutral-700",
+											children: submission.condition_notes
+										})]
+									})
+								]
+							}),
+							/* @__PURE__ */ jsx(SellerReviewForm, {
+								submission,
+								options: sellerStatusOptions
+							})
+						]
 					}, submission.id)), sellerSubmissions.length === 0 && /* @__PURE__ */ jsx(EmptyState$1, { text: "No seller equipment has been submitted yet." })]
 				}),
 				/* @__PURE__ */ jsxs(SubmissionPanel, {
@@ -1129,6 +1142,170 @@ function SubmissionPanel({ title, itemCount, sortDirection, onSortDirectionChang
 				})]
 			})]
 		}), children]
+	});
+}
+function SellerReviewForm({ submission, options }) {
+	const form = useForm({
+		status: submission.status,
+		public_description: submission.public_description ?? "",
+		manufacturer: submission.manufacturer ?? "",
+		model: submission.model ?? "",
+		year: submission.year != null ? String(submission.year) : "",
+		capacity: submission.capacity ?? "",
+		featured: submission.featured,
+		documents_public: submission.documents.map((document) => document.public)
+	});
+	const errors = form.errors;
+	function submit(event) {
+		event.preventDefault();
+		form.patch(`/broker/seller-submissions/${submission.id}`, { preserveScroll: true });
+	}
+	return /* @__PURE__ */ jsxs("form", {
+		onSubmit: submit,
+		className: "mt-6 border-t border-[#dad5cb] pt-6",
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]",
+				children: "Broker Enrichment"
+			}),
+			errors.publish_block && /* @__PURE__ */ jsx("p", {
+				className: "mt-3 border border-[#b3261e]/30 bg-red-50 px-4 py-3 text-sm leading-6 text-[#b3261e]",
+				children: errors.publish_block
+			}),
+			/* @__PURE__ */ jsxs("div", {
+				className: "mt-4 grid gap-4 sm:grid-cols-2",
+				children: [
+					/* @__PURE__ */ jsx(EnrichField, {
+						label: "Public description",
+						error: errors.public_description,
+						className: "sm:col-span-2",
+						children: /* @__PURE__ */ jsx("textarea", {
+							value: form.data.public_description,
+							onChange: (event) => form.setData("public_description", event.target.value),
+							className: `portal-input min-h-24 py-3${errors.public_description ? " portal-input-error" : ""}`,
+							placeholder: "Buyer-facing description. Required to publish. Never shows raw seller notes."
+						})
+					}),
+					/* @__PURE__ */ jsx(EnrichField, {
+						label: "Manufacturer",
+						error: errors.manufacturer,
+						children: /* @__PURE__ */ jsx("input", {
+							value: form.data.manufacturer,
+							onChange: (event) => form.setData("manufacturer", event.target.value),
+							className: "portal-input"
+						})
+					}),
+					/* @__PURE__ */ jsx(EnrichField, {
+						label: "Model",
+						error: errors.model,
+						children: /* @__PURE__ */ jsx("input", {
+							value: form.data.model,
+							onChange: (event) => form.setData("model", event.target.value),
+							className: "portal-input"
+						})
+					}),
+					/* @__PURE__ */ jsx(EnrichField, {
+						label: "Year",
+						error: errors.year,
+						children: /* @__PURE__ */ jsx("input", {
+							type: "number",
+							inputMode: "numeric",
+							value: form.data.year,
+							onChange: (event) => form.setData("year", event.target.value),
+							className: `portal-input${errors.year ? " portal-input-error" : ""}`
+						})
+					}),
+					/* @__PURE__ */ jsx(EnrichField, {
+						label: "Capacity",
+						error: errors.capacity,
+						children: /* @__PURE__ */ jsx("input", {
+							value: form.data.capacity,
+							onChange: (event) => form.setData("capacity", event.target.value),
+							className: "portal-input"
+						})
+					})
+				]
+			}),
+			submission.documents.length > 0 && /* @__PURE__ */ jsxs("div", {
+				className: "mt-5",
+				children: [/* @__PURE__ */ jsx("span", {
+					className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+					children: "Documents — mark public"
+				}), /* @__PURE__ */ jsx("div", {
+					className: "mt-2 grid gap-2",
+					children: submission.documents.map((document, index) => /* @__PURE__ */ jsxs("label", {
+						className: "flex items-center gap-3 border border-[#dad5cb] bg-white p-3",
+						children: [
+							/* @__PURE__ */ jsx("input", {
+								type: "checkbox",
+								checked: form.data.documents_public[index] ?? false,
+								onChange: (event) => form.setData("documents_public", form.data.documents_public.map((value, i) => i === index ? event.target.checked : value)),
+								className: "h-4 w-4 shrink-0 accent-[#a56437]"
+							}),
+							/* @__PURE__ */ jsx("span", {
+								className: "min-w-0 truncate text-sm font-semibold text-neutral-900",
+								children: document.name
+							}),
+							/* @__PURE__ */ jsx("span", {
+								className: "ml-auto font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400",
+								children: form.data.documents_public[index] ?? false ? "Public" : "Private"
+							})
+						]
+					}, `${document.name}-${index}`))
+				})]
+			}),
+			/* @__PURE__ */ jsxs("label", {
+				className: "mt-5 flex w-fit cursor-pointer items-center gap-3",
+				children: [/* @__PURE__ */ jsx("input", {
+					type: "checkbox",
+					checked: form.data.featured,
+					onChange: (event) => form.setData("featured", event.target.checked),
+					className: "h-4 w-4 shrink-0 accent-[#a56437]"
+				}), /* @__PURE__ */ jsx("span", {
+					className: "font-heading text-sm font-semibold uppercase tracking-[0.1em] text-neutral-700",
+					children: "Feature on homepage & top of marketplace"
+				})]
+			}),
+			/* @__PURE__ */ jsxs("div", {
+				className: "mt-6 flex flex-wrap items-end gap-3 border-t border-[#dad5cb] pt-5",
+				children: [/* @__PURE__ */ jsxs("label", {
+					className: "grid gap-2",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: "Status"
+					}), /* @__PURE__ */ jsx("select", {
+						value: form.data.status,
+						onChange: (event) => form.setData("status", event.target.value),
+						className: "h-10 border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800",
+						children: Object.entries(options).map(([status, label]) => /* @__PURE__ */ jsx("option", {
+							value: status,
+							children: label
+						}, status))
+					})]
+				}), /* @__PURE__ */ jsx("button", {
+					type: "submit",
+					disabled: form.processing,
+					className: "button-press focus-copper h-10 bg-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+					children: form.data.status === "published" ? "Publish" : "Save"
+				})]
+			})
+		]
+	});
+}
+function EnrichField({ label, error, className = "", children }) {
+	return /* @__PURE__ */ jsxs("label", {
+		className: `grid gap-2 ${className}`,
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+				children: label
+			}),
+			children,
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			})
+		]
 	});
 }
 function StatusForm({ value, options, action }) {
@@ -1360,338 +1537,32 @@ function Contact({ canonicalUrl, ogImageUrl, assetContext }) {
 		})]
 	})] });
 }
-var equipment_default = {
-	heroImage: "/images/petra-equipment-yard-hero.png",
-	categories: [
-		{
-			"name": "Compressors",
-			"slug": "compressors",
-			"summary": "Natural gas compressor packages, Ariel frames, engine-driven packages, and field-ready compression assets.",
-			"count": "Active network"
-		},
-		{
-			"name": "Separators",
-			"slug": "separators",
-			"summary": "Production separators, test separators, heater treaters, and pressure vessels for oilfield operations.",
-			"count": "Field verified"
-		},
-		{
-			"name": "Tank Batteries",
-			"slug": "tank-batteries",
-			"summary": "Storage tanks, tank battery packages, containment assets, and production-site support equipment.",
-			"count": "Regional supply"
-		},
-		{
-			"name": "Pump Packages",
-			"slug": "pump-packages",
-			"summary": "Pump skids, transfer packages, saltwater disposal support equipment, and production handling assets.",
-			"count": "Sourcing ready"
-		},
-		{
-			"name": "Production Equipment",
-			"slug": "production-equipment",
-			"summary": "Production packages, field equipment groups, and site-ready assets used across active producing regions.",
-			"count": "Network category"
-		},
-		{
-			"name": "Processing Equipment",
-			"slug": "processing-equipment",
-			"summary": "Processing assets, treating equipment, and production support systems for field and yard operations.",
-			"count": "Network category"
-		},
-		{
-			"name": "Generators",
-			"slug": "generators",
-			"summary": "Generator sets, power units, and field power packages for production and industrial sites.",
-			"count": "Network category"
-		},
-		{
-			"name": "Drilling Equipment",
-			"slug": "drilling-equipment",
-			"summary": "Drilling support equipment, surplus packages, and related assets moving through regional sellers.",
-			"count": "Network category"
-		},
-		{
-			"name": "Electrical Equipment",
-			"slug": "electrical-equipment",
-			"summary": "Electrical gear, power distribution assets, and field-ready equipment for industrial operations.",
-			"count": "Network category"
-		},
-		{
-			"name": "Pipe & Tubular",
-			"slug": "pipe-tubular",
-			"summary": "Pipe, tubing, tubular goods, and surplus yard inventory available through regional networks.",
-			"count": "Network category"
-		},
-		{
-			"name": "Valves & Controls",
-			"slug": "valves-controls",
-			"summary": "Valves, fittings, control systems, and related production-site components.",
-			"count": "Network category"
-		},
-		{
-			"name": "Instrumentation",
-			"slug": "instrumentation",
-			"summary": "Instrumentation, measurement equipment, and control components for field operations.",
-			"count": "Network category"
-		},
-		{
-			"name": "Wellhead Equipment",
-			"slug": "wellhead-equipment",
-			"summary": "Wellhead equipment, production-site hardware, and related field assets.",
-			"count": "Network category"
-		},
-		{
-			"name": "Other Equipment",
-			"slug": "other-equipment",
-			"summary": "Other oilfield, industrial, and surplus equipment that does not fit a primary category.",
-			"count": "Network category"
-		}
-	],
-	listings: [
-		{
-			"id": "PH-9902",
-			"name": "3-Phase Production Separator",
-			"category": "Separators",
-			"location": "Wyoming Oilfields",
-			"condition": "Field verified",
-			"status": "Available",
-			"manufacturer": "Production package",
-			"year": "2020",
-			"capacity": "36 in x 10 ft, 1440 WP",
-			"description": "Production separator package positioned for operators sourcing verified used oilfield equipment across Wyoming and the Rockies.",
-			"imagePosition": "22% center",
-			"overview": "This 3-phase production separator was used in active Wyoming production service before being pulled into yard storage. Petra has positioned it as a practical fit for operators needing a field-proven vessel with known service history, visual condition notes, and documentation available for broker review.",
-			"fieldConditionNotes": {
-				"operatingCondition": "Reported operational when removed from service; final function checks should be completed before redeployment.",
-				"knownIssues": "Exterior paint wear, normal field oxidation, and minor instrumentation gaps noted during broker review.",
-				"storageCondition": "Stored above grade in a Wyoming equipment yard with access for inspection.",
-				"lastKnownUse": "Production separation service in 2025."
-			},
-			"specifications": {
-				"manufacturer": "Production package",
-				"model": "Horizontal 3-phase separator package",
-				"serialNumber": "PH-9902-SEP",
-				"year": "2020",
-				"capacity": "36 in x 10 ft, 1440 WP",
-				"technicalSpecs": [
-					"Horizontal 3-phase vessel configuration",
-					"Skid-mounted package with production piping",
-					"Configured for oil, gas, and water separation",
-					"Suitable for inspection-led redeployment"
-				]
-			},
-			"media": {
-				"photos": [
-					{
-						"src": "/images/petra-equipment-yard-hero.png",
-						"alt": "Production separator package staged in an oilfield equipment yard.",
-						"position": "22% center"
-					},
-					{
-						"src": "/images/petra-equipment-yard-hero.png",
-						"alt": "Field equipment yard view used for separator inspection context.",
-						"position": "38% center"
-					},
-					{
-						"src": "/images/petra-equipment-yard-hero.png",
-						"alt": "Oilfield equipment storage area for broker-reviewed assets.",
-						"position": "54% center"
-					}
-				],
-				"videoUrl": ""
-			},
-			"documents": [{
-				"label": "Inspection report",
-				"type": "Inspection reports",
-				"href": "/documents/ph-9902-inspection-report.txt"
-			}, {
-				"label": "Spec sheet",
-				"type": "Spec sheets",
-				"href": "/documents/ph-9902-spec-sheet.txt"
-			}]
-		},
-		{
-			"id": "PH-1148",
-			"name": "Ariel JGK/4 Compressor Package",
-			"category": "Compressors",
-			"location": "Rockies and Bakken network",
-			"condition": "Broker reviewed",
-			"status": "Pending",
-			"manufacturer": "Ariel",
-			"year": "2018",
-			"capacity": "3550 HP, 2-stage",
-			"description": "Compressor package tracked through Petra's buyer network for operators needing production compression without auction friction.",
-			"imagePosition": "52% center",
-			"overview": "This Ariel compressor package represents the type of production compression Petra tracks through regional seller and operator relationships. The package is best treated as a broker-reviewed opportunity requiring availability, run-history, and inspection confirmation before pricing decisions.",
-			"fieldConditionNotes": {
-				"operatingCondition": "Broker reviewed; operational history available by request from the seller contact.",
-				"knownIssues": "Availability and final package configuration may move with market activity.",
-				"storageCondition": "Tracked through Rockies and Bakken network contacts, with inspection coordination required.",
-				"lastKnownUse": "Production compression service before network listing review."
-			},
-			"specifications": {
-				"manufacturer": "Ariel",
-				"model": "JGK/4 compressor package",
-				"serialNumber": "Available during broker diligence",
-				"year": "2018",
-				"capacity": "3550 HP, 2-stage",
-				"technicalSpecs": [
-					"Ariel JGK/4 frame",
-					"Two-stage compression package",
-					"Engine-driven production service configuration",
-					"Run records and package details available during diligence"
-				]
-			},
-			"media": {
-				"photos": [{
-					"src": "/images/petra-equipment-yard-hero.png",
-					"alt": "Compressor package represented through Petra's regional equipment network.",
-					"position": "52% center"
-				}, {
-					"src": "/images/petra-equipment-yard-hero.png",
-					"alt": "Industrial equipment yard context for compressor package sourcing.",
-					"position": "62% center"
-				}],
-				"videoUrl": ""
-			},
-			"documents": [{
-				"label": "Maintenance summary",
-				"type": "Maintenance records",
-				"href": "/documents/ph-1148-maintenance-summary.txt"
-			}]
-		},
-		{
-			"id": "PH-7761",
-			"name": "Storage Tank Battery Package",
-			"category": "Tank Batteries",
-			"location": "Colorado energy corridor",
-			"condition": "Cleaned and inspected",
-			"status": "Available",
-			"manufacturer": "Fiberglass storage package",
-			"year": "Recent surplus",
-			"capacity": "400 BBL x 4",
-			"description": "Tank battery package for buyers looking at field storage, production handling, and regional surplus equipment.",
-			"imagePosition": "80% center",
-			"overview": "This tank battery package is representative of cleaned and inspected surplus storage assets Petra helps place with buyers who need practical field storage, production handling, and regional logistics support.",
-			"fieldConditionNotes": {
-				"operatingCondition": "Cleaned and inspected for surplus review; buyer should confirm site fit and containment requirements.",
-				"knownIssues": "Minor cosmetic wear expected from field service.",
-				"storageCondition": "Stored in the Colorado energy corridor with regional transport coordination available.",
-				"lastKnownUse": "Field storage support before surplus release."
-			},
-			"specifications": {
-				"manufacturer": "Fiberglass storage package",
-				"model": "Four-tank battery package",
-				"serialNumber": "PH-7761-TANK",
-				"year": "Recent surplus",
-				"capacity": "400 BBL x 4",
-				"technicalSpecs": [
-					"Four 400 BBL storage tanks",
-					"Production handling and field storage use case",
-					"Inspection-led buyer review recommended",
-					"Logistics review required before relocation"
-				]
-			},
-			"media": {
-				"photos": [{
-					"src": "/images/petra-equipment-yard-hero.png",
-					"alt": "Tank battery package staged for regional surplus review.",
-					"position": "80% center"
-				}, {
-					"src": "/images/petra-equipment-yard-hero.png",
-					"alt": "Oilfield storage equipment yard context.",
-					"position": "74% center"
-				}],
-				"videoUrl": ""
-			},
-			"documents": []
-		},
-		{
-			"id": "PH-5520",
-			"name": "Transfer Pump Skid",
-			"category": "Pump Packages",
-			"location": "New Mexico and West Texas",
-			"condition": "Sourcing verified",
-			"status": "Pending",
-			"manufacturer": "Packaged pump skid",
-			"year": "2019",
-			"capacity": "High-volume transfer service",
-			"description": "Pump package sourcing option for buyers who need specific flow requirements, site fit, and logistics support.",
-			"imagePosition": "68% center",
-			"overview": "This transfer pump skid is shown as a sourcing-verified pump package for buyers who need flow, footprint, power, and logistics details confirmed before committing to inspection.",
-			"fieldConditionNotes": {
-				"operatingCondition": "Sourcing verified; operating checks should be confirmed against buyer flow requirements.",
-				"knownIssues": "Final motor, seal, and controls configuration must be confirmed during broker diligence.",
-				"storageCondition": "Available through New Mexico and West Texas sourcing contacts.",
-				"lastKnownUse": "Transfer service package before sourcing review."
-			},
-			"specifications": {
-				"manufacturer": "Packaged pump skid",
-				"model": "High-volume transfer skid",
-				"serialNumber": "Available during broker diligence",
-				"year": "2019",
-				"capacity": "High-volume transfer service",
-				"technicalSpecs": [
-					"Skid-mounted pump package",
-					"High-volume transfer service configuration",
-					"Site fit and power requirements to be confirmed",
-					"Logistics coordination available through broker review"
-				]
-			},
-			"media": {
-				"photos": [{
-					"src": "/images/petra-equipment-yard-hero.png",
-					"alt": "Transfer pump skid represented through Petra's sourcing network.",
-					"position": "68% center"
-				}, {
-					"src": "/images/petra-equipment-yard-hero.png",
-					"alt": "Industrial pump package yard context.",
-					"position": "60% center"
-				}],
-				"videoUrl": ""
-			},
-			"documents": []
-		}
-	],
-	regions: [
-		"Wyoming",
-		"Powder River",
-		"Rockies",
-		"Bakken",
-		"North Dakota",
-		"Colorado",
-		"Utah",
-		"New Mexico",
-		"Montana"
-	]
-};
 //#endregion
 //#region resources/js/Pages/Equipment.tsx
 var Equipment_exports = /* @__PURE__ */ __exportAll({ default: () => Equipment });
-var { heroImage: heroImage$11, categories: categories$2, listings, regions: regions$6 } = equipment_default;
+var PLACEHOLDER_IMAGE$1 = "/images/petra-equipment-yard-hero.png";
+function fallbackToPlaceholder$1(event) {
+	if (!event.currentTarget.src.endsWith(PLACEHOLDER_IMAGE$1)) event.currentTarget.src = PLACEHOLDER_IMAGE$1;
+}
+var availabilityPill = {
+	success: "bg-emerald-700 text-white",
+	warning: "bg-amber-600 text-white",
+	muted: "bg-neutral-700 text-white",
+	neutral: "bg-neutral-700 text-white",
+	danger: "bg-[#b3261e] text-white"
+};
 var emptyFilters = {
 	category: "",
 	condition: "",
-	location: "",
+	region: "",
 	manufacturer: "",
 	availability: ""
 };
-var unique = (values) => Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
-categories$2.slice(0, 4);
-categories$2.slice(4);
 var pageTitle$6 = "Used Oilfield Equipment Marketplace | Petra";
 var pageDescription$6 = "Browse used oilfield and industrial equipment handled by Petra, including compressors, separators, tank batteries, and pump packages across Wyoming, the Rockies, and the Bakken.";
-function Equipment({ canonicalUrl, ogImageUrl }) {
+function Equipment({ canonicalUrl, ogImageUrl, listings, filterOptions, categories }) {
 	const [filters, setFilters] = useState(emptyFilters);
 	const hasActiveFilters = Object.values(filters).some(Boolean);
-	const filterOptions = useMemo(() => ({
-		category: categories$2.map((category) => category.name),
-		condition: unique(listings.map((listing) => listing.condition)),
-		location: unique(listings.map((listing) => listing.location)),
-		manufacturer: unique(listings.map((listing) => listing.manufacturer)),
-		availability: unique(listings.map((listing) => listing.status))
-	}), []);
 	const filterControls = [
 		{
 			key: "category",
@@ -1704,9 +1575,9 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 			options: filterOptions.condition
 		},
 		{
-			key: "location",
+			key: "region",
 			label: "Location",
-			options: filterOptions.location
+			options: filterOptions.region
 		},
 		{
 			key: "manufacturer",
@@ -1719,9 +1590,8 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 			options: filterOptions.availability
 		}
 	];
-	const filteredListings = listings.filter((listing) => {
-		return (!filters.category || listing.category === filters.category) && (!filters.condition || listing.condition === filters.condition) && (!filters.location || listing.location === filters.location) && (!filters.manufacturer || listing.manufacturer === filters.manufacturer) && (!filters.availability || listing.status === filters.availability);
-	});
+	const filteredListings = useMemo(() => listings.filter((listing) => (!filters.category || listing.category === filters.category) && (!filters.condition || listing.condition === filters.condition) && (!filters.region || listing.region === filters.region) && (!filters.manufacturer || listing.manufacturer === filters.manufacturer) && (!filters.availability || listing.availability === filters.availability)), [listings, filters]);
+	const hasListings = listings.length > 0;
 	const structuredData = {
 		"@context": "https://schema.org",
 		"@graph": [
@@ -1736,7 +1606,7 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 					name: "Petra",
 					url: canonicalUrl.replace(/\/equipment$/, "")
 				},
-				about: categories$2.map((category) => category.name)
+				about: categories
 			},
 			{
 				"@type": "BreadcrumbList",
@@ -1756,20 +1626,20 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 			{
 				"@type": "ItemList",
 				"@id": `${canonicalUrl}#featured-equipment`,
-				name: "Featured used oilfield equipment",
+				name: "Used oilfield equipment available through Petra",
 				itemListElement: listings.map((listing, index) => ({
 					"@type": "ListItem",
 					position: index + 1,
 					item: {
 						"@type": "Product",
-						name: listing.name,
+						name: listing.title,
 						category: listing.category,
 						description: listing.description,
-						identifier: listing.id,
-						brand: {
+						identifier: listing.public_id,
+						...listing.manufacturer ? { brand: {
 							"@type": "Brand",
 							name: listing.manufacturer
-						}
+						} } : {}
 					}
 				}))
 			}
@@ -1878,31 +1748,30 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 			className: "py-20 sm:py-24 lg:py-28",
 			children: /* @__PURE__ */ jsxs("div", {
 				className: "mx-auto max-w-[1280px] px-5 sm:px-10",
-				children: [
-					/* @__PURE__ */ jsxs("div", {
-						className: "mb-12 flex flex-col gap-8 md:mb-16 md:flex-row md:items-end md:justify-between",
-						children: [/* @__PURE__ */ jsxs("div", {
-							className: "max-w-3xl",
-							children: [
-								/* @__PURE__ */ jsx("span", {
-									className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-									children: "Featured Equipment"
-								}),
-								/* @__PURE__ */ jsx("h2", {
-									className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
-									children: "Representative Listings"
-								}),
-								/* @__PURE__ */ jsx("p", {
-									className: "mt-5 text-lg leading-8 text-neutral-600",
-									children: "These listings show the type of equipment Petra handles. Availability can move quickly, so use the inquiry CTA for current condition, location, and documentation."
-								})
-							]
-						}), /* @__PURE__ */ jsx("a", {
-							href: "/sell-equipment",
-							className: "inline-flex h-16 w-fit items-center justify-center border border-neutral-500 px-8 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
-							children: "Sell Equipment"
-						})]
-					}),
+				children: [/* @__PURE__ */ jsxs("div", {
+					className: "mb-12 flex flex-col gap-8 md:mb-16 md:flex-row md:items-end md:justify-between",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "max-w-3xl",
+						children: [
+							/* @__PURE__ */ jsx("span", {
+								className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+								children: "Featured Equipment"
+							}),
+							/* @__PURE__ */ jsx("h2", {
+								className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
+								children: "Available Listings"
+							}),
+							/* @__PURE__ */ jsx("p", {
+								className: "mt-5 text-lg leading-8 text-neutral-600",
+								children: "Equipment currently available through Petra. Availability can move quickly, so use the inquiry CTA for current condition, location, and documentation."
+							})
+						]
+					}), /* @__PURE__ */ jsx("a", {
+						href: "/sell-equipment",
+						className: "inline-flex h-16 w-fit items-center justify-center border border-neutral-500 px-8 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
+						children: "Sell Equipment"
+					})]
+				}), hasListings ? /* @__PURE__ */ jsxs(Fragment, { children: [
 					/* @__PURE__ */ jsxs("div", {
 						"data-polish-reveal": true,
 						className: "mb-12 border border-[#dad5cb] bg-white p-6 shadow-[0_18px_45px_rgba(28,26,22,0.06)] sm:p-8",
@@ -1949,101 +1818,116 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 						})]
 					}),
 					/* @__PURE__ */ jsx("div", {
-						className: "space-y-8",
-						children: filteredListings.map((listing) => /* @__PURE__ */ jsxs("article", {
-							"data-polish-reveal": true,
-							className: "listing-transition group grid grid-cols-1 overflow-hidden border border-[#dad5cb] bg-white transition-[border-color,box-shadow,transform] duration-500 hover:-translate-y-1 hover:border-[#a56437] hover:shadow-[0_24px_55px_rgba(28,26,22,0.12)] lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)]",
-							children: [/* @__PURE__ */ jsxs("figure", {
-								className: "relative min-h-[260px] overflow-hidden bg-neutral-950 sm:min-h-[330px] lg:min-h-[390px]",
-								children: [
-									/* @__PURE__ */ jsx("img", {
-										src: heroImage$11,
-										alt: `${listing.name} represented in Petra's used oilfield equipment marketplace.`,
-										loading: "lazy",
-										className: "image-lift absolute inset-0 h-full w-full object-cover opacity-95",
-										style: { objectPosition: listing.imagePosition }
-									}),
-									/* @__PURE__ */ jsx("div", {
-										className: "absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent",
-										"aria-hidden": "true"
-									}),
-									/* @__PURE__ */ jsx("div", {
-										className: "absolute left-4 top-4 bg-[#a56437] px-3 py-1.5 font-heading text-xs font-semibold uppercase tracking-[0.08em] text-white",
-										children: listing.category
-									}),
-									/* @__PURE__ */ jsxs("figcaption", {
-										className: "absolute bottom-4 left-4 right-4 flex flex-wrap items-end justify-between gap-4",
-										children: [/* @__PURE__ */ jsx("span", {
-											className: "max-w-xl font-heading text-2xl font-semibold uppercase leading-none tracking-[0.06em] text-white sm:text-3xl",
-											children: listing.name
-										}), /* @__PURE__ */ jsxs("span", {
-											className: "border border-white/20 bg-black/50 px-2 py-1 font-heading text-xs font-semibold tracking-[0.08em] text-white/80 backdrop-blur-md",
-											children: ["ID: ", listing.id]
-										})]
-									})
-								]
-							}), /* @__PURE__ */ jsxs("div", {
-								className: "flex flex-col p-6 sm:p-8",
-								children: [
-									/* @__PURE__ */ jsxs("div", {
-										className: "mb-5 flex flex-wrap items-center gap-3",
-										children: [/* @__PURE__ */ jsx("span", {
-											className: "bg-[#f3f1ec] px-3 py-1 font-heading text-xs font-semibold uppercase tracking-[0.1em] text-[#a56437]",
-											children: listing.status
-										}), /* @__PURE__ */ jsx("span", {
-											className: "font-heading text-xs font-semibold uppercase tracking-[0.1em] text-neutral-500",
-											children: listing.location
-										})]
-									}),
-									/* @__PURE__ */ jsx("h3", {
-										className: "font-heading text-2xl font-semibold uppercase leading-tight tracking-[0.06em] text-neutral-950 sm:text-3xl",
-										children: listing.name
-									}),
-									/* @__PURE__ */ jsx("p", {
-										className: "mt-4 text-base leading-7 text-neutral-600",
-										children: listing.description
-									}),
-									/* @__PURE__ */ jsx("dl", {
-										className: "my-6 grid grid-cols-1 gap-px bg-[#dad5cb] sm:grid-cols-2",
-										children: [
-											["Condition", listing.condition],
-											["Manufacturer", listing.manufacturer],
-											["Year", listing.year],
-											["Capacity", listing.capacity],
-											["Status", listing.status],
-											["Region", listing.location]
-										].map(([label, value]) => /* @__PURE__ */ jsxs("div", {
-											className: "bg-white p-4",
-											children: [/* @__PURE__ */ jsx("dt", {
-												className: "font-heading text-xs font-semibold uppercase tracking-[0.1em] text-neutral-500",
-												children: label
-											}), /* @__PURE__ */ jsx("dd", {
-												className: "mt-1 font-heading text-sm font-semibold text-neutral-950",
-												children: value
+						className: "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3",
+						children: filteredListings.map((listing) => {
+							const specs = [
+								listing.manufacturer,
+								listing.year,
+								listing.capacity
+							].filter(Boolean).join(" · ");
+							return /* @__PURE__ */ jsxs("a", {
+								href: listing.href,
+								"data-polish-reveal": true,
+								className: "group flex flex-col overflow-hidden border border-[#dad5cb] bg-white transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-[#a56437] hover:shadow-[0_18px_40px_rgba(28,26,22,0.12)]",
+								children: [/* @__PURE__ */ jsxs("figure", {
+									className: "relative aspect-[4/3] overflow-hidden bg-neutral-950",
+									children: [
+										/* @__PURE__ */ jsx("img", {
+											src: listing.image_url,
+											alt: `${listing.title} — used oilfield equipment listed with Petra.`,
+											loading: "lazy",
+											onError: fallbackToPlaceholder$1,
+											className: "absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+										}),
+										/* @__PURE__ */ jsx("div", {
+											className: "absolute inset-0 bg-gradient-to-t from-black/50 to-transparent",
+											"aria-hidden": "true"
+										}),
+										/* @__PURE__ */ jsxs("div", {
+											className: "absolute left-3 top-3 flex flex-wrap gap-2",
+											children: [/* @__PURE__ */ jsx("span", {
+												className: "bg-[#a56437] px-2.5 py-1 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-white",
+												children: listing.category
+											}), listing.featured && /* @__PURE__ */ jsx("span", {
+												className: "bg-neutral-950 px-2.5 py-1 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.08em] text-white",
+												children: "Featured"
 											})]
-										}, label))
-									}),
-									/* @__PURE__ */ jsx("a", {
-										href: `/equipment/${listing.id}`,
-										className: "mt-auto flex h-14 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
-										children: "Request Details"
-									})
-								]
-							})]
-						}, listing.id))
+										}),
+										/* @__PURE__ */ jsx("span", {
+											className: `absolute right-3 top-3 px-2.5 py-1 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.08em] ${availabilityPill[listing.status_tone] ?? availabilityPill.neutral}`,
+											children: listing.availability
+										}),
+										/* @__PURE__ */ jsx("span", {
+											className: "absolute bottom-3 right-3 font-heading text-[0.65rem] font-semibold tracking-[0.08em] text-white/70",
+											children: listing.public_id
+										})
+									]
+								}), /* @__PURE__ */ jsxs("div", {
+									className: "flex flex-1 flex-col p-5",
+									children: [
+										/* @__PURE__ */ jsx("span", {
+											className: "font-heading text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[#a56437]",
+											children: listing.city ? `${listing.region} — ${listing.city}` : listing.region
+										}),
+										/* @__PURE__ */ jsx("h3", {
+											className: "mt-2 line-clamp-2 font-heading text-xl font-semibold uppercase leading-tight tracking-[0.04em] text-neutral-950",
+											children: listing.title
+										}),
+										/* @__PURE__ */ jsx("p", {
+											className: "mt-2 line-clamp-2 text-sm leading-6 text-neutral-600",
+											children: listing.description
+										}),
+										specs && /* @__PURE__ */ jsx("p", {
+											className: "mt-4 line-clamp-1 font-heading text-xs font-semibold uppercase tracking-[0.08em] text-neutral-500",
+											children: specs
+										}),
+										/* @__PURE__ */ jsxs("span", {
+											className: "mt-auto flex items-center gap-2 pt-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] transition-colors group-hover:text-neutral-950",
+											children: ["View Details", /* @__PURE__ */ jsx("span", {
+												"aria-hidden": "true",
+												className: "transition-transform duration-300 group-hover:translate-x-1",
+												children: "→"
+											})]
+										})
+									]
+								})]
+							}, listing.public_id);
+						})
 					}),
-					filteredListings.length === 0 && /* @__PURE__ */ jsx("div", {
+					filteredListings.length === 0 && /* @__PURE__ */ jsxs("div", {
 						className: "border border-[#dad5cb] bg-white p-8 text-center",
-						children: /* @__PURE__ */ jsx("p", {
+						children: [/* @__PURE__ */ jsx("p", {
 							className: "text-lg leading-8 text-neutral-600",
 							children: "No listed equipment matches those filters right now."
-						})
+						}), /* @__PURE__ */ jsx("button", {
+							type: "button",
+							onClick: () => setFilters(emptyFilters),
+							className: "mt-6 inline-flex h-12 items-center justify-center border border-neutral-500 px-8 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
+							children: "Reset Filters"
+						})]
 					}),
 					/* @__PURE__ */ jsx("p", {
 						className: "mx-auto mt-12 max-w-3xl text-center text-lg leading-8 text-neutral-600",
 						children: "If you see equipment that matches your needs, reach out early. High-quality assets move fast."
 					})
-				]
+				] }) : /* @__PURE__ */ jsxs("div", {
+					className: "border border-[#dad5cb] bg-white p-10 text-center sm:p-16",
+					children: [
+						/* @__PURE__ */ jsx("h3", {
+							className: "font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl",
+							children: "New inventory is added regularly"
+						}),
+						/* @__PURE__ */ jsx("p", {
+							className: "mx-auto mt-5 max-w-2xl text-lg leading-8 text-neutral-600",
+							children: "Tell us what you're looking for and Petra will source it through regional networks, operator relationships, and surplus yards."
+						}),
+						/* @__PURE__ */ jsx("a", {
+							href: "/request-equipment",
+							className: "mt-8 inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
+							children: "Request Equipment"
+						})
+					]
+				})]
 			})
 		})]
 	})] });
@@ -2051,9 +1935,18 @@ function Equipment({ canonicalUrl, ogImageUrl }) {
 //#endregion
 //#region resources/js/Pages/EquipmentDetail.tsx
 var EquipmentDetail_exports = /* @__PURE__ */ __exportAll({ default: () => EquipmentDetail });
+var PLACEHOLDER_IMAGE = "/images/petra-equipment-yard-hero.png";
+function fallbackToPlaceholder(event) {
+	if (!event.currentTarget.src.endsWith(PLACEHOLDER_IMAGE)) event.currentTarget.src = PLACEHOLDER_IMAGE;
+}
 function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 	const { auth, status } = usePage().props;
-	const [selectedPhoto, setSelectedPhoto] = useState(listing.media.photos[0]);
+	const gallery = listing.photos.length > 0 ? listing.photos : [{
+		url: listing.image_url,
+		alt: listing.title
+	}];
+	const [selectedPhoto, setSelectedPhoto] = useState(gallery[0]);
+	const isAuthed = Boolean(auth.user);
 	const form = useForm({
 		name: auth.user?.name ?? "",
 		email: auth.user?.email ?? "",
@@ -2061,22 +1954,22 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 		company_name: auth.user?.company_name ?? "",
 		note: ""
 	});
-	const pageTitle = `${listing.name} | Petra Equipment Detail`;
-	const pageDescription = `${listing.name} in ${listing.location}. Review status, condition notes, specs, media, documents, and request quote details from Petra.`;
-	const talkToBrokerUrl = `/contact?asset=${encodeURIComponent(listing.id)}&equipment=${encodeURIComponent(listing.name)}`;
+	const pageTitle = `${listing.title} | Petra Equipment Detail`;
+	const pageDescription = `${listing.title} in ${listing.region}. Review availability, specs, media, and request quote details from Petra.`;
+	const talkToBrokerUrl = `/contact?asset=${encodeURIComponent(listing.public_id)}&equipment=${encodeURIComponent(listing.title)}`;
 	const structuredData = {
 		"@context": "https://schema.org",
 		"@graph": [{
 			"@type": "Product",
 			"@id": `${canonicalUrl}#equipment`,
-			name: listing.name,
-			identifier: listing.id,
+			name: listing.title,
+			identifier: listing.public_id,
 			category: listing.category,
-			description: listing.overview,
-			brand: {
+			description: listing.description,
+			...listing.manufacturer ? { brand: {
 				"@type": "Brand",
-				name: listing.specifications.manufacturer
-			}
+				name: listing.manufacturer
+			} } : {}
 		}, {
 			"@type": "BreadcrumbList",
 			"@id": `${canonicalUrl}#breadcrumbs`,
@@ -2096,7 +1989,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 				{
 					"@type": "ListItem",
 					position: 3,
-					name: listing.name,
+					name: listing.title,
 					item: canonicalUrl
 				}
 			]
@@ -2107,7 +2000,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 	}, [status]);
 	function submit(event) {
 		event.preventDefault();
-		form.post(`/equipment/${listing.id}/inquiries`, {
+		form.post(`/equipment/${listing.public_id}/inquiries`, {
 			preserveScroll: true,
 			onSuccess: () => form.setData("note", "")
 		});
@@ -2186,37 +2079,44 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 					}),
 					/* @__PURE__ */ jsxs("div", {
 						className: "mb-7 flex flex-wrap gap-3",
-						children: [/* @__PURE__ */ jsx("span", {
-							className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]",
-							children: listing.category
-						}), /* @__PURE__ */ jsxs("span", {
-							className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600",
-							children: ["ID: ", listing.id]
-						})]
+						children: [
+							/* @__PURE__ */ jsx("span", {
+								className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]",
+								children: listing.category
+							}),
+							/* @__PURE__ */ jsxs("span", {
+								className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600",
+								children: ["ID: ", listing.public_id]
+							}),
+							listing.featured && /* @__PURE__ */ jsx("span", {
+								className: "border border-[#dad5cb] bg-neutral-950 px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-white",
+								children: "Featured"
+							})
+						]
 					}),
 					/* @__PURE__ */ jsx("h1", {
 						className: "max-w-4xl font-hero text-[2.4rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.1rem] lg:text-[3.8rem]",
-						children: listing.name
+						children: listing.title
 					}),
 					/* @__PURE__ */ jsxs("dl", {
 						className: "mt-8 grid gap-px bg-[#dad5cb] sm:grid-cols-2",
 						children: [/* @__PURE__ */ jsx(HeaderDetail, {
-							label: "Status",
-							value: listing.status,
+							label: "Availability",
+							value: listing.availability,
 							strong: true
 						}), /* @__PURE__ */ jsx(HeaderDetail, {
-							label: "Location",
-							value: listing.location
+							label: "Region",
+							value: listing.city ? `${listing.region} — ${listing.city}` : listing.region
 						})]
 					})
 				] }), /* @__PURE__ */ jsxs("figure", {
 					className: "relative min-h-[320px] overflow-hidden bg-neutral-950 sm:min-h-[430px]",
 					children: [
 						/* @__PURE__ */ jsx("img", {
-							src: selectedPhoto.src,
+							src: selectedPhoto.url,
 							alt: selectedPhoto.alt,
-							className: "absolute inset-0 h-full w-full object-cover opacity-95",
-							style: { objectPosition: selectedPhoto.position }
+							onError: fallbackToPlaceholder,
+							className: "absolute inset-0 h-full w-full object-cover opacity-95"
 						}),
 						/* @__PURE__ */ jsx("div", {
 							className: "absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent",
@@ -2224,7 +2124,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 						}),
 						/* @__PURE__ */ jsx("figcaption", {
 							className: "absolute bottom-4 left-4 right-4 font-heading text-2xl font-semibold uppercase tracking-[0.06em] text-white",
-							children: listing.name
+							children: listing.title
 						})
 					]
 				})]
@@ -2236,46 +2136,18 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 				children: [/* @__PURE__ */ jsxs("div", {
 					className: "grid gap-8",
 					children: [
-						/* @__PURE__ */ jsxs(DetailSection, {
+						/* @__PURE__ */ jsx(DetailSection, {
 							eyebrow: "Overview",
 							title: "Equipment Overview",
-							children: [/* @__PURE__ */ jsx("p", {
+							children: /* @__PURE__ */ jsx("p", {
 								className: "text-lg leading-8 text-neutral-600",
-								children: listing.overview
-							}), /* @__PURE__ */ jsx("p", {
-								className: "mt-5 text-base leading-7 text-neutral-600",
 								children: listing.description
-							})]
-						}),
-						/* @__PURE__ */ jsx(DetailSection, {
-							eyebrow: "Field Condition Notes",
-							title: "Current Field Read",
-							children: /* @__PURE__ */ jsxs("dl", {
-								className: "grid gap-px bg-[#dad5cb] sm:grid-cols-2",
-								children: [
-									/* @__PURE__ */ jsx(DetailCell, {
-										label: "Operating condition",
-										value: listing.fieldConditionNotes.operatingCondition
-									}),
-									/* @__PURE__ */ jsx(DetailCell, {
-										label: "Known issues",
-										value: listing.fieldConditionNotes.knownIssues
-									}),
-									/* @__PURE__ */ jsx(DetailCell, {
-										label: "Storage condition",
-										value: listing.fieldConditionNotes.storageCondition
-									}),
-									/* @__PURE__ */ jsx(DetailCell, {
-										label: "Last known use",
-										value: listing.fieldConditionNotes.lastKnownUse
-									})
-								]
 							})
 						}),
-						/* @__PURE__ */ jsxs(DetailSection, {
+						/* @__PURE__ */ jsx(DetailSection, {
 							eyebrow: "Specifications",
 							title: "Technical Details",
-							children: [/* @__PURE__ */ jsxs("dl", {
+							children: /* @__PURE__ */ jsxs("dl", {
 								className: "grid gap-px bg-[#dad5cb] sm:grid-cols-2",
 								children: [
 									/* @__PURE__ */ jsx(DetailCell, {
@@ -2287,10 +2159,6 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 										value: listing.specifications.model
 									}),
 									/* @__PURE__ */ jsx(DetailCell, {
-										label: "Serial number",
-										value: listing.specifications.serialNumber
-									}),
-									/* @__PURE__ */ jsx(DetailCell, {
 										label: "Year",
 										value: listing.specifications.year
 									}),
@@ -2299,56 +2167,37 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 										value: listing.specifications.capacity
 									})
 								]
-							}), /* @__PURE__ */ jsxs("div", {
-								className: "mt-6 border border-[#dad5cb] bg-white p-6",
-								children: [/* @__PURE__ */ jsx("h3", {
-									className: "font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-									children: "Technical Specs"
-								}), /* @__PURE__ */ jsx("ul", {
-									className: "mt-5 grid gap-3 text-base leading-7 text-neutral-600",
-									children: listing.specifications.technicalSpecs.map((spec) => /* @__PURE__ */ jsx("li", {
-										className: "border-l-2 border-[#a56437] pl-4",
-										children: spec
-									}, spec))
-								})]
-							})]
+							})
 						}),
 						/* @__PURE__ */ jsx(DetailSection, {
 							eyebrow: "Media",
 							title: "Gallery",
 							children: /* @__PURE__ */ jsxs("div", {
 								className: "grid gap-4",
-								children: [
-									/* @__PURE__ */ jsx("figure", {
-										className: "relative min-h-[300px] overflow-hidden bg-neutral-950 sm:min-h-[460px]",
-										children: /* @__PURE__ */ jsx("img", {
-											src: selectedPhoto.src,
-											alt: selectedPhoto.alt,
-											className: "absolute inset-0 h-full w-full object-cover",
-											style: { objectPosition: selectedPhoto.position }
-										})
-									}),
-									/* @__PURE__ */ jsx("div", {
-										className: "grid grid-cols-2 gap-3 sm:grid-cols-3",
-										children: listing.media.photos.map((photo) => /* @__PURE__ */ jsx("button", {
-											type: "button",
-											onClick: () => setSelectedPhoto(photo),
-											className: `focus-copper relative aspect-[4/3] overflow-hidden border text-left ${selectedPhoto === photo ? "border-[#a56437]" : "border-[#dad5cb]"}`,
-											"aria-label": `View ${photo.alt}`,
-											children: /* @__PURE__ */ jsx("img", {
-												src: photo.src,
-												alt: "",
-												className: "absolute inset-0 h-full w-full object-cover",
-												style: { objectPosition: photo.position }
-											})
-										}, `${photo.src}-${photo.position}`))
-									}),
-									listing.media.videoUrl && /* @__PURE__ */ jsx("a", {
-										href: listing.media.videoUrl,
-										className: "focus-copper inline-flex h-12 w-fit items-center justify-center border border-neutral-500 px-6 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
-										children: "Video Walkthrough"
+								children: [/* @__PURE__ */ jsx("figure", {
+									className: "relative min-h-[300px] overflow-hidden bg-neutral-950 sm:min-h-[460px]",
+									children: /* @__PURE__ */ jsx("img", {
+										src: selectedPhoto.url,
+										alt: selectedPhoto.alt,
+										onError: fallbackToPlaceholder,
+										className: "absolute inset-0 h-full w-full object-cover"
 									})
-								]
+								}), gallery.length > 1 && /* @__PURE__ */ jsx("div", {
+									className: "grid grid-cols-2 gap-3 sm:grid-cols-3",
+									children: gallery.map((photo, index) => /* @__PURE__ */ jsx("button", {
+										type: "button",
+										onClick: () => setSelectedPhoto(photo),
+										className: `focus-copper relative aspect-[4/3] overflow-hidden border text-left ${selectedPhoto === photo ? "border-[#a56437]" : "border-[#dad5cb]"}`,
+										"aria-label": `View ${photo.alt}`,
+										children: /* @__PURE__ */ jsx("img", {
+											src: photo.url,
+											alt: "",
+											loading: "lazy",
+											onError: fallbackToPlaceholder,
+											className: "absolute inset-0 h-full w-full object-cover"
+										})
+									}, `${photo.url}-${index}`))
+								})]
 							})
 						}),
 						/* @__PURE__ */ jsx(DetailSection, {
@@ -2357,17 +2206,15 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 							children: listing.documents.length > 0 ? /* @__PURE__ */ jsx("div", {
 								className: "grid gap-px bg-[#dad5cb] sm:grid-cols-2",
 								children: listing.documents.map((document) => /* @__PURE__ */ jsxs("a", {
-									href: document.href,
-									download: true,
-									className: "focus-copper block bg-white p-5 transition-colors hover:bg-[#fbfaf8]",
-									children: [/* @__PURE__ */ jsx("span", {
-										className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
-										children: document.type
-									}), /* @__PURE__ */ jsx("span", {
-										className: "mt-2 block font-heading text-xl font-semibold uppercase tracking-[0.06em] text-neutral-950",
-										children: document.label
+									href: document.url,
+									target: "_blank",
+									rel: "noreferrer",
+									className: "focus-copper flex items-center gap-3 bg-white p-5 transition-colors hover:bg-[#fbfaf8]",
+									children: [/* @__PURE__ */ jsx(FileIcon$1, {}), /* @__PURE__ */ jsx("span", {
+										className: "min-w-0 truncate font-heading text-lg font-semibold uppercase tracking-[0.06em] text-neutral-950",
+										children: document.name
 									})]
-								}, document.href))
+								}, document.url))
 							}) : /* @__PURE__ */ jsx("p", {
 								className: "border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600",
 								children: "Inspection reports, spec sheets, and maintenance records are available through broker diligence when provided by the seller."
@@ -2388,52 +2235,67 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 						}),
 						/* @__PURE__ */ jsx("p", {
 							className: "mt-4 text-base leading-7 text-neutral-600",
-							children: "Interested in this equipment? We can confirm availability, pricing, and arrange inspection."
+							children: "We can confirm availability, pricing, and arrange inspection."
 						}),
 						/* @__PURE__ */ jsxs("form", {
 							onSubmit: submit,
 							className: "mt-6 grid gap-4",
 							children: [
-								/* @__PURE__ */ jsx(Field$3, {
-									label: "Name",
-									error: form.errors.name,
-									children: /* @__PURE__ */ jsx("input", {
-										value: form.data.name,
-										onChange: (event) => form.setData("name", event.target.value),
-										className: "portal-input",
-										required: true
+								!isAuthed && /* @__PURE__ */ jsxs(Fragment, { children: [
+									/* @__PURE__ */ jsx(Field$3, {
+										label: "Name",
+										error: form.errors.name,
+										children: /* @__PURE__ */ jsx("input", {
+											value: form.data.name,
+											onChange: (event) => form.setData("name", event.target.value),
+											className: "portal-input",
+											required: true
+										})
+									}),
+									/* @__PURE__ */ jsx(Field$3, {
+										label: "Email",
+										error: form.errors.email,
+										children: /* @__PURE__ */ jsx("input", {
+											type: "email",
+											value: form.data.email,
+											onChange: (event) => form.setData("email", event.target.value),
+											className: "portal-input",
+											required: true
+										})
+									}),
+									/* @__PURE__ */ jsx(Field$3, {
+										label: "Phone",
+										error: form.errors.phone,
+										children: /* @__PURE__ */ jsx("input", {
+											value: form.data.phone,
+											onChange: (event) => form.setData("phone", event.target.value),
+											className: "portal-input",
+											autoComplete: "tel"
+										})
+									}),
+									/* @__PURE__ */ jsx(Field$3, {
+										label: "Company",
+										error: form.errors.company_name,
+										children: /* @__PURE__ */ jsx("input", {
+											value: form.data.company_name,
+											onChange: (event) => form.setData("company_name", event.target.value),
+											className: "portal-input",
+											autoComplete: "organization"
+										})
 									})
-								}),
-								/* @__PURE__ */ jsx(Field$3, {
-									label: "Email",
-									error: form.errors.email,
-									children: /* @__PURE__ */ jsx("input", {
-										type: "email",
-										value: form.data.email,
-										onChange: (event) => form.setData("email", event.target.value),
-										className: "portal-input",
-										required: true
-									})
-								}),
-								/* @__PURE__ */ jsx(Field$3, {
-									label: "Phone",
-									error: form.errors.phone,
-									children: /* @__PURE__ */ jsx("input", {
-										value: form.data.phone,
-										onChange: (event) => form.setData("phone", event.target.value),
-										className: "portal-input",
-										autoComplete: "tel"
-									})
-								}),
-								/* @__PURE__ */ jsx(Field$3, {
-									label: "Company",
-									error: form.errors.company_name,
-									children: /* @__PURE__ */ jsx("input", {
-										value: form.data.company_name,
-										onChange: (event) => form.setData("company_name", event.target.value),
-										className: "portal-input",
-										autoComplete: "organization"
-									})
+								] }),
+								isAuthed && /* @__PURE__ */ jsxs("p", {
+									className: "border border-[#dad5cb] bg-[#f8f8f6] p-4 text-sm leading-6 text-neutral-600",
+									children: [
+										"Sending as ",
+										/* @__PURE__ */ jsx("span", {
+											className: "font-semibold text-neutral-900",
+											children: auth.user?.name
+										}),
+										" (",
+										auth.user?.email,
+										")."
+									]
 								}),
 								/* @__PURE__ */ jsx(Field$3, {
 									label: "Note",
@@ -2448,7 +2310,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 									type: "submit",
 									disabled: form.processing,
 									className: "button-press focus-copper inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
-									children: form.processing ? "Submitting" : "Request Quote"
+									children: form.processing ? "Submitting" : "Request Details"
 								}),
 								/* @__PURE__ */ jsx("a", {
 									href: talkToBrokerUrl,
@@ -2502,7 +2364,7 @@ function DetailCell({ label, value }) {
 			children: label
 		}), /* @__PURE__ */ jsx("dd", {
 			className: "mt-2 text-base leading-7 text-neutral-700",
-			children: value
+			children: value || "Available on request"
 		})]
 	});
 }
@@ -2516,9 +2378,27 @@ function Field$3({ label, error, children }) {
 			}),
 			children,
 			error && /* @__PURE__ */ jsx("span", {
-				className: "text-sm text-red-700",
+				className: "text-sm text-[#b3261e]",
 				children: error
 			})
+		]
+	});
+}
+function FileIcon$1() {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: "h-5 w-5 shrink-0 text-[#a56437]",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.8,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [
+			/* @__PURE__ */ jsx("path", { d: "M7 3h7l4 4v14H7z" }),
+			/* @__PURE__ */ jsx("path", { d: "M14 3v5h5" }),
+			/* @__PURE__ */ jsx("path", { d: "M10 13h6" }),
+			/* @__PURE__ */ jsx("path", { d: "M10 17h4" })
 		]
 	});
 }
@@ -2722,47 +2602,6 @@ var home_default = {
 			"description": "Equipment moves, paperwork clears, and everyone moves on."
 		}
 	],
-	inventoryItems: [
-		{
-			"title": "3-Phase Separator",
-			"badge": "Available",
-			"badgeStyle": "solid",
-			"id": "PH-9902",
-			"imagePosition": "22% center",
-			"specs": [
-				["Year", "2020"],
-				["PSI", "1440 WP"],
-				["Size", "36\" x 10'"],
-				["Condition", "Certified"]
-			]
-		},
-		{
-			"title": "Ariel JGK/4 Compressor",
-			"badge": "Market Movement",
-			"badgeStyle": "primary",
-			"id": "PH-1148",
-			"imagePosition": "52% center",
-			"specs": [
-				["Year", "2018"],
-				["HP", "3550"],
-				["Hours", "4200"],
-				["Stages", "2-Stage"]
-			]
-		},
-		{
-			"title": "Storage Tank Battery",
-			"badge": "Available",
-			"badgeStyle": "outline",
-			"id": "PH-7761",
-			"imagePosition": "80% center",
-			"specs": [
-				["Capacity", "400 BBL x 4"],
-				["Material", "Fiberglass"],
-				["Status", "Cleaned"],
-				["Coating", "Internal"]
-			]
-		}
-	],
 	whyPeopleWorkWithPetra: [
 		{
 			"title": "We understand field reality",
@@ -2793,10 +2632,17 @@ var home_default = {
 //#endregion
 //#region resources/js/Pages/Home.tsx
 var Home_exports = /* @__PURE__ */ __exportAll({ default: () => Home });
-var { heroImage: heroImage$9, stats, featureItems, categories, additionalCategories, processSteps: processSteps$4, inventoryItems, whyPeopleWorkWithPetra, states } = home_default;
+var { heroImage: heroImage$9, stats, featureItems, categories, additionalCategories, processSteps: processSteps$4, whyPeopleWorkWithPetra, states } = home_default;
+var badgeStyleFor = (availability) => availability === "Available" ? "primary" : availability === "Pending" ? "outline" : "solid";
+var featuredSpecs = (listing) => [
+	["Year", listing.year],
+	["Capacity", listing.capacity],
+	["Manufacturer", listing.manufacturer],
+	["Condition", listing.condition]
+].map(([label, value]) => [label, value ?? "—"]).slice(0, 4);
 var pageTitle$5 = "Petra | Used Oilfield & Industrial Equipment Brokerage";
 var pageDescription$5 = "Petra connects real buyers and sellers of used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.";
-function Home({ canonicalUrl, ogImageUrl }) {
+function Home({ canonicalUrl, ogImageUrl, featuredListings }) {
 	const structuredData = {
 		"@context": "https://schema.org",
 		"@graph": [{
@@ -3166,7 +3012,7 @@ function Home({ canonicalUrl, ogImageUrl }) {
 					})]
 				})
 			}),
-			/* @__PURE__ */ jsx("section", {
+			featuredListings.length > 0 && /* @__PURE__ */ jsx("section", {
 				className: "bg-[#f3f1ec] py-28 sm:py-36 lg:py-40",
 				children: /* @__PURE__ */ jsxs("div", {
 					className: "mx-auto max-w-[1280px] px-5 sm:px-10",
@@ -3192,26 +3038,23 @@ function Home({ canonicalUrl, ogImageUrl }) {
 						})]
 					}), /* @__PURE__ */ jsx("div", {
 						className: "grid grid-cols-1 gap-10 md:grid-cols-3 lg:gap-12",
-						children: inventoryItems.map((item) => /* @__PURE__ */ jsxs("article", {
+						children: featuredListings.map((item) => /* @__PURE__ */ jsxs("article", {
 							className: "group border border-[#dad5cb] bg-white transition-colors duration-500 hover:border-[#a56437]",
 							children: [/* @__PURE__ */ jsxs("div", {
 								className: "relative h-72 overflow-hidden bg-black",
 								children: [
 									/* @__PURE__ */ jsx("div", {
 										className: "absolute inset-0 bg-cover grayscale opacity-80 transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0",
-										style: {
-											backgroundImage: `url('${heroImage$9}')`,
-											backgroundPosition: item.imagePosition
-										},
+										style: { backgroundImage: `url('${item.image_url}')` },
 										"aria-hidden": "true"
 									}),
 									/* @__PURE__ */ jsx("div", {
-										className: `absolute left-0 top-0 px-4 py-2 font-heading text-sm font-semibold uppercase tracking-[0.08em] ${item.badgeStyle === "outline" ? "border border-[#a56437] bg-white/90 text-[#a56437]" : item.badgeStyle === "primary" ? "bg-[#a56437] text-white" : "bg-neutral-500 text-white"}`,
-										children: item.badge
+										className: `absolute left-0 top-0 px-4 py-2 font-heading text-sm font-semibold uppercase tracking-[0.08em] ${badgeStyleFor(item.availability) === "outline" ? "border border-[#a56437] bg-white/90 text-[#a56437]" : badgeStyleFor(item.availability) === "primary" ? "bg-[#a56437] text-white" : "bg-neutral-500 text-white"}`,
+										children: item.availability
 									}),
 									/* @__PURE__ */ jsxs("div", {
 										className: "absolute bottom-4 right-4 border border-white/20 bg-black/50 px-2 py-1 font-heading text-sm font-semibold tracking-[0.08em] text-white/80 backdrop-blur-md",
-										children: ["ID: ", item.id]
+										children: ["ID: ", item.public_id]
 									})
 								]
 							}), /* @__PURE__ */ jsxs("div", {
@@ -3223,7 +3066,7 @@ function Home({ canonicalUrl, ogImageUrl }) {
 									}),
 									/* @__PURE__ */ jsx("div", {
 										className: "mb-8 grid grid-cols-2 gap-y-6",
-										children: item.specs.map(([label, value], index) => /* @__PURE__ */ jsxs("div", {
+										children: featuredSpecs(item).map(([label, value], index) => /* @__PURE__ */ jsxs("div", {
 											className: "flex flex-col",
 											children: [/* @__PURE__ */ jsx("span", {
 												className: "font-heading text-xs font-semibold uppercase tracking-[0.08em] text-neutral-500",
@@ -3235,13 +3078,13 @@ function Home({ canonicalUrl, ogImageUrl }) {
 										}, label))
 									}),
 									/* @__PURE__ */ jsx("a", {
-										href: "/contact",
+										href: item.href,
 										className: "flex w-full items-center justify-center border border-[#dad5cb] bg-[#f3f1ec] py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
 										children: "Request Details"
 									})
 								]
 							})]
-						}, item.id))
+						}, item.public_id))
 					})]
 				})
 			}),
@@ -4885,13 +4728,10 @@ function Dashboard({ portal }) {
 //#region resources/js/Pages/Portal/Placeholder.tsx
 var Placeholder_exports = /* @__PURE__ */ __exportAll({ default: () => Placeholder });
 var sectionLabels = {
-	"saved-equipment": "Saved Equipment",
 	"saved-equipment-watchlist": "Saved Equipment",
 	quotes: "Quotes",
 	offers: "Offers",
-	documents: "Documents",
-	messages: "Messages",
-	notifications: "Notifications"
+	documents: "Documents"
 };
 function Placeholder({ portal, section }) {
 	const title = sectionLabels[section] ?? "Coming Soon";
@@ -4913,7 +4753,7 @@ function Placeholder({ portal, section }) {
 					className: "mt-5 max-w-3xl text-base leading-7 text-neutral-600",
 					children: "The sitemap names this section, but it does not yet define the underlying object model, workflow states, or permissions. This pass only reserves the route and navigation entry."
 				}),
-				["saved-equipment", "saved-equipment-watchlist"].includes(section) && /* @__PURE__ */ jsxs("p", {
+				section === "saved-equipment-watchlist" && /* @__PURE__ */ jsxs("p", {
 					className: "mt-4 max-w-3xl text-base leading-7 text-neutral-600",
 					children: [
 						"For ",

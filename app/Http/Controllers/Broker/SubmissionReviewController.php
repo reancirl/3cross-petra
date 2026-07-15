@@ -32,6 +32,18 @@ class SubmissionReviewController extends Controller
                     'condition_notes' => $submission->condition_notes,
                     'asking_price' => $submission->asking_price,
                     'needs_valuation' => $submission->needs_valuation,
+                    'public_id' => $submission->public_id,
+                    'public_description' => $submission->public_description,
+                    'manufacturer' => $submission->manufacturer,
+                    'model' => $submission->model,
+                    'year' => $submission->year,
+                    'capacity' => $submission->capacity,
+                    'featured' => $submission->featured,
+                    'photo_count' => count($submission->photos ?? []),
+                    'documents' => collect($submission->documents ?? [])->map(fn (array $document): array => [
+                        'name' => $document['name'] ?? 'Document',
+                        'public' => (bool) ($document['public'] ?? false),
+                    ])->values(),
                     'status' => $submission->listingStatus()->value,
                     'status_label' => $submission->statusLabel(),
                     'status_tone' => $submission->listingStatus()->tone(),
@@ -68,9 +80,58 @@ class SubmissionReviewController extends Controller
         UpdateEquipmentSubmissionStatusRequest $request,
         EquipmentSubmission $equipmentSubmission,
     ): RedirectResponse {
-        $equipmentSubmission->update($request->safe()->only(['status']));
+        $status = ListingStatus::from($request->validated('status'));
 
-        return back()->with('status', 'Seller submission status updated.');
+        $attributes = [
+            'status' => $status,
+            'public_description' => $request->validated('public_description'),
+            'manufacturer' => $request->validated('manufacturer'),
+            'model' => $request->validated('model'),
+            'year' => $request->validated('year'),
+            'capacity' => $request->validated('capacity'),
+            'featured' => $request->boolean('featured'),
+            'documents' => $this->applyDocumentVisibility(
+                $equipmentSubmission->documents ?? [],
+                $request->validated('documents_public', []),
+            ),
+        ];
+
+        // Stamp a public id + publish time the first time a listing goes public.
+        if ($status === ListingStatus::Published) {
+            $attributes['public_id'] = $equipmentSubmission->public_id ?? EquipmentSubmission::generatePublicId();
+            $attributes['published_at'] = $equipmentSubmission->published_at ?? now();
+        }
+
+        // Track the sold moment for the 30-day public-visibility window.
+        $attributes['sold_at'] = $status === ListingStatus::Sold
+            ? ($equipmentSubmission->sold_at ?? now())
+            : null;
+
+        $equipmentSubmission->update($attributes);
+
+        $message = $status === ListingStatus::Published
+            ? "Listing published as {$equipmentSubmission->public_id}."
+            : 'Seller submission updated.';
+
+        return back()->with('status', $message);
+    }
+
+    /**
+     * Merge broker per-document public/private choices back into the stored documents.
+     *
+     * @param  array<int, array<string, mixed>>  $documents
+     * @param  array<int, bool>  $visibility
+     * @return array<int, array<string, mixed>>
+     */
+    private function applyDocumentVisibility(array $documents, array $visibility): array
+    {
+        return collect($documents)
+            ->map(function (array $document, int $index) use ($visibility): array {
+                $document['public'] = (bool) ($visibility[$index] ?? ($document['public'] ?? false));
+
+                return $document;
+            })
+            ->all();
     }
 
     public function updateBuyerRequest(

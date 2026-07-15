@@ -2,58 +2,21 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
-import type { SharedPageProps } from '../types';
-
-type ListingPhoto = {
-    src: string;
-    alt: string;
-    position: string;
-};
-
-type ListingDocument = {
-    label: string;
-    type: string;
-    href: string;
-};
-
-type EquipmentListing = {
-    id: string;
-    name: string;
-    category: string;
-    location: string;
-    condition: string;
-    status: 'Available' | 'Pending' | 'Sold';
-    manufacturer: string;
-    year: string;
-    capacity: string;
-    description: string;
-    overview: string;
-    fieldConditionNotes: {
-        operatingCondition: string;
-        knownIssues: string;
-        storageCondition: string;
-        lastKnownUse: string;
-    };
-    specifications: {
-        manufacturer: string;
-        model: string;
-        serialNumber: string;
-        year: string;
-        capacity: string;
-        technicalSpecs: string[];
-    };
-    media: {
-        photos: ListingPhoto[];
-        videoUrl: string;
-    };
-    documents: ListingDocument[];
-};
+import type { PublicListingDetail, SharedPageProps } from '../types';
 
 type EquipmentDetailProps = {
-    listing: EquipmentListing;
+    listing: PublicListingDetail;
     canonicalUrl: string;
     ogImageUrl: string;
 };
+
+const PLACEHOLDER_IMAGE = '/images/petra-equipment-yard-hero.png';
+
+function fallbackToPlaceholder(event: { currentTarget: HTMLImageElement }) {
+    if (!event.currentTarget.src.endsWith(PLACEHOLDER_IMAGE)) {
+        event.currentTarget.src = PLACEHOLDER_IMAGE;
+    }
+}
 
 type InquiryForm = {
     name: string;
@@ -65,7 +28,9 @@ type InquiryForm = {
 
 export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: EquipmentDetailProps) {
     const { auth, status } = usePage<SharedPageProps>().props;
-    const [selectedPhoto, setSelectedPhoto] = useState<ListingPhoto>(listing.media.photos[0]);
+    const gallery = listing.photos.length > 0 ? listing.photos : [{ url: listing.image_url, alt: listing.title }];
+    const [selectedPhoto, setSelectedPhoto] = useState(gallery[0]);
+    const isAuthed = Boolean(auth.user);
     const form = useForm<InquiryForm>({
         name: auth.user?.name ?? '',
         email: auth.user?.email ?? '',
@@ -73,46 +38,29 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
         company_name: auth.user?.company_name ?? '',
         note: '',
     });
-    const pageTitle = `${listing.name} | Petra Equipment Detail`;
-    const pageDescription = `${listing.name} in ${listing.location}. Review status, condition notes, specs, media, documents, and request quote details from Petra.`;
-    const talkToBrokerUrl = `/contact?asset=${encodeURIComponent(listing.id)}&equipment=${encodeURIComponent(listing.name)}`;
+    const pageTitle = `${listing.title} | Petra Equipment Detail`;
+    const pageDescription = `${listing.title} in ${listing.region}. Review availability, specs, media, and request quote details from Petra.`;
+    const talkToBrokerUrl = `/contact?asset=${encodeURIComponent(listing.public_id)}&equipment=${encodeURIComponent(listing.title)}`;
+
     const structuredData = {
         '@context': 'https://schema.org',
         '@graph': [
             {
                 '@type': 'Product',
                 '@id': `${canonicalUrl}#equipment`,
-                name: listing.name,
-                identifier: listing.id,
+                name: listing.title,
+                identifier: listing.public_id,
                 category: listing.category,
-                description: listing.overview,
-                brand: {
-                    '@type': 'Brand',
-                    name: listing.specifications.manufacturer,
-                },
+                description: listing.description,
+                ...(listing.manufacturer ? { brand: { '@type': 'Brand', name: listing.manufacturer } } : {}),
             },
             {
                 '@type': 'BreadcrumbList',
                 '@id': `${canonicalUrl}#breadcrumbs`,
                 itemListElement: [
-                    {
-                        '@type': 'ListItem',
-                        position: 1,
-                        name: 'Home',
-                        item: canonicalUrl.replace(/\/equipment\/[^/]+$/, ''),
-                    },
-                    {
-                        '@type': 'ListItem',
-                        position: 2,
-                        name: 'Equipment',
-                        item: canonicalUrl.replace(/\/[^/]+$/, ''),
-                    },
-                    {
-                        '@type': 'ListItem',
-                        position: 3,
-                        name: listing.name,
-                        item: canonicalUrl,
-                    },
+                    { '@type': 'ListItem', position: 1, name: 'Home', item: canonicalUrl.replace(/\/equipment\/[^/]+$/, '') },
+                    { '@type': 'ListItem', position: 2, name: 'Equipment', item: canonicalUrl.replace(/\/[^/]+$/, '') },
+                    { '@type': 'ListItem', position: 3, name: listing.title, item: canonicalUrl },
                 ],
             },
         ],
@@ -127,7 +75,7 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        form.post(`/equipment/${listing.id}/inquiries`, {
+        form.post(`/equipment/${listing.public_id}/inquiries`, {
             preserveScroll: true,
             onSuccess: () => form.setData('note', ''),
         });
@@ -171,30 +119,35 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
                                     {listing.category}
                                 </span>
                                 <span className="border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600">
-                                    ID: {listing.id}
+                                    ID: {listing.public_id}
                                 </span>
+                                {listing.featured && (
+                                    <span className="border border-[#dad5cb] bg-neutral-950 px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-white">
+                                        Featured
+                                    </span>
+                                )}
                             </div>
 
                             <h1 className="max-w-4xl font-hero text-[2.4rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.1rem] lg:text-[3.8rem]">
-                                {listing.name}
+                                {listing.title}
                             </h1>
 
                             <dl className="mt-8 grid gap-px bg-[#dad5cb] sm:grid-cols-2">
-                                <HeaderDetail label="Status" value={listing.status} strong />
-                                <HeaderDetail label="Location" value={listing.location} />
+                                <HeaderDetail label="Availability" value={listing.availability} strong />
+                                <HeaderDetail label="Region" value={listing.city ? `${listing.region} — ${listing.city}` : listing.region} />
                             </dl>
                         </div>
 
                         <figure className="relative min-h-[320px] overflow-hidden bg-neutral-950 sm:min-h-[430px]">
                             <img
-                                src={selectedPhoto.src}
+                                src={selectedPhoto.url}
                                 alt={selectedPhoto.alt}
+                                onError={fallbackToPlaceholder}
                                 className="absolute inset-0 h-full w-full object-cover opacity-95"
-                                style={{ objectPosition: selectedPhoto.position }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" aria-hidden="true" />
                             <figcaption className="absolute bottom-4 left-4 right-4 font-heading text-2xl font-semibold uppercase tracking-[0.06em] text-white">
-                                {listing.name}
+                                {listing.title}
                             </figcaption>
                         </figure>
                     </div>
@@ -204,80 +157,40 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
                     <div className="mx-auto grid max-w-[1280px] gap-8 px-5 sm:px-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(320px,0.28fr)]">
                         <div className="grid gap-8">
                             <DetailSection eyebrow="Overview" title="Equipment Overview">
-                                <p className="text-lg leading-8 text-neutral-600">{listing.overview}</p>
-                                <p className="mt-5 text-base leading-7 text-neutral-600">{listing.description}</p>
-                            </DetailSection>
-
-                            <DetailSection eyebrow="Field Condition Notes" title="Current Field Read">
-                                <dl className="grid gap-px bg-[#dad5cb] sm:grid-cols-2">
-                                    <DetailCell label="Operating condition" value={listing.fieldConditionNotes.operatingCondition} />
-                                    <DetailCell label="Known issues" value={listing.fieldConditionNotes.knownIssues} />
-                                    <DetailCell label="Storage condition" value={listing.fieldConditionNotes.storageCondition} />
-                                    <DetailCell label="Last known use" value={listing.fieldConditionNotes.lastKnownUse} />
-                                </dl>
+                                <p className="text-lg leading-8 text-neutral-600">{listing.description}</p>
                             </DetailSection>
 
                             <DetailSection eyebrow="Specifications" title="Technical Details">
                                 <dl className="grid gap-px bg-[#dad5cb] sm:grid-cols-2">
                                     <DetailCell label="Manufacturer" value={listing.specifications.manufacturer} />
                                     <DetailCell label="Model" value={listing.specifications.model} />
-                                    <DetailCell label="Serial number" value={listing.specifications.serialNumber} />
                                     <DetailCell label="Year" value={listing.specifications.year} />
                                     <DetailCell label="Capacity" value={listing.specifications.capacity} />
                                 </dl>
-                                <div className="mt-6 border border-[#dad5cb] bg-white p-6">
-                                    <h3 className="font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
-                                        Technical Specs
-                                    </h3>
-                                    <ul className="mt-5 grid gap-3 text-base leading-7 text-neutral-600">
-                                        {listing.specifications.technicalSpecs.map((spec) => (
-                                            <li key={spec} className="border-l-2 border-[#a56437] pl-4">
-                                                {spec}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
                             </DetailSection>
 
                             <DetailSection eyebrow="Media" title="Gallery">
                                 <div className="grid gap-4">
                                     <figure className="relative min-h-[300px] overflow-hidden bg-neutral-950 sm:min-h-[460px]">
-                                        <img
-                                            src={selectedPhoto.src}
-                                            alt={selectedPhoto.alt}
-                                            className="absolute inset-0 h-full w-full object-cover"
-                                            style={{ objectPosition: selectedPhoto.position }}
-                                        />
+                                        <img src={selectedPhoto.url} alt={selectedPhoto.alt} onError={fallbackToPlaceholder} className="absolute inset-0 h-full w-full object-cover" />
                                     </figure>
 
-                                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                                        {listing.media.photos.map((photo) => (
-                                            <button
-                                                key={`${photo.src}-${photo.position}`}
-                                                type="button"
-                                                onClick={() => setSelectedPhoto(photo)}
-                                                className={`focus-copper relative aspect-[4/3] overflow-hidden border text-left ${
-                                                    selectedPhoto === photo ? 'border-[#a56437]' : 'border-[#dad5cb]'
-                                                }`}
-                                                aria-label={`View ${photo.alt}`}
-                                            >
-                                                <img
-                                                    src={photo.src}
-                                                    alt=""
-                                                    className="absolute inset-0 h-full w-full object-cover"
-                                                    style={{ objectPosition: photo.position }}
-                                                />
-                                            </button>
-                                        ))}
-                                    </div>
-
-                                    {listing.media.videoUrl && (
-                                        <a
-                                            href={listing.media.videoUrl}
-                                            className="focus-copper inline-flex h-12 w-fit items-center justify-center border border-neutral-500 px-6 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white"
-                                        >
-                                            Video Walkthrough
-                                        </a>
+                                    {gallery.length > 1 && (
+                                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                                            {gallery.map((photo, index) => (
+                                                <button
+                                                    key={`${photo.url}-${index}`}
+                                                    type="button"
+                                                    onClick={() => setSelectedPhoto(photo)}
+                                                    className={`focus-copper relative aspect-[4/3] overflow-hidden border text-left ${
+                                                        selectedPhoto === photo ? 'border-[#a56437]' : 'border-[#dad5cb]'
+                                                    }`}
+                                                    aria-label={`View ${photo.alt}`}
+                                                >
+                                                    <img src={photo.url} alt="" loading="lazy" onError={fallbackToPlaceholder} className="absolute inset-0 h-full w-full object-cover" />
+                                                </button>
+                                            ))}
+                                        </div>
                                     )}
                                 </div>
                             </DetailSection>
@@ -287,16 +200,15 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
                                     <div className="grid gap-px bg-[#dad5cb] sm:grid-cols-2">
                                         {listing.documents.map((document) => (
                                             <a
-                                                key={document.href}
-                                                href={document.href}
-                                                download
-                                                className="focus-copper block bg-white p-5 transition-colors hover:bg-[#fbfaf8]"
+                                                key={document.url}
+                                                href={document.url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="focus-copper flex items-center gap-3 bg-white p-5 transition-colors hover:bg-[#fbfaf8]"
                                             >
-                                                <span className="font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500">
-                                                    {document.type}
-                                                </span>
-                                                <span className="mt-2 block font-heading text-xl font-semibold uppercase tracking-[0.06em] text-neutral-950">
-                                                    {document.label}
+                                                <FileIcon />
+                                                <span className="min-w-0 truncate font-heading text-lg font-semibold uppercase tracking-[0.06em] text-neutral-950">
+                                                    {document.name}
                                                 </span>
                                             </a>
                                         ))}
@@ -310,29 +222,36 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
                         </div>
 
                         <aside id="request-quote" className="h-fit border border-[#dad5cb] bg-white p-6 lg:sticky lg:top-8">
-                            <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
-                                Inquiry
-                            </span>
+                            <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">Inquiry</span>
                             <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
                                 Interested in this equipment?
                             </h2>
                             <p className="mt-4 text-base leading-7 text-neutral-600">
-                                Interested in this equipment? We can confirm availability, pricing, and arrange inspection.
+                                We can confirm availability, pricing, and arrange inspection.
                             </p>
 
                             <form onSubmit={submit} className="mt-6 grid gap-4">
-                                <Field label="Name" error={form.errors.name}>
-                                    <input value={form.data.name} onChange={(event) => form.setData('name', event.target.value)} className="portal-input" required />
-                                </Field>
-                                <Field label="Email" error={form.errors.email}>
-                                    <input type="email" value={form.data.email} onChange={(event) => form.setData('email', event.target.value)} className="portal-input" required />
-                                </Field>
-                                <Field label="Phone" error={form.errors.phone}>
-                                    <input value={form.data.phone} onChange={(event) => form.setData('phone', event.target.value)} className="portal-input" autoComplete="tel" />
-                                </Field>
-                                <Field label="Company" error={form.errors.company_name}>
-                                    <input value={form.data.company_name} onChange={(event) => form.setData('company_name', event.target.value)} className="portal-input" autoComplete="organization" />
-                                </Field>
+                                {!isAuthed && (
+                                    <>
+                                        <Field label="Name" error={form.errors.name}>
+                                            <input value={form.data.name} onChange={(event) => form.setData('name', event.target.value)} className="portal-input" required />
+                                        </Field>
+                                        <Field label="Email" error={form.errors.email}>
+                                            <input type="email" value={form.data.email} onChange={(event) => form.setData('email', event.target.value)} className="portal-input" required />
+                                        </Field>
+                                        <Field label="Phone" error={form.errors.phone}>
+                                            <input value={form.data.phone} onChange={(event) => form.setData('phone', event.target.value)} className="portal-input" autoComplete="tel" />
+                                        </Field>
+                                        <Field label="Company" error={form.errors.company_name}>
+                                            <input value={form.data.company_name} onChange={(event) => form.setData('company_name', event.target.value)} className="portal-input" autoComplete="organization" />
+                                        </Field>
+                                    </>
+                                )}
+                                {isAuthed && (
+                                    <p className="border border-[#dad5cb] bg-[#f8f8f6] p-4 text-sm leading-6 text-neutral-600">
+                                        Sending as <span className="font-semibold text-neutral-900">{auth.user?.name}</span> ({auth.user?.email}).
+                                    </p>
+                                )}
                                 <Field label="Note" error={form.errors.note}>
                                     <textarea value={form.data.note} onChange={(event) => form.setData('note', event.target.value)} className="portal-input min-h-28 py-3" />
                                 </Field>
@@ -342,7 +261,7 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
                                     disabled={form.processing}
                                     className="button-press focus-copper inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60"
                                 >
-                                    {form.processing ? 'Submitting' : 'Request Quote'}
+                                    {form.processing ? 'Submitting' : 'Request Details'}
                                 </button>
                                 <a
                                     href={talkToBrokerUrl}
@@ -363,9 +282,7 @@ function DetailSection({ eyebrow, title, children }: { eyebrow: string; title: s
     return (
         <section className="border border-[#dad5cb] bg-[#f8f8f6] p-6 sm:p-8">
             <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">{eyebrow}</span>
-            <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl">
-                {title}
-            </h2>
+            <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl">{title}</h2>
             <div className="mt-6">{children}</div>
         </section>
     );
@@ -382,11 +299,11 @@ function HeaderDetail({ label, value, strong = false }: { label: string; value: 
     );
 }
 
-function DetailCell({ label, value }: { label: string; value: string }) {
+function DetailCell({ label, value }: { label: string; value: string | null }) {
     return (
         <div className="bg-white p-5">
             <dt className="font-heading text-xs font-semibold uppercase tracking-[0.1em] text-neutral-500">{label}</dt>
-            <dd className="mt-2 text-base leading-7 text-neutral-700">{value}</dd>
+            <dd className="mt-2 text-base leading-7 text-neutral-700">{value || 'Available on request'}</dd>
         </div>
     );
 }
@@ -396,7 +313,27 @@ function Field({ label, error, children }: { label: string; error?: string; chil
         <label className="grid gap-2">
             <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700">{label}</span>
             {children}
-            {error && <span className="text-sm text-red-700">{error}</span>}
+            {error && <span className="text-sm text-[#b3261e]">{error}</span>}
         </label>
+    );
+}
+
+function FileIcon() {
+    return (
+        <svg
+            className="h-5 w-5 shrink-0 text-[#a56437]"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.8}
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+            <path d="M7 3h7l4 4v14H7z" />
+            <path d="M14 3v5h5" />
+            <path d="M10 13h6" />
+            <path d="M10 17h4" />
+        </svg>
     );
 }

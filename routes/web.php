@@ -5,18 +5,15 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\EquipmentListingController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MarketplaceController;
+use App\Models\EquipmentSubmission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', fn () => Inertia::render('Home', [
-    'canonicalUrl' => url('/'),
-    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
-]));
+Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/equipment', fn () => Inertia::render('Equipment', [
-    'canonicalUrl' => url('/equipment'),
-    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
-]));
+Route::get('/equipment', [MarketplaceController::class, 'index']);
 
 Route::get('/equipment/{listing}', [EquipmentListingController::class, 'show'])
     ->where('listing', '[A-Za-z0-9-]+')
@@ -113,7 +110,6 @@ require __DIR__.'/web/buyer.php';
 require __DIR__.'/web/broker.php';
 
 Route::get('/sitemap.xml', function () {
-    $equipmentData = json_decode(file_get_contents(resource_path('js/data/equipment.json')), true, flags: JSON_THROW_ON_ERROR);
     $urls = [
         [
             'loc' => url('/'),
@@ -161,11 +157,16 @@ Route::get('/sitemap.xml', function () {
             'priority' => '0.6',
         ],
     ];
-    $equipmentUrls = collect($equipmentData['listings'] ?? [])->map(fn (array $listing): array => [
-        'loc' => url("/equipment/{$listing['id']}"),
-        'changefreq' => 'daily',
-        'priority' => '0.8',
-    ])->all();
+    $equipmentUrls = EquipmentSubmission::query()
+        ->publiclyVisible()
+        ->orderByDesc('published_at')
+        ->pluck('public_id')
+        ->filter()
+        ->map(fn (string $publicId): array => [
+            'loc' => url("/equipment/{$publicId}"),
+            'changefreq' => 'daily',
+            'priority' => '0.8',
+        ])->all();
     $urls = array_merge($urls, $equipmentUrls);
 
     $entries = collect($urls)->map(function ($url) {

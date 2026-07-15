@@ -71,6 +71,17 @@ enum ListingStatus: string
     }
 
     /**
+     * Statuses that may appear on the public marketplace at all. Sold is included
+     * here but additionally gated by the 30-day sold_at window in the query scope.
+     *
+     * @return array<int, self>
+     */
+    public static function publiclyVisible(): array
+    {
+        return [self::Published, self::Pending, self::Sold];
+    }
+
+    /**
      * @return array<string, string> value => label, for select inputs.
      */
     public static function options(): array

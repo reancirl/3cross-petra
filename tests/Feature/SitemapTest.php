@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class SitemapTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_sitemap_lists_public_urls_without_artificial_last_modified_dates(): void
     {
         $response = $this->get('/sitemap.xml');

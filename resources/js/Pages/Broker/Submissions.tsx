@@ -4,6 +4,11 @@ import type { FormEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
 import type { SharedPageProps, StatusTone } from '../../types';
 
+type SellerSubmissionDocument = {
+    name: string;
+    public: boolean;
+};
+
 type SellerSubmission = {
     id: number;
     seller: string | null;
@@ -16,6 +21,15 @@ type SellerSubmission = {
     condition_notes: string | null;
     asking_price: string | null;
     needs_valuation: boolean;
+    public_id: string | null;
+    public_description: string | null;
+    manufacturer: string | null;
+    model: string | null;
+    year: number | null;
+    capacity: string | null;
+    featured: boolean;
+    photo_count: number;
+    documents: SellerSubmissionDocument[];
     status: string;
     status_label: string;
     status_tone: StatusTone;
@@ -126,16 +140,17 @@ export default function BrokerSubmissions({
                                     <div>
                                         <h3 className="font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
                                             {submission.title}
+                                            {submission.public_id && (
+                                                <span className="ml-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-[#a56437]">
+                                                    {submission.public_id}
+                                                </span>
+                                            )}
                                         </h3>
                                         <p className="mt-1 text-sm leading-6 text-neutral-500">
                                             {submission.seller} · {submission.email} · {submission.created_at}
                                         </p>
                                     </div>
-                                    <StatusForm
-                                        value={submission.status}
-                                        options={sellerStatusOptions}
-                                        action={`/broker/seller-submissions/${submission.id}`}
-                                    />
+                                    <StatusBadge status={submission.status} label={submission.status_label} />
                                 </div>
 
                                 <dl className="mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2">
@@ -159,15 +174,18 @@ export default function BrokerSubmissions({
                                                   : null
                                         }
                                     />
+                                    <Detail label="Photos" value={`${submission.photo_count} uploaded`} />
                                     {submission.condition_notes && (
                                         <div className="sm:col-span-2">
                                             <dt className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">
-                                                Condition notes
+                                                Condition notes (private)
                                             </dt>
                                             <dd className="mt-1 whitespace-pre-line text-neutral-700">{submission.condition_notes}</dd>
                                         </div>
                                     )}
                                 </dl>
+
+                                <SellerReviewForm submission={submission} options={sellerStatusOptions} />
                             </article>
                         ))}
                         {sellerSubmissions.length === 0 && <EmptyState text="No seller equipment has been submitted yet." />}
@@ -263,6 +281,138 @@ function SubmissionPanel({
             </div>
             {children}
         </section>
+    );
+}
+
+function SellerReviewForm({ submission, options }: { submission: SellerSubmission; options: Record<string, string> }) {
+    const form = useForm({
+        status: submission.status,
+        public_description: submission.public_description ?? '',
+        manufacturer: submission.manufacturer ?? '',
+        model: submission.model ?? '',
+        year: submission.year != null ? String(submission.year) : '',
+        capacity: submission.capacity ?? '',
+        featured: submission.featured,
+        documents_public: submission.documents.map((document) => document.public),
+    });
+
+    const errors = form.errors as Record<string, string>;
+
+    function submit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        form.patch(`/broker/seller-submissions/${submission.id}`, { preserveScroll: true });
+    }
+
+    return (
+        <form onSubmit={submit} className="mt-6 border-t border-[#dad5cb] pt-6">
+            <span className="font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]">Broker Enrichment</span>
+
+            {errors.publish_block && (
+                <p className="mt-3 border border-[#b3261e]/30 bg-red-50 px-4 py-3 text-sm leading-6 text-[#b3261e]">
+                    {errors.publish_block}
+                </p>
+            )}
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <EnrichField label="Public description" error={errors.public_description} className="sm:col-span-2">
+                    <textarea
+                        value={form.data.public_description}
+                        onChange={(event) => form.setData('public_description', event.target.value)}
+                        className={`portal-input min-h-24 py-3${errors.public_description ? ' portal-input-error' : ''}`}
+                        placeholder="Buyer-facing description. Required to publish. Never shows raw seller notes."
+                    />
+                </EnrichField>
+                <EnrichField label="Manufacturer" error={errors.manufacturer}>
+                    <input value={form.data.manufacturer} onChange={(event) => form.setData('manufacturer', event.target.value)} className="portal-input" />
+                </EnrichField>
+                <EnrichField label="Model" error={errors.model}>
+                    <input value={form.data.model} onChange={(event) => form.setData('model', event.target.value)} className="portal-input" />
+                </EnrichField>
+                <EnrichField label="Year" error={errors.year}>
+                    <input
+                        type="number"
+                        inputMode="numeric"
+                        value={form.data.year}
+                        onChange={(event) => form.setData('year', event.target.value)}
+                        className={`portal-input${errors.year ? ' portal-input-error' : ''}`}
+                    />
+                </EnrichField>
+                <EnrichField label="Capacity" error={errors.capacity}>
+                    <input value={form.data.capacity} onChange={(event) => form.setData('capacity', event.target.value)} className="portal-input" />
+                </EnrichField>
+            </div>
+
+            {submission.documents.length > 0 && (
+                <div className="mt-5">
+                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Documents — mark public</span>
+                    <div className="mt-2 grid gap-2">
+                        {submission.documents.map((document, index) => (
+                            <label key={`${document.name}-${index}`} className="flex items-center gap-3 border border-[#dad5cb] bg-white p-3">
+                                <input
+                                    type="checkbox"
+                                    checked={form.data.documents_public[index] ?? false}
+                                    onChange={(event) =>
+                                        form.setData(
+                                            'documents_public',
+                                            form.data.documents_public.map((value, i) => (i === index ? event.target.checked : value)),
+                                        )
+                                    }
+                                    className="h-4 w-4 shrink-0 accent-[#a56437]"
+                                />
+                                <span className="min-w-0 truncate text-sm font-semibold text-neutral-900">{document.name}</span>
+                                <span className="ml-auto font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400">
+                                    {(form.data.documents_public[index] ?? false) ? 'Public' : 'Private'}
+                                </span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <label className="mt-5 flex w-fit cursor-pointer items-center gap-3">
+                <input
+                    type="checkbox"
+                    checked={form.data.featured}
+                    onChange={(event) => form.setData('featured', event.target.checked)}
+                    className="h-4 w-4 shrink-0 accent-[#a56437]"
+                />
+                <span className="font-heading text-sm font-semibold uppercase tracking-[0.1em] text-neutral-700">Feature on homepage &amp; top of marketplace</span>
+            </label>
+
+            <div className="mt-6 flex flex-wrap items-end gap-3 border-t border-[#dad5cb] pt-5">
+                <label className="grid gap-2">
+                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Status</span>
+                    <select
+                        value={form.data.status}
+                        onChange={(event) => form.setData('status', event.target.value)}
+                        className="h-10 border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800"
+                    >
+                        {Object.entries(options).map(([status, label]) => (
+                            <option key={status} value={status}>
+                                {label}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <button
+                    type="submit"
+                    disabled={form.processing}
+                    className="button-press focus-copper h-10 bg-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+                >
+                    {form.data.status === 'published' ? 'Publish' : 'Save'}
+                </button>
+            </div>
+        </form>
+    );
+}
+
+function EnrichField({ label, error, className = '', children }: { label: string; error?: string; className?: string; children: ReactNode }) {
+    return (
+        <label className={`grid gap-2 ${className}`}>
+            <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">{label}</span>
+            {children}
+            {error && <span className="text-sm text-[#b3261e]">{error}</span>}
+        </label>
     );
 }
 

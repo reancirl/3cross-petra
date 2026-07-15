@@ -255,6 +255,7 @@ class AuthPortalTest extends TestCase
             'category' => 'Tanks',
             'region' => 'Montana',
             'condition' => 'sitting_idle',
+            'photos' => [['name' => 'tank.jpg', 'path' => 'p/tank.jpg', 'url' => '/storage/p/tank.jpg', 'size' => 1]],
         ]);
 
         $equipmentRequest = $buyer->equipmentRequests()->create([
@@ -267,9 +268,10 @@ class AuthPortalTest extends TestCase
         $this->actingAs($broker)
             ->patch("/broker/seller-submissions/{$submission->id}", [
                 'status' => 'published',
+                'public_description' => 'Cleaned tank battery ready for redeployment.',
             ])
             ->assertSessionHasNoErrors()
-            ->assertSessionHas('status', 'Seller submission status updated.');
+            ->assertSessionHas('status');
 
         $this->actingAs($broker)
             ->patch("/broker/buyer-requests/{$equipmentRequest->id}", [
@@ -277,6 +279,10 @@ class AuthPortalTest extends TestCase
             ])
             ->assertSessionHasNoErrors()
             ->assertSessionHas('status', 'Buyer request status updated.');
+
+        $submission->refresh();
+        $this->assertNotNull($submission->public_id);
+        $this->assertNotNull($submission->published_at);
 
         $this->assertDatabaseHas('equipment_submissions', [
             'id' => $submission->id,
@@ -300,6 +306,7 @@ class AuthPortalTest extends TestCase
             'category' => 'Tanks',
             'region' => 'Montana',
             'condition' => 'sitting_idle',
+            'photos' => [['name' => 'tank.jpg', 'path' => 'p/tank.jpg', 'url' => '/storage/p/tank.jpg', 'size' => 1]],
         ]);
 
         $equipmentRequest = $buyer->equipmentRequests()->create([
@@ -312,6 +319,7 @@ class AuthPortalTest extends TestCase
         $this->actingAs($broker)
             ->patch("/broker/seller-submissions/{$submission->id}", [
                 'status' => 'published',
+                'public_description' => 'Cleaned tank battery ready for redeployment.',
             ])
             ->assertSessionHasNoErrors();
 

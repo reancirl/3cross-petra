@@ -34,6 +34,36 @@ export type UploadFileMeta = {
 
 export type StatusTone = 'neutral' | 'success' | 'warning' | 'muted' | 'danger';
 
+export type PublicListingCard = {
+    public_id: string;
+    title: string;
+    category: string;
+    region: string;
+    city: string | null;
+    condition: string;
+    availability: string;
+    status_tone: StatusTone;
+    manufacturer: string | null;
+    year: string | null;
+    capacity: string | null;
+    description: string;
+    image_url: string;
+    featured: boolean;
+    href: string;
+};
+
+export type PublicListingDetail = PublicListingCard & {
+    model: string | null;
+    photos: { url: string; alt: string }[];
+    documents: { name: string; url: string }[];
+    specifications: {
+        manufacturer: string | null;
+        model: string | null;
+        year: string | null;
+        capacity: string | null;
+    };
+};
+
 export type EquipmentSubmission = {
     id: number;
     title: string;

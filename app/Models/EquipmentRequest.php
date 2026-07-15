@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'equipment_type', 'specifications', 'budget_range', 'location_preference', 'timeline', 'status'])]
+#[Fillable(['user_id', 'equipment_submission_id', 'equipment_type', 'specifications', 'budget_range', 'location_preference', 'timeline', 'status'])]
 class EquipmentRequest extends Model
 {
     public const STATUS_SUBMITTED = 'submitted';

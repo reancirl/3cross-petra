@@ -50,5 +50,7 @@ class DatabaseSeeder extends Seeder
                 'user_type' => User::TYPE_BROKER,
             ],
         );
+
+        $this->call(EquipmentListingSeeder::class);
     }
 }
