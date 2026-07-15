@@ -15,6 +15,7 @@
         font-family: var(--font-sans);
         scroll-behavior: smooth;
         scrollbar-color: #9d5f35 #ece7dd;
+        scrollbar-gutter: stable;
         scrollbar-width: thin;
     }
 
