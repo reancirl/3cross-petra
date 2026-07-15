@@ -105,16 +105,16 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
 
             <main className="w-full bg-[#f3f1ec]">
                 <section className="border-b border-[#dad5cb] bg-white">
-                    <div className="mx-auto grid max-w-[1280px] gap-10 px-5 py-16 sm:px-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)] lg:items-end lg:py-20">
+                    <div className="mx-auto grid max-w-[1280px] gap-8 px-5 py-10 sm:px-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)] lg:items-start lg:py-12">
                         <div>
                             <a
                                 href="/equipment"
-                                className="focus-copper mb-8 inline-flex font-heading text-sm font-semibold uppercase tracking-[0.14em] text-[#a56437] underline-offset-4 hover:underline"
+                                className="focus-copper mb-6 inline-flex font-heading text-sm font-semibold uppercase tracking-[0.14em] text-[#a56437] underline-offset-4 hover:underline"
                             >
                                 Back to Equipment
                             </a>
 
-                            <div className="mb-7 flex flex-wrap gap-3">
+                            <div className="mb-5 flex flex-wrap gap-3">
                                 <span className="border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]">
                                     {listing.category}
                                 </span>
@@ -128,75 +128,71 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
                                 )}
                             </div>
 
-                            <h1 className="max-w-4xl font-hero text-[2.4rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.1rem] lg:text-[3.8rem]">
+                            <h1 className="max-w-4xl font-hero text-[2.2rem] font-bold uppercase leading-[1.03] tracking-[0.08em] text-neutral-950 sm:text-[2.8rem] lg:text-[3.3rem]">
                                 {listing.title}
                             </h1>
 
-                            <dl className="mt-8 grid gap-px bg-[#dad5cb] sm:grid-cols-2">
+                            <dl className="mt-6 grid gap-px bg-[#dad5cb] sm:grid-cols-2">
                                 <HeaderDetail label="Availability" value={listing.availability} strong />
                                 <HeaderDetail label="Region" value={listing.city ? `${listing.region} — ${listing.city}` : listing.region} />
                             </dl>
                         </div>
 
-                        <figure className="relative min-h-[320px] overflow-hidden bg-neutral-950 sm:min-h-[430px]">
-                            <img
-                                src={selectedPhoto.url}
-                                alt={selectedPhoto.alt}
-                                onError={fallbackToPlaceholder}
-                                className="absolute inset-0 h-full w-full object-cover opacity-95"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" aria-hidden="true" />
-                            <figcaption className="absolute bottom-4 left-4 right-4 font-heading text-2xl font-semibold uppercase tracking-[0.06em] text-white">
-                                {listing.title}
-                            </figcaption>
-                        </figure>
+                        <div className="grid gap-3">
+                            <figure className="relative aspect-[4/3] overflow-hidden bg-neutral-950">
+                                <img
+                                    src={selectedPhoto.url}
+                                    alt={selectedPhoto.alt}
+                                    onError={fallbackToPlaceholder}
+                                    className="absolute inset-0 h-full w-full object-cover opacity-95"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" aria-hidden="true" />
+                                <figcaption className="absolute bottom-4 left-4 right-4 font-heading text-xl font-semibold uppercase tracking-[0.06em] text-white sm:text-2xl">
+                                    {listing.title}
+                                </figcaption>
+                            </figure>
+
+                            {gallery.length > 1 && (
+                                <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
+                                    {gallery.map((photo, index) => (
+                                        <button
+                                            key={`${photo.url}-${index}`}
+                                            type="button"
+                                            onClick={() => setSelectedPhoto(photo)}
+                                            className={`focus-copper relative aspect-[4/3] overflow-hidden border text-left ${
+                                                selectedPhoto === photo ? 'border-[#a56437]' : 'border-[#dad5cb]'
+                                            }`}
+                                            aria-label={`View ${photo.alt}`}
+                                        >
+                                            <img src={photo.url} alt="" loading="lazy" onError={fallbackToPlaceholder} className="absolute inset-0 h-full w-full object-cover" />
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </section>
 
-                <section className="py-16 sm:py-20 lg:py-24">
-                    <div className="mx-auto grid max-w-[1280px] gap-8 px-5 sm:px-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(320px,0.28fr)]">
-                        <div className="grid gap-8">
-                            <DetailSection eyebrow="Overview" title="Equipment Overview">
-                                <p className="text-lg leading-8 text-neutral-600">{listing.description}</p>
-                            </DetailSection>
+                <section className="py-10 sm:py-12">
+                    <div className="mx-auto grid max-w-[1280px] gap-6 px-5 sm:px-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(320px,0.28fr)] lg:items-start">
+                        <div className="grid gap-6">
+                            <section className="border border-[#dad5cb] bg-[#f8f8f6] p-6 sm:p-8">
+                                <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">Overview</span>
+                                <p className="mt-4 text-lg leading-8 text-neutral-700">{listing.description}</p>
 
-                            <DetailSection eyebrow="Specifications" title="Technical Details">
-                                <dl className="grid gap-px bg-[#dad5cb] sm:grid-cols-2">
+                                <h2 className="mt-8 border-t border-[#dad5cb] pt-6 font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
+                                    Specifications
+                                </h2>
+                                <dl className="mt-4 grid gap-px bg-[#dad5cb] sm:grid-cols-2">
                                     <DetailCell label="Manufacturer" value={listing.specifications.manufacturer} />
                                     <DetailCell label="Model" value={listing.specifications.model} />
                                     <DetailCell label="Year" value={listing.specifications.year} />
                                     <DetailCell label="Capacity" value={listing.specifications.capacity} />
                                 </dl>
-                            </DetailSection>
+                            </section>
 
-                            <DetailSection eyebrow="Media" title="Gallery">
-                                <div className="grid gap-4">
-                                    <figure className="relative min-h-[300px] overflow-hidden bg-neutral-950 sm:min-h-[460px]">
-                                        <img src={selectedPhoto.url} alt={selectedPhoto.alt} onError={fallbackToPlaceholder} className="absolute inset-0 h-full w-full object-cover" />
-                                    </figure>
-
-                                    {gallery.length > 1 && (
-                                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                                            {gallery.map((photo, index) => (
-                                                <button
-                                                    key={`${photo.url}-${index}`}
-                                                    type="button"
-                                                    onClick={() => setSelectedPhoto(photo)}
-                                                    className={`focus-copper relative aspect-[4/3] overflow-hidden border text-left ${
-                                                        selectedPhoto === photo ? 'border-[#a56437]' : 'border-[#dad5cb]'
-                                                    }`}
-                                                    aria-label={`View ${photo.alt}`}
-                                                >
-                                                    <img src={photo.url} alt="" loading="lazy" onError={fallbackToPlaceholder} className="absolute inset-0 h-full w-full object-cover" />
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            </DetailSection>
-
-                            <DetailSection eyebrow="Documents" title="Available Files">
-                                {listing.documents.length > 0 ? (
+                            {listing.documents.length > 0 && (
+                                <DetailSection eyebrow="Documents" title="Available Files">
                                     <div className="grid gap-px bg-[#dad5cb] sm:grid-cols-2">
                                         {listing.documents.map((document) => (
                                             <a
@@ -204,33 +200,29 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
                                                 href={document.url}
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                className="focus-copper flex items-center gap-3 bg-white p-5 transition-colors hover:bg-[#fbfaf8]"
+                                                className="focus-copper flex items-center gap-3 bg-white p-4 transition-colors hover:bg-[#fbfaf8]"
                                             >
                                                 <FileIcon />
-                                                <span className="min-w-0 truncate font-heading text-lg font-semibold uppercase tracking-[0.06em] text-neutral-950">
+                                                <span className="min-w-0 truncate font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950">
                                                     {document.name}
                                                 </span>
                                             </a>
                                         ))}
                                     </div>
-                                ) : (
-                                    <p className="border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600">
-                                        Inspection reports, spec sheets, and maintenance records are available through broker diligence when provided by the seller.
-                                    </p>
-                                )}
-                            </DetailSection>
+                                </DetailSection>
+                            )}
                         </div>
 
-                        <aside id="request-quote" className="h-fit border border-[#dad5cb] bg-white p-6 lg:sticky lg:top-8">
+                        <aside id="request-quote" className="h-fit border border-[#dad5cb] bg-white p-6 lg:sticky lg:top-6">
                             <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">Inquiry</span>
-                            <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
+                            <h2 className="mt-2 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
                                 Interested in this equipment?
                             </h2>
-                            <p className="mt-4 text-base leading-7 text-neutral-600">
+                            <p className="mt-3 text-sm leading-6 text-neutral-600">
                                 We can confirm availability, pricing, and arrange inspection.
                             </p>
 
-                            <form onSubmit={submit} className="mt-6 grid gap-4">
+                            <form onSubmit={submit} className="mt-5 grid gap-4">
                                 {!isAuthed && (
                                     <>
                                         <Field label="Name" error={form.errors.name}>

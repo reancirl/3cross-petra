@@ -2070,15 +2070,15 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 		children: [/* @__PURE__ */ jsx("section", {
 			className: "border-b border-[#dad5cb] bg-white",
 			children: /* @__PURE__ */ jsxs("div", {
-				className: "mx-auto grid max-w-[1280px] gap-10 px-5 py-16 sm:px-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)] lg:items-end lg:py-20",
+				className: "mx-auto grid max-w-[1280px] gap-8 px-5 py-10 sm:px-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)] lg:items-start lg:py-12",
 				children: [/* @__PURE__ */ jsxs("div", { children: [
 					/* @__PURE__ */ jsx("a", {
 						href: "/equipment",
-						className: "focus-copper mb-8 inline-flex font-heading text-sm font-semibold uppercase tracking-[0.14em] text-[#a56437] underline-offset-4 hover:underline",
+						className: "focus-copper mb-6 inline-flex font-heading text-sm font-semibold uppercase tracking-[0.14em] text-[#a56437] underline-offset-4 hover:underline",
 						children: "Back to Equipment"
 					}),
 					/* @__PURE__ */ jsxs("div", {
-						className: "mb-7 flex flex-wrap gap-3",
+						className: "mb-5 flex flex-wrap gap-3",
 						children: [
 							/* @__PURE__ */ jsx("span", {
 								className: "border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]",
@@ -2095,11 +2095,11 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 						]
 					}),
 					/* @__PURE__ */ jsx("h1", {
-						className: "max-w-4xl font-hero text-[2.4rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.1rem] lg:text-[3.8rem]",
+						className: "max-w-4xl font-hero text-[2.2rem] font-bold uppercase leading-[1.03] tracking-[0.08em] text-neutral-950 sm:text-[2.8rem] lg:text-[3.3rem]",
 						children: listing.title
 					}),
 					/* @__PURE__ */ jsxs("dl", {
-						className: "mt-8 grid gap-px bg-[#dad5cb] sm:grid-cols-2",
+						className: "mt-6 grid gap-px bg-[#dad5cb] sm:grid-cols-2",
 						children: [/* @__PURE__ */ jsx(HeaderDetail, {
 							label: "Availability",
 							value: listing.availability,
@@ -2109,46 +2109,67 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 							value: listing.city ? `${listing.region} — ${listing.city}` : listing.region
 						})]
 					})
-				] }), /* @__PURE__ */ jsxs("figure", {
-					className: "relative min-h-[320px] overflow-hidden bg-neutral-950 sm:min-h-[430px]",
-					children: [
-						/* @__PURE__ */ jsx("img", {
-							src: selectedPhoto.url,
-							alt: selectedPhoto.alt,
-							onError: fallbackToPlaceholder,
-							className: "absolute inset-0 h-full w-full object-cover opacity-95"
-						}),
-						/* @__PURE__ */ jsx("div", {
-							className: "absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent",
-							"aria-hidden": "true"
-						}),
-						/* @__PURE__ */ jsx("figcaption", {
-							className: "absolute bottom-4 left-4 right-4 font-heading text-2xl font-semibold uppercase tracking-[0.06em] text-white",
-							children: listing.title
-						})
-					]
+				] }), /* @__PURE__ */ jsxs("div", {
+					className: "grid gap-3",
+					children: [/* @__PURE__ */ jsxs("figure", {
+						className: "relative aspect-[4/3] overflow-hidden bg-neutral-950",
+						children: [
+							/* @__PURE__ */ jsx("img", {
+								src: selectedPhoto.url,
+								alt: selectedPhoto.alt,
+								onError: fallbackToPlaceholder,
+								className: "absolute inset-0 h-full w-full object-cover opacity-95"
+							}),
+							/* @__PURE__ */ jsx("div", {
+								className: "absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent",
+								"aria-hidden": "true"
+							}),
+							/* @__PURE__ */ jsx("figcaption", {
+								className: "absolute bottom-4 left-4 right-4 font-heading text-xl font-semibold uppercase tracking-[0.06em] text-white sm:text-2xl",
+								children: listing.title
+							})
+						]
+					}), gallery.length > 1 && /* @__PURE__ */ jsx("div", {
+						className: "grid grid-cols-4 gap-2 sm:grid-cols-5",
+						children: gallery.map((photo, index) => /* @__PURE__ */ jsx("button", {
+							type: "button",
+							onClick: () => setSelectedPhoto(photo),
+							className: `focus-copper relative aspect-[4/3] overflow-hidden border text-left ${selectedPhoto === photo ? "border-[#a56437]" : "border-[#dad5cb]"}`,
+							"aria-label": `View ${photo.alt}`,
+							children: /* @__PURE__ */ jsx("img", {
+								src: photo.url,
+								alt: "",
+								loading: "lazy",
+								onError: fallbackToPlaceholder,
+								className: "absolute inset-0 h-full w-full object-cover"
+							})
+						}, `${photo.url}-${index}`))
+					})]
 				})]
 			})
 		}), /* @__PURE__ */ jsx("section", {
-			className: "py-16 sm:py-20 lg:py-24",
+			className: "py-10 sm:py-12",
 			children: /* @__PURE__ */ jsxs("div", {
-				className: "mx-auto grid max-w-[1280px] gap-8 px-5 sm:px-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(320px,0.28fr)]",
+				className: "mx-auto grid max-w-[1280px] gap-6 px-5 sm:px-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(320px,0.28fr)] lg:items-start",
 				children: [/* @__PURE__ */ jsxs("div", {
-					className: "grid gap-8",
-					children: [
-						/* @__PURE__ */ jsx(DetailSection, {
-							eyebrow: "Overview",
-							title: "Equipment Overview",
-							children: /* @__PURE__ */ jsx("p", {
-								className: "text-lg leading-8 text-neutral-600",
+					className: "grid gap-6",
+					children: [/* @__PURE__ */ jsxs("section", {
+						className: "border border-[#dad5cb] bg-[#f8f8f6] p-6 sm:p-8",
+						children: [
+							/* @__PURE__ */ jsx("span", {
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+								children: "Overview"
+							}),
+							/* @__PURE__ */ jsx("p", {
+								className: "mt-4 text-lg leading-8 text-neutral-700",
 								children: listing.description
-							})
-						}),
-						/* @__PURE__ */ jsx(DetailSection, {
-							eyebrow: "Specifications",
-							title: "Technical Details",
-							children: /* @__PURE__ */ jsxs("dl", {
-								className: "grid gap-px bg-[#dad5cb] sm:grid-cols-2",
+							}),
+							/* @__PURE__ */ jsx("h2", {
+								className: "mt-8 border-t border-[#dad5cb] pt-6 font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+								children: "Specifications"
+							}),
+							/* @__PURE__ */ jsxs("dl", {
+								className: "mt-4 grid gap-px bg-[#dad5cb] sm:grid-cols-2",
 								children: [
 									/* @__PURE__ */ jsx(DetailCell, {
 										label: "Manufacturer",
@@ -2168,78 +2189,43 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 									})
 								]
 							})
-						}),
-						/* @__PURE__ */ jsx(DetailSection, {
-							eyebrow: "Media",
-							title: "Gallery",
-							children: /* @__PURE__ */ jsxs("div", {
-								className: "grid gap-4",
-								children: [/* @__PURE__ */ jsx("figure", {
-									className: "relative min-h-[300px] overflow-hidden bg-neutral-950 sm:min-h-[460px]",
-									children: /* @__PURE__ */ jsx("img", {
-										src: selectedPhoto.url,
-										alt: selectedPhoto.alt,
-										onError: fallbackToPlaceholder,
-										className: "absolute inset-0 h-full w-full object-cover"
-									})
-								}), gallery.length > 1 && /* @__PURE__ */ jsx("div", {
-									className: "grid grid-cols-2 gap-3 sm:grid-cols-3",
-									children: gallery.map((photo, index) => /* @__PURE__ */ jsx("button", {
-										type: "button",
-										onClick: () => setSelectedPhoto(photo),
-										className: `focus-copper relative aspect-[4/3] overflow-hidden border text-left ${selectedPhoto === photo ? "border-[#a56437]" : "border-[#dad5cb]"}`,
-										"aria-label": `View ${photo.alt}`,
-										children: /* @__PURE__ */ jsx("img", {
-											src: photo.url,
-											alt: "",
-											loading: "lazy",
-											onError: fallbackToPlaceholder,
-											className: "absolute inset-0 h-full w-full object-cover"
-										})
-									}, `${photo.url}-${index}`))
+						]
+					}), listing.documents.length > 0 && /* @__PURE__ */ jsx(DetailSection, {
+						eyebrow: "Documents",
+						title: "Available Files",
+						children: /* @__PURE__ */ jsx("div", {
+							className: "grid gap-px bg-[#dad5cb] sm:grid-cols-2",
+							children: listing.documents.map((document) => /* @__PURE__ */ jsxs("a", {
+								href: document.url,
+								target: "_blank",
+								rel: "noreferrer",
+								className: "focus-copper flex items-center gap-3 bg-white p-4 transition-colors hover:bg-[#fbfaf8]",
+								children: [/* @__PURE__ */ jsx(FileIcon$1, {}), /* @__PURE__ */ jsx("span", {
+									className: "min-w-0 truncate font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950",
+									children: document.name
 								})]
-							})
-						}),
-						/* @__PURE__ */ jsx(DetailSection, {
-							eyebrow: "Documents",
-							title: "Available Files",
-							children: listing.documents.length > 0 ? /* @__PURE__ */ jsx("div", {
-								className: "grid gap-px bg-[#dad5cb] sm:grid-cols-2",
-								children: listing.documents.map((document) => /* @__PURE__ */ jsxs("a", {
-									href: document.url,
-									target: "_blank",
-									rel: "noreferrer",
-									className: "focus-copper flex items-center gap-3 bg-white p-5 transition-colors hover:bg-[#fbfaf8]",
-									children: [/* @__PURE__ */ jsx(FileIcon$1, {}), /* @__PURE__ */ jsx("span", {
-										className: "min-w-0 truncate font-heading text-lg font-semibold uppercase tracking-[0.06em] text-neutral-950",
-										children: document.name
-									})]
-								}, document.url))
-							}) : /* @__PURE__ */ jsx("p", {
-								className: "border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600",
-								children: "Inspection reports, spec sheets, and maintenance records are available through broker diligence when provided by the seller."
-							})
+							}, document.url))
 						})
-					]
+					})]
 				}), /* @__PURE__ */ jsxs("aside", {
 					id: "request-quote",
-					className: "h-fit border border-[#dad5cb] bg-white p-6 lg:sticky lg:top-8",
+					className: "h-fit border border-[#dad5cb] bg-white p-6 lg:sticky lg:top-6",
 					children: [
 						/* @__PURE__ */ jsx("span", {
 							className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
 							children: "Inquiry"
 						}),
 						/* @__PURE__ */ jsx("h2", {
-							className: "mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+							className: "mt-2 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
 							children: "Interested in this equipment?"
 						}),
 						/* @__PURE__ */ jsx("p", {
-							className: "mt-4 text-base leading-7 text-neutral-600",
+							className: "mt-3 text-sm leading-6 text-neutral-600",
 							children: "We can confirm availability, pricing, and arrange inspection."
 						}),
 						/* @__PURE__ */ jsxs("form", {
 							onSubmit: submit,
-							className: "mt-6 grid gap-4",
+							className: "mt-5 grid gap-4",
 							children: [
 								!isAuthed && /* @__PURE__ */ jsxs(Fragment, { children: [
 									/* @__PURE__ */ jsx(Field$3, {
