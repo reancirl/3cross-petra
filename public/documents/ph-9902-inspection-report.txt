@@ -1,0 +1,11 @@
+Petra placeholder inspection report
+
+Equipment ID: PH-9902
+Equipment: 3-Phase Production Separator
+
+Broker notes:
+- Field-verified separator package.
+- Reported operational when removed from service.
+- Buyer should confirm vessel documentation, pressure rating, instrumentation, and site fit before purchase.
+
+This placeholder file is for preview only and should be replaced with the client-approved inspection report.

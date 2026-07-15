@@ -1,0 +1,10 @@
+Petra placeholder maintenance summary
+
+Equipment ID: PH-1148
+Equipment: Ariel JGK/4 Compressor Package
+
+Broker notes:
+- Maintenance records available during broker diligence.
+- Run history, final package configuration, and inspection availability should be confirmed before pricing.
+
+This placeholder file is for preview only and should be replaced with the client-approved maintenance record.

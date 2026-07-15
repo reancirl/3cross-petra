@@ -59,4 +59,11 @@ class UserFactory extends Factory
             'user_type' => User::TYPE_BUYER,
         ]);
     }
+
+    public function broker(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'user_type' => User::TYPE_BROKER,
+        ]);
+    }
 }

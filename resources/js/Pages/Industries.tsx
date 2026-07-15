@@ -11,6 +11,15 @@ const { heroImage, industries, signals, regions, faqs } = industriesData;
 const pageTitle = 'Industries | Petra';
 const pageDescription =
     'Petra works across producing and industrial regions including Wyoming, the Bakken, Colorado energy corridors, Utah, New Mexico, Montana, and regional surplus equipment yards.';
+const docIndustries = [
+    'Oil & Gas Production',
+    'Midstream Operations',
+    'Gas Processing',
+    'Drilling Contractors',
+    'Energy Services Companies',
+    'Industrial Yards',
+    'Power Generation',
+];
 
 export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps) {
     const structuredData = {
@@ -155,6 +164,34 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                     </div>
                 </section>
 
+                <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
+                    <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
+                        <div className="mx-auto mb-9 max-w-3xl text-center">
+                            <span className="font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]">
+                                Markets Served
+                            </span>
+                            <h2 className="mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-white sm:text-4xl">
+                                Industries Petra Works In
+                            </h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-px bg-white/15 sm:grid-cols-2 lg:grid-cols-4">
+                            {docIndustries.map((industry) => (
+                                <article key={industry} className="bg-[#1c1a16] p-6 transition-colors hover:bg-[#24211c]">
+                                    <div className="mb-5 h-1.5 w-1.5 bg-[#a56437]" />
+                                    <h3 className="font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-white">
+                                        {industry}
+                                    </h3>
+                                </article>
+                            ))}
+                        </div>
+
+                        <p className="mx-auto mt-9 max-w-3xl text-center text-lg leading-8 text-white/75">
+                            We understand how equipment is actually used in the field—not just how it's listed.
+                        </p>
+                    </div>
+                </section>
+
                 <section className="border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
                     <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-5 sm:px-10 lg:grid-cols-12 lg:items-start lg:gap-14">
                         <div className="max-w-3xl lg:col-span-5">
@@ -193,7 +230,8 @@ export default function Industries({ canonicalUrl, ogImageUrl }: IndustriesProps
                     </div>
                 </section>
 
-                {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
+                {/* Previous alternate industry grid existed here and remains commented out in case the client intentionally wanted the alternate copy.
+                Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
                 <section className="border-b border-[#dad5cb] bg-[#1c1a16] text-white">
                     <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-10">
                         <div className="mx-auto mb-9 max-w-3xl text-center">

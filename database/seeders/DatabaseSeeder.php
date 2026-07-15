@@ -39,5 +39,18 @@ class DatabaseSeeder extends Seeder
                 'user_type' => User::TYPE_BUYER,
             ],
         );
+
+        User::updateOrCreate(
+            ['email' => 'broker@example.com'],
+            [
+                'name' => 'Petra Broker',
+                'password' => Hash::make('password'),
+                'phone' => '555-0103',
+                'company_name' => 'Petra',
+                'user_type' => User::TYPE_BROKER,
+            ],
+        );
+
+        $this->call(EquipmentListingSeeder::class);
     }
 }

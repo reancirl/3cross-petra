@@ -2,18 +2,37 @@ import { Head } from '@inertiajs/react';
 import CoverageMap from '../Components/coverage-map';
 import { AccentIcon, CategoryIcon, FeatureIcon } from '../Components/home-icons';
 import homeData from '../data/home.json';
+import type { PublicListingCard } from '../types';
 
 type HomeProps = {
     canonicalUrl: string;
     ogImageUrl: string;
+    featuredListings: PublicListingCard[];
 };
 
-const { heroImage, stats, featureItems, categories, additionalCategories, processSteps, inventoryItems, whyPeopleWorkWithPetra, states } = homeData;
+const { heroImage, stats, featureItems, categories, additionalCategories, processSteps, whyPeopleWorkWithPetra, states } = homeData;
+
+// Map a public availability label to the Section 8 badge style.
+const badgeStyleFor = (availability: string) =>
+    availability === 'Available' ? 'primary' : availability === 'Pending' ? 'outline' : 'solid';
+
+// Build up to four spec cells for a featured card from whatever enrichment exists.
+const featuredSpecs = (listing: PublicListingCard): [string, string][] =>
+    (
+        [
+            ['Year', listing.year],
+            ['Capacity', listing.capacity],
+            ['Manufacturer', listing.manufacturer],
+            ['Condition', listing.condition],
+        ] as [string, string | null][]
+    )
+        .map(([label, value]): [string, string] => [label, value ?? '—'])
+        .slice(0, 4);
 const pageTitle = 'Petra | Used Oilfield & Industrial Equipment Brokerage';
 const pageDescription =
     'Petra connects real buyers and sellers of used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.';
 
-export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
+export default function Home({ canonicalUrl, ogImageUrl, featuredListings }: HomeProps) {
     const structuredData = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -292,74 +311,76 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                     </div>
                 </section>
 
-                <section className="bg-[#f3f1ec] py-28 sm:py-36 lg:py-40">
-                    <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
-                        <div className="mb-16 flex flex-col items-center justify-between gap-6 text-center md:mb-24 md:flex-row md:items-end md:text-left">
-                            <div>
-                                <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
-                                    Featured Equipment
-                                </span>
-                                <h2 className="font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl">
-                                    Real Equipment. Real Listings.
-                                </h2>
-                                <p className="mt-4 text-lg text-neutral-600">
-                                    Browse what is currently available or contact us if you're looking for something specific.
-                                </p>
+                {featuredListings.length > 0 && (
+                    <section className="bg-[#f3f1ec] py-28 sm:py-36 lg:py-40">
+                        <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
+                            <div className="mb-16 flex flex-col items-center justify-between gap-6 text-center md:mb-24 md:flex-row md:items-end md:text-left">
+                                <div>
+                                    <span className="mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
+                                        Featured Equipment
+                                    </span>
+                                    <h2 className="font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl">
+                                        Real Equipment. Real Listings.
+                                    </h2>
+                                    <p className="mt-4 text-lg text-neutral-600">
+                                        Browse what is currently available or contact us if you're looking for something specific.
+                                    </p>
+                                </div>
+                                <a href="/equipment" className="border border-neutral-500 px-8 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
+                                    View Equipment
+                                </a>
                             </div>
-                            <a href="/equipment" className="border border-neutral-500 px-8 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
-                                View Equipment
-                            </a>
-                        </div>
 
-                        <div className="grid grid-cols-1 gap-10 md:grid-cols-3 lg:gap-12">
-                            {inventoryItems.map((item) => (
-                                <article key={item.id} className="group border border-[#dad5cb] bg-white transition-colors duration-500 hover:border-[#a56437]">
-                                    <div className="relative h-72 overflow-hidden bg-black">
-                                        <div
-                                            className="absolute inset-0 bg-cover grayscale opacity-80 transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
-                                            style={{ backgroundImage: `url('${heroImage}')`, backgroundPosition: item.imagePosition }}
-                                            aria-hidden="true"
-                                        />
-                                        <div
-                                            className={`absolute left-0 top-0 px-4 py-2 font-heading text-sm font-semibold uppercase tracking-[0.08em] ${
-                                                item.badgeStyle === 'outline'
-                                                    ? 'border border-[#a56437] bg-white/90 text-[#a56437]'
-                                                    : item.badgeStyle === 'primary'
-                                                      ? 'bg-[#a56437] text-white'
-                                                      : 'bg-neutral-500 text-white'
-                                            }`}
-                                        >
-                                            {item.badge}
+                            <div className="grid grid-cols-1 gap-10 md:grid-cols-3 lg:gap-12">
+                                {featuredListings.map((item) => (
+                                    <article key={item.public_id} className="group border border-[#dad5cb] bg-white transition-colors duration-500 hover:border-[#a56437]">
+                                        <div className="relative h-72 overflow-hidden bg-black">
+                                            <div
+                                                className="absolute inset-0 bg-cover grayscale opacity-80 transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
+                                                style={{ backgroundImage: `url('${item.image_url}')` }}
+                                                aria-hidden="true"
+                                            />
+                                            <div
+                                                className={`absolute left-0 top-0 px-4 py-2 font-heading text-sm font-semibold uppercase tracking-[0.08em] ${
+                                                    badgeStyleFor(item.availability) === 'outline'
+                                                        ? 'border border-[#a56437] bg-white/90 text-[#a56437]'
+                                                        : badgeStyleFor(item.availability) === 'primary'
+                                                          ? 'bg-[#a56437] text-white'
+                                                          : 'bg-neutral-500 text-white'
+                                                }`}
+                                            >
+                                                {item.availability}
+                                            </div>
+                                            <div className="absolute bottom-4 right-4 border border-white/20 bg-black/50 px-2 py-1 font-heading text-sm font-semibold tracking-[0.08em] text-white/80 backdrop-blur-md">
+                                                ID: {item.public_id}
+                                            </div>
                                         </div>
-                                        <div className="absolute bottom-4 right-4 border border-white/20 bg-black/50 px-2 py-1 font-heading text-sm font-semibold tracking-[0.08em] text-white/80 backdrop-blur-md">
-                                            ID: {item.id}
+                                        <div className="p-8">
+                                            <h3 className="mb-6 border-b border-[#dad5cb] pb-4 font-heading text-2xl font-semibold uppercase tracking-[0.06em] text-neutral-950">
+                                                {item.title}
+                                            </h3>
+                                            <div className="mb-8 grid grid-cols-2 gap-y-6">
+                                                {featuredSpecs(item).map(([label, value], index) => (
+                                                    <div key={label} className="flex flex-col">
+                                                        <span className="font-heading text-xs font-semibold uppercase tracking-[0.08em] text-neutral-500">
+                                                            {label}
+                                                        </span>
+                                                        <span className={`font-heading text-base font-semibold ${index === 3 ? 'text-[#a56437]' : 'text-neutral-950'}`}>
+                                                            {value}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <a href={item.href} className="flex w-full items-center justify-center border border-[#dad5cb] bg-[#f3f1ec] py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
+                                                Request Details
+                                            </a>
                                         </div>
-                                    </div>
-                                    <div className="p-8">
-                                        <h3 className="mb-6 border-b border-[#dad5cb] pb-4 font-heading text-2xl font-semibold uppercase tracking-[0.06em] text-neutral-950">
-                                            {item.title}
-                                        </h3>
-                                        <div className="mb-8 grid grid-cols-2 gap-y-6">
-                                            {item.specs.map(([label, value], index) => (
-                                                <div key={label} className="flex flex-col">
-                                                    <span className="font-heading text-xs font-semibold uppercase tracking-[0.08em] text-neutral-500">
-                                                        {label}
-                                                    </span>
-                                                    <span className={`font-heading text-base font-semibold ${index === 3 ? 'text-[#a56437]' : 'text-neutral-950'}`}>
-                                                        {value}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <a href="/contact" className="flex w-full items-center justify-center border border-[#dad5cb] bg-[#f3f1ec] py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
-                                            Request Details
-                                        </a>
-                                    </div>
-                                </article>
-                            ))}
+                                    </article>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                )}
 
                 <section className="border-y border-[#dad5cb] bg-white">
                     <div className="mx-auto grid max-w-[1280px] grid-cols-1 px-5 sm:px-10 md:grid-cols-2">
@@ -441,7 +462,7 @@ export default function Home({ canonicalUrl, ogImageUrl }: HomeProps) {
                                     <span>We work our network and come back with real options.</span>
                                 </li>
                             </ul>
-                            <a href="/contact" className="mt-auto inline-flex h-16 w-fit items-center self-start border border-neutral-950 px-12 font-heading text-base font-semibold uppercase tracking-[0.12em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
+                            <a href="/request-equipment" className="mt-auto inline-flex h-16 w-fit items-center self-start border border-neutral-950 px-12 font-heading text-base font-semibold uppercase tracking-[0.12em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white">
                                 Request Equipment
                             </a>
                         </div>

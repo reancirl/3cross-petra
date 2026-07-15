@@ -91,47 +91,6 @@
             "description": "Equipment moves, paperwork clears, and everyone moves on."
         }
     ],
-    "inventoryItems": [
-        {
-            "title": "3-Phase Separator",
-            "badge": "Available",
-            "badgeStyle": "solid",
-            "id": "PH-9902",
-            "imagePosition": "22% center",
-            "specs": [
-                ["Year", "2020"],
-                ["PSI", "1440 WP"],
-                ["Size", "36\" x 10'"],
-                ["Condition", "Certified"]
-            ]
-        },
-        {
-            "title": "Ariel JGK/4 Compressor",
-            "badge": "Market Movement",
-            "badgeStyle": "primary",
-            "id": "PH-1148",
-            "imagePosition": "52% center",
-            "specs": [
-                ["Year", "2018"],
-                ["HP", "3550"],
-                ["Hours", "4200"],
-                ["Stages", "2-Stage"]
-            ]
-        },
-        {
-            "title": "Storage Tank Battery",
-            "badge": "Available",
-            "badgeStyle": "outline",
-            "id": "PH-7761",
-            "imagePosition": "80% center",
-            "specs": [
-                ["Capacity", "400 BBL x 4"],
-                ["Material", "Fiberglass"],
-                ["Status", "Cleaned"],
-                ["Coating", "Internal"]
-            ]
-        }
-    ],
     "whyPeopleWorkWithPetra": [
         {
             "title": "We understand field reality",

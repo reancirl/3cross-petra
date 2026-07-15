@@ -4,6 +4,10 @@ import { FeatureIcon } from '../Components/home-icons';
 type ContactProps = {
     canonicalUrl: string;
     ogImageUrl: string;
+    assetContext?: {
+        asset?: string | null;
+        equipment?: string | null;
+    };
 };
 
 const pageTitle = "Contact Petra | Let's Move Something";
@@ -23,8 +27,10 @@ const nextSteps = [
     'Share photos, serial plates, documents, timing, and deal constraints when available.',
     'Petra will review whether the opportunity is a fit for brokerage or sourcing support.',
 ];
+const contactOptions = ['Submit equipment', 'Request equipment', 'Call a broker', 'General inquiry'];
 
-export default function Contact({ canonicalUrl, ogImageUrl }: ContactProps) {
+export default function Contact({ canonicalUrl, ogImageUrl, assetContext }: ContactProps) {
+    const hasAssetContext = Boolean(assetContext?.asset || assetContext?.equipment);
     const structuredData = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -117,6 +123,18 @@ export default function Contact({ canonicalUrl, ogImageUrl }: ContactProps) {
                                     Request Equipment
                                 </a>
                             </div>
+
+                            {hasAssetContext && (
+                                <div className="mt-8 border border-[#dad5cb] bg-[#f3f1ec] p-5">
+                                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]">
+                                        Broker Context
+                                    </span>
+                                    <p className="mt-2 text-base leading-7 text-neutral-700">
+                                        {assetContext?.equipment ?? 'Equipment inquiry'}
+                                        {assetContext?.asset ? ` - ${assetContext.asset}` : ''}
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Commented out pending client confirmation — not in original content doc. See 2026-07-08 audit.
@@ -134,6 +152,25 @@ export default function Contact({ canonicalUrl, ogImageUrl }: ContactProps) {
                             </ul>
                         </aside>
                         */}
+                    </div>
+                </section>
+
+                <section className="border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28">
+                    <div className="mx-auto max-w-[1280px] px-5 sm:px-10">
+                        <div className="grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-4">
+                            {contactOptions.map((option) => (
+                                <article key={option} className="bg-white p-7">
+                                    <div className="mb-5 h-1.5 w-1.5 bg-[#a56437]" />
+                                    <h2 className="font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
+                                        {option}
+                                    </h2>
+                                </article>
+                            ))}
+                        </div>
+
+                        <p className="mx-auto mt-10 max-w-3xl text-center text-lg leading-8 text-neutral-600">
+                            We respond quickly because equipment decisions don't wait.
+                        </p>
                     </div>
                 </section>
 

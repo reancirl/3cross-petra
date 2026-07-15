@@ -4,20 +4,23 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Portal\DashboardController;
-use App\Http\Controllers\Portal\ProfileController;
+use App\Http\Controllers\EquipmentListingController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MarketplaceController;
+use App\Models\EquipmentSubmission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', fn () => Inertia::render('Home', [
-    'canonicalUrl' => url('/'),
-    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
-]));
+Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/equipment', fn () => Inertia::render('Equipment', [
-    'canonicalUrl' => url('/equipment'),
-    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
-]));
+Route::get('/equipment', [MarketplaceController::class, 'index']);
+
+Route::get('/equipment/{listing}', [EquipmentListingController::class, 'show'])
+    ->where('listing', '[A-Za-z0-9-]+')
+    ->name('equipment.show');
+Route::post('/equipment/{listing}/inquiries', [EquipmentListingController::class, 'storeInquiry'])
+    ->where('listing', '[A-Za-z0-9-]+')
+    ->name('equipment.inquiries.store');
 
 Route::get('/sell-equipment', fn () => Inertia::render('SellEquipment', [
     'canonicalUrl' => url('/sell-equipment'),
@@ -39,9 +42,20 @@ Route::get('/industries', fn () => Inertia::render('Industries', [
     'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
 ]));
 
+Route::get('/about', fn () => Inertia::render('About', [
+    'canonicalUrl' => url('/about'),
+    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+]));
+
+Route::get('/resources', fn () => Inertia::render('Resources', [
+    'canonicalUrl' => url('/resources'),
+    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+]));
+
 Route::get('/contact', fn () => Inertia::render('Contact', [
     'canonicalUrl' => url('/contact'),
     'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+    'assetContext' => request()->only(['asset', 'equipment']),
 ]));
 
 Route::get('/privacy', fn () => Inertia::render('LegalPage', [
@@ -91,35 +105,9 @@ Route::get('/dashboard', fn () => redirect()->route(request()->user()->portalRou
     ->middleware(['auth', 'no.back.history'])
     ->name('dashboard');
 
-$portalSections = ['saved-equipment', 'quotes', 'offers', 'documents', 'messages', 'notifications'];
-
-Route::middleware(['auth', 'no.back.history', 'user.type:seller'])
-    ->prefix('seller')
-    ->name('portal.seller.')
-    ->group(function () use ($portalSections) {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->defaults('userType', 'seller')->name('dashboard');
-        Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'seller')->name('profile');
-        Route::patch('/profile', [ProfileController::class, 'update'])->defaults('userType', 'seller')->name('profile.update');
-        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->defaults('userType', 'seller')->name('profile.password');
-        Route::get('/{section}', [DashboardController::class, 'placeholder'])
-            ->whereIn('section', $portalSections)
-            ->defaults('userType', 'seller')
-            ->name('placeholder');
-    });
-
-Route::middleware(['auth', 'no.back.history', 'user.type:buyer'])
-    ->prefix('buyer')
-    ->name('portal.buyer.')
-    ->group(function () use ($portalSections) {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->defaults('userType', 'buyer')->name('dashboard');
-        Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'buyer')->name('profile');
-        Route::patch('/profile', [ProfileController::class, 'update'])->defaults('userType', 'buyer')->name('profile.update');
-        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->defaults('userType', 'buyer')->name('profile.password');
-        Route::get('/{section}', [DashboardController::class, 'placeholder'])
-            ->whereIn('section', $portalSections)
-            ->defaults('userType', 'buyer')
-            ->name('placeholder');
-    });
+require __DIR__.'/web/seller.php';
+require __DIR__.'/web/buyer.php';
+require __DIR__.'/web/broker.php';
 
 Route::get('/sitemap.xml', function () {
     $urls = [
@@ -154,11 +142,33 @@ Route::get('/sitemap.xml', function () {
             'priority' => '0.7',
         ],
         [
+            'loc' => url('/about'),
+            'changefreq' => 'monthly',
+            'priority' => '0.6',
+        ],
+        [
+            'loc' => url('/resources'),
+            'changefreq' => 'monthly',
+            'priority' => '0.6',
+        ],
+        [
             'loc' => url('/contact'),
             'changefreq' => 'monthly',
             'priority' => '0.6',
         ],
     ];
+    $equipmentUrls = EquipmentSubmission::query()
+        ->publiclyVisible()
+        ->orderByDesc('published_at')
+        ->pluck('public_id')
+        ->filter()
+        ->map(fn (string $publicId): array => [
+            'loc' => url("/equipment/{$publicId}"),
+            'changefreq' => 'daily',
+            'priority' => '0.8',
+        ])->all();
+    $urls = array_merge($urls, $equipmentUrls);
+
     $entries = collect($urls)->map(function ($url) {
         $loc = htmlspecialchars($url['loc'], ENT_XML1);
 

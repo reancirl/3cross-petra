@@ -5,7 +5,9 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AuthPortalTest extends TestCase
@@ -97,6 +99,257 @@ class AuthPortalTest extends TestCase
         $this->actingAs($user)
             ->get('/seller/quotes')
             ->assertOk();
+    }
+
+    public function test_seller_can_submit_equipment_and_see_it_on_listings(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->seller()->create();
+
+        $this->actingAs($user)
+            ->post('/seller/listings', [
+                'title' => 'Ajax DPC-2803 Compressor',
+                'category' => 'Compressors',
+                'region' => 'Wyoming',
+                'city' => 'Casper',
+                'condition' => 'sitting_idle',
+                'condition_notes' => 'Pulled last spring, stored inside.',
+                'asking_price' => '42500',
+                'photos' => [
+                    UploadedFile::fake()->image('pump.jpg'),
+                ],
+                'documents' => [
+                    UploadedFile::fake()->create('spec-sheet.pdf', 128, 'application/pdf'),
+                ],
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status', 'Equipment submitted.');
+
+        $this->assertDatabaseHas('equipment_submissions', [
+            'user_id' => $user->id,
+            'title' => 'Ajax DPC-2803 Compressor',
+            'category' => 'Compressors',
+            'region' => 'Wyoming',
+            'city' => 'Casper',
+            'condition' => 'sitting_idle',
+            'asking_price' => '42500.00',
+            'needs_valuation' => false,
+            'status' => 'under_review',
+        ]);
+
+        $this->actingAs($user)
+            ->get('/seller/listings')
+            ->assertOk()
+            ->assertSee('Ajax DPC-2803 Compressor');
+    }
+
+    public function test_seller_asking_for_a_valuation_stores_no_price(): void
+    {
+        $user = User::factory()->seller()->create();
+
+        $this->actingAs($user)
+            ->post('/seller/listings', [
+                'title' => 'Tank battery',
+                'category' => 'Tanks',
+                'region' => 'Montana',
+                'condition' => 'unknown',
+                'asking_price' => '',
+                'needs_valuation' => '1',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('equipment_submissions', [
+            'user_id' => $user->id,
+            'title' => 'Tank battery',
+            'asking_price' => null,
+            'needs_valuation' => true,
+        ]);
+    }
+
+    public function test_seller_submission_requires_the_structured_fields(): void
+    {
+        $user = User::factory()->seller()->create();
+
+        $this->actingAs($user)
+            ->from('/seller/listings')
+            ->post('/seller/listings', [
+                'title' => '',
+                'category' => 'Not A Real Category',
+                'region' => '',
+                'condition' => 'melted',
+            ])
+            ->assertSessionHasErrors(['title', 'category', 'region', 'condition']);
+
+        $this->assertDatabaseCount('equipment_submissions', 0);
+    }
+
+    public function test_legacy_saved_equipment_path_redirects_to_listings(): void
+    {
+        $this->actingAs(User::factory()->seller()->create())
+            ->get('/seller/saved-equipment')
+            ->assertRedirect('/seller/listings');
+    }
+
+    public function test_buyer_can_submit_equipment_request_and_see_it_on_saved_equipment(): void
+    {
+        $user = User::factory()->buyer()->create();
+
+        $this->actingAs($user)
+            ->post('/buyer/saved-equipment', [
+                'equipment_type' => 'Separator',
+                'specifications' => 'Three phase if available',
+                'budget_range' => '40,000',
+                'location_preference' => 'Rockies',
+                'timeline' => 'Aug 1, 2026 - Aug 31, 2026',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status', 'Equipment request submitted.');
+
+        $this->assertDatabaseHas('equipment_requests', [
+            'user_id' => $user->id,
+            'equipment_type' => 'Separator',
+            'budget_range' => '40,000',
+            'location_preference' => 'Rockies',
+            'timeline' => 'Aug 1, 2026 - Aug 31, 2026',
+            'status' => 'submitted',
+        ]);
+
+        $this->actingAs($user)
+            ->get('/buyer/saved-equipment')
+            ->assertOk()
+            ->assertSee('Separator');
+    }
+
+    public function test_buyer_equipment_request_budget_must_be_numeric(): void
+    {
+        $user = User::factory()->buyer()->create();
+
+        $this->actingAs($user)
+            ->from('/buyer/saved-equipment')
+            ->post('/buyer/saved-equipment', [
+                'equipment_type' => 'Separator',
+                'specifications' => 'Three phase if available',
+                'budget_range' => '$25k-$40k',
+                'location_preference' => 'Rockies',
+                'timeline' => 'Aug 1, 2026 - Aug 31, 2026',
+            ])
+            ->assertRedirect('/buyer/saved-equipment')
+            ->assertSessionHasErrors('budget_range');
+
+        $this->assertDatabaseMissing('equipment_requests', [
+            'user_id' => $user->id,
+            'equipment_type' => 'Separator',
+            'budget_range' => '$25k-$40k',
+        ]);
+    }
+
+    public function test_broker_can_update_submission_and_request_statuses(): void
+    {
+        $broker = User::factory()->broker()->create();
+        $seller = User::factory()->seller()->create();
+        $buyer = User::factory()->buyer()->create();
+
+        $submission = $seller->equipmentSubmissions()->create([
+            'title' => 'Tank battery',
+            'category' => 'Tanks',
+            'region' => 'Montana',
+            'condition' => 'sitting_idle',
+            'photos' => [['name' => 'tank.jpg', 'path' => 'p/tank.jpg', 'url' => '/storage/p/tank.jpg', 'size' => 1]],
+        ]);
+
+        $equipmentRequest = $buyer->equipmentRequests()->create([
+            'equipment_type' => 'Compressor',
+            'budget_range' => '$50k-$80k',
+            'location_preference' => 'Permian',
+            'timeline' => 'Q3',
+        ]);
+
+        $this->actingAs($broker)
+            ->patch("/broker/seller-submissions/{$submission->id}", [
+                'status' => 'published',
+                'public_description' => 'Cleaned tank battery ready for redeployment.',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status');
+
+        $this->actingAs($broker)
+            ->patch("/broker/buyer-requests/{$equipmentRequest->id}", [
+                'status' => 'options_presented',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status', 'Buyer request status updated.');
+
+        $submission->refresh();
+        $this->assertNotNull($submission->public_id);
+        $this->assertNotNull($submission->published_at);
+
+        $this->assertDatabaseHas('equipment_submissions', [
+            'id' => $submission->id,
+            'status' => 'published',
+        ]);
+
+        $this->assertDatabaseHas('equipment_requests', [
+            'id' => $equipmentRequest->id,
+            'status' => 'options_presented',
+        ]);
+    }
+
+    public function test_broker_status_updates_are_visible_in_customer_portal_lists(): void
+    {
+        $broker = User::factory()->broker()->create();
+        $seller = User::factory()->seller()->create();
+        $buyer = User::factory()->buyer()->create();
+
+        $submission = $seller->equipmentSubmissions()->create([
+            'title' => 'Tank battery',
+            'category' => 'Tanks',
+            'region' => 'Montana',
+            'condition' => 'sitting_idle',
+            'photos' => [['name' => 'tank.jpg', 'path' => 'p/tank.jpg', 'url' => '/storage/p/tank.jpg', 'size' => 1]],
+        ]);
+
+        $equipmentRequest = $buyer->equipmentRequests()->create([
+            'equipment_type' => 'Compressor',
+            'budget_range' => '$50k-$80k',
+            'location_preference' => 'Permian',
+            'timeline' => 'Q3',
+        ]);
+
+        $this->actingAs($broker)
+            ->patch("/broker/seller-submissions/{$submission->id}", [
+                'status' => 'published',
+                'public_description' => 'Cleaned tank battery ready for redeployment.',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->actingAs($broker)
+            ->patch("/broker/buyer-requests/{$equipmentRequest->id}", [
+                'status' => 'options_presented',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->actingAs($seller)
+            ->get('/seller/listings')
+            ->assertOk()
+            ->assertSee('Tank battery')
+            ->assertSee('Published')
+            ->assertSee('Live on the Petra marketplace.');
+
+        $this->actingAs($buyer)
+            ->get('/buyer/saved-equipment')
+            ->assertOk()
+            ->assertSee('Compressor')
+            ->assertSee('Options Presented');
+    }
+
+    public function test_customer_cannot_access_broker_review_page(): void
+    {
+        $user = User::factory()->seller()->create();
+
+        $this->actingAs($user)
+            ->get('/broker/submissions')
+            ->assertRedirect('/seller/dashboard');
     }
 
     public function test_portal_responses_prevent_browser_back_cache(): void

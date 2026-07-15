@@ -1,33 +1,45 @@
 {
     "heroImage": "/images/petra-equipment-yard-hero.png",
-    "requestedAssets": ["Compressors", "Separators", "Pump packages", "Tank batteries", "Production equipment", "Hard-to-source surplus"],
+    "requestedAssets": [
+        "Replacement units",
+        "Project-specific equipment",
+        "Hard-to-find specs",
+        "Surplus field equipment",
+        "Urgent operational needs"
+    ],
     "processSteps": [
         {
             "number": "01",
-            "title": "Send the Spec",
-            "description": "Share the equipment type, required size, service conditions, location needs, and timing."
+            "title": "We check active inventory",
+            "description": "Petra starts with equipment already moving through the brokerage network to see if the request can be filled right now."
         },
         {
             "number": "02",
-            "title": "Check the Network",
-            "description": "Petra reviews active sellers, regional surplus, operator relationships, and quiet-market availability."
+            "title": "We contact regional sellers",
+            "description": "We reach out directly to operators and sellers holding the kind of equipment the request calls for."
         },
         {
             "number": "03",
-            "title": "Verify Fit",
-            "description": "We compare condition, documents, field use, logistics, and practical buyer requirements before presenting options."
+            "title": "We reach yard networks",
+            "description": "Petra works surplus yards and private sellers where equipment often moves before it is ever listed publicly."
         },
         {
             "number": "04",
-            "title": "Move the Deal",
-            "description": "When a fit is real, Petra supports buyer questions, seller coordination, negotiation, and next-step logistics."
+            "title": "We present real options",
+            "description": "You get equipment that actually matches the spec, condition, location, and timeline you asked for."
+        },
+        {
+            "number": "05",
+            "title": "You choose next steps",
+            "description": "If an option fits, Petra carries the conversation into pricing, inspection, documentation, and movement."
         }
     ],
     "requirements": [
-        "The right size",
-        "The right spec",
-        "The right condition",
-        "And someone who actually knows where to find it"
+        "Equipment type",
+        "Specifications (if known)",
+        "Budget range",
+        "Location preference",
+        "Timeline"
     ],
     "buyerBenefits": [
         {

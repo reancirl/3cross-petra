@@ -3,12 +3,10 @@ import PortalShell from '../../Components/portal-shell';
 import type { PortalData } from '../../types';
 
 const sectionLabels: Record<string, string> = {
-    'saved-equipment': 'Saved Equipment',
+    'saved-equipment-watchlist': 'Saved Equipment',
     quotes: 'Quotes',
     offers: 'Offers',
     documents: 'Documents',
-    messages: 'Messages',
-    notifications: 'Notifications',
 };
 
 type PlaceholderProps = {
@@ -34,7 +32,7 @@ export default function Placeholder({ portal, section }: PlaceholderProps) {
                     <p className="mt-5 max-w-3xl text-base leading-7 text-neutral-600">
                         The sitemap names this section, but it does not yet define the underlying object model, workflow states, or permissions. This pass only reserves the route and navigation entry.
                     </p>
-                    {section === 'saved-equipment' && (
+                    {section === 'saved-equipment-watchlist' && (
                         <p className="mt-4 max-w-3xl text-base leading-7 text-neutral-600">
                             For {portal.roleLabel.toLowerCase()} accounts, the saved-equipment behavior still needs a product decision before data is wired.
                         </p>

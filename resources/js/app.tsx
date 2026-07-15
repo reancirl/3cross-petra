@@ -23,7 +23,7 @@ createInertiaApp({
         const page = pages[`./Pages/${name}.tsx`];
 
         page.default.layout ??= (pageContent: ReactNode) => {
-            const Layout = name.startsWith('Auth/') || name.startsWith('Portal/') ? BlankLayout : AppLayout;
+            const Layout = name.startsWith('Auth/') || name.startsWith('Broker/') || name.startsWith('Portal/') ? BlankLayout : AppLayout;
 
             return <Layout>{pageContent}</Layout>;
         };
