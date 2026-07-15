@@ -2,17 +2,23 @@ import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
-import type { SharedPageProps } from '../../types';
+import type { SharedPageProps, StatusTone } from '../../types';
 
 type SellerSubmission = {
     id: number;
     seller: string | null;
     email: string | null;
-    equipment_type: string;
-    location: string;
-    condition: string;
+    title: string;
+    category: string;
+    region: string;
+    city: string | null;
+    condition_label: string;
+    condition_notes: string | null;
+    asking_price: string | null;
+    needs_valuation: boolean;
     status: string;
     status_label: string;
+    status_tone: StatusTone;
     created_at: string | null;
     created_at_timestamp: number | null;
 };
@@ -119,7 +125,7 @@ export default function BrokerSubmissions({
                                 <div className="flex flex-wrap items-start justify-between gap-4">
                                     <div>
                                         <h3 className="font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
-                                            {submission.equipment_type}
+                                            {submission.title}
                                         </h3>
                                         <p className="mt-1 text-sm leading-6 text-neutral-500">
                                             {submission.seller} · {submission.email} · {submission.created_at}
@@ -133,8 +139,34 @@ export default function BrokerSubmissions({
                                 </div>
 
                                 <dl className="mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2">
-                                    <Detail label="Location" value={submission.location} />
-                                    <Detail label="Condition" value={submission.condition} />
+                                    <Detail label="Category" value={submission.category} />
+                                    <Detail
+                                        label="Region"
+                                        value={submission.city ? `${submission.region} — ${submission.city}` : submission.region}
+                                    />
+                                    <Detail label="Condition" value={submission.condition_label} />
+                                    <Detail
+                                        label="Asking price"
+                                        value={
+                                            submission.needs_valuation
+                                                ? 'Valuation requested'
+                                                : submission.asking_price
+                                                  ? Number(submission.asking_price).toLocaleString('en-US', {
+                                                        style: 'currency',
+                                                        currency: 'USD',
+                                                        maximumFractionDigits: 0,
+                                                    })
+                                                  : null
+                                        }
+                                    />
+                                    {submission.condition_notes && (
+                                        <div className="sm:col-span-2">
+                                            <dt className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                                                Condition notes
+                                            </dt>
+                                            <dd className="mt-1 whitespace-pre-line text-neutral-700">{submission.condition_notes}</dd>
+                                        </div>
+                                    )}
                                 </dl>
                             </article>
                         ))}
@@ -269,16 +301,25 @@ function StatusBadge({ status, label }: { status: string; label: string }) {
 
 function statusBadgeClass(status: string): string {
     switch (status) {
+        // Canonical listing statuses (App\Enums\ListingStatus) — shared with the seller portal.
         case 'under_review':
+            return 'border-[#dad5cb] bg-[#f3f1ec] text-neutral-700';
+        case 'published':
+            return 'border-emerald-800/25 bg-emerald-50 text-emerald-800';
+        case 'pending':
+            return 'border-amber-800/25 bg-amber-50 text-amber-800';
+        case 'sold':
+            return 'border-neutral-300 bg-neutral-100 text-neutral-500';
+        case 'not_accepted':
+            return 'border-[#b3261e]/25 bg-red-50 text-[#b3261e]';
+
+        // Buyer-request statuses keep their own lifecycle and colors.
         case 'checking_inventory':
             return 'border-amber-300 bg-amber-50 text-amber-800';
-        case 'buyers_identified':
         case 'contacting_sellers':
             return 'border-sky-300 bg-sky-50 text-sky-800';
-        case 'in_negotiation':
         case 'options_presented':
             return 'border-indigo-300 bg-indigo-50 text-indigo-800';
-        case 'offer_received':
         case 'reviewing_options':
             return 'border-emerald-300 bg-emerald-50 text-emerald-800';
         default:

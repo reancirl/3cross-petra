@@ -66,7 +66,7 @@ export default function SlideOver({ children, eyebrow, open, title, onClose }: S
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="slide-over-title"
-                className={`absolute right-0 top-0 grid h-full w-full max-w-2xl content-start overflow-y-auto border-l border-[#dad5cb] bg-[#f8f8f6] shadow-2xl transition-[opacity,transform] duration-[250ms] ease-out ${
+                className={`absolute right-0 top-0 grid h-dvh w-full max-w-none content-start overflow-y-auto overscroll-contain border-[#dad5cb] bg-[#f8f8f6] shadow-2xl transition-[opacity,transform] duration-[250ms] ease-out sm:max-w-2xl sm:border-l ${
                     isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
                 }`}
             >

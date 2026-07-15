@@ -32,15 +32,25 @@ export type UploadFileMeta = {
     size: number | null;
 };
 
+export type StatusTone = 'neutral' | 'success' | 'warning' | 'muted' | 'danger';
+
 export type EquipmentSubmission = {
     id: number;
-    equipment_type: string;
-    location: string;
+    title: string;
+    category: string;
+    region: string;
+    city: string | null;
     condition: string;
+    condition_label: string;
+    condition_notes: string | null;
+    asking_price: string | null;
+    needs_valuation: boolean;
     photos: UploadFileMeta[];
     documents: UploadFileMeta[];
     status: string;
     status_label: string;
+    status_tone: StatusTone;
+    status_explanation: string | null;
     created_at: string | null;
 };
 

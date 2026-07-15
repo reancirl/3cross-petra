@@ -101,17 +101,21 @@ class AuthPortalTest extends TestCase
             ->assertOk();
     }
 
-    public function test_seller_can_submit_equipment_and_see_it_on_saved_equipment(): void
+    public function test_seller_can_submit_equipment_and_see_it_on_listings(): void
     {
         Storage::fake('public');
 
         $user = User::factory()->seller()->create();
 
         $this->actingAs($user)
-            ->post('/seller/saved-equipment', [
-                'equipment_type' => 'Pump jack',
-                'location' => 'Casper, WY',
-                'condition' => 'Rough but complete',
+            ->post('/seller/listings', [
+                'title' => 'Ajax DPC-2803 Compressor',
+                'category' => 'Compressors',
+                'region' => 'Wyoming',
+                'city' => 'Casper',
+                'condition' => 'sitting_idle',
+                'condition_notes' => 'Pulled last spring, stored inside.',
+                'asking_price' => '42500',
                 'photos' => [
                     UploadedFile::fake()->image('pump.jpg'),
                 ],
@@ -124,16 +128,67 @@ class AuthPortalTest extends TestCase
 
         $this->assertDatabaseHas('equipment_submissions', [
             'user_id' => $user->id,
-            'equipment_type' => 'Pump jack',
-            'location' => 'Casper, WY',
-            'condition' => 'Rough but complete',
-            'status' => 'submitted',
+            'title' => 'Ajax DPC-2803 Compressor',
+            'category' => 'Compressors',
+            'region' => 'Wyoming',
+            'city' => 'Casper',
+            'condition' => 'sitting_idle',
+            'asking_price' => '42500.00',
+            'needs_valuation' => false,
+            'status' => 'under_review',
         ]);
 
         $this->actingAs($user)
-            ->get('/seller/saved-equipment')
+            ->get('/seller/listings')
             ->assertOk()
-            ->assertSee('Pump jack');
+            ->assertSee('Ajax DPC-2803 Compressor');
+    }
+
+    public function test_seller_asking_for_a_valuation_stores_no_price(): void
+    {
+        $user = User::factory()->seller()->create();
+
+        $this->actingAs($user)
+            ->post('/seller/listings', [
+                'title' => 'Tank battery',
+                'category' => 'Tanks',
+                'region' => 'Montana',
+                'condition' => 'unknown',
+                'asking_price' => '',
+                'needs_valuation' => '1',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('equipment_submissions', [
+            'user_id' => $user->id,
+            'title' => 'Tank battery',
+            'asking_price' => null,
+            'needs_valuation' => true,
+        ]);
+    }
+
+    public function test_seller_submission_requires_the_structured_fields(): void
+    {
+        $user = User::factory()->seller()->create();
+
+        $this->actingAs($user)
+            ->from('/seller/listings')
+            ->post('/seller/listings', [
+                'title' => '',
+                'category' => 'Not A Real Category',
+                'region' => '',
+                'condition' => 'melted',
+            ])
+            ->assertSessionHasErrors(['title', 'category', 'region', 'condition']);
+
+        $this->assertDatabaseCount('equipment_submissions', 0);
+    }
+
+    public function test_legacy_saved_equipment_path_redirects_to_listings(): void
+    {
+        $this->actingAs(User::factory()->seller()->create())
+            ->get('/seller/saved-equipment')
+            ->assertRedirect('/seller/listings');
     }
 
     public function test_buyer_can_submit_equipment_request_and_see_it_on_saved_equipment(): void
@@ -196,9 +251,10 @@ class AuthPortalTest extends TestCase
         $buyer = User::factory()->buyer()->create();
 
         $submission = $seller->equipmentSubmissions()->create([
-            'equipment_type' => 'Tank battery',
-            'location' => 'Midland, TX',
-            'condition' => 'Usable',
+            'title' => 'Tank battery',
+            'category' => 'Tanks',
+            'region' => 'Montana',
+            'condition' => 'sitting_idle',
         ]);
 
         $equipmentRequest = $buyer->equipmentRequests()->create([
@@ -210,7 +266,7 @@ class AuthPortalTest extends TestCase
 
         $this->actingAs($broker)
             ->patch("/broker/seller-submissions/{$submission->id}", [
-                'status' => 'buyers_identified',
+                'status' => 'published',
             ])
             ->assertSessionHasNoErrors()
             ->assertSessionHas('status', 'Seller submission status updated.');
@@ -224,7 +280,7 @@ class AuthPortalTest extends TestCase
 
         $this->assertDatabaseHas('equipment_submissions', [
             'id' => $submission->id,
-            'status' => 'buyers_identified',
+            'status' => 'published',
         ]);
 
         $this->assertDatabaseHas('equipment_requests', [
@@ -240,9 +296,10 @@ class AuthPortalTest extends TestCase
         $buyer = User::factory()->buyer()->create();
 
         $submission = $seller->equipmentSubmissions()->create([
-            'equipment_type' => 'Tank battery',
-            'location' => 'Midland, TX',
-            'condition' => 'Usable',
+            'title' => 'Tank battery',
+            'category' => 'Tanks',
+            'region' => 'Montana',
+            'condition' => 'sitting_idle',
         ]);
 
         $equipmentRequest = $buyer->equipmentRequests()->create([
@@ -254,7 +311,7 @@ class AuthPortalTest extends TestCase
 
         $this->actingAs($broker)
             ->patch("/broker/seller-submissions/{$submission->id}", [
-                'status' => 'buyers_identified',
+                'status' => 'published',
             ])
             ->assertSessionHasNoErrors();
 
@@ -265,10 +322,11 @@ class AuthPortalTest extends TestCase
             ->assertSessionHasNoErrors();
 
         $this->actingAs($seller)
-            ->get('/seller/saved-equipment')
+            ->get('/seller/listings')
             ->assertOk()
             ->assertSee('Tank battery')
-            ->assertSee('Buyers Identified');
+            ->assertSee('Published')
+            ->assertSee('Live on the Petra marketplace.');
 
         $this->actingAs($buyer)
             ->get('/buyer/saved-equipment')

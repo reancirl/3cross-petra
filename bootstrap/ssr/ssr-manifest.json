@@ -27,7 +27,7 @@
   "resources/js/Pages/Portal/Dashboard.tsx": [],
   "resources/js/Pages/Portal/Placeholder.tsx": [],
   "resources/js/Pages/Portal/Profile.tsx": [],
-  "resources/js/Pages/Portal/SellerSavedEquipment.tsx": [],
+  "resources/js/Pages/Portal/SellerListings.tsx": [],
   "resources/js/Pages/RequestEquipment.tsx": [],
   "resources/js/Pages/Resources.tsx": [],
   "resources/js/Pages/SellEquipment.tsx": [],

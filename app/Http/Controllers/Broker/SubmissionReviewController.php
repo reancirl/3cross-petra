@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Broker;
 
+use App\Enums\ListingStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Broker\UpdateEquipmentRequestStatusRequest;
 use App\Http\Requests\Broker\UpdateEquipmentSubmissionStatusRequest;
@@ -23,11 +24,17 @@ class SubmissionReviewController extends Controller
                     'id' => $submission->id,
                     'seller' => $submission->user?->name,
                     'email' => $submission->user?->email,
-                    'equipment_type' => $submission->equipment_type,
-                    'location' => $submission->location,
-                    'condition' => $submission->condition,
-                    'status' => $submission->status,
+                    'title' => $submission->title,
+                    'category' => $submission->category,
+                    'region' => $submission->region,
+                    'city' => $submission->city,
+                    'condition_label' => $submission->conditionLabel(),
+                    'condition_notes' => $submission->condition_notes,
+                    'asking_price' => $submission->asking_price,
+                    'needs_valuation' => $submission->needs_valuation,
+                    'status' => $submission->listingStatus()->value,
                     'status_label' => $submission->statusLabel(),
+                    'status_tone' => $submission->listingStatus()->tone(),
                     'created_at' => $submission->created_at?->toFormattedDateString(),
                     'created_at_timestamp' => $submission->created_at?->getTimestamp(),
                 ])
@@ -52,7 +59,7 @@ class SubmissionReviewController extends Controller
                     'created_at_timestamp' => $equipmentRequest->created_at?->getTimestamp(),
                 ])
                 ->values(),
-            'sellerStatusOptions' => EquipmentSubmission::STATUSES,
+            'sellerStatusOptions' => ListingStatus::options(),
             'buyerStatusOptions' => EquipmentRequest::STATUSES,
         ]);
     }

@@ -982,7 +982,7 @@ function BrokerSubmissions({ sellerSubmissions, buyerRequests, sellerStatusOptio
 							className: "flex flex-wrap items-start justify-between gap-4",
 							children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
 								className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-								children: submission.equipment_type
+								children: submission.title
 							}), /* @__PURE__ */ jsxs("p", {
 								className: "mt-1 text-sm leading-6 text-neutral-500",
 								children: [
@@ -999,15 +999,40 @@ function BrokerSubmissions({ sellerSubmissions, buyerRequests, sellerStatusOptio
 							})]
 						}), /* @__PURE__ */ jsxs("dl", {
 							className: "mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
-							children: [/* @__PURE__ */ jsx(Detail$2, {
-								label: "Location",
-								value: submission.location
-							}), /* @__PURE__ */ jsx(Detail$2, {
-								label: "Condition",
-								value: submission.condition
-							})]
+							children: [
+								/* @__PURE__ */ jsx(Detail$2, {
+									label: "Category",
+									value: submission.category
+								}),
+								/* @__PURE__ */ jsx(Detail$2, {
+									label: "Region",
+									value: submission.city ? `${submission.region} — ${submission.city}` : submission.region
+								}),
+								/* @__PURE__ */ jsx(Detail$2, {
+									label: "Condition",
+									value: submission.condition_label
+								}),
+								/* @__PURE__ */ jsx(Detail$2, {
+									label: "Asking price",
+									value: submission.needs_valuation ? "Valuation requested" : submission.asking_price ? Number(submission.asking_price).toLocaleString("en-US", {
+										style: "currency",
+										currency: "USD",
+										maximumFractionDigits: 0
+									}) : null
+								}),
+								submission.condition_notes && /* @__PURE__ */ jsxs("div", {
+									className: "sm:col-span-2",
+									children: [/* @__PURE__ */ jsx("dt", {
+										className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+										children: "Condition notes"
+									}), /* @__PURE__ */ jsx("dd", {
+										className: "mt-1 whitespace-pre-line text-neutral-700",
+										children: submission.condition_notes
+									})]
+								})
+							]
 						})]
-					}, submission.id)), sellerSubmissions.length === 0 && /* @__PURE__ */ jsx(EmptyState, { text: "No seller equipment has been submitted yet." })]
+					}, submission.id)), sellerSubmissions.length === 0 && /* @__PURE__ */ jsx(EmptyState$1, { text: "No seller equipment has been submitted yet." })]
 				}),
 				/* @__PURE__ */ jsxs(SubmissionPanel, {
 					title: "Buyer Requests",
@@ -1064,7 +1089,7 @@ function BrokerSubmissions({ sellerSubmissions, buyerRequests, sellerStatusOptio
 								})
 							]
 						})]
-					}, request.id)), buyerRequests.length === 0 && /* @__PURE__ */ jsx(EmptyState, { text: "No buyer requests have been submitted yet." })]
+					}, request.id)), buyerRequests.length === 0 && /* @__PURE__ */ jsx(EmptyState$1, { text: "No buyer requests have been submitted yet." })]
 				})
 			]
 		})]
@@ -1146,13 +1171,14 @@ function StatusBadge$2({ status, label }) {
 }
 function statusBadgeClass(status) {
 	switch (status) {
-		case "under_review":
+		case "under_review": return "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700";
+		case "published": return "border-emerald-800/25 bg-emerald-50 text-emerald-800";
+		case "pending": return "border-amber-800/25 bg-amber-50 text-amber-800";
+		case "sold": return "border-neutral-300 bg-neutral-100 text-neutral-500";
+		case "not_accepted": return "border-[#b3261e]/25 bg-red-50 text-[#b3261e]";
 		case "checking_inventory": return "border-amber-300 bg-amber-50 text-amber-800";
-		case "buyers_identified":
 		case "contacting_sellers": return "border-sky-300 bg-sky-50 text-sky-800";
-		case "in_negotiation":
 		case "options_presented": return "border-indigo-300 bg-indigo-50 text-indigo-800";
-		case "offer_received":
 		case "reviewing_options": return "border-emerald-300 bg-emerald-50 text-emerald-800";
 		default: return "border-neutral-300 bg-neutral-50 text-neutral-700";
 	}
@@ -1166,7 +1192,7 @@ function Detail$2({ label, value }) {
 		children: value || "Not provided"
 	})] });
 }
-function EmptyState({ text }) {
+function EmptyState$1({ text }) {
 	return /* @__PURE__ */ jsx("p", {
 		className: "border border-[#dad5cb] bg-[#f8f8f6] p-5 text-base leading-7 text-neutral-600",
 		children: text
@@ -4032,7 +4058,7 @@ var sellerNavItems = [
 	},
 	{
 		label: "My Listings",
-		path: "saved-equipment",
+		path: "listings",
 		real: true,
 		icon: "equipment"
 	},
@@ -4053,18 +4079,6 @@ var sellerNavItems = [
 		path: "documents",
 		real: false,
 		icon: "documents"
-	},
-	{
-		label: "Messages",
-		path: "messages",
-		real: false,
-		icon: "messages"
-	},
-	{
-		label: "Notifications",
-		path: "notifications",
-		real: false,
-		icon: "notifications"
 	},
 	{
 		label: "Profile",
@@ -4361,7 +4375,7 @@ function SlideOver({ children, eyebrow, open, title, onClose }) {
 			role: "dialog",
 			"aria-modal": "true",
 			"aria-labelledby": "slide-over-title",
-			className: `absolute right-0 top-0 grid h-full w-full max-w-2xl content-start overflow-y-auto border-l border-[#dad5cb] bg-[#f8f8f6] shadow-2xl transition-[opacity,transform] duration-[250ms] ease-out ${isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`,
+			className: `absolute right-0 top-0 grid h-dvh w-full max-w-none content-start overflow-y-auto overscroll-contain border-[#dad5cb] bg-[#f8f8f6] shadow-2xl transition-[opacity,transform] duration-[250ms] ease-out sm:max-w-2xl sm:border-l ${isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`,
 			children: [/* @__PURE__ */ jsxs("header", {
 				className: "sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-[#dad5cb] bg-white px-5 py-5 sm:px-7",
 				children: [/* @__PURE__ */ jsxs("div", { children: [eyebrow && /* @__PURE__ */ jsx("span", {
@@ -5106,29 +5120,101 @@ function Field$1({ label, error, children }) {
 	});
 }
 //#endregion
-//#region resources/js/Pages/Portal/SellerSavedEquipment.tsx
-var SellerSavedEquipment_exports = /* @__PURE__ */ __exportAll({ default: () => SellerSavedEquipment });
-function SellerSavedEquipment({ portal, submissions }) {
-	const { status } = usePage().props;
-	const [isFormOpen, setIsFormOpen] = useState(false);
-	const form = useForm({
-		equipment_type: "",
-		location: "",
+//#region resources/js/Pages/Portal/SellerListings.tsx
+var SellerListings_exports = /* @__PURE__ */ __exportAll({ default: () => SellerListings });
+var requiredFields = [
+	{
+		name: "title",
+		message: "Enter an equipment title."
+	},
+	{
+		name: "category",
+		message: "Select a category."
+	},
+	{
+		name: "region",
+		message: "Select a region."
+	},
+	{
+		name: "condition",
+		message: "Select a condition."
+	}
+];
+function emptyForm() {
+	return {
+		title: "",
+		category: "",
+		region: "",
+		city: "",
 		condition: "",
+		condition_notes: "",
+		asking_price: "",
+		needs_valuation: false,
 		photos: [],
 		documents: []
+	};
+}
+function SellerListings({ portal, submissions, categoryOptions, regionOptions, conditionOptions }) {
+	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [clientErrors, setClientErrors] = useState({});
+	const fieldRefs = useRef({
+		title: null,
+		category: null,
+		region: null,
+		condition: null
 	});
-	useEffect(() => {
-		if (status) toast.success(status);
-	}, [status]);
+	const form = useForm(emptyForm());
+	function openForm(prefill) {
+		form.clearErrors();
+		setClientErrors({});
+		form.setData({
+			...emptyForm(),
+			...prefill
+		});
+		setIsFormOpen(true);
+	}
+	function errorFor(field) {
+		const serverErrors = form.errors;
+		return clientErrors[field] ?? serverErrors[field];
+	}
+	function clearError(field) {
+		setClientErrors((errors) => {
+			if (!errors[field]) return errors;
+			const next = { ...errors };
+			delete next[field];
+			return next;
+		});
+	}
 	function submit(event) {
 		event.preventDefault();
-		form.post("/seller/saved-equipment", {
+		const errors = {};
+		requiredFields.forEach((field) => {
+			if (!form.data[field.name].trim()) errors[field.name] = field.message;
+		});
+		setClientErrors(errors);
+		const firstInvalid = requiredFields.find((field) => errors[field.name]);
+		if (firstInvalid) {
+			fieldRefs.current[firstInvalid.name]?.focus();
+			return;
+		}
+		const { category, region } = form.data;
+		form.post("/seller/listings", {
 			forceFormData: true,
 			preserveScroll: true,
 			onSuccess: () => {
-				form.reset();
 				setIsFormOpen(false);
+				setClientErrors({});
+				form.reset();
+				toast.success("Equipment submitted.", {
+					description: "A broker will review it shortly.",
+					action: {
+						label: "Submit another",
+						onClick: () => openForm({
+							category,
+							region
+						})
+					}
+				});
 			}
 		});
 	}
@@ -5155,8 +5241,8 @@ function SellerSavedEquipment({ portal, submissions }) {
 						})
 					] }), /* @__PURE__ */ jsx("button", {
 						type: "button",
-						onClick: () => setIsFormOpen(true),
-						className: "button-press focus-copper inline-flex h-12 w-full items-center justify-center bg-[#a56437] px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto",
+						onClick: () => openForm(),
+						className: "button-press focus-copper inline-flex h-12 w-full shrink-0 items-center justify-center bg-[#a56437] px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto",
 						children: "Submit Equipment"
 					})]
 				}),
@@ -5167,48 +5253,164 @@ function SellerSavedEquipment({ portal, submissions }) {
 					title: "What We Need",
 					children: /* @__PURE__ */ jsxs("form", {
 						onSubmit: submit,
+						noValidate: true,
 						className: "grid gap-5 sm:grid-cols-2",
 						children: [
 							/* @__PURE__ */ jsx(Field, {
-								label: "Equipment type",
-								error: form.errors.equipment_type,
+								label: "Equipment title",
+								required: true,
+								error: errorFor("title"),
+								className: "sm:col-span-2",
 								children: /* @__PURE__ */ jsx("input", {
-									value: form.data.equipment_type,
-									onChange: (event) => form.setData("equipment_type", event.target.value),
-									className: "portal-input",
-									required: true
+									ref: (element) => {
+										fieldRefs.current.title = element;
+									},
+									value: form.data.title,
+									onChange: (event) => {
+										form.setData("title", event.target.value);
+										clearError("title");
+									},
+									placeholder: "e.g. Ajax DPC-2803 Compressor",
+									"aria-invalid": Boolean(errorFor("title")),
+									className: inputClass(errorFor("title"))
 								})
 							}),
 							/* @__PURE__ */ jsx(Field, {
-								label: "Location",
-								error: form.errors.location,
+								label: "Category",
+								required: true,
+								error: errorFor("category"),
+								children: /* @__PURE__ */ jsxs("select", {
+									ref: (element) => {
+										fieldRefs.current.category = element;
+									},
+									value: form.data.category,
+									onChange: (event) => {
+										form.setData("category", event.target.value);
+										clearError("category");
+									},
+									"aria-invalid": Boolean(errorFor("category")),
+									className: inputClass(errorFor("category")),
+									children: [/* @__PURE__ */ jsx("option", {
+										value: "",
+										children: "Select a category"
+									}), categoryOptions.map((category) => /* @__PURE__ */ jsx("option", {
+										value: category,
+										children: category
+									}, category))]
+								})
+							}),
+							/* @__PURE__ */ jsx(Field, {
+								label: "Region",
+								required: true,
+								error: errorFor("region"),
+								children: /* @__PURE__ */ jsxs("select", {
+									ref: (element) => {
+										fieldRefs.current.region = element;
+									},
+									value: form.data.region,
+									onChange: (event) => {
+										form.setData("region", event.target.value);
+										clearError("region");
+									},
+									"aria-invalid": Boolean(errorFor("region")),
+									className: inputClass(errorFor("region")),
+									children: [/* @__PURE__ */ jsx("option", {
+										value: "",
+										children: "Select a region"
+									}), regionOptions.map((region) => /* @__PURE__ */ jsx("option", {
+										value: region,
+										children: region
+									}, region))]
+								})
+							}),
+							/* @__PURE__ */ jsx(Field, {
+								label: "City / yard location",
+								error: errorFor("city"),
 								children: /* @__PURE__ */ jsx("input", {
-									value: form.data.location,
-									onChange: (event) => form.setData("location", event.target.value),
-									className: "portal-input",
-									required: true
+									value: form.data.city,
+									onChange: (event) => form.setData("city", event.target.value),
+									placeholder: "e.g. Casper",
+									className: inputClass(errorFor("city"))
 								})
 							}),
 							/* @__PURE__ */ jsx(Field, {
 								label: "Condition",
-								error: form.errors.condition,
+								required: true,
+								error: errorFor("condition"),
+								children: /* @__PURE__ */ jsxs("select", {
+									ref: (element) => {
+										fieldRefs.current.condition = element;
+									},
+									value: form.data.condition,
+									onChange: (event) => {
+										form.setData("condition", event.target.value);
+										clearError("condition");
+									},
+									"aria-invalid": Boolean(errorFor("condition")),
+									className: inputClass(errorFor("condition")),
+									children: [/* @__PURE__ */ jsx("option", {
+										value: "",
+										children: "Select a condition"
+									}), Object.entries(conditionOptions).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+										value,
+										children: label
+									}, value))]
+								})
+							}),
+							/* @__PURE__ */ jsx(Field, {
+								label: "Condition notes",
+								error: errorFor("condition_notes"),
 								className: "sm:col-span-2",
 								children: /* @__PURE__ */ jsx("textarea", {
-									value: form.data.condition,
-									onChange: (event) => form.setData("condition", event.target.value),
-									className: "portal-input min-h-28 py-3",
-									placeholder: "e.g. Used, minor wear, fully operational",
-									required: true
+									value: form.data.condition_notes,
+									onChange: (event) => form.setData("condition_notes", event.target.value),
+									className: `${inputClass(errorFor("condition_notes"))} min-h-28 py-3`,
+									placeholder: "Tell us what you know — last use, known issues, how it's stored. Rough is fine."
 								})
+							}),
+							/* @__PURE__ */ jsxs(Field, {
+								label: "Asking price",
+								error: errorFor("asking_price"),
+								className: "sm:col-span-2",
+								children: [/* @__PURE__ */ jsx("input", {
+									type: "number",
+									min: "0",
+									step: "0.01",
+									inputMode: "decimal",
+									value: form.data.asking_price,
+									disabled: form.data.needs_valuation,
+									onChange: (event) => form.setData("asking_price", event.target.value),
+									placeholder: "USD",
+									"aria-invalid": Boolean(errorFor("asking_price")),
+									className: inputClass(errorFor("asking_price"))
+								}), /* @__PURE__ */ jsxs("label", {
+									className: "mt-1 flex w-fit cursor-pointer items-center gap-3",
+									children: [/* @__PURE__ */ jsx("input", {
+										type: "checkbox",
+										checked: form.data.needs_valuation,
+										onChange: (event) => {
+											const checked = event.target.checked;
+											form.setData((data) => ({
+												...data,
+												needs_valuation: checked,
+												asking_price: checked ? "" : data.asking_price
+											}));
+										},
+										className: "h-4 w-4 shrink-0 accent-[#a56437]"
+									}), /* @__PURE__ */ jsx("span", {
+										className: "text-base leading-7 text-neutral-600",
+										children: "Not sure — help me price it"
+									})]
+								})]
 							}),
 							/* @__PURE__ */ jsx(PhotoPicker, {
 								files: form.data.photos,
-								error: form.errors.photos,
+								error: errorFor("photos"),
 								onChange: (files) => form.setData("photos", files)
 							}),
 							/* @__PURE__ */ jsx(DocumentPicker, {
 								files: form.data.documents,
-								error: form.errors.documents,
+								error: errorFor("documents"),
 								onChange: (files) => form.setData("documents", files)
 							}),
 							/* @__PURE__ */ jsx("div", {
@@ -5216,7 +5418,7 @@ function SellerSavedEquipment({ portal, submissions }) {
 								children: /* @__PURE__ */ jsx("button", {
 									type: "submit",
 									disabled: form.processing,
-									className: "button-press focus-copper inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+									className: "button-press focus-copper inline-flex h-12 w-full items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60 sm:w-auto",
 									children: form.processing ? "Submitting" : "Submit Equipment"
 								})
 							})
@@ -5225,49 +5427,189 @@ function SellerSavedEquipment({ portal, submissions }) {
 				}),
 				/* @__PURE__ */ jsx("section", {
 					className: "grid gap-4",
-					children: submissions.length === 0 ? /* @__PURE__ */ jsx("article", {
-						className: "border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600",
-						children: "Submitted equipment will appear here."
-					}) : /* @__PURE__ */ jsx("div", {
+					children: submissions.length === 0 ? /* @__PURE__ */ jsx(EmptyState, { onSubmit: () => openForm() }) : /* @__PURE__ */ jsx("div", {
 						className: "grid gap-4",
 						children: submissions.map((submission) => /* @__PURE__ */ jsxs("article", {
 							className: "border border-[#dad5cb] bg-white p-6",
-							children: [/* @__PURE__ */ jsxs("div", {
-								className: "flex flex-wrap items-start justify-between gap-4",
-								children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
-									className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-									children: submission.equipment_type
-								}), /* @__PURE__ */ jsx("p", {
-									className: "mt-2 text-sm leading-6 text-neutral-500",
-									children: submission.created_at
-								})] }), /* @__PURE__ */ jsx(StatusBadge, { label: submission.status_label })]
-							}), /* @__PURE__ */ jsxs("dl", {
-								className: "mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
-								children: [
-									/* @__PURE__ */ jsx(Detail, {
-										label: "Location",
-										value: submission.location
-									}),
-									/* @__PURE__ */ jsx(Detail, {
-										label: "Condition",
-										value: submission.condition
-									}),
-									/* @__PURE__ */ jsx(FilesDetail, {
-										label: "Photos",
-										files: submission.photos
-									}),
-									/* @__PURE__ */ jsx(FilesDetail, {
-										label: "Documents",
-										files: submission.documents
-									})
-								]
-							})]
+							children: [
+								/* @__PURE__ */ jsxs("div", {
+									className: "flex flex-wrap items-start justify-between gap-4",
+									children: [/* @__PURE__ */ jsxs("div", {
+										className: "min-w-0",
+										children: [/* @__PURE__ */ jsx("h3", {
+											className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+											children: submission.title
+										}), /* @__PURE__ */ jsx("p", {
+											className: "mt-2 text-sm leading-6 text-neutral-500",
+											children: submission.created_at
+										})]
+									}), /* @__PURE__ */ jsxs("div", {
+										className: "flex flex-col items-start gap-2 sm:items-end",
+										children: [/* @__PURE__ */ jsx(StatusBadge, {
+											label: submission.status_label,
+											tone: submission.status_tone
+										}), submission.status_explanation && /* @__PURE__ */ jsx("p", {
+											className: "text-sm leading-6 text-neutral-500 sm:text-right",
+											children: submission.status_explanation
+										})]
+									})]
+								}),
+								/* @__PURE__ */ jsxs("dl", {
+									className: "mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
+									children: [
+										/* @__PURE__ */ jsx(Detail, {
+											label: "Category",
+											value: submission.category
+										}),
+										/* @__PURE__ */ jsx(Detail, {
+											label: "Region",
+											value: formatRegion(submission)
+										}),
+										/* @__PURE__ */ jsx(Detail, {
+											label: "Condition",
+											value: submission.condition_label
+										}),
+										/* @__PURE__ */ jsx(Detail, {
+											label: "Asking price",
+											value: formatPrice(submission)
+										}),
+										submission.condition_notes && /* @__PURE__ */ jsxs("div", {
+											className: "sm:col-span-2",
+											children: [/* @__PURE__ */ jsx("dt", {
+												className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+												children: "Condition notes"
+											}), /* @__PURE__ */ jsx("dd", {
+												className: "mt-1 whitespace-pre-line text-neutral-700",
+												children: submission.condition_notes
+											})]
+										})
+									]
+								}),
+								/* @__PURE__ */ jsxs("div", {
+									className: "mt-5 grid gap-5 sm:grid-cols-2",
+									children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("span", {
+										className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+										children: "Photos"
+									}), /* @__PURE__ */ jsx("div", {
+										className: "mt-2",
+										children: /* @__PURE__ */ jsx(PhotoThumbnails, { photos: submission.photos })
+									})] }), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("span", {
+										className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+										children: "Documents"
+									}), /* @__PURE__ */ jsx("div", {
+										className: "mt-2",
+										children: /* @__PURE__ */ jsx(DocumentLinks, { documents: submission.documents })
+									})] })]
+								})
+							]
 						}, submission.id))
 					})
 				})
 			]
 		})
 	})] });
+}
+var toneClasses = {
+	neutral: "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700",
+	success: "border-emerald-800/25 bg-emerald-50 text-emerald-800",
+	warning: "border-amber-800/25 bg-amber-50 text-amber-800",
+	muted: "border-neutral-300 bg-neutral-100 text-neutral-500",
+	danger: "border-[#b3261e]/25 bg-red-50 text-[#b3261e]"
+};
+function StatusBadge({ label, tone }) {
+	return /* @__PURE__ */ jsx("span", {
+		className: `inline-flex h-8 shrink-0 items-center border px-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] ${toneClasses[tone] ?? toneClasses.neutral}`,
+		children: label
+	});
+}
+function EmptyState({ onSubmit }) {
+	return /* @__PURE__ */ jsxs("article", {
+		className: "border border-[#dad5cb] bg-white p-8 text-center sm:p-12",
+		children: [
+			/* @__PURE__ */ jsx("h3", {
+				className: "font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl",
+				children: "Got equipment sitting in a yard?"
+			}),
+			/* @__PURE__ */ jsx("p", {
+				className: "mx-auto mt-4 max-w-xl text-base leading-7 text-neutral-600",
+				children: "Submit it to Petra and a broker will review the asset, position it, and work the buyer side for you."
+			}),
+			/* @__PURE__ */ jsx("button", {
+				type: "button",
+				onClick: onSubmit,
+				className: "button-press focus-copper mt-8 inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
+				children: "Submit Equipment"
+			})
+		]
+	});
+}
+function PhotoThumbnails({ photos }) {
+	if (photos.length === 0) return /* @__PURE__ */ jsx("p", {
+		className: "text-base leading-7 text-neutral-500",
+		children: "No photos uploaded"
+	});
+	const visible = photos.slice(0, 4);
+	const remaining = photos.length - visible.length;
+	return /* @__PURE__ */ jsxs("div", {
+		className: "flex flex-wrap gap-2",
+		children: [visible.map((photo) => /* @__PURE__ */ jsx("a", {
+			href: photo.url,
+			target: "_blank",
+			rel: "noreferrer",
+			className: "focus-copper block h-20 w-20 overflow-hidden border border-[#dad5cb] bg-[#f3f1ec]",
+			title: photo.name,
+			children: /* @__PURE__ */ jsx("img", {
+				src: photo.url,
+				alt: photo.name,
+				loading: "lazy",
+				className: "h-full w-full object-cover"
+			})
+		}, photo.path)), remaining > 0 && /* @__PURE__ */ jsxs("span", {
+			className: "flex h-20 w-20 items-center justify-center border border-[#dad5cb] bg-[#f3f1ec] px-1 text-center font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600",
+			children: [
+				"+",
+				remaining,
+				" more"
+			]
+		})]
+	});
+}
+function DocumentLinks({ documents }) {
+	if (documents.length === 0) return /* @__PURE__ */ jsx("p", {
+		className: "text-base leading-7 text-neutral-500",
+		children: "No documents uploaded"
+	});
+	return /* @__PURE__ */ jsx("ul", {
+		className: "grid gap-2",
+		children: documents.map((document) => /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs("a", {
+			href: document.url,
+			target: "_blank",
+			rel: "noreferrer",
+			className: "focus-copper flex items-center gap-3 border border-[#dad5cb] bg-white p-3 transition-colors hover:border-[#a56437]",
+			children: [/* @__PURE__ */ jsx(FileIcon, {}), /* @__PURE__ */ jsx("span", {
+				className: "min-w-0 truncate text-sm font-semibold text-neutral-900",
+				children: document.name
+			})]
+		}) }, document.path))
+	});
+}
+function FileIcon() {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: "h-5 w-5 shrink-0 text-[#a56437]",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.8,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [
+			/* @__PURE__ */ jsx("path", { d: "M7 3h7l4 4v14H7z" }),
+			/* @__PURE__ */ jsx("path", { d: "M14 3v5h5" }),
+			/* @__PURE__ */ jsx("path", { d: "M10 13h6" }),
+			/* @__PURE__ */ jsx("path", { d: "M10 17h4" })
+		]
+	});
 }
 function PhotoPicker({ files, error, onChange }) {
 	const [previews, setPreviews] = useState([]);
@@ -5315,7 +5657,7 @@ function PhotoPicker({ files, error, onChange }) {
 				]
 			}),
 			error && /* @__PURE__ */ jsx("span", {
-				className: "text-sm text-red-700",
+				className: "text-sm text-[#b3261e]",
 				children: error
 			}),
 			previews.length > 0 && /* @__PURE__ */ jsx("div", {
@@ -5383,7 +5725,7 @@ function DocumentPicker({ files, error, onChange }) {
 				]
 			}),
 			error && /* @__PURE__ */ jsx("span", {
-				className: "text-sm text-red-700",
+				className: "text-sm text-[#b3261e]",
 				children: error
 			}),
 			files.length > 0 && /* @__PURE__ */ jsx("div", {
@@ -5410,17 +5752,20 @@ function DocumentPicker({ files, error, onChange }) {
 		]
 	});
 }
-function Field({ label, error, className = "", children }) {
+function Field({ label, error, required = false, className = "", children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: `grid gap-2 ${className}`,
 		children: [
-			/* @__PURE__ */ jsx("span", {
+			/* @__PURE__ */ jsxs("span", {
 				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
-				children: label
+				children: [label, !required && /* @__PURE__ */ jsx("span", {
+					className: "ml-2 text-neutral-400",
+					children: "Optional"
+				})]
 			}),
 			children,
 			error && /* @__PURE__ */ jsx("span", {
-				className: "text-sm text-red-700",
+				className: "text-sm text-[#b3261e]",
 				children: error
 			})
 		]
@@ -5435,33 +5780,26 @@ function Detail({ label, value }) {
 		children: value || "Not provided"
 	})] });
 }
-function FilesDetail({ label, files }) {
-	return /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
-		className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
-		children: label
-	}), /* @__PURE__ */ jsx("dd", {
-		className: "mt-1 text-neutral-700",
-		children: files.length === 0 ? "None uploaded" : /* @__PURE__ */ jsx("ul", {
-			className: "grid gap-1",
-			children: files.map((file) => /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsx("a", {
-				href: file.url,
-				className: "text-[#a56437] underline-offset-4 hover:underline",
-				target: "_blank",
-				rel: "noreferrer",
-				children: file.name
-			}) }, file.path))
-		})
-	})] });
+function inputClass(error) {
+	return `portal-input${error ? " portal-input-error" : ""}`;
+}
+function formatRegion(submission) {
+	return submission.city ? `${submission.region} — ${submission.city}` : submission.region;
+}
+function formatPrice(submission) {
+	if (submission.needs_valuation) return "Valuation requested";
+	if (!submission.asking_price) return null;
+	const amount = Number(submission.asking_price);
+	if (Number.isNaN(amount)) return submission.asking_price;
+	return amount.toLocaleString("en-US", {
+		style: "currency",
+		currency: "USD",
+		maximumFractionDigits: 0
+	});
 }
 function formatFileSize(bytes) {
 	if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
 	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-function StatusBadge({ label }) {
-	return /* @__PURE__ */ jsx("span", {
-		className: "inline-flex h-8 items-center border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-[#a56437]",
-		children: label
-	});
 }
 var request_equipment_default = {
 	heroImage: "/images/petra-equipment-yard-hero.png",
@@ -7055,7 +7393,7 @@ createServer((page) => createInertiaApp({
 			"./Pages/Portal/Dashboard.tsx": Dashboard_exports,
 			"./Pages/Portal/Placeholder.tsx": Placeholder_exports,
 			"./Pages/Portal/Profile.tsx": Profile_exports,
-			"./Pages/Portal/SellerSavedEquipment.tsx": SellerSavedEquipment_exports,
+			"./Pages/Portal/SellerListings.tsx": SellerListings_exports,
 			"./Pages/RequestEquipment.tsx": RequestEquipment_exports,
 			"./Pages/Resources.tsx": Resources_exports,
 			"./Pages/SellEquipment.tsx": SellEquipment_exports,

@@ -2,29 +2,74 @@
 
 namespace App\Models;
 
+use App\Enums\ListingStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'equipment_type', 'location', 'condition', 'photos', 'documents', 'status'])]
+#[Fillable([
+    'user_id',
+    'title',
+    'category',
+    'region',
+    'city',
+    'condition',
+    'condition_notes',
+    'asking_price',
+    'needs_valuation',
+    'photos',
+    'documents',
+    'status',
+])]
 class EquipmentSubmission extends Model
 {
-    public const STATUS_SUBMITTED = 'submitted';
+    public const CATEGORIES = [
+        'Compressors',
+        'Separators',
+        'Production Equipment',
+        'Processing Equipment',
+        'Pumps',
+        'Tanks',
+        'Generators',
+        'Drilling Equipment',
+        'Electrical Equipment',
+        'Pipe & Tubular',
+        'Valves & Controls',
+        'Instrumentation',
+        'Wellhead Equipment',
+        'Other Equipment',
+    ];
 
-    public const STATUS_UNDER_REVIEW = 'under_review';
+    public const CATEGORY_FALLBACK = 'Other Equipment';
 
-    public const STATUS_BUYERS_IDENTIFIED = 'buyers_identified';
+    public const REGIONS = [
+        'Wyoming',
+        'North Dakota',
+        'Colorado',
+        'Utah',
+        'New Mexico',
+        'Montana',
+        'Other',
+    ];
 
-    public const STATUS_IN_NEGOTIATION = 'in_negotiation';
+    public const REGION_FALLBACK = 'Other';
 
-    public const STATUS_OFFER_RECEIVED = 'offer_received';
+    public const CONDITION_RUNNING = 'running';
 
-    public const STATUSES = [
-        self::STATUS_SUBMITTED => 'Submitted',
-        self::STATUS_UNDER_REVIEW => 'Under Review',
-        self::STATUS_BUYERS_IDENTIFIED => 'Buyers Identified',
-        self::STATUS_IN_NEGOTIATION => 'In Negotiation',
-        self::STATUS_OFFER_RECEIVED => 'Offer Received',
+    public const CONDITION_RECENTLY_PULLED = 'recently_pulled';
+
+    public const CONDITION_SITTING_IDLE = 'sitting_idle';
+
+    public const CONDITION_NEEDS_WORK = 'needs_work';
+
+    public const CONDITION_UNKNOWN = 'unknown';
+
+    public const CONDITIONS = [
+        self::CONDITION_RUNNING => 'Running',
+        self::CONDITION_RECENTLY_PULLED => 'Recently pulled',
+        self::CONDITION_SITTING_IDLE => 'Sitting idle',
+        self::CONDITION_NEEDS_WORK => 'Needs work',
+        self::CONDITION_UNKNOWN => 'Unknown',
     ];
 
     /**
@@ -35,9 +80,21 @@ class EquipmentSubmission extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function listingStatus(): ListingStatus
+    {
+        return $this->status instanceof ListingStatus
+            ? $this->status
+            : (ListingStatus::tryFrom((string) $this->status) ?? ListingStatus::UnderReview);
+    }
+
     public function statusLabel(): string
     {
-        return self::STATUSES[$this->status] ?? $this->status;
+        return $this->listingStatus()->label();
+    }
+
+    public function conditionLabel(): string
+    {
+        return self::CONDITIONS[$this->condition] ?? self::CONDITIONS[self::CONDITION_UNKNOWN];
     }
 
     /**
@@ -50,6 +107,9 @@ class EquipmentSubmission extends Model
         return [
             'photos' => 'array',
             'documents' => 'array',
+            'asking_price' => 'decimal:2',
+            'needs_valuation' => 'boolean',
+            'status' => ListingStatus::class,
         ];
     }
 }

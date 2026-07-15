@@ -263,6 +263,21 @@
         box-shadow: 0 0 0 3px rgba(165, 100, 55, 0.12);
     }
 
+    .portal-input:disabled {
+        background-color: #f3f1ec;
+        color: #8a8a85;
+        cursor: not-allowed;
+    }
+
+    .portal-input-error {
+        border-color: #b3261e;
+    }
+
+    .portal-input-error:focus {
+        border-color: #b3261e;
+        box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.12);
+    }
+
     .interactive-lift {
         transition:
             transform 260ms ease,

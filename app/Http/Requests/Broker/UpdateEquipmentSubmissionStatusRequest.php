@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Broker;
 
-use App\Models\EquipmentSubmission;
+use App\Enums\ListingStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,7 +24,7 @@ class UpdateEquipmentSubmissionStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', Rule::in(array_keys(EquipmentSubmission::STATUSES))],
+            'status' => ['required', Rule::enum(ListingStatus::class)],
         ];
     }
 }

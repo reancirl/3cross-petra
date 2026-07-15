@@ -4,14 +4,13 @@ import type { ReactNode } from 'react';
 import ConfirmDialog from './confirm-dialog';
 import type { PortalData, SharedPageProps } from '../types';
 
+// Messages and notifications are deferred and intentionally absent from the seller portal.
 const sellerNavItems = [
     { label: 'Dashboard', path: 'dashboard', real: true, icon: 'dashboard' },
-    { label: 'My Listings', path: 'saved-equipment', real: true, icon: 'equipment' },
+    { label: 'My Listings', path: 'listings', real: true, icon: 'equipment' },
     { label: 'Quotes', path: 'quotes', real: false, icon: 'quotes' },
     { label: 'Offers', path: 'offers', real: false, icon: 'offers' },
     { label: 'Documents', path: 'documents', real: false, icon: 'documents' },
-    { label: 'Messages', path: 'messages', real: false, icon: 'messages' },
-    { label: 'Notifications', path: 'notifications', real: false, icon: 'notifications' },
     { label: 'Profile', path: 'profile', real: true, icon: 'profile' },
 ];
 

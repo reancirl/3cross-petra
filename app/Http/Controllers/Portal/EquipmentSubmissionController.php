@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Portal;
 
+use App\Enums\ListingStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Portal\StoreEquipmentSubmissionRequest;
 use App\Models\EquipmentSubmission;
@@ -17,7 +18,7 @@ class EquipmentSubmissionController extends Controller
 {
     public function index(Request $request): Response
     {
-        return Inertia::render('Portal/SellerSavedEquipment', [
+        return Inertia::render('Portal/SellerListings', [
             'portal' => [
                 'userType' => User::TYPE_SELLER,
                 'roleLabel' => 'Seller',
@@ -30,20 +31,29 @@ class EquipmentSubmissionController extends Controller
                 ->get()
                 ->map(fn (EquipmentSubmission $submission): array => $this->serializeSubmission($submission))
                 ->values(),
-            'statusOptions' => EquipmentSubmission::STATUSES,
+            'categoryOptions' => EquipmentSubmission::CATEGORIES,
+            'regionOptions' => EquipmentSubmission::REGIONS,
+            'conditionOptions' => EquipmentSubmission::CONDITIONS,
         ]);
     }
 
     public function store(StoreEquipmentSubmissionRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+        $needsValuation = (bool) ($validated['needs_valuation'] ?? false);
 
         $request->user()->equipmentSubmissions()->create([
-            'equipment_type' => $validated['equipment_type'],
-            'location' => $validated['location'],
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'region' => $validated['region'],
+            'city' => $validated['city'] ?? null,
             'condition' => $validated['condition'],
+            'condition_notes' => $validated['condition_notes'] ?? null,
+            'asking_price' => $needsValuation ? null : ($validated['asking_price'] ?? null),
+            'needs_valuation' => $needsValuation,
             'photos' => $this->storeUploads($request->file('photos', []), 'photos'),
             'documents' => $this->storeUploads($request->file('documents', []), 'documents'),
+            'status' => ListingStatus::UnderReview,
         ]);
 
         return back()->with('status', 'Equipment submitted.');
@@ -72,15 +82,25 @@ class EquipmentSubmissionController extends Controller
      */
     private function serializeSubmission(EquipmentSubmission $submission): array
     {
+        $status = $submission->listingStatus();
+
         return [
             'id' => $submission->id,
-            'equipment_type' => $submission->equipment_type,
-            'location' => $submission->location,
+            'title' => $submission->title,
+            'category' => $submission->category,
+            'region' => $submission->region,
+            'city' => $submission->city,
             'condition' => $submission->condition,
+            'condition_label' => $submission->conditionLabel(),
+            'condition_notes' => $submission->condition_notes,
+            'asking_price' => $submission->asking_price,
+            'needs_valuation' => $submission->needs_valuation,
             'photos' => $submission->photos ?? [],
             'documents' => $submission->documents ?? [],
-            'status' => $submission->status,
-            'status_label' => $submission->statusLabel(),
+            'status' => $status->value,
+            'status_label' => $status->label(),
+            'status_tone' => $status->tone(),
+            'status_explanation' => $status->sellerExplanation(),
             'created_at' => $submission->created_at?->toFormattedDateString(),
         ];
     }
