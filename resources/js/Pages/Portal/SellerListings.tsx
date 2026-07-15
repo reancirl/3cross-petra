@@ -1,10 +1,10 @@
 import { Head, useForm } from '@inertiajs/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
 import PortalShell from '../../Components/portal-shell';
 import SlideOver from '../../Components/slide-over';
-import type { EquipmentSubmission, PortalData, StatusTone, UploadFileMeta } from '../../types';
+import type { EquipmentSubmission, PortalData, StatusTone } from '../../types';
 
 type SellerListingsProps = {
     portal: PortalData;
@@ -55,8 +55,12 @@ function emptyForm(): SubmissionForm {
     };
 }
 
+const PAGE_SIZE = 6;
+
 export default function SellerListings({ portal, submissions, categoryOptions, regionOptions, conditionOptions }: SellerListingsProps) {
     const [isFormOpen, setIsFormOpen] = useState(false);
+    const [search, setSearch] = useState('');
+    const [page, setPage] = useState(1);
     const [clientErrors, setClientErrors] = useState<Partial<Record<RequiredField, string>>>({});
     const fieldRefs = useRef<Record<RequiredField, FocusableField>>({
         title: null,
@@ -134,27 +138,91 @@ export default function SellerListings({ portal, submissions, categoryOptions, r
         });
     }
 
+    const filtered = useMemo(() => {
+        const term = search.trim().toLowerCase();
+
+        if (!term) {
+            return submissions;
+        }
+
+        return submissions.filter((submission) =>
+            [
+                submission.title,
+                submission.category,
+                submission.region,
+                submission.city,
+                submission.condition_label,
+                submission.status_label,
+            ]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase()
+                .includes(term),
+        );
+    }, [submissions, search]);
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    const currentPage = Math.min(page, totalPages);
+    const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+    const rangeStart = filtered.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+    const rangeEnd = Math.min(currentPage * PAGE_SIZE, filtered.length);
+
+    function updateSearch(value: string) {
+        setSearch(value);
+        setPage(1);
+    }
+
     return (
         <>
             <Head title="My Listings | Seller Portal" />
 
             <PortalShell portal={portal} title="My Listings">
-                <div className="grid gap-6">
-                    <section className="flex flex-col justify-between gap-4 border border-[#dad5cb] bg-white p-5 sm:flex-row sm:items-center sm:p-6">
-                        <div>
-                            <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">Listed Equipment</span>
-                            <h2 className="mt-2 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950">Your Submissions</h2>
-                            <p className="mt-2 max-w-2xl text-base leading-7 text-neutral-600">
-                                Submit equipment to Petra and track the current review status here.
+                <div className="grid gap-4">
+                    <section className="flex flex-col gap-4 rounded-2xl border border-[#dad5cb] bg-white px-5 py-4 shadow-sm lg:flex-row lg:items-center lg:justify-between lg:px-6">
+                        <div className="min-w-0">
+                            <span className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-[#a56437]">Listed Equipment</span>
+                            <h2 className="mt-1 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">Your Submissions</h2>
+                            <p className="mt-1 text-sm leading-6 text-neutral-500">
+                                {search.trim()
+                                    ? `${filtered.length} of ${submissions.length} ${submissions.length === 1 ? 'listing' : 'listings'}`
+                                    : `${submissions.length} ${submissions.length === 1 ? 'listing' : 'listings'} · track review status here.`}
                             </p>
                         </div>
-                        <button
-                            type="button"
-                            onClick={() => openForm()}
-                            className="button-press focus-copper inline-flex h-12 w-full shrink-0 items-center justify-center bg-[#a56437] px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto"
-                        >
-                            Submit Equipment
-                        </button>
+
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                            <div className="relative sm:w-72">
+                                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
+                                    <SearchIcon />
+                                </span>
+                                <input
+                                    type="search"
+                                    value={search}
+                                    onChange={(event) => updateSearch(event.target.value)}
+                                    placeholder="Search listings"
+                                    aria-label="Search listings"
+                                    className="h-11 w-full rounded-lg border border-[#dad5cb] bg-white pl-10 pr-9 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-[#a56437] focus:ring-2 focus:ring-[#a56437]/15 [&::-webkit-search-cancel-button]:appearance-none"
+                                />
+                                {search && (
+                                    <button
+                                        type="button"
+                                        onClick={() => updateSearch('')}
+                                        aria-label="Clear search"
+                                        className="focus-copper absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-[#f3f1ec] hover:text-neutral-700"
+                                    >
+                                        <CloseIcon />
+                                    </button>
+                                )}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => openForm()}
+                                className="button-press focus-copper inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-[#a56437] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto"
+                            >
+                                <PlusIcon />
+                                Submit Equipment
+                            </button>
+                        </div>
                     </section>
 
                     <SlideOver open={isFormOpen} onClose={() => setIsFormOpen(false)} eyebrow="Submit Equipment" title="What We Need">
@@ -307,60 +375,30 @@ export default function SellerListings({ portal, submissions, categoryOptions, r
                         </form>
                     </SlideOver>
 
-                    <section className="grid gap-4">
+                    <section className="grid gap-5">
                         {submissions.length === 0 ? (
                             <EmptyState onSubmit={() => openForm()} />
+                        ) : filtered.length === 0 ? (
+                            <NoResults search={search} onClear={() => updateSearch('')} />
                         ) : (
-                            <div className="grid gap-4">
-                                {submissions.map((submission) => (
-                                    <article key={submission.id} className="border border-[#dad5cb] bg-white p-6">
-                                        <div className="flex flex-wrap items-start justify-between gap-4">
-                                            <div className="min-w-0">
-                                                <h3 className="font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
-                                                    {submission.title}
-                                                </h3>
-                                                <p className="mt-2 text-sm leading-6 text-neutral-500">{submission.created_at}</p>
-                                            </div>
+                            <>
+                                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                                    {pageItems.map((submission) => (
+                                        <ListingCard key={submission.id} submission={submission} />
+                                    ))}
+                                </div>
 
-                                            <div className="flex flex-col items-start gap-2 sm:items-end">
-                                                <StatusBadge label={submission.status_label} tone={submission.status_tone} />
-                                                {submission.status_explanation && (
-                                                    <p className="text-sm leading-6 text-neutral-500 sm:text-right">{submission.status_explanation}</p>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <dl className="mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2">
-                                            <Detail label="Category" value={submission.category} />
-                                            <Detail label="Region" value={formatRegion(submission)} />
-                                            <Detail label="Condition" value={submission.condition_label} />
-                                            <Detail label="Asking price" value={formatPrice(submission)} />
-                                            {submission.condition_notes && (
-                                                <div className="sm:col-span-2">
-                                                    <dt className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Condition notes</dt>
-                                                    <dd className="mt-1 whitespace-pre-line text-neutral-700">{submission.condition_notes}</dd>
-                                                </div>
-                                            )}
-                                        </dl>
-
-                                        <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                                            <div>
-                                                <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Photos</span>
-                                                <div className="mt-2">
-                                                    <PhotoThumbnails photos={submission.photos} />
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Documents</span>
-                                                <div className="mt-2">
-                                                    <DocumentLinks documents={submission.documents} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </article>
-                                ))}
-                            </div>
+                                {totalPages > 1 && (
+                                    <Pagination
+                                        page={currentPage}
+                                        totalPages={totalPages}
+                                        rangeStart={rangeStart}
+                                        rangeEnd={rangeEnd}
+                                        total={filtered.length}
+                                        onChange={setPage}
+                                    />
+                                )}
+                            </>
                         )}
                     </section>
                 </div>
@@ -380,17 +418,106 @@ const toneClasses: Record<StatusTone, string> = {
 function StatusBadge({ label, tone }: { label: string; tone: StatusTone }) {
     return (
         <span
-            className={`inline-flex h-8 shrink-0 items-center border px-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] ${toneClasses[tone] ?? toneClasses.neutral}`}
+            className={`inline-flex h-7 shrink-0 items-center rounded-full border px-3 font-heading text-xs font-semibold uppercase tracking-[0.12em] shadow-sm ${toneClasses[tone] ?? toneClasses.neutral}`}
         >
             {label}
         </span>
     );
 }
 
+function ListingCard({ submission }: { submission: EquipmentSubmission }) {
+    const [coverFailed, setCoverFailed] = useState(false);
+    const cover = submission.photos[0];
+    const extraPhotos = submission.photos.length - 1;
+    const showCover = Boolean(cover) && !coverFailed;
+
+    return (
+        <article className="interactive-lift flex flex-col overflow-hidden rounded-2xl border border-[#dad5cb] bg-white shadow-sm">
+            <div className="relative aspect-[16/10] shrink-0 bg-[#f3f1ec]">
+                {showCover ? (
+                    <img
+                        src={cover.url}
+                        alt=""
+                        loading="lazy"
+                        onError={() => setCoverFailed(true)}
+                        className="h-full w-full object-cover"
+                    />
+                ) : (
+                    <span className="flex h-full w-full items-center justify-center text-[#cbc0ae]">
+                        <EquipmentGlyph />
+                    </span>
+                )}
+                <div className="absolute left-3 top-3">
+                    <StatusBadge label={submission.status_label} tone={submission.status_tone} />
+                </div>
+                {extraPhotos > 0 && (
+                    <span className="absolute bottom-3 right-3 rounded-full bg-neutral-950/70 px-2.5 py-1 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-white">
+                        +{extraPhotos} {extraPhotos === 1 ? 'photo' : 'photos'}
+                    </span>
+                )}
+            </div>
+
+            <div className="flex flex-1 flex-col p-5">
+                <h3
+                    className="truncate font-heading text-lg font-semibold uppercase tracking-[0.06em] text-neutral-950"
+                    title={submission.title}
+                >
+                    {submission.title}
+                </h3>
+                <p className="mt-1 text-xs leading-5 text-neutral-500">
+                    {submission.created_at}
+                    {submission.status_explanation ? ` · ${submission.status_explanation}` : ''}
+                </p>
+
+                <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
+                    <Detail label="Category" value={submission.category} />
+                    <Detail label="Region" value={formatRegion(submission)} />
+                    <Detail label="Condition" value={submission.condition_label} />
+                    <Detail label="Asking price" value={formatPrice(submission)} />
+                </dl>
+
+                {submission.condition_notes && (
+                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-neutral-600">{submission.condition_notes}</p>
+                )}
+
+                <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
+                    <span className="inline-flex items-center gap-1.5 font-heading text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-neutral-400">
+                        <PhotoIcon />
+                        {submission.photos.length} {submission.photos.length === 1 ? 'photo' : 'photos'}
+                    </span>
+                    {submission.documents.length > 0 ? (
+                        submission.documents.map((document) => (
+                            <a
+                                key={document.path}
+                                href={document.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                title={document.name}
+                                className="focus-copper inline-flex max-w-[11rem] items-center gap-1.5 rounded-full border border-[#dad5cb] bg-white px-2.5 py-1 text-xs font-semibold text-neutral-700 transition-colors hover:border-[#a56437] hover:text-[#a56437]"
+                            >
+                                <FileIcon />
+                                <span className="truncate">{document.name}</span>
+                            </a>
+                        ))
+                    ) : (
+                        <span className="inline-flex items-center gap-1.5 font-heading text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-neutral-400">
+                            <FileIcon />
+                            No docs
+                        </span>
+                    )}
+                </div>
+            </div>
+        </article>
+    );
+}
+
 function EmptyState({ onSubmit }: { onSubmit: () => void }) {
     return (
-        <article className="border border-[#dad5cb] bg-white p-8 text-center sm:p-12">
-            <h3 className="font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl">
+        <article className="rounded-2xl border border-[#dad5cb] bg-white p-8 text-center shadow-sm sm:p-12">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f4ece4] text-[#a56437]">
+                <EquipmentGlyph />
+            </span>
+            <h3 className="mt-6 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl">
                 Got equipment sitting in a yard?
             </h3>
             <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-neutral-600">
@@ -399,74 +526,19 @@ function EmptyState({ onSubmit }: { onSubmit: () => void }) {
             <button
                 type="button"
                 onClick={onSubmit}
-                className="button-press focus-copper mt-8 inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
+                className="button-press focus-copper mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90"
             >
+                <PlusIcon />
                 Submit Equipment
             </button>
         </article>
     );
 }
 
-function PhotoThumbnails({ photos }: { photos: UploadFileMeta[] }) {
-    if (photos.length === 0) {
-        return <p className="text-base leading-7 text-neutral-500">No photos uploaded</p>;
-    }
-
-    const visible = photos.slice(0, 4);
-    const remaining = photos.length - visible.length;
-
-    return (
-        <div className="flex flex-wrap gap-2">
-            {visible.map((photo) => (
-                <a
-                    key={photo.path}
-                    href={photo.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="focus-copper block h-20 w-20 overflow-hidden border border-[#dad5cb] bg-[#f3f1ec]"
-                    title={photo.name}
-                >
-                    <img src={photo.url} alt={photo.name} loading="lazy" className="h-full w-full object-cover" />
-                </a>
-            ))}
-
-            {remaining > 0 && (
-                <span className="flex h-20 w-20 items-center justify-center border border-[#dad5cb] bg-[#f3f1ec] px-1 text-center font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600">
-                    +{remaining} more
-                </span>
-            )}
-        </div>
-    );
-}
-
-function DocumentLinks({ documents }: { documents: UploadFileMeta[] }) {
-    if (documents.length === 0) {
-        return <p className="text-base leading-7 text-neutral-500">No documents uploaded</p>;
-    }
-
-    return (
-        <ul className="grid gap-2">
-            {documents.map((document) => (
-                <li key={document.path}>
-                    <a
-                        href={document.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="focus-copper flex items-center gap-3 border border-[#dad5cb] bg-white p-3 transition-colors hover:border-[#a56437]"
-                    >
-                        <FileIcon />
-                        <span className="min-w-0 truncate text-sm font-semibold text-neutral-900">{document.name}</span>
-                    </a>
-                </li>
-            ))}
-        </ul>
-    );
-}
-
 function FileIcon() {
     return (
         <svg
-            className="h-5 w-5 shrink-0 text-[#a56437]"
+            className="h-3.5 w-3.5 shrink-0"
             fill="none"
             stroke="currentColor"
             strokeLinecap="round"
@@ -480,6 +552,234 @@ function FileIcon() {
             <path d="M10 13h6" />
             <path d="M10 17h4" />
         </svg>
+    );
+}
+
+function PhotoIcon() {
+    return (
+        <svg
+            className="h-3.5 w-3.5 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.8}
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+            <path d="M4 5h16v14H4z" />
+            <path d="M4 15l4-4 4 4 3-3 5 5" />
+            <path d="M9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+        </svg>
+    );
+}
+
+function PlusIcon() {
+    return (
+        <svg
+            className="h-4 w-4 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+            <path d="M12 5v14" />
+            <path d="M5 12h14" />
+        </svg>
+    );
+}
+
+function EquipmentGlyph() {
+    return (
+        <svg
+            className="h-7 w-7 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.6}
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+            <path d="M4 16h16" />
+            <path d="M6 16l2-6h8l2 6" />
+            <path d="M8 18.5h.01" />
+            <path d="M16 18.5h.01" />
+            <path d="M9 10V7h6v3" />
+        </svg>
+    );
+}
+
+function SearchIcon({ className = 'h-5 w-5' }: { className?: string }) {
+    return (
+        <svg
+            className={`${className} shrink-0`}
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.8}
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-3.5-3.5" />
+        </svg>
+    );
+}
+
+function CloseIcon() {
+    return (
+        <svg
+            className="h-4 w-4 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+            <path d="M6 6l12 12" />
+            <path d="M18 6L6 18" />
+        </svg>
+    );
+}
+
+function ChevronIcon({ dir }: { dir: 'left' | 'right' }) {
+    return (
+        <svg
+            className="h-4 w-4 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+            {dir === 'left' ? <path d="M15 6l-6 6 6 6" /> : <path d="M9 6l6 6-6 6" />}
+        </svg>
+    );
+}
+
+function NoResults({ search, onClear }: { search: string; onClear: () => void }) {
+    const term = search.trim();
+
+    return (
+        <article className="rounded-2xl border border-[#dad5cb] bg-white p-8 text-center shadow-sm sm:p-12">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f4ece4] text-[#a56437]">
+                <SearchIcon className="h-7 w-7" />
+            </span>
+            <h3 className="mt-6 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
+                No listings match{term ? ` “${term}”` : ''}
+            </h3>
+            <p className="mx-auto mt-3 max-w-md text-base leading-7 text-neutral-600">
+                Try a different search — by title, category, region, condition, or status.
+            </p>
+            <button
+                type="button"
+                onClick={onClear}
+                className="button-press focus-copper mt-6 inline-flex h-11 items-center justify-center rounded-lg border border-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] transition-colors hover:bg-[#a56437] hover:text-white"
+            >
+                Clear search
+            </button>
+        </article>
+    );
+}
+
+function pageWindow(current: number, total: number): (number | 'ellipsis')[] {
+    if (total <= 7) {
+        return Array.from({ length: total }, (_, index) => index + 1);
+    }
+
+    const shown = [...new Set([1, total, current - 1, current, current + 1])]
+        .filter((value) => value >= 1 && value <= total)
+        .sort((a, b) => a - b);
+
+    const result: (number | 'ellipsis')[] = [];
+    let previous = 0;
+
+    for (const value of shown) {
+        if (value - previous > 1) {
+            result.push('ellipsis');
+        }
+
+        result.push(value);
+        previous = value;
+    }
+
+    return result;
+}
+
+type PaginationProps = {
+    page: number;
+    totalPages: number;
+    rangeStart: number;
+    rangeEnd: number;
+    total: number;
+    onChange: (page: number) => void;
+};
+
+function Pagination({ page, totalPages, rangeStart, rangeEnd, total, onChange }: PaginationProps) {
+    return (
+        <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
+            <p className="text-sm text-neutral-500">
+                Showing {rangeStart}–{rangeEnd} of {total}
+            </p>
+
+            <nav aria-label="Pagination" className="flex items-center gap-1.5">
+                <PageButton label="Previous page" disabled={page <= 1} onClick={() => onChange(page - 1)}>
+                    <ChevronIcon dir="left" />
+                </PageButton>
+
+                {pageWindow(page, totalPages).map((entry, index) =>
+                    entry === 'ellipsis' ? (
+                        <span key={`ellipsis-${index}`} className="px-1 text-neutral-400">
+                            …
+                        </span>
+                    ) : (
+                        <PageButton key={entry} active={entry === page} onClick={() => onChange(entry)}>
+                            {entry}
+                        </PageButton>
+                    ),
+                )}
+
+                <PageButton label="Next page" disabled={page >= totalPages} onClick={() => onChange(page + 1)}>
+                    <ChevronIcon dir="right" />
+                </PageButton>
+            </nav>
+        </div>
+    );
+}
+
+type PageButtonProps = {
+    children: ReactNode;
+    onClick: () => void;
+    active?: boolean;
+    disabled?: boolean;
+    label?: string;
+};
+
+function PageButton({ children, onClick, active = false, disabled = false, label }: PageButtonProps) {
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            disabled={disabled}
+            aria-label={label}
+            aria-current={active ? 'page' : undefined}
+            className={`focus-copper flex h-9 min-w-9 items-center justify-center rounded-lg border px-2.5 font-heading text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                active
+                    ? 'border-[#a56437] bg-[#a56437] text-white'
+                    : 'border-[#dad5cb] bg-white text-neutral-700 hover:border-[#a56437] hover:text-[#a56437]'
+            }`}
+        >
+            {children}
+        </button>
     );
 }
 

@@ -22,7 +22,7 @@ export default function Placeholder({ portal, section }: PlaceholderProps) {
             <Head title={`${title} | ${portal.roleLabel} Portal`} />
 
             <PortalShell portal={portal} title={title}>
-                <article className="border border-[#dad5cb] bg-white p-7 sm:p-8">
+                <article className="rounded-2xl border border-[#dad5cb] bg-white p-7 shadow-sm sm:p-8">
                     <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
                         Coming Soon
                     </span>
