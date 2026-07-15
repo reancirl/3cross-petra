@@ -3878,6 +3878,7 @@ function ConfirmDialog({ open, title, description, confirmLabel, cancelLabel = "
 }
 //#endregion
 //#region resources/js/Components/portal-shell.tsx
+var SIDEBAR_COLLAPSED_KEY = "petra-portal-sidebar-collapsed";
 var sellerNavItems = [
 	{
 		label: "Dashboard",
@@ -3978,31 +3979,45 @@ function hrefFor(portal, path) {
 }
 function PortalShell({ portal, title, eyebrow, children }) {
 	const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 	const page = usePage();
 	const { auth } = page.props;
 	const currentPath = page.url.split("?")[0];
 	const userName = auth.user?.name ?? portal.profileName;
 	const userInitial = (userName ?? portal.roleLabel).charAt(0).toUpperCase();
 	const navItems = portal.userType === "seller" ? sellerNavItems : buyerNavItems;
+	useEffect(() => {
+		setCollapsed(window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1");
+	}, []);
+	function toggleCollapsed() {
+		setCollapsed((value) => {
+			const next = !value;
+			window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? "1" : "0");
+			return next;
+		});
+	}
 	function logout() {
 		setLogoutDialogOpen(false);
 		router.post("/logout", {}, { replace: true });
 	}
 	return /* @__PURE__ */ jsxs("main", {
-		className: "min-h-screen bg-[#f3f1ec] text-neutral-950 lg:grid lg:grid-cols-[296px_minmax(0,1fr)]",
+		className: `min-h-screen bg-[#f3f1ec] text-neutral-950 lg:grid ${collapsed ? "lg:grid-cols-[80px_minmax(0,1fr)]" : "lg:grid-cols-[296px_minmax(0,1fr)]"}`,
 		children: [
 			/* @__PURE__ */ jsxs("aside", {
-				className: "border-b border-neutral-800 bg-neutral-950 text-white lg:flex lg:min-h-screen lg:flex-col lg:border-b-0",
+				className: "border-b border-neutral-800 bg-neutral-950 text-white lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:self-start lg:border-b-0",
 				children: [
 					/* @__PURE__ */ jsxs("div", {
-						className: "flex items-center justify-between border-b border-white/10 px-5 py-4 lg:flex lg:min-h-[72px] lg:flex-col lg:items-start lg:justify-center lg:px-5 lg:py-2",
-						children: [/* @__PURE__ */ jsx(Link, {
+						className: `flex items-center justify-between border-b border-white/10 px-5 py-4 lg:min-h-[72px] lg:py-2 ${collapsed ? "lg:justify-center lg:px-2" : "lg:px-5"}`,
+						children: [/* @__PURE__ */ jsxs(Link, {
 							href: `/${portal.userType}/dashboard`,
 							className: "focus-copper block w-fit",
-							children: /* @__PURE__ */ jsx("span", {
-								className: "block font-heading text-[1.65rem] font-semibold uppercase tracking-[0.22em] text-white",
+							children: [/* @__PURE__ */ jsx("span", {
+								className: `block font-heading text-[1.65rem] font-semibold uppercase tracking-[0.22em] text-white ${collapsed ? "lg:hidden" : ""}`,
 								children: "Petra"
-							})
+							}), collapsed && /* @__PURE__ */ jsx("span", {
+								className: "hidden font-heading text-[1.65rem] font-semibold uppercase text-white lg:block",
+								children: "P"
+							})]
 						}), /* @__PURE__ */ jsx("span", {
 							className: "border border-white/15 px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white/70 lg:hidden",
 							children: portal.roleLabel
@@ -4010,7 +4025,7 @@ function PortalShell({ portal, title, eyebrow, children }) {
 					}),
 					/* @__PURE__ */ jsx("nav", {
 						"aria-label": `${portal.roleLabel} portal navigation`,
-						className: "overflow-x-auto lg:overflow-visible",
+						className: "overflow-x-auto lg:flex-1 lg:overflow-x-visible lg:overflow-y-auto",
 						children: /* @__PURE__ */ jsx("div", {
 							className: "flex min-w-max lg:grid lg:min-w-0 lg:p-3",
 							children: navItems.map((item) => {
@@ -4019,29 +4034,37 @@ function PortalShell({ portal, title, eyebrow, children }) {
 								return /* @__PURE__ */ jsxs(Link, {
 									href,
 									"aria-current": active ? "page" : void 0,
-									className: `flex min-h-14 items-center justify-between gap-4 border-r border-white/10 px-5 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] transition-colors last:border-r-0 lg:mb-1 lg:border-r-0 lg:px-4 ${active ? "bg-white text-neutral-950 lg:shadow-[inset_4px_0_0_#a56437]" : "bg-neutral-950 text-white/65 hover:bg-white/[0.06] hover:text-white"}`,
+									title: collapsed ? item.label : void 0,
+									className: `flex min-h-14 items-center gap-4 border-r border-white/10 px-5 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] transition-colors last:border-r-0 lg:mb-1 lg:border-r-0 ${collapsed ? "lg:justify-center lg:px-0" : "justify-between lg:px-4"} ${active ? "bg-white text-neutral-950 lg:shadow-[inset_4px_0_0_#a56437]" : "bg-neutral-950 text-white/65 hover:bg-white/[0.06] hover:text-white"}`,
 									children: [/* @__PURE__ */ jsxs("span", {
 										className: "flex min-w-0 items-center gap-3",
 										children: [/* @__PURE__ */ jsx(PortalNavIcon, { name: item.icon }), /* @__PURE__ */ jsx("span", {
-											className: "truncate",
+											className: `truncate ${collapsed ? "lg:hidden" : ""}`,
 											children: item.label
 										})]
 									}), !item.real && /* @__PURE__ */ jsx("span", {
-										className: `text-xs font-semibold uppercase tracking-[0.12em] ${active ? "text-neutral-500" : "text-white/35"} lg:block`,
+										className: `text-xs font-semibold uppercase tracking-[0.12em] ${active ? "text-neutral-500" : "text-white/35"} ${collapsed ? "lg:hidden" : ""}`,
 										children: "Soon"
 									})]
 								}, item.path);
 							})
 						})
 					}),
+					/* @__PURE__ */ jsxs("button", {
+						type: "button",
+						onClick: toggleCollapsed,
+						"aria-label": collapsed ? "Expand sidebar" : "Collapse sidebar",
+						className: `hidden border-t border-white/10 py-4 font-heading text-xs font-semibold uppercase tracking-[0.12em] text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white lg:flex lg:items-center lg:gap-3 ${collapsed ? "lg:justify-center lg:px-0" : "lg:px-5"}`,
+						children: [/* @__PURE__ */ jsx(SidebarToggleIcon, { collapsed }), !collapsed && /* @__PURE__ */ jsx("span", { children: "Collapse" })]
+					}),
 					/* @__PURE__ */ jsx("div", {
-						className: "hidden border-t border-white/10 p-5 lg:mt-auto lg:block",
+						className: `hidden border-t border-white/10 lg:block ${collapsed ? "lg:p-2" : "lg:p-5"}`,
 						children: /* @__PURE__ */ jsxs("div", {
-							className: "flex items-center gap-3 border border-white/10 bg-white/[0.04] p-3",
+							className: `flex items-center border border-white/10 bg-white/[0.04] ${collapsed ? "lg:justify-center lg:p-2" : "gap-3 p-3"}`,
 							children: [/* @__PURE__ */ jsx("span", {
 								className: "flex h-10 w-10 shrink-0 items-center justify-center bg-[#a56437] font-heading text-lg font-semibold uppercase text-white",
 								children: userInitial
-							}), /* @__PURE__ */ jsxs("span", {
+							}), !collapsed && /* @__PURE__ */ jsxs("span", {
 								className: "min-w-0",
 								children: [/* @__PURE__ */ jsx("span", {
 									className: "block truncate text-sm font-semibold text-white",
@@ -4088,6 +4111,19 @@ function PortalShell({ portal, title, eyebrow, children }) {
 				onConfirm: logout
 			})
 		]
+	});
+}
+function SidebarToggleIcon({ collapsed }) {
+	return /* @__PURE__ */ jsx("svg", {
+		className: "h-4 w-4 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.8,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: collapsed ? /* @__PURE__ */ jsx("path", { d: "M9 6l6 6-6 6" }) : /* @__PURE__ */ jsx("path", { d: "M15 6l-6 6 6 6" })
 	});
 }
 function PortalNavIcon({ name }) {

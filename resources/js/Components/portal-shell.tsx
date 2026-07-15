@@ -1,8 +1,10 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import ConfirmDialog from './confirm-dialog';
 import type { PortalData, SharedPageProps } from '../types';
+
+const SIDEBAR_COLLAPSED_KEY = 'petra-portal-sidebar-collapsed';
 
 // Messages and notifications are deferred and intentionally absent from the seller portal.
 const sellerNavItems = [
@@ -46,6 +48,7 @@ function hrefFor(portal: PortalData, path: string) {
 
 export default function PortalShell({ portal, title, eyebrow, children }: PortalShellProps) {
     const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
     const page = usePage<SharedPageProps>();
     const { auth } = page.props;
     const currentPath = page.url.split('?')[0];
@@ -53,19 +56,43 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
     const userInitial = (userName ?? portal.roleLabel).charAt(0).toUpperCase();
     const navItems = portal.userType === 'seller' ? sellerNavItems : buyerNavItems;
 
+    // Restore the collapsed preference after mount so SSR and first client render match.
+    useEffect(() => {
+        setCollapsed(window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1');
+    }, []);
+
+    function toggleCollapsed() {
+        setCollapsed((value) => {
+            const next = !value;
+            window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? '1' : '0');
+            return next;
+        });
+    }
+
     function logout() {
         setLogoutDialogOpen(false);
         router.post('/logout', {}, { replace: true });
     }
 
     return (
-        <main className="min-h-screen bg-[#f3f1ec] text-neutral-950 lg:grid lg:grid-cols-[296px_minmax(0,1fr)]">
-            <aside className="border-b border-neutral-800 bg-neutral-950 text-white lg:flex lg:min-h-screen lg:flex-col lg:border-b-0">
-                <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 lg:flex lg:min-h-[72px] lg:flex-col lg:items-start lg:justify-center lg:px-5 lg:py-2">
+        <main
+            className={`min-h-screen bg-[#f3f1ec] text-neutral-950 lg:grid ${
+                collapsed ? 'lg:grid-cols-[80px_minmax(0,1fr)]' : 'lg:grid-cols-[296px_minmax(0,1fr)]'
+            }`}
+        >
+            <aside className="border-b border-neutral-800 bg-neutral-950 text-white lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:self-start lg:border-b-0">
+                <div
+                    className={`flex items-center justify-between border-b border-white/10 px-5 py-4 lg:min-h-[72px] lg:py-2 ${
+                        collapsed ? 'lg:justify-center lg:px-2' : 'lg:px-5'
+                    }`}
+                >
                     <Link href={`/${portal.userType}/dashboard`} className="focus-copper block w-fit">
-                        <span className="block font-heading text-[1.65rem] font-semibold uppercase tracking-[0.22em] text-white">
+                        <span className={`block font-heading text-[1.65rem] font-semibold uppercase tracking-[0.22em] text-white ${collapsed ? 'lg:hidden' : ''}`}>
                             Petra
                         </span>
+                        {collapsed && (
+                            <span className="hidden font-heading text-[1.65rem] font-semibold uppercase text-white lg:block">P</span>
+                        )}
                     </Link>
 
                     <span className="border border-white/15 px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white/70 lg:hidden">
@@ -73,7 +100,7 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
                     </span>
                 </div>
 
-                <nav aria-label={`${portal.roleLabel} portal navigation`} className="overflow-x-auto lg:overflow-visible">
+                <nav aria-label={`${portal.roleLabel} portal navigation`} className="overflow-x-auto lg:flex-1 lg:overflow-x-visible lg:overflow-y-auto">
                     <div className="flex min-w-max lg:grid lg:min-w-0 lg:p-3">
                         {navItems.map((item) => {
                             const href = hrefFor(portal, item.path);
@@ -84,7 +111,10 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
                                     key={item.path}
                                     href={href}
                                     aria-current={active ? 'page' : undefined}
-                                    className={`flex min-h-14 items-center justify-between gap-4 border-r border-white/10 px-5 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] transition-colors last:border-r-0 lg:mb-1 lg:border-r-0 lg:px-4 ${
+                                    title={collapsed ? item.label : undefined}
+                                    className={`flex min-h-14 items-center gap-4 border-r border-white/10 px-5 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] transition-colors last:border-r-0 lg:mb-1 lg:border-r-0 ${
+                                        collapsed ? 'lg:justify-center lg:px-0' : 'justify-between lg:px-4'
+                                    } ${
                                         active
                                             ? 'bg-white text-neutral-950 lg:shadow-[inset_4px_0_0_#a56437]'
                                             : 'bg-neutral-950 text-white/65 hover:bg-white/[0.06] hover:text-white'
@@ -92,10 +122,10 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
                                 >
                                     <span className="flex min-w-0 items-center gap-3">
                                         <PortalNavIcon name={item.icon} />
-                                        <span className="truncate">{item.label}</span>
+                                        <span className={`truncate ${collapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
                                     </span>
                                     {!item.real && (
-                                        <span className={`text-xs font-semibold uppercase tracking-[0.12em] ${active ? 'text-neutral-500' : 'text-white/35'} lg:block`}>
+                                        <span className={`text-xs font-semibold uppercase tracking-[0.12em] ${active ? 'text-neutral-500' : 'text-white/35'} ${collapsed ? 'lg:hidden' : ''}`}>
                                             Soon
                                         </span>
                                     )}
@@ -105,19 +135,31 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
                     </div>
                 </nav>
 
-                <div className="hidden border-t border-white/10 p-5 lg:mt-auto lg:block">
-                    <div className="flex items-center gap-3 border border-white/10 bg-white/[0.04] p-3">
+                <button
+                    type="button"
+                    onClick={toggleCollapsed}
+                    aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                    className={`hidden border-t border-white/10 py-4 font-heading text-xs font-semibold uppercase tracking-[0.12em] text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white lg:flex lg:items-center lg:gap-3 ${
+                        collapsed ? 'lg:justify-center lg:px-0' : 'lg:px-5'
+                    }`}
+                >
+                    <SidebarToggleIcon collapsed={collapsed} />
+                    {!collapsed && <span>Collapse</span>}
+                </button>
+
+                <div className={`hidden border-t border-white/10 lg:block ${collapsed ? 'lg:p-2' : 'lg:p-5'}`}>
+                    <div className={`flex items-center border border-white/10 bg-white/[0.04] ${collapsed ? 'lg:justify-center lg:p-2' : 'gap-3 p-3'}`}>
                         <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#a56437] font-heading text-lg font-semibold uppercase text-white">
                             {userInitial}
                         </span>
-                        <span className="min-w-0">
-                            <span className="block truncate text-sm font-semibold text-white">
-                                {userName}
+                        {!collapsed && (
+                            <span className="min-w-0">
+                                <span className="block truncate text-sm font-semibold text-white">{userName}</span>
+                                <span className="mt-0.5 block font-heading text-xs font-semibold uppercase tracking-[0.16em] text-white/45">
+                                    {portal.roleLabel}
+                                </span>
                             </span>
-                            <span className="mt-0.5 block font-heading text-xs font-semibold uppercase tracking-[0.16em] text-white/45">
-                                {portal.roleLabel}
-                            </span>
-                        </span>
+                        )}
                     </div>
                 </div>
             </aside>
@@ -153,6 +195,23 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
                 onConfirm={logout}
             />
         </main>
+    );
+}
+
+function SidebarToggleIcon({ collapsed }: { collapsed: boolean }) {
+    return (
+        <svg
+            className="h-4 w-4 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.8}
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+            {collapsed ? <path d="M9 6l6 6-6 6" /> : <path d="M15 6l-6 6 6 6" />}
+        </svg>
     );
 }
 
