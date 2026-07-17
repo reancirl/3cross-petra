@@ -95,3 +95,14 @@ export type EquipmentRequest = {
     status_label: string;
     created_at: string | null;
 };
+
+export type BuyerQuote = {
+    id: number;
+    equipment_name: string;
+    listing_public_id: string | null;
+    listing_href: string | null;
+    note: string | null;
+    status: string;
+    status_label: string;
+    created_at: string | null;
+};

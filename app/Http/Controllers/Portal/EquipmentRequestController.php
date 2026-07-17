@@ -22,8 +22,12 @@ class EquipmentRequestController extends Controller
                 'dashboardUrl' => route('portal.buyer.dashboard'),
                 'profileName' => $request->user()->name,
             ],
+            // Free-form equipment requests only. "Request Quote" inquiries (tied to a
+            // specific listing) now live on the dedicated buyer Quotes page, so they
+            // are excluded here to avoid listing the same inquiry in two places.
             'requests' => $request->user()
                 ->equipmentRequests()
+                ->freeFormRequests()
                 ->latest()
                 ->get()
                 ->map(fn (EquipmentRequest $equipmentRequest): array => $this->serializeRequest($equipmentRequest))
