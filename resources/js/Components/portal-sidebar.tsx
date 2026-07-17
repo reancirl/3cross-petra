@@ -51,7 +51,7 @@ const buyerNavGroups: PortalNavGroup[] = [
             { label: 'Dashboard', path: 'dashboard', real: true, icon: 'dashboard' },
             { label: 'My Requests', path: 'saved-equipment', real: true, icon: 'equipment' },
             { label: 'Saved Equipment', path: 'saved-equipment-watchlist', real: false, icon: 'equipment' },
-            { label: 'Quotes', path: 'quotes', real: false, icon: 'quotes' },
+            { label: 'Quotes', path: 'quotes', real: true, icon: 'quotes' },
             { label: 'Offers', path: 'offers', real: false, icon: 'offers' },
         ],
     },

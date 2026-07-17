@@ -38,8 +38,8 @@ export default function Dashboard({ portal }: DashboardProps) {
             },
             {
                 label: 'Quotes',
-                state: 'Soon',
-                description: 'Quote workflows are reserved for a later phase.',
+                state: 'Live',
+                description: 'Track quotes you requested from listings and their review status from Quotes.',
             },
         ];
 
