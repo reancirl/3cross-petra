@@ -1,4 +1,4 @@
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
@@ -31,6 +31,7 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
     const gallery = listing.photos.length > 0 ? listing.photos : [{ url: listing.image_url, alt: listing.title }];
     const [selectedPhoto, setSelectedPhoto] = useState(gallery[0]);
     const isAuthed = Boolean(auth.user);
+    const isBuyer = auth.user?.user_type === 'buyer';
     const form = useForm<InquiryForm>({
         name: auth.user?.name ?? '',
         email: auth.user?.email ?? '',
@@ -66,11 +67,25 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
         ],
     };
 
+    // The only flash this page produces is the inquiry confirmation. Signed-in buyers
+    // get a route straight to the request they just made; guests have no Quotes page to
+    // land on (the inquiry creates a shadow user but does not log them in), and sellers
+    // and brokers would be bounced by the buyer-only route.
     useEffect(() => {
-        if (status) {
-            toast.success(status);
+        if (!status) {
+            return;
         }
-    }, [status]);
+
+        toast.success(status, isBuyer
+            ? {
+                  description: 'Track it and the broker’s reply from your Quotes page.',
+                  action: {
+                      label: 'View quotes',
+                      onClick: () => router.visit('/buyer/quotes'),
+                  },
+              }
+            : undefined);
+    }, [status, isBuyer]);
 
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
