@@ -52,6 +52,25 @@ class BuyerQuotesTest extends TestCase
             ->assertSee('Submitted');
     }
 
+    public function test_buyer_quote_carries_the_note_they_submitted(): void
+    {
+        $listing = $this->publishedListing();
+        $buyer = User::factory()->buyer()->create();
+
+        // Go through the real inquiry endpoint so the stored note is the one the
+        // controller composes, not a hand-built fixture.
+        $this->actingAs($buyer)
+            ->post("/equipment/{$listing->public_id}/inquiries", ['note' => 'Please confirm inspection timing.'])
+            ->assertSessionHasNoErrors();
+
+        // The note reaches the buyer's own Quotes page, where the detail panel shows it
+        // back to them. It was serialized but never rendered anywhere before.
+        $this->actingAs($buyer)
+            ->get('/buyer/quotes')
+            ->assertOk()
+            ->assertSee('Please confirm inspection timing.');
+    }
+
     public function test_buyer_never_sees_another_buyers_quotes(): void
     {
         $listing = $this->publishedListing();
