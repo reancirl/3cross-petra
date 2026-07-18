@@ -9,6 +9,18 @@ type SellerSubmissionDocument = {
     public: boolean;
 };
 
+type BrokerOffer = {
+    id: number;
+    amount: string;
+    counter_amount: string | null;
+    offered_at: string | null;
+    status: string;
+    status_label: string;
+    status_tone: StatusTone;
+    // True only while a seller counter is waiting on the broker.
+    can_respond: boolean;
+};
+
 type SellerSubmission = {
     id: number;
     seller: string | null;
@@ -35,6 +47,7 @@ type SellerSubmission = {
     status_tone: StatusTone;
     created_at: string | null;
     created_at_timestamp: number | null;
+    offers: BrokerOffer[];
 };
 
 type BuyerRequest = {
@@ -59,6 +72,7 @@ type BrokerSubmissionsProps = {
     buyerRequests: BuyerRequest[];
     sellerStatusOptions: Record<string, string>;
     buyerStatusOptions: Record<string, string>;
+    offerStatusOptions: Record<string, string>;
 };
 
 export default function BrokerSubmissions({
@@ -66,6 +80,7 @@ export default function BrokerSubmissions({
     buyerRequests,
     sellerStatusOptions,
     buyerStatusOptions,
+    offerStatusOptions,
 }: BrokerSubmissionsProps) {
     const { auth, status } = usePage<SharedPageProps>().props;
     const [activeTab, setActiveTab] = useState<QueueTab>('seller');
@@ -191,6 +206,7 @@ export default function BrokerSubmissions({
                                             key={submission.id}
                                             submission={submission}
                                             statusOptions={sellerStatusOptions}
+                                            offerStatusOptions={offerStatusOptions}
                                             expanded={expandedSeller === submission.id}
                                             onToggle={() => setExpandedSeller((current) => (current === submission.id ? null : submission.id))}
                                         />
@@ -291,6 +307,14 @@ function formatUSD(value: string): string {
     return Number.isNaN(amount)
         ? value
         : amount.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+}
+
+// Local YYYY-MM-DD for the offer-date input default (today).
+function todayIso(): string {
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+
+    return new Date(now.getTime() - offset).toISOString().slice(0, 10);
 }
 
 function summaryPrice(submission: SellerSubmission): string {
@@ -448,11 +472,13 @@ function Chip({
 function SellerCard({
     submission,
     statusOptions,
+    offerStatusOptions,
     expanded,
     onToggle,
 }: {
     submission: SellerSubmission;
     statusOptions: Record<string, string>;
+    offerStatusOptions: Record<string, string>;
     expanded: boolean;
     onToggle: () => void;
 }) {
@@ -505,8 +531,216 @@ function SellerCard({
                 </dl>
 
                 <SellerReviewForm submission={submission} options={statusOptions} />
+
+                <OfferManager submission={submission} statusOptions={offerStatusOptions} />
             </div>
         </article>
+    );
+}
+
+function OfferManager({ submission, statusOptions }: { submission: SellerSubmission; statusOptions: Record<string, string> }) {
+    // Offers have no entry point anywhere else — the broker logs them here after
+    // working the buyer side off-platform. The seller then accepts / declines /
+    // counters from their own Offers page.
+    const defaultStatus = 'pending' in statusOptions ? 'pending' : Object.keys(statusOptions)[0] ?? '';
+    const form = useForm<{ amount: string; offered_at: string; status: string }>({
+        amount: '',
+        offered_at: todayIso(),
+        status: defaultStatus,
+    });
+
+    const errors = form.errors as Record<string, string>;
+
+    function submit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        form.post(`/broker/seller-submissions/${submission.id}/offers`, {
+            preserveScroll: true,
+            onSuccess: () => form.reset('amount'),
+        });
+    }
+
+    return (
+        <section className="mt-6 border-t border-[#dad5cb] pt-6">
+            <span className="font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]">Offers</span>
+
+            {submission.offers.length > 0 ? (
+                <div className="mt-3 grid gap-2">
+                    {submission.offers.map((offer) => (
+                        <OfferRow key={offer.id} offer={offer} />
+                    ))}
+                </div>
+            ) : (
+                <p className="mt-3 text-sm leading-6 text-neutral-500">No offers logged yet.</p>
+            )}
+
+            <form onSubmit={submit} className="mt-4 flex flex-wrap items-end gap-3">
+                <label className="grid gap-2">
+                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Amount (USD)</span>
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        inputMode="decimal"
+                        value={form.data.amount}
+                        onChange={(event) => form.setData('amount', event.target.value)}
+                        placeholder="USD"
+                        aria-invalid={Boolean(errors.amount)}
+                        className={`portal-input sm:w-44${errors.amount ? ' portal-input-error' : ''}`}
+                    />
+                </label>
+                <label className="grid gap-2">
+                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Offer date</span>
+                    <input
+                        type="date"
+                        value={form.data.offered_at}
+                        onChange={(event) => form.setData('offered_at', event.target.value)}
+                        aria-invalid={Boolean(errors.offered_at)}
+                        className={`portal-input sm:w-44${errors.offered_at ? ' portal-input-error' : ''}`}
+                    />
+                </label>
+                <label className="grid gap-2">
+                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Status</span>
+                    <select
+                        value={form.data.status}
+                        onChange={(event) => form.setData('status', event.target.value)}
+                        className="polished-select h-10 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] pl-3 pr-9 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800"
+                    >
+                        {Object.entries(statusOptions).map(([status, label]) => (
+                            <option key={status} value={status}>
+                                {label}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <button
+                    type="submit"
+                    disabled={form.processing}
+                    className="button-press focus-copper h-10 rounded-lg bg-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+                >
+                    Log offer
+                </button>
+            </form>
+            {(errors.amount || errors.offered_at || errors.status) && (
+                <p className="mt-2 text-sm text-[#b3261e]">{errors.amount ?? errors.offered_at ?? errors.status}</p>
+            )}
+        </section>
+    );
+}
+
+/**
+ * One logged offer. Read-only until the seller counters — at that point the ball is in
+ * the broker's court (`can_respond`) and the counter is resolved in place: accept the
+ * seller's number, decline it, or re-offer, which sends the offer back as Pending.
+ */
+function OfferRow({ offer }: { offer: BrokerOffer }) {
+    const [reofferOpen, setReofferOpen] = useState(false);
+    // One form per row covers all three responses; `action` is set at submit time.
+    const form = useForm<{ action: string; amount: string }>({ action: '', amount: '' });
+
+    function respond(action: 'accept' | 'decline') {
+        form.transform((data) => ({ ...data, action, amount: '' }));
+        form.patch(`/broker/offers/${offer.id}`, { preserveScroll: true });
+    }
+
+    function submitReoffer(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        form.transform((data) => ({ ...data, action: 'counter' }));
+        form.patch(`/broker/offers/${offer.id}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setReofferOpen(false);
+                form.reset('amount');
+            },
+        });
+    }
+
+    const amountError = (form.errors as Record<string, string>).amount;
+    // A counter that survived onto an accepted offer is the price both sides settled on.
+    const agreedAtCounter = offer.status === 'accepted' && Boolean(offer.counter_amount);
+
+    return (
+        <div className="rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="min-w-0">
+                    <p className="font-heading text-base font-semibold text-neutral-900">
+                        {formatUSD(agreedAtCounter ? (offer.counter_amount as string) : offer.amount)}
+                    </p>
+                    <p className="mt-0.5 text-xs text-neutral-500">
+                        Offered {offer.offered_at ?? 'n/a'}
+                        {offer.counter_amount
+                            ? agreedAtCounter
+                                ? ` · Agreed at the seller's counter (offered ${formatUSD(offer.amount)})`
+                                : ` · Seller countered ${formatUSD(offer.counter_amount)}`
+                            : ''}
+                    </p>
+                </div>
+                <StatusBadge status={offer.status} label={offer.status_label} />
+            </div>
+
+            {offer.can_respond && (
+                <div className="mt-3 border-t border-[#dad5cb] pt-3">
+                    <span className="font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                        Respond to counter
+                    </span>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <button
+                            type="button"
+                            disabled={form.processing}
+                            onClick={() => respond('accept')}
+                            className="button-press focus-copper inline-flex h-9 items-center justify-center rounded-lg bg-[#a56437] px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+                        >
+                            Accept {formatUSD(offer.counter_amount ?? offer.amount)}
+                        </button>
+                        <button
+                            type="button"
+                            disabled={form.processing}
+                            onClick={() => respond('decline')}
+                            className="button-press focus-copper inline-flex h-9 items-center justify-center rounded-lg border border-[#b3261e] px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#b3261e] transition-colors hover:bg-[#b3261e] hover:text-white disabled:opacity-60"
+                        >
+                            Decline
+                        </button>
+                        <button
+                            type="button"
+                            disabled={form.processing}
+                            onClick={() => setReofferOpen((open) => !open)}
+                            aria-expanded={reofferOpen}
+                            className="button-press focus-copper inline-flex h-9 items-center justify-center rounded-lg border border-[#a56437] px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] transition-colors hover:bg-[#a56437] hover:text-white disabled:opacity-60"
+                        >
+                            Re-offer
+                        </button>
+                    </div>
+
+                    {reofferOpen && (
+                        <form onSubmit={submitReoffer} className="mt-3 flex flex-wrap items-end gap-2">
+                            <label className="grid gap-2">
+                                <span className="font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                                    New amount (USD)
+                                </span>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    inputMode="decimal"
+                                    value={form.data.amount}
+                                    onChange={(event) => form.setData('amount', event.target.value)}
+                                    placeholder="USD"
+                                    aria-invalid={Boolean(amountError)}
+                                    className={`portal-input sm:w-44${amountError ? ' portal-input-error' : ''}`}
+                                />
+                            </label>
+                            <button
+                                type="submit"
+                                disabled={form.processing}
+                                className="button-press focus-copper inline-flex h-10 items-center justify-center rounded-lg bg-[#a56437] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+                            >
+                                Send re-offer
+                            </button>
+                            {amountError && <span className="text-sm text-[#b3261e]">{amountError}</span>}
+                        </form>
+                    )}
+                </div>
+            )}
+        </div>
     );
 }
 
@@ -819,6 +1053,18 @@ function statusBadgeClass(status: string): string {
             return 'border-indigo-300 bg-indigo-50 text-indigo-800';
         case 'reviewing_options':
             return 'border-emerald-300 bg-emerald-50 text-emerald-800';
+        // Terminal — closing a quote also frees the buyer to request one again.
+        case 'closed':
+            return 'border-neutral-300 bg-neutral-100 text-neutral-500';
+
+        // Offer statuses (App\Enums\OfferStatus). 'pending'/'accepted' overlap with
+        // listing wording above; the remaining two are offer-specific.
+        case 'accepted':
+            return 'border-emerald-800/25 bg-emerald-50 text-emerald-800';
+        case 'declined':
+            return 'border-[#b3261e]/25 bg-red-50 text-[#b3261e]';
+        case 'countered':
+            return 'border-[#dad5cb] bg-[#f3f1ec] text-neutral-700';
         default:
             return 'border-neutral-300 bg-neutral-50 text-neutral-700';
     }

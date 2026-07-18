@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Broker;
 
 use App\Enums\ListingStatus;
+use App\Enums\OfferStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Broker\RespondToOfferRequest;
+use App\Http\Requests\Broker\StoreOfferRequest;
 use App\Http\Requests\Broker\UpdateEquipmentRequestStatusRequest;
 use App\Http\Requests\Broker\UpdateEquipmentSubmissionStatusRequest;
 use App\Models\EquipmentRequest;
 use App\Models\EquipmentSubmission;
+use App\Models\Offer;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,7 +21,7 @@ class SubmissionReviewController extends Controller
     public function index(): Response
     {
         return Inertia::render('Broker/Submissions', [
-            'sellerSubmissions' => EquipmentSubmission::with('user')
+            'sellerSubmissions' => EquipmentSubmission::with(['user', 'offers' => fn ($query) => $query->latest()])
                 ->latest()
                 ->get()
                 ->map(fn (EquipmentSubmission $submission): array => [
@@ -49,6 +53,20 @@ class SubmissionReviewController extends Controller
                     'status_tone' => $submission->listingStatus()->tone(),
                     'created_at' => $submission->created_at?->toFormattedDateString(),
                     'created_at_timestamp' => $submission->created_at?->getTimestamp(),
+                    // Offers already logged on this listing, so the broker has context
+                    // (including any seller counter) before logging another.
+                    'offers' => $submission->offers->map(fn (Offer $offer): array => [
+                        'id' => $offer->id,
+                        'amount' => $offer->amount,
+                        'counter_amount' => $offer->counter_amount,
+                        'offered_at' => $offer->offered_at?->toFormattedDateString(),
+                        'status' => $offer->offerStatus()->value,
+                        'status_label' => $offer->statusLabel(),
+                        'status_tone' => $offer->offerStatus()->tone(),
+                        // Drives the accept / decline / re-offer controls: true only
+                        // while a seller counter is waiting on the broker.
+                        'can_respond' => $offer->isOpenForBroker(),
+                    ])->values(),
                 ])
                 ->values(),
             'buyerRequests' => EquipmentRequest::with('user')
@@ -73,7 +91,73 @@ class SubmissionReviewController extends Controller
                 ->values(),
             'sellerStatusOptions' => ListingStatus::options(),
             'buyerStatusOptions' => EquipmentRequest::STATUSES,
+            'offerStatusOptions' => OfferStatus::options(),
         ]);
+    }
+
+    /**
+     * Log an offer against a seller's listing. This is the only entry point for
+     * creating an offer anywhere in the app — brokers enter it after negotiating with
+     * a buyer off-platform. Sellers then respond from their own Offers page.
+     *
+     * NOTE (Quotes linkage — not built): a real-world flow likely connects a buyer's
+     * Quote request (EquipmentRequest) to the resulting Offer. That link is not
+     * modelled — an offer is attached only to the listing, not to any quote. Wire it
+     * up once the client confirms Offers and Quotes should be connected.
+     */
+    public function storeOffer(StoreOfferRequest $request, EquipmentSubmission $equipmentSubmission): RedirectResponse
+    {
+        $equipmentSubmission->offers()->create($request->validated());
+
+        return back()->with('status', 'Offer logged for the seller.');
+    }
+
+    /**
+     * Close the broker's half of the negotiation loop on a seller's counter.
+     *
+     * A counter used to be a dead end — the broker could only log a second, unrelated
+     * offer at the countered amount, leaving the original stuck on "Countered" forever
+     * and the two rows unlinked. Instead the broker now resolves the counter in place:
+     *
+     *   accept  → Accepted, keeping counter_amount as the agreed price (Offer::agreedAmount)
+     *   decline → Declined, and the counter amount is cleared with the negotiation
+     *   counter → a fresh amount, back to Pending, so the ball returns to the seller
+     */
+    public function respondToOffer(RespondToOfferRequest $request, Offer $offer): RedirectResponse
+    {
+        // Only a seller counter is the broker's to answer. Matches the seller-side
+        // convention of flashing rather than 4xx-ing on an already-resolved offer.
+        if (! $offer->isOpenForBroker()) {
+            return back()->with('status', 'This offer is not awaiting a broker response.');
+        }
+
+        $validated = $request->validated();
+
+        [$attributes, $message] = match ($validated['action']) {
+            RespondToOfferRequest::ACTION_ACCEPT => [
+                ['status' => OfferStatus::Accepted],
+                'Counter offer accepted at $'.number_format((float) $offer->agreedAmount()).'.',
+            ],
+            RespondToOfferRequest::ACTION_DECLINE => [
+                ['status' => OfferStatus::Declined, 'counter_amount' => null],
+                'Counter offer declined.',
+            ],
+            RespondToOfferRequest::ACTION_COUNTER => [
+                [
+                    'status' => OfferStatus::Pending,
+                    'amount' => $validated['amount'],
+                    // The negotiation moves to the new amount, so the stale seller
+                    // counter is cleared and the offer re-opens for the seller.
+                    'counter_amount' => null,
+                    'offered_at' => now()->toDateString(),
+                ],
+                'Re-offer sent to the seller.',
+            ],
+        };
+
+        $offer->update($attributes);
+
+        return back()->with('status', $message);
     }
 
     public function updateSellerSubmission(

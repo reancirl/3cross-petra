@@ -106,3 +106,18 @@ export type BuyerQuote = {
     status_label: string;
     created_at: string | null;
 };
+
+// Offers made on a seller's listings. Brokers create them; sellers view + respond.
+export type SellerOffer = {
+    id: number;
+    listing_title: string | null;
+    listing_public_id: string | null;
+    listing_href: string | null;
+    amount: string;
+    counter_amount: string | null;
+    offered_at: string | null;
+    status: string;
+    status_label: string;
+    status_tone: StatusTone;
+    can_respond: boolean;
+};
