@@ -76,6 +76,16 @@ class EquipmentListingController extends Controller
             ];
         }
 
+        // One open quote per buyer per listing. Repeat submissions (a reload, a second
+        // tab, or simple impatience) would otherwise pile duplicate rows into the broker
+        // queue and the buyer's Quotes page. Checked after the buyer is resolved so it
+        // covers guests too — their shadow account is keyed on email, so the same person
+        // inquiring twice resolves to the same user. Once the broker closes the request
+        // the buyer is free to ask again.
+        if ($this->hasOpenQuoteInquiry($buyer, $equipment)) {
+            return back()->with('status', 'You already have an open quote request on this listing — Petra will follow up there.');
+        }
+
         $buyer->equipmentRequests()->create([
             'equipment_submission_id' => $equipment->id,
             'equipment_type' => "Quote Request: {$equipment->title}",
@@ -86,6 +96,21 @@ class EquipmentListingController extends Controller
         ]);
 
         return back()->with('status', 'Request sent to Petra broker review.');
+    }
+
+    /**
+     * Does this buyer already have an unresolved quote request on this listing?
+     *
+     * The unique index added alongside this (see the add_unique_open_quote_inquiry
+     * migration) is the race backstop for two simultaneous submits; this check is what
+     * turns that constraint into a friendly message rather than a 500.
+     */
+    private function hasOpenQuoteInquiry(User $buyer, EquipmentSubmission $equipment): bool
+    {
+        return $buyer->equipmentRequests()
+            ->where('equipment_submission_id', $equipment->id)
+            ->open()
+            ->exists();
     }
 
     private function findPublicListing(string $publicId): ?EquipmentSubmission

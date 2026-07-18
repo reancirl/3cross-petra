@@ -20,6 +20,15 @@ class EquipmentRequest extends Model
 
     public const STATUS_REVIEWING_OPTIONS = 'reviewing_options';
 
+    /**
+     * Terminal state. Added (additively — no existing status changed meaning) because
+     * a buyer is blocked from raising a second quote on a listing while one is still
+     * open (see EquipmentListingController::storeInquiry). Without a way to close a
+     * request, that block would be permanent and a buyer could never re-ask about a
+     * listing whose quote went nowhere months ago.
+     */
+    public const STATUS_CLOSED = 'closed';
+
     // NOTE (open question — quote status ladder): these statuses were designed for
     // free-form sourcing requests, where the broker checks inventory and contacts
     // multiple sellers before presenting options. A "Request Quote" inquiry on an
@@ -35,6 +44,7 @@ class EquipmentRequest extends Model
         self::STATUS_CONTACTING_SELLERS => 'Contacting Sellers',
         self::STATUS_OPTIONS_PRESENTED => 'Options Presented',
         self::STATUS_REVIEWING_OPTIONS => 'Reviewing Options',
+        self::STATUS_CLOSED => 'Closed',
     ];
 
     /**
@@ -80,9 +90,26 @@ class EquipmentRequest extends Model
         return $query->whereNull('equipment_submission_id');
     }
 
+    /**
+     * Requests the broker has not finished with. Everything except the terminal
+     * Closed state — the ladder is otherwise all in-progress stages.
+     *
+     * @param  Builder<EquipmentRequest>  $query
+     * @return Builder<EquipmentRequest>
+     */
+    public function scopeOpen(Builder $query): Builder
+    {
+        return $query->where('status', '!=', self::STATUS_CLOSED);
+    }
+
     public function isQuoteInquiry(): bool
     {
         return $this->equipment_submission_id !== null;
+    }
+
+    public function isClosed(): bool
+    {
+        return $this->status === self::STATUS_CLOSED;
     }
 
     public function statusLabel(): string
