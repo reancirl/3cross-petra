@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@inertiajs/react": "^3.3.1",
+        "@radix-ui/react-dialog": "^1.1.19",
         "@vitejs/plugin-react": "^6.0.2",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
