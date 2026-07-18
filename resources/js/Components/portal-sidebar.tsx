@@ -31,7 +31,7 @@ const sellerNavGroups: PortalNavGroup[] = [
             { label: 'Dashboard', path: 'dashboard', real: true, icon: 'dashboard' },
             { label: 'My Listings', path: 'listings', real: true, icon: 'equipment' },
             { label: 'Quotes', path: 'quotes', real: false, icon: 'quotes' },
-            { label: 'Offers', path: 'offers', real: false, icon: 'offers' },
+            { label: 'Offers', path: 'offers', real: true, icon: 'offers' },
         ],
     },
     {
@@ -49,10 +49,9 @@ const buyerNavGroups: PortalNavGroup[] = [
         label: 'Main Menu',
         items: [
             { label: 'Dashboard', path: 'dashboard', real: true, icon: 'dashboard' },
-            { label: 'My Requests', path: 'saved-equipment', real: true, icon: 'equipment' },
-            { label: 'Saved Equipment', path: 'saved-equipment-watchlist', real: false, icon: 'equipment' },
+            { label: 'My Requests', path: 'requests', real: true, icon: 'equipment' },
+            { label: 'Saved Equipment', path: 'saved-equipment', real: false, icon: 'equipment' },
             { label: 'Quotes', path: 'quotes', real: true, icon: 'quotes' },
-            { label: 'Offers', path: 'offers', real: false, icon: 'offers' },
         ],
     },
     {

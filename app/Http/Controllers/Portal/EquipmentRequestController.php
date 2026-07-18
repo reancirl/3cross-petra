@@ -15,7 +15,7 @@ class EquipmentRequestController extends Controller
 {
     public function index(Request $request): Response
     {
-        return Inertia::render('Portal/BuyerSavedEquipment', [
+        return Inertia::render('Portal/BuyerRequests', [
             'portal' => [
                 'userType' => User::TYPE_BUYER,
                 'roleLabel' => 'Buyer',

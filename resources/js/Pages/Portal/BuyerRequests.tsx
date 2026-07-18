@@ -6,7 +6,7 @@ import PortalShell from '../../Components/portal-shell';
 import SlideOver from '../../Components/slide-over';
 import type { EquipmentRequest, PortalData, SharedPageProps } from '../../types';
 
-type BuyerSavedEquipmentProps = {
+type BuyerRequestsProps = {
     portal: PortalData;
     requests: EquipmentRequest[];
     statusOptions: Record<string, string>;
@@ -29,7 +29,7 @@ const monthFormatter = new Intl.DateTimeFormat('en-US', { month: 'long', year: '
 const dateFormatter = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 const weekdayLabels = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-export default function BuyerSavedEquipment({ portal, requests }: BuyerSavedEquipmentProps) {
+export default function BuyerRequests({ portal, requests }: BuyerRequestsProps) {
     const { status } = usePage<SharedPageProps>().props;
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [timelineRange, setTimelineRange] = useState<DateRange>({ start: null, end: null });
@@ -56,7 +56,7 @@ export default function BuyerSavedEquipment({ portal, requests }: BuyerSavedEqui
             return;
         }
 
-        form.post('/buyer/saved-equipment', {
+        form.post('/buyer/requests', {
             preserveScroll: true,
             onSuccess: () => {
                 form.reset();
