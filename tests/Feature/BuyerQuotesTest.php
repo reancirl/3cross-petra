@@ -160,8 +160,10 @@ class BuyerQuotesTest extends TestCase
 
         $broker = User::factory()->broker()->create();
 
+        // Buyer requests moved to their own broker queue when the two queues stopped
+        // sharing one tabbed page.
         $this->actingAs($broker)
-            ->get('/broker/submissions')
+            ->get('/broker/requests')
             ->assertOk()
             ->assertSee('Quote Request: 3-Phase Production Separator');
     }

@@ -373,6 +373,51 @@ class AuthPortalTest extends TestCase
             ->assertRedirect('/seller/dashboard');
     }
 
+    public function test_customer_cannot_access_the_broker_buyer_request_queue(): void
+    {
+        $this->actingAs(User::factory()->buyer()->create())
+            ->get('/broker/requests')
+            ->assertRedirect('/buyer/dashboard');
+    }
+
+    public function test_broker_can_open_both_queues_and_their_profile(): void
+    {
+        $broker = User::factory()->broker()->create();
+
+        // The broker portal now runs on the shared PortalShell, so it has the same
+        // sidebar destinations the seller and buyer portals do.
+        $this->actingAs($broker)->get('/broker/submissions')->assertOk();
+        $this->actingAs($broker)->get('/broker/requests')->assertOk();
+        $this->actingAs($broker)->get('/broker/profile')->assertOk();
+    }
+
+    public function test_broker_can_update_their_profile(): void
+    {
+        $broker = User::factory()->broker()->create();
+
+        $this->actingAs($broker)
+            ->patch('/broker/profile', [
+                'name' => 'Petra Broker Renamed',
+                'email' => 'broker.renamed@example.com',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status', 'Profile updated.');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $broker->id,
+            'name' => 'Petra Broker Renamed',
+            'email' => 'broker.renamed@example.com',
+        ]);
+    }
+
+    public function test_broker_landing_page_is_the_seller_queue(): void
+    {
+        // Brokers have no dashboard; /dashboard resolves via User::portalRouteName.
+        $this->actingAs(User::factory()->broker()->create())
+            ->get('/dashboard')
+            ->assertRedirect('/broker/submissions');
+    }
+
     public function test_portal_responses_prevent_browser_back_cache(): void
     {
         $user = User::factory()->create([

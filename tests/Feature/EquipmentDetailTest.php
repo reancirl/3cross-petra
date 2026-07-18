@@ -85,8 +85,10 @@ class EquipmentDetailTest extends TestCase
 
         $broker = User::factory()->broker()->create();
 
+        // Buyer requests (including listing-bound quote inquiries) are reviewed on the
+        // broker's Buyer Requests queue, split out of /broker/submissions.
         $this->actingAs($broker)
-            ->get('/broker/submissions')
+            ->get('/broker/requests')
             ->assertOk()
             ->assertSee('Quote Request: 3-Phase Production Separator')
             ->assertSee('buyer-contact@example.com')

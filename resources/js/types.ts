@@ -18,8 +18,10 @@ export type SharedPageProps = {
 };
 
 export type PortalData = {
-    userType: 'seller' | 'buyer';
+    userType: 'seller' | 'buyer' | 'broker';
     roleLabel: string;
+    // Where the sidebar logo links back to. Brokers have no dashboard, so theirs
+    // points at /broker/submissions (see portalHome in portal-sidebar).
     dashboardUrl: string;
     summary?: string;
     profileName?: string;

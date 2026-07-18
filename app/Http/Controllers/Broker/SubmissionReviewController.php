@@ -12,15 +12,25 @@ use App\Http\Requests\Broker\UpdateEquipmentSubmissionStatusRequest;
 use App\Models\EquipmentRequest;
 use App\Models\EquipmentSubmission;
 use App\Models\Offer;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class SubmissionReviewController extends Controller
 {
-    public function index(): Response
+    /**
+     * The seller review queue, and the broker's landing page after login.
+     *
+     * The two queues used to share one tabbed page, which made a single very long
+     * scroll. They are now separate sidebar destinations (see routes/web/broker.php),
+     * so each page loads only the records it renders.
+     */
+    public function index(Request $request): Response
     {
         return Inertia::render('Broker/Submissions', [
+            'portal' => $this->portalData($request),
             'sellerSubmissions' => EquipmentSubmission::with(['user', 'offers' => fn ($query) => $query->latest()])
                 ->latest()
                 ->get()
@@ -69,6 +79,18 @@ class SubmissionReviewController extends Controller
                     ])->values(),
                 ])
                 ->values(),
+            'sellerStatusOptions' => ListingStatus::options(),
+            'offerStatusOptions' => OfferStatus::options(),
+        ]);
+    }
+
+    /**
+     * The buyer request queue — the second half of what used to be a tabbed page.
+     */
+    public function requests(Request $request): Response
+    {
+        return Inertia::render('Broker/Requests', [
+            'portal' => $this->portalData($request),
             'buyerRequests' => EquipmentRequest::with('user')
                 ->latest()
                 ->get()
@@ -89,10 +111,24 @@ class SubmissionReviewController extends Controller
                     'created_at_timestamp' => $equipmentRequest->created_at?->getTimestamp(),
                 ])
                 ->values(),
-            'sellerStatusOptions' => ListingStatus::options(),
             'buyerStatusOptions' => EquipmentRequest::STATUSES,
-            'offerStatusOptions' => OfferStatus::options(),
         ]);
+    }
+
+    /**
+     * Shell data for the shared PortalShell (sidebar + topbar). Brokers have no
+     * dashboard, so dashboardUrl points at the seller queue they land on.
+     *
+     * @return array<string, string>
+     */
+    private function portalData(Request $request): array
+    {
+        return [
+            'userType' => User::TYPE_BROKER,
+            'roleLabel' => 'Broker',
+            'dashboardUrl' => route('broker.submissions'),
+            'profileName' => $request->user()->name,
+        ];
     }
 
     /**
