@@ -1,7 +1,8 @@
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
+import BackLink from '../Components/back-link';
 import type { PublicListingDetail, SharedPageProps } from '../types';
 
 type EquipmentDetailProps = {
@@ -122,12 +123,12 @@ export default function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }: E
                 <section className="border-b border-[#dad5cb] bg-white">
                     <div className="mx-auto grid max-w-[1280px] gap-8 px-5 py-10 sm:px-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)] lg:items-start lg:py-12">
                         <div>
-                            <a
+                            <BackLink
                                 href="/equipment"
                                 className="focus-copper mb-6 inline-flex font-heading text-sm font-semibold uppercase tracking-[0.14em] text-[#a56437] underline-offset-4 hover:underline"
                             >
                                 Back to Equipment
-                            </a>
+                            </BackLink>
 
                             <div className="mb-5 flex flex-wrap gap-3">
                                 <span className="border border-[#dad5cb] px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-[#a56437]">

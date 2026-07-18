@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
-import { Head } from '@inertiajs/react';
+import { useMemo } from 'react';
+import { Head, Link, useRemember } from '@inertiajs/react';
+import { useScrollMemory } from '../scroll-memory';
 import type { PublicListingCard, StatusTone } from '../types';
 
 const PLACEHOLDER_IMAGE = '/images/petra-equipment-yard-hero.png';
@@ -45,7 +46,14 @@ const pageDescription =
     'Browse used oilfield and industrial equipment handled by Petra, including compressors, separators, tank batteries, and pump packages across Wyoming, the Rockies, and the Bakken.';
 
 export default function Equipment({ canonicalUrl, ogImageUrl, listings, filterOptions, categories }: EquipmentProps) {
-    const [filters, setFilters] = useState<Record<FilterKey, string>>(emptyFilters);
+    // Remembered rather than plain useState: Inertia persists this into the history
+    // entry, so returning from a listing detail page restores the same filtered grid.
+    // Without it the restored scroll offset would land on a differently-filtered list
+    // and put the buyer somewhere arbitrary. A fresh visit still starts unfiltered.
+    const [filters, setFilters] = useRemember<Record<FilterKey, string>>(emptyFilters, 'equipment-filters');
+
+    useScrollMemory({ key: 'equipment-listings', detailPrefix: '/equipment/' });
+
     const hasActiveFilters = Object.values(filters).some(Boolean);
 
     const filterControls: { key: FilterKey; label: string; options: string[] }[] = [
@@ -248,7 +256,7 @@ export default function Equipment({ canonicalUrl, ogImageUrl, listings, filterOp
                                         const specs = [listing.manufacturer, listing.year, listing.capacity].filter(Boolean).join(' · ');
 
                                         return (
-                                            <a
+                                            <Link
                                                 key={listing.public_id}
                                                 href={listing.href}
                                                 data-polish-reveal
@@ -305,7 +313,7 @@ export default function Equipment({ canonicalUrl, ogImageUrl, listings, filterOp
                                                         </span>
                                                     </span>
                                                 </div>
-                                            </a>
+                                            </Link>
                                         );
                                     })}
                                 </div>
