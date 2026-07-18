@@ -3,10 +3,13 @@ import { useEffect, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
 import PortalShell from '../../Components/portal-shell';
+import PortalPageHeader, { portalHeaderActionClass } from '../../Components/portal-page-header';
 import SlideOver from '../../Components/slide-over';
+import DataTable, { CellStack } from '../../Components/data-table';
+import type { DataTableColumn } from '../../Components/data-table';
 import type { EquipmentRequest, PortalData, SharedPageProps } from '../../types';
 
-type BuyerSavedEquipmentProps = {
+type BuyerRequestsProps = {
     portal: PortalData;
     requests: EquipmentRequest[];
     statusOptions: Record<string, string>;
@@ -29,9 +32,12 @@ const monthFormatter = new Intl.DateTimeFormat('en-US', { month: 'long', year: '
 const dateFormatter = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 const weekdayLabels = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-export default function BuyerSavedEquipment({ portal, requests }: BuyerSavedEquipmentProps) {
+export default function BuyerRequests({ portal, requests }: BuyerRequestsProps) {
     const { status } = usePage<SharedPageProps>().props;
     const [isFormOpen, setIsFormOpen] = useState(false);
+    // By id, not by object — props are replaced after submitting a new request.
+    const [activeId, setActiveId] = useState<number | null>(null);
+    const active = requests.find((request) => request.id === activeId) ?? null;
     const [timelineRange, setTimelineRange] = useState<DateRange>({ start: null, end: null });
     const form = useForm<RequestForm>({
         equipment_type: '',
@@ -56,7 +62,7 @@ export default function BuyerSavedEquipment({ portal, requests }: BuyerSavedEqui
             return;
         }
 
-        form.post('/buyer/saved-equipment', {
+        form.post('/buyer/requests', {
             preserveScroll: true,
             onSuccess: () => {
                 form.reset();
@@ -78,22 +84,20 @@ export default function BuyerSavedEquipment({ portal, requests }: BuyerSavedEqui
 
             <PortalShell portal={portal} title="My Requests">
                 <div className="grid gap-6">
-                    <section className="flex flex-col justify-between gap-4 border border-[#dad5cb] bg-white p-5 sm:flex-row sm:items-center sm:p-6">
-                        <div>
-                            <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">Equipment Requests</span>
-                            <h2 className="mt-2 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950">Your Requests</h2>
-                            <p className="mt-2 max-w-2xl text-base leading-7 text-neutral-600">
-                                Request equipment from Petra and track the current review status here.
-                            </p>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => setIsFormOpen(true)}
-                            className="button-press focus-copper inline-flex h-12 w-full items-center justify-center bg-[#a56437] px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto"
-                        >
-                            Request Equipment
-                        </button>
-                    </section>
+                    <PortalPageHeader
+                        eyebrow="Equipment Requests"
+                        title="Your Requests"
+                        description={
+                            requests.length === 0
+                                ? 'Ask Petra to source equipment for you.'
+                                : `${requests.length} ${requests.length === 1 ? 'request' : 'requests'} · track review status here.`
+                        }
+                        actions={
+                            <button type="button" onClick={() => setIsFormOpen(true)} className={portalHeaderActionClass}>
+                                Request Equipment
+                            </button>
+                        }
+                    />
 
                     <SlideOver open={isFormOpen} onClose={() => setIsFormOpen(false)} eyebrow="Request Equipment" title="What To Include">
                         <form onSubmit={submit} className="grid gap-5 sm:grid-cols-2">
@@ -127,44 +131,56 @@ export default function BuyerSavedEquipment({ portal, requests }: BuyerSavedEqui
                             </Field>
 
                             <div className="sm:col-span-2">
-                                <button type="submit" disabled={form.processing} className="button-press focus-copper inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60">
+                                <button type="submit" disabled={form.processing} className="button-press focus-copper inline-flex h-12 items-center justify-center rounded-lg bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60">
                                     {form.processing ? 'Submitting' : 'Submit Request'}
                                 </button>
                             </div>
                         </form>
                     </SlideOver>
 
-                    <section className="grid gap-4">
-                        {requests.length === 0 ? (
-                            <article className="border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600">
-                                Submitted equipment requests will appear here.
-                            </article>
-                        ) : (
-                            <div className="grid gap-4">
-                                {requests.map((request) => (
-                                    <article key={request.id} className="border border-[#dad5cb] bg-white p-6">
-                                        <div className="flex flex-wrap items-start justify-between gap-4">
-                                            <div>
-                                                <h3 className="font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">
-                                                    {request.equipment_type}
-                                                </h3>
-                                                <p className="mt-2 text-sm leading-6 text-neutral-500">{request.created_at}</p>
-                                            </div>
-                                            <StatusBadge label={request.status_label} />
-                                        </div>
-
-                                        <dl className="mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2">
-                                            <Detail label="Specifications" value={request.specifications} />
-                                            <Detail label="Budget range" value={request.budget_range} />
-                                            <Detail label="Location preference" value={request.location_preference} />
-                                            <Detail label="Timeline" value={request.timeline} />
-                                        </dl>
-                                    </article>
-                                ))}
-                            </div>
-                        )}
-                    </section>
+                    {requests.length === 0 ? (
+                        <article className="rounded-xl border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600 shadow-sm">
+                            Submitted equipment requests will appear here.
+                        </article>
+                    ) : (
+                        <DataTable
+                            columns={REQUEST_COLUMNS}
+                            rows={requests}
+                            rowKey={(request) => request.id}
+                            onRowClick={(request) => setActiveId(request.id)}
+                            rowLabel={(request) => `View your request for ${request.equipment_type}`}
+                            caption="Equipment you have asked Petra to source"
+                        />
+                    )}
                 </div>
+
+                {/*
+                  * A second, independent slide-over from the create-request one above.
+                  * Only one is reachable at a time — this opens from a table row, that from
+                  * the header button — so they never stack.
+                  */}
+                <SlideOver
+                    open={active !== null}
+                    onClose={() => setActiveId(null)}
+                    eyebrow="Equipment request"
+                    title={active?.equipment_type ?? ''}
+                >
+                    {active && (
+                        <dl className="grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2">
+                            <Detail label="Status" value={active.status_label} />
+                            <Detail label="Submitted" value={active.created_at} />
+                            <Detail label="Budget range" value={active.budget_range} />
+                            <Detail label="Location preference" value={active.location_preference} />
+                            <Detail label="Timeline" value={active.timeline} />
+                            <div className="sm:col-span-2">
+                                <dt className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                                    Specifications
+                                </dt>
+                                <dd className="mt-1 whitespace-pre-line text-neutral-700">{active.specifications || 'Not provided'}</dd>
+                            </div>
+                        </dl>
+                    )}
+                </SlideOver>
             </PortalShell>
         </>
     );
@@ -187,13 +203,13 @@ function DateRangePicker({ id, value, onChange }: { id: string; value: DateRange
     }
 
     return (
-        <div className="border border-[#dad5cb] bg-white">
+        <div className="rounded-lg border border-[#dad5cb] bg-white">
             <div className="grid gap-3 border-b border-[#dad5cb] bg-[#fbfaf8] p-3 sm:grid-cols-2">
-                <div className="border border-[#dad5cb] bg-white px-3 py-2">
+                <div className="rounded-lg border border-[#dad5cb] bg-white px-3 py-2">
                     <span className="font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500">Start date</span>
                     <p className="mt-1 text-sm font-medium text-neutral-950">{value.start ? formatDate(value.start) : 'Select date'}</p>
                 </div>
-                <div className="border border-[#dad5cb] bg-white px-3 py-2">
+                <div className="rounded-lg border border-[#dad5cb] bg-white px-3 py-2">
                     <span className="font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500">End date</span>
                     <p className="mt-1 text-sm font-medium text-neutral-950">{value.end ? formatDate(value.end) : 'Select date'}</p>
                 </div>
@@ -203,7 +219,7 @@ function DateRangePicker({ id, value, onChange }: { id: string; value: DateRange
                 <button
                     type="button"
                     onClick={() => setVisibleMonth((current) => addMonths(current, -1))}
-                    className="button-press focus-copper inline-flex h-9 w-9 items-center justify-center border border-[#dad5cb] font-heading text-lg text-neutral-950 hover:bg-neutral-950 hover:text-white"
+                    className="button-press focus-copper inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#dad5cb] font-heading text-lg text-neutral-950 hover:bg-neutral-950 hover:text-white"
                     aria-label="Previous month"
                 >
                     {'<'}
@@ -218,7 +234,7 @@ function DateRangePicker({ id, value, onChange }: { id: string; value: DateRange
                 <button
                     type="button"
                     onClick={() => setVisibleMonth((current) => addMonths(current, 1))}
-                    className="button-press focus-copper inline-flex h-9 w-9 items-center justify-center border border-[#dad5cb] font-heading text-lg text-neutral-950 hover:bg-neutral-950 hover:text-white"
+                    className="button-press focus-copper inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#dad5cb] font-heading text-lg text-neutral-950 hover:bg-neutral-950 hover:text-white"
                     aria-label="Next month"
                 >
                     {'>'}
@@ -270,7 +286,7 @@ function MonthCalendar({ id, month, value, onSelect }: { id?: string; month: Dat
 
 function dayButtonClass(day: Date, value: DateRange): string {
     const baseClass =
-        'focus-copper grid aspect-square min-h-9 place-items-center border font-heading text-sm font-semibold transition-colors';
+        'focus-copper grid aspect-square min-h-9 place-items-center rounded-lg border font-heading text-sm font-semibold transition-colors';
 
     if (isRangeBoundary(day, value)) {
         return `${baseClass} border-neutral-950 bg-neutral-950 text-white`;
@@ -295,6 +311,52 @@ function Field({ id, label, error, className = '', children }: { id: string; lab
     );
 }
 
+/**
+ * Specifications is free text and can run long, so it is deliberately not a column —
+ * it lives in the slide-over where it has room to wrap.
+ */
+const REQUEST_COLUMNS: DataTableColumn<EquipmentRequest>[] = [
+    {
+        key: 'equipment',
+        header: 'Equipment',
+        cell: (request) => (
+            <CellStack
+                primary={
+                    <span className="font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950">
+                        {request.equipment_type}
+                    </span>
+                }
+                secondary={request.location_preference}
+            />
+        ),
+    },
+    {
+        key: 'budget',
+        header: 'Budget',
+        hideBelow: 'md',
+        align: 'right',
+        cell: (request) => <span className="whitespace-nowrap">{request.budget_range || '—'}</span>,
+    },
+    {
+        key: 'timeline',
+        header: 'Timeline',
+        hideBelow: 'lg',
+        cell: (request) => <span className="whitespace-nowrap">{request.timeline || '—'}</span>,
+    },
+    {
+        key: 'submitted',
+        header: 'Submitted',
+        hideBelow: 'xl',
+        cell: (request) => <span className="whitespace-nowrap">{request.created_at ?? '—'}</span>,
+    },
+    {
+        key: 'status',
+        header: 'Status',
+        align: 'right',
+        cell: (request) => <StatusBadge label={request.status_label} />,
+    },
+];
+
 function Detail({ label, value }: { label: string; value: string | null }) {
     return (
         <div>
@@ -306,7 +368,7 @@ function Detail({ label, value }: { label: string; value: string | null }) {
 
 function StatusBadge({ label }: { label: string }) {
     return (
-        <span className="inline-flex h-8 items-center border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-[#a56437]">
+        <span className="inline-flex h-8 items-center rounded-full border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-[#a56437]">
             {label}
         </span>
     );

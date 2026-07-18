@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Enums\ListingStatus;
+use App\Enums\OfferStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 #[Fillable([
@@ -97,6 +98,47 @@ class EquipmentSubmission extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Offers a broker has logged against this listing.
+     *
+     * @return HasMany<Offer, $this>
+     */
+    public function offers(): HasMany
+    {
+        return $this->hasMany(Offer::class);
+    }
+
+    /**
+     * True while an offer on this listing is still being negotiated (Pending with the
+     * seller, or Countered back to the broker). Guards against logging a second offer
+     * on top of an unresolved one — see Offer::isOpen.
+     */
+    public function hasOpenOffer(): bool
+    {
+        return $this->offers()
+            ->whereIn('status', [OfferStatus::Pending->value, OfferStatus::Countered->value])
+            ->exists();
+    }
+
+    /**
+     * Move the listing to Pending once a side accepts an offer, so the listing stops
+     * contradicting its own offers (an Accepted offer under an "Under Review" listing
+     * reads as though nothing has happened). Pending is the doc's wording for exactly
+     * this state — "A broker is working a deal on this unit".
+     *
+     * Only Under Review and Published advance. Sold stays sold, Not Accepted stays
+     * closed, and Pending is already correct. This does NOT leak an unpublished listing
+     * onto the marketplace: scopePubliclyVisible additionally requires public_id and
+     * published_at, which only publishing sets. The broker can still override the status
+     * by hand afterwards — this sets a sane default, it does not lock anything.
+     */
+    public function markDealAgreed(): void
+    {
+        if (in_array($this->listingStatus(), [ListingStatus::UnderReview, ListingStatus::Published], true)) {
+            $this->update(['status' => ListingStatus::Pending]);
+        }
     }
 
     public function listingStatus(): ListingStatus

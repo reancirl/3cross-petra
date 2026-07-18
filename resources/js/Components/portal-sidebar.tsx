@@ -31,7 +31,7 @@ const sellerNavGroups: PortalNavGroup[] = [
             { label: 'Dashboard', path: 'dashboard', real: true, icon: 'dashboard' },
             { label: 'My Listings', path: 'listings', real: true, icon: 'equipment' },
             { label: 'Quotes', path: 'quotes', real: false, icon: 'quotes' },
-            { label: 'Offers', path: 'offers', real: false, icon: 'offers' },
+            { label: 'Offers', path: 'offers', real: true, icon: 'offers' },
         ],
     },
     {
@@ -49,10 +49,9 @@ const buyerNavGroups: PortalNavGroup[] = [
         label: 'Main Menu',
         items: [
             { label: 'Dashboard', path: 'dashboard', real: true, icon: 'dashboard' },
-            { label: 'My Requests', path: 'saved-equipment', real: true, icon: 'equipment' },
-            { label: 'Saved Equipment', path: 'saved-equipment-watchlist', real: false, icon: 'equipment' },
+            { label: 'My Requests', path: 'requests', real: true, icon: 'equipment' },
+            { label: 'Saved Equipment', path: 'saved-equipment', real: false, icon: 'equipment' },
             { label: 'Quotes', path: 'quotes', real: true, icon: 'quotes' },
-            { label: 'Offers', path: 'offers', real: false, icon: 'offers' },
         ],
     },
     {
@@ -61,6 +60,23 @@ const buyerNavGroups: PortalNavGroup[] = [
             { label: 'Documents', path: 'documents', real: false, icon: 'documents' },
             { label: 'Messages', path: 'messages', real: false, icon: 'messages' },
             { label: 'Notifications', path: 'notifications', real: false, icon: 'notifications' },
+        ],
+    },
+    {
+        label: 'Account',
+        items: [{ label: 'Profile', path: 'profile', real: true, icon: 'profile' }],
+    },
+];
+
+// Brokers are internal staff, not customers: no marketplace-facing sections, and the
+// two review queues that used to share one tabbed page are separate destinations here.
+// There is no broker Dashboard — the seller queue is the landing page (see portalHome).
+const brokerNavGroups: PortalNavGroup[] = [
+    {
+        label: 'Main Menu',
+        items: [
+            { label: 'Seller Submissions', path: 'submissions', real: true, icon: 'equipment' },
+            { label: 'Buyer Requests', path: 'requests', real: true, icon: 'quotes' },
         ],
     },
     {
@@ -84,13 +100,32 @@ function hrefFor(portal: PortalData, path: string) {
     return `/${portal.userType}/${path}`;
 }
 
+/**
+ * Where the logo links back to. Sellers and buyers land on a dashboard; brokers have
+ * none, so they go to the seller review queue instead of a /broker/dashboard 404.
+ */
+function portalHome(portal: PortalData): string {
+    return portal.userType === 'broker' ? '/broker/submissions' : `/${portal.userType}/dashboard`;
+}
+
+function navGroupsFor(portal: PortalData): PortalNavGroup[] {
+    switch (portal.userType) {
+        case 'seller':
+            return sellerNavGroups;
+        case 'broker':
+            return brokerNavGroups;
+        default:
+            return buyerNavGroups;
+    }
+}
+
 export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, onLogout }: PortalSidebarProps) {
     const page = usePage<SharedPageProps>();
     const { auth } = page.props;
     const currentPath = page.url.split('?')[0];
     const userName = auth.user?.name ?? portal.profileName;
     const userInitial = (userName ?? portal.roleLabel).charAt(0).toUpperCase();
-    const navGroups = portal.userType === 'seller' ? sellerNavGroups : buyerNavGroups;
+    const navGroups = navGroupsFor(portal);
 
     return (
         <aside className="border-b border-[#dad5cb] bg-white text-neutral-900 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:self-start lg:border-b-0 lg:border-r">
@@ -99,7 +134,7 @@ export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, on
                     collapsed ? 'lg:flex-col lg:justify-center lg:gap-2 lg:px-2' : 'justify-between lg:px-5'
                 }`}
             >
-                <Link href={`/${portal.userType}/dashboard`} className="focus-copper flex min-w-0 items-center gap-3">
+                <Link href={portalHome(portal)} className="focus-copper flex min-w-0 items-center gap-3">
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#a56437] font-heading text-xl font-bold uppercase leading-none text-white">
                         P
                     </span>

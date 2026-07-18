@@ -191,12 +191,12 @@ class AuthPortalTest extends TestCase
             ->assertRedirect('/seller/listings');
     }
 
-    public function test_buyer_can_submit_equipment_request_and_see_it_on_saved_equipment(): void
+    public function test_buyer_can_submit_equipment_request_and_see_it_on_requests_page(): void
     {
         $user = User::factory()->buyer()->create();
 
         $this->actingAs($user)
-            ->post('/buyer/saved-equipment', [
+            ->post('/buyer/requests', [
                 'equipment_type' => 'Separator',
                 'specifications' => 'Three phase if available',
                 'budget_range' => '40,000',
@@ -216,9 +216,30 @@ class AuthPortalTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get('/buyer/saved-equipment')
+            ->get('/buyer/requests')
             ->assertOk()
             ->assertSee('Separator');
+    }
+
+    public function test_buyer_saved_equipment_is_the_watchlist_placeholder_not_the_request_list(): void
+    {
+        $user = User::factory()->buyer()->create();
+
+        $user->equipmentRequests()->create([
+            'equipment_type' => 'Separator',
+            'budget_range' => '40,000',
+            'location_preference' => 'Rockies',
+            'timeline' => 'Aug 1, 2026 - Aug 31, 2026',
+        ]);
+
+        // /buyer/saved-equipment is reserved for the sitemap's "Saved Equipment (Future)"
+        // watchlist. It must not fall back to the free-form request list that used to own
+        // this path, so the two features stay distinct.
+        $this->actingAs($user)
+            ->get('/buyer/saved-equipment')
+            ->assertOk()
+            ->assertSee('Placeholder')
+            ->assertDontSee('Separator');
     }
 
     public function test_buyer_equipment_request_budget_must_be_numeric(): void
@@ -226,15 +247,15 @@ class AuthPortalTest extends TestCase
         $user = User::factory()->buyer()->create();
 
         $this->actingAs($user)
-            ->from('/buyer/saved-equipment')
-            ->post('/buyer/saved-equipment', [
+            ->from('/buyer/requests')
+            ->post('/buyer/requests', [
                 'equipment_type' => 'Separator',
                 'specifications' => 'Three phase if available',
                 'budget_range' => '$25k-$40k',
                 'location_preference' => 'Rockies',
                 'timeline' => 'Aug 1, 2026 - Aug 31, 2026',
             ])
-            ->assertRedirect('/buyer/saved-equipment')
+            ->assertRedirect('/buyer/requests')
             ->assertSessionHasErrors('budget_range');
 
         $this->assertDatabaseMissing('equipment_requests', [
@@ -337,7 +358,7 @@ class AuthPortalTest extends TestCase
             ->assertSee('Live on the Petra marketplace.');
 
         $this->actingAs($buyer)
-            ->get('/buyer/saved-equipment')
+            ->get('/buyer/requests')
             ->assertOk()
             ->assertSee('Compressor')
             ->assertSee('Options Presented');
@@ -350,6 +371,51 @@ class AuthPortalTest extends TestCase
         $this->actingAs($user)
             ->get('/broker/submissions')
             ->assertRedirect('/seller/dashboard');
+    }
+
+    public function test_customer_cannot_access_the_broker_buyer_request_queue(): void
+    {
+        $this->actingAs(User::factory()->buyer()->create())
+            ->get('/broker/requests')
+            ->assertRedirect('/buyer/dashboard');
+    }
+
+    public function test_broker_can_open_both_queues_and_their_profile(): void
+    {
+        $broker = User::factory()->broker()->create();
+
+        // The broker portal now runs on the shared PortalShell, so it has the same
+        // sidebar destinations the seller and buyer portals do.
+        $this->actingAs($broker)->get('/broker/submissions')->assertOk();
+        $this->actingAs($broker)->get('/broker/requests')->assertOk();
+        $this->actingAs($broker)->get('/broker/profile')->assertOk();
+    }
+
+    public function test_broker_can_update_their_profile(): void
+    {
+        $broker = User::factory()->broker()->create();
+
+        $this->actingAs($broker)
+            ->patch('/broker/profile', [
+                'name' => 'Petra Broker Renamed',
+                'email' => 'broker.renamed@example.com',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status', 'Profile updated.');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $broker->id,
+            'name' => 'Petra Broker Renamed',
+            'email' => 'broker.renamed@example.com',
+        ]);
+    }
+
+    public function test_broker_landing_page_is_the_seller_queue(): void
+    {
+        // Brokers have no dashboard; /dashboard resolves via User::portalRouteName.
+        $this->actingAs(User::factory()->broker()->create())
+            ->get('/dashboard')
+            ->assertRedirect('/broker/submissions');
     }
 
     public function test_portal_responses_prevent_browser_back_cache(): void

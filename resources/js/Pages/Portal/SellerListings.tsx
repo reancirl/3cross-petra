@@ -1,9 +1,12 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, useRemember } from '@inertiajs/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
 import PortalShell from '../../Components/portal-shell';
+import PortalPageHeader from '../../Components/portal-page-header';
+import Pagination, { DEFAULT_PAGE_SIZE, PAGINATION_THRESHOLD } from '../../Components/pagination';
 import SlideOver from '../../Components/slide-over';
+import { useScrollMemory } from '../../scroll-memory';
 import type { EquipmentSubmission, PortalData, StatusTone } from '../../types';
 
 type SellerListingsProps = {
@@ -55,12 +58,16 @@ function emptyForm(): SubmissionForm {
     };
 }
 
-const PAGE_SIZE = 6;
 
 export default function SellerListings({ portal, submissions, categoryOptions, regionOptions, conditionOptions }: SellerListingsProps) {
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [search, setSearch] = useState('');
-    const [page, setPage] = useState(1);
+    // Remembered rather than plain state: this list is paginated client-side, so
+    // returning from a listing has to come back to the same page and search — a
+    // restored scroll offset against a reset page 1 would point at the wrong rows.
+    // Inertia persists these into the history entry; a fresh visit still starts clean.
+    const [search, setSearch] = useRemember('', 'seller-listings-search');
+    const [page, setPage] = useRemember(1, 'seller-listings-page');
+    const [pageSize, setPageSize] = useRemember<number>(DEFAULT_PAGE_SIZE, 'seller-listings-page-size');
     const [clientErrors, setClientErrors] = useState<Partial<Record<RequiredField, string>>>({});
     const fieldRefs = useRef<Record<RequiredField, FocusableField>>({
         title: null,
@@ -69,6 +76,8 @@ export default function SellerListings({ portal, submissions, categoryOptions, r
         condition: null,
     });
     const form = useForm<SubmissionForm>(emptyForm());
+
+    useScrollMemory({ key: 'seller-listings', detailPrefix: '/seller/listings/' });
 
     function openForm(prefill?: Pick<SubmissionForm, 'category' | 'region'>) {
         form.clearErrors();
@@ -161,11 +170,15 @@ export default function SellerListings({ portal, submissions, categoryOptions, r
         );
     }, [submissions, search]);
 
-    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    // Matches the tables: 10 by default, 10/20/50 selectable, controls hidden at or
+    // below the threshold. The old fixed size of 6 predated the compact card — that many
+    // rows now occupy well under a screen.
+    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
     const currentPage = Math.min(page, totalPages);
-    const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-    const rangeStart = filtered.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
-    const rangeEnd = Math.min(currentPage * PAGE_SIZE, filtered.length);
+    const pageItems = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+    const rangeStart = filtered.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+    const rangeEnd = Math.min(currentPage * pageSize, filtered.length);
+    const showPagination = filtered.length > PAGINATION_THRESHOLD;
 
     function updateSearch(value: string) {
         setSearch(value);
@@ -178,52 +191,51 @@ export default function SellerListings({ portal, submissions, categoryOptions, r
 
             <PortalShell portal={portal} title="My Listings">
                 <div className="grid gap-4">
-                    <section className="flex flex-col gap-4 rounded-2xl border border-[#dad5cb] bg-white px-5 py-4 shadow-sm lg:flex-row lg:items-center lg:justify-between lg:px-6">
-                        <div className="min-w-0">
-                            <span className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-[#a56437]">Listed Equipment</span>
-                            <h2 className="mt-1 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950">Your Submissions</h2>
-                            <p className="mt-1 text-sm leading-6 text-neutral-500">
-                                {search.trim()
-                                    ? `${filtered.length} of ${submissions.length} ${submissions.length === 1 ? 'listing' : 'listings'}`
-                                    : `${submissions.length} ${submissions.length === 1 ? 'listing' : 'listings'} · track review status here.`}
-                            </p>
-                        </div>
+                    <PortalPageHeader
+                        eyebrow="Listed Equipment"
+                        title="Your Submissions"
+                        description={
+                            search.trim()
+                                ? `${filtered.length} of ${submissions.length} ${submissions.length === 1 ? 'listing' : 'listings'}`
+                                : `${submissions.length} ${submissions.length === 1 ? 'listing' : 'listings'} · track review status here.`
+                        }
+                        actions={
+                            <>
+                                <div className="relative sm:w-72">
+                                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
+                                        <SearchIcon />
+                                    </span>
+                                    <input
+                                        type="search"
+                                        value={search}
+                                        onChange={(event) => updateSearch(event.target.value)}
+                                        placeholder="Search listings"
+                                        aria-label="Search listings"
+                                        className="h-11 w-full rounded-lg border border-[#dad5cb] bg-white pl-10 pr-9 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-[#a56437] focus:ring-2 focus:ring-[#a56437]/15 [&::-webkit-search-cancel-button]:appearance-none"
+                                    />
+                                    {search && (
+                                        <button
+                                            type="button"
+                                            onClick={() => updateSearch('')}
+                                            aria-label="Clear search"
+                                            className="focus-copper absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-[#f3f1ec] hover:text-neutral-700"
+                                        >
+                                            <CloseIcon />
+                                        </button>
+                                    )}
+                                </div>
 
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                            <div className="relative sm:w-72">
-                                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
-                                    <SearchIcon />
-                                </span>
-                                <input
-                                    type="search"
-                                    value={search}
-                                    onChange={(event) => updateSearch(event.target.value)}
-                                    placeholder="Search listings"
-                                    aria-label="Search listings"
-                                    className="h-11 w-full rounded-lg border border-[#dad5cb] bg-white pl-10 pr-9 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-[#a56437] focus:ring-2 focus:ring-[#a56437]/15 [&::-webkit-search-cancel-button]:appearance-none"
-                                />
-                                {search && (
-                                    <button
-                                        type="button"
-                                        onClick={() => updateSearch('')}
-                                        aria-label="Clear search"
-                                        className="focus-copper absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-[#f3f1ec] hover:text-neutral-700"
-                                    >
-                                        <CloseIcon />
-                                    </button>
-                                )}
-                            </div>
-
-                            <button
-                                type="button"
-                                onClick={() => openForm()}
-                                className="button-press focus-copper inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-[#a56437] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto"
-                            >
-                                <PlusIcon />
-                                Submit Equipment
-                            </button>
-                        </div>
-                    </section>
+                                <button
+                                    type="button"
+                                    onClick={() => openForm()}
+                                    className="button-press focus-copper inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-[#a56437] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto"
+                                >
+                                    <PlusIcon />
+                                    Submit Equipment
+                                </button>
+                            </>
+                        }
+                    />
 
                     <SlideOver open={isFormOpen} onClose={() => setIsFormOpen(false)} eyebrow="Submit Equipment" title="What We Need">
                         <form onSubmit={submit} noValidate className="grid gap-5 sm:grid-cols-2">
@@ -367,7 +379,7 @@ export default function SellerListings({ portal, submissions, categoryOptions, r
                                 <button
                                     type="submit"
                                     disabled={form.processing}
-                                    className="button-press focus-copper inline-flex h-12 w-full items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60 sm:w-auto"
+                                    className="button-press focus-copper inline-flex h-12 w-full items-center justify-center rounded-lg bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60 sm:w-auto"
                                 >
                                     {form.processing ? 'Submitting' : 'Submit Equipment'}
                                 </button>
@@ -382,13 +394,15 @@ export default function SellerListings({ portal, submissions, categoryOptions, r
                             <NoResults search={search} onClear={() => updateSearch('')} />
                         ) : (
                             <>
-                                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                                {/* Single column now that the cards are horizontal rows —
+                                    a 3-up grid of these would crush the text. */}
+                                <div className="grid gap-2">
                                     {pageItems.map((submission) => (
                                         <ListingCard key={submission.id} submission={submission} />
                                     ))}
                                 </div>
 
-                                {totalPages > 1 && (
+                                {showPagination && (
                                     <Pagination
                                         page={currentPage}
                                         totalPages={totalPages}
@@ -396,6 +410,11 @@ export default function SellerListings({ portal, submissions, categoryOptions, r
                                         rangeEnd={rangeEnd}
                                         total={filtered.length}
                                         onChange={setPage}
+                                        pageSize={pageSize}
+                                        onPageSizeChange={(size) => {
+                                            setPageSize(size);
+                                            setPage(1);
+                                        }}
                                     />
                                 )}
                             </>
@@ -432,8 +451,14 @@ function ListingCard({ submission }: { submission: EquipmentSubmission }) {
     const showCover = Boolean(cover) && !coverFailed;
 
     return (
-        <article className="interactive-lift flex flex-col overflow-hidden rounded-2xl border border-[#dad5cb] bg-white shadow-sm">
-            <div className="relative aspect-[16/10] shrink-0 bg-[#f3f1ec]">
+        <Link
+            href={`/seller/listings/${submission.id}`}
+            className="interactive-lift focus-copper flex gap-4 overflow-hidden rounded-xl border border-[#dad5cb] bg-white p-3 shadow-sm transition-colors hover:border-[#a56437] sm:gap-5 sm:p-4"
+        >
+            {/* Fixed-width thumbnail rather than a full-bleed 16:10 cover. The cover was
+                most of the card's height; at this size the photo still identifies the
+                unit but the row is read at a glance. */}
+            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-[#f3f1ec] sm:h-28 sm:w-36">
                 {showCover ? (
                     <img
                         src={cover.url}
@@ -447,67 +472,54 @@ function ListingCard({ submission }: { submission: EquipmentSubmission }) {
                         <EquipmentGlyph />
                     </span>
                 )}
-                <div className="absolute left-3 top-3">
-                    <StatusBadge label={submission.status_label} tone={submission.status_tone} />
-                </div>
                 {extraPhotos > 0 && (
-                    <span className="absolute bottom-3 right-3 rounded-full bg-neutral-950/70 px-2.5 py-1 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-white">
-                        +{extraPhotos} {extraPhotos === 1 ? 'photo' : 'photos'}
+                    <span className="absolute bottom-1 right-1 rounded-full bg-neutral-950/70 px-1.5 py-0.5 font-heading text-[0.6rem] font-semibold uppercase tracking-[0.08em] text-white">
+                        +{extraPhotos}
                     </span>
                 )}
             </div>
 
-            <div className="flex flex-1 flex-col p-5">
-                <h3
-                    className="truncate font-heading text-lg font-semibold uppercase tracking-[0.06em] text-neutral-950"
-                    title={submission.title}
-                >
-                    {submission.title}
-                </h3>
-                <p className="mt-1 text-xs leading-5 text-neutral-500">
+            <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <div className="flex items-start justify-between gap-3">
+                    <h3
+                        className="truncate font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950"
+                        title={submission.title}
+                    >
+                        {submission.title}
+                    </h3>
+                    <StatusBadge label={submission.status_label} tone={submission.status_tone} />
+                </div>
+
+                {/* The four Details were a 2x2 label/value grid — eight lines of text for
+                    four short facts. Inline and unlabelled, they read in one. */}
+                <p className="truncate text-xs leading-5 text-neutral-500">
+                    {[submission.category, formatRegion(submission), submission.condition_label, formatPrice(submission)]
+                        .filter(Boolean)
+                        .join(' · ')}
+                </p>
+
+                <p className="truncate text-xs leading-5 text-neutral-400">
                     {submission.created_at}
                     {submission.status_explanation ? ` · ${submission.status_explanation}` : ''}
                 </p>
 
-                <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
-                    <Detail label="Category" value={submission.category} />
-                    <Detail label="Region" value={formatRegion(submission)} />
-                    <Detail label="Condition" value={submission.condition_label} />
-                    <Detail label="Asking price" value={formatPrice(submission)} />
-                </dl>
-
-                {submission.condition_notes && (
-                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-neutral-600">{submission.condition_notes}</p>
-                )}
-
-                <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
+                {/* Counts only. The document chips here were real <a> links, which cannot
+                    nest inside the card's own link — and the detail page is where a seller
+                    opens a document and sees whether it is public. */}
+                <div className="mt-auto flex flex-wrap items-center gap-3 pt-1">
                     <span className="inline-flex items-center gap-1.5 font-heading text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-neutral-400">
                         <PhotoIcon />
                         {submission.photos.length} {submission.photos.length === 1 ? 'photo' : 'photos'}
                     </span>
-                    {submission.documents.length > 0 ? (
-                        submission.documents.map((document) => (
-                            <a
-                                key={document.path}
-                                href={document.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                title={document.name}
-                                className="focus-copper inline-flex max-w-[11rem] items-center gap-1.5 rounded-full border border-[#dad5cb] bg-white px-2.5 py-1 text-xs font-semibold text-neutral-700 transition-colors hover:border-[#a56437] hover:text-[#a56437]"
-                            >
-                                <FileIcon />
-                                <span className="truncate">{document.name}</span>
-                            </a>
-                        ))
-                    ) : (
-                        <span className="inline-flex items-center gap-1.5 font-heading text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-neutral-400">
-                            <FileIcon />
-                            No docs
-                        </span>
-                    )}
+                    <span className="inline-flex items-center gap-1.5 font-heading text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-neutral-400">
+                        <FileIcon />
+                        {submission.documents.length === 0
+                            ? 'No docs'
+                            : `${submission.documents.length} ${submission.documents.length === 1 ? 'doc' : 'docs'}`}
+                    </span>
                 </div>
             </div>
-        </article>
+        </Link>
     );
 }
 
@@ -649,23 +661,6 @@ function CloseIcon() {
     );
 }
 
-function ChevronIcon({ dir }: { dir: 'left' | 'right' }) {
-    return (
-        <svg
-            className="h-4 w-4 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-        >
-            {dir === 'left' ? <path d="M15 6l-6 6 6 6" /> : <path d="M9 6l6 6-6 6" />}
-        </svg>
-    );
-}
-
 function NoResults({ search, onClear }: { search: string; onClear: () => void }) {
     const term = search.trim();
 
@@ -691,97 +686,6 @@ function NoResults({ search, onClear }: { search: string; onClear: () => void })
     );
 }
 
-function pageWindow(current: number, total: number): (number | 'ellipsis')[] {
-    if (total <= 7) {
-        return Array.from({ length: total }, (_, index) => index + 1);
-    }
-
-    const shown = [...new Set([1, total, current - 1, current, current + 1])]
-        .filter((value) => value >= 1 && value <= total)
-        .sort((a, b) => a - b);
-
-    const result: (number | 'ellipsis')[] = [];
-    let previous = 0;
-
-    for (const value of shown) {
-        if (value - previous > 1) {
-            result.push('ellipsis');
-        }
-
-        result.push(value);
-        previous = value;
-    }
-
-    return result;
-}
-
-type PaginationProps = {
-    page: number;
-    totalPages: number;
-    rangeStart: number;
-    rangeEnd: number;
-    total: number;
-    onChange: (page: number) => void;
-};
-
-function Pagination({ page, totalPages, rangeStart, rangeEnd, total, onChange }: PaginationProps) {
-    return (
-        <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
-            <p className="text-sm text-neutral-500">
-                Showing {rangeStart}–{rangeEnd} of {total}
-            </p>
-
-            <nav aria-label="Pagination" className="flex items-center gap-1.5">
-                <PageButton label="Previous page" disabled={page <= 1} onClick={() => onChange(page - 1)}>
-                    <ChevronIcon dir="left" />
-                </PageButton>
-
-                {pageWindow(page, totalPages).map((entry, index) =>
-                    entry === 'ellipsis' ? (
-                        <span key={`ellipsis-${index}`} className="px-1 text-neutral-400">
-                            …
-                        </span>
-                    ) : (
-                        <PageButton key={entry} active={entry === page} onClick={() => onChange(entry)}>
-                            {entry}
-                        </PageButton>
-                    ),
-                )}
-
-                <PageButton label="Next page" disabled={page >= totalPages} onClick={() => onChange(page + 1)}>
-                    <ChevronIcon dir="right" />
-                </PageButton>
-            </nav>
-        </div>
-    );
-}
-
-type PageButtonProps = {
-    children: ReactNode;
-    onClick: () => void;
-    active?: boolean;
-    disabled?: boolean;
-    label?: string;
-};
-
-function PageButton({ children, onClick, active = false, disabled = false, label }: PageButtonProps) {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            disabled={disabled}
-            aria-label={label}
-            aria-current={active ? 'page' : undefined}
-            className={`focus-copper flex h-9 min-w-9 items-center justify-center rounded-lg border px-2.5 font-heading text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
-                active
-                    ? 'border-[#a56437] bg-[#a56437] text-white'
-                    : 'border-[#dad5cb] bg-white text-neutral-700 hover:border-[#a56437] hover:text-[#a56437]'
-            }`}
-        >
-            {children}
-        </button>
-    );
-}
 
 function PhotoPicker({ files, error, onChange }: { files: File[]; error?: string; onChange: (files: File[]) => void }) {
     const [previews, setPreviews] = useState<{ file: File; url: string }[]>([]);
@@ -825,7 +729,7 @@ function PhotoPicker({ files, error, onChange }: { files: File[]; error?: string
             {previews.length > 0 && (
                 <div className="grid gap-3 sm:grid-cols-2">
                     {previews.map((preview, index) => (
-                        <article key={`${preview.file.name}-${preview.file.lastModified}`} className="overflow-hidden border border-[#dad5cb] bg-white">
+                        <article key={`${preview.file.name}-${preview.file.lastModified}`} className="overflow-hidden rounded-lg border border-[#dad5cb] bg-white">
                             <div className="aspect-[4/3] bg-[#f3f1ec]">
                                 <img src={preview.url} alt={preview.file.name} className="h-full w-full object-cover" />
                             </div>
@@ -876,7 +780,7 @@ function DocumentPicker({ files, error, onChange }: { files: File[]; error?: str
             {files.length > 0 && (
                 <div className="grid gap-2">
                     {files.map((file, index) => (
-                        <article key={`${file.name}-${file.lastModified}`} className="flex items-center justify-between gap-4 border border-[#dad5cb] bg-white p-3">
+                        <article key={`${file.name}-${file.lastModified}`} className="flex items-center justify-between gap-4 rounded-lg border border-[#dad5cb] bg-white p-3">
                             <div className="min-w-0">
                                 <p className="truncate text-sm font-semibold text-neutral-900">{file.name}</p>
                                 <p className="mt-1 text-xs text-neutral-500">{formatFileSize(file.size)}</p>
@@ -918,15 +822,6 @@ function Field({
             {children}
             {error && <span className="text-sm text-[#b3261e]">{error}</span>}
         </label>
-    );
-}
-
-function Detail({ label, value }: { label: string; value: string | null }) {
-    return (
-        <div>
-            <dt className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">{label}</dt>
-            <dd className="mt-1 text-neutral-700">{value || 'Not provided'}</dd>
-        </div>
     );
 }
 

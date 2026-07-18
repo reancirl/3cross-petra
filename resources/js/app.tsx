@@ -5,6 +5,11 @@ import type { ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
 import AppLayout from './Layouts/AppLayout';
 import BlankLayout from './Layouts/BlankLayout';
+import { trackNavigation } from './navigation';
+
+// Records where each visit came from, so back affordances can pop history (restoring
+// scroll + remembered state) instead of navigating forward to the top of a page.
+trackNavigation();
 
 type InertiaPageModule = {
     default: ComponentType<Record<string, unknown>> & {

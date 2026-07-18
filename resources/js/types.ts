@@ -18,8 +18,10 @@ export type SharedPageProps = {
 };
 
 export type PortalData = {
-    userType: 'seller' | 'buyer';
+    userType: 'seller' | 'buyer' | 'broker';
     roleLabel: string;
+    // Where the sidebar logo links back to. Brokers have no dashboard, so theirs
+    // points at /broker/submissions (see portalHome in portal-sidebar).
     dashboardUrl: string;
     summary?: string;
     profileName?: string;
@@ -30,6 +32,12 @@ export type UploadFileMeta = {
     path: string;
     url: string;
     size: number | null;
+    /**
+     * Documents only, and only where the payload includes it. Seller-uploaded documents
+     * are private until a broker marks them public (see PublicListingPresenter); photos
+     * carry no such flag.
+     */
+    public?: boolean;
 };
 
 export type StatusTone = 'neutral' | 'success' | 'warning' | 'muted' | 'danger';
@@ -84,6 +92,34 @@ export type EquipmentSubmission = {
     created_at: string | null;
 };
 
+/**
+ * One listing as its own page (Portal/SellerListingDetail). Extends the list summary
+ * with the broker's enrichment — the buyer-facing copy and spec fields — plus publish
+ * state and the offers logged against it.
+ */
+export type EquipmentSubmissionDetail = EquipmentSubmission & {
+    public_id: string | null;
+    /** Set only when the listing is actually reachable on the public marketplace. */
+    public_href: string | null;
+    public_description: string | null;
+    manufacturer: string | null;
+    model: string | null;
+    year: number | null;
+    capacity: string | null;
+    featured: boolean;
+    published_at: string | null;
+    sold_at: string | null;
+    offers: {
+        id: number;
+        amount: string;
+        counter_amount: string | null;
+        offered_at: string | null;
+        status: string;
+        status_label: string;
+        status_tone: StatusTone;
+    }[];
+};
+
 export type EquipmentRequest = {
     id: number;
     equipment_type: string;
@@ -105,4 +141,19 @@ export type BuyerQuote = {
     status: string;
     status_label: string;
     created_at: string | null;
+};
+
+// Offers made on a seller's listings. Brokers create them; sellers view + respond.
+export type SellerOffer = {
+    id: number;
+    listing_title: string | null;
+    listing_public_id: string | null;
+    listing_href: string | null;
+    amount: string;
+    counter_amount: string | null;
+    offered_at: string | null;
+    status: string;
+    status_label: string;
+    status_tone: StatusTone;
+    can_respond: boolean;
 };
