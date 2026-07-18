@@ -32,6 +32,12 @@ export type UploadFileMeta = {
     path: string;
     url: string;
     size: number | null;
+    /**
+     * Documents only, and only where the payload includes it. Seller-uploaded documents
+     * are private until a broker marks them public (see PublicListingPresenter); photos
+     * carry no such flag.
+     */
+    public?: boolean;
 };
 
 export type StatusTone = 'neutral' | 'success' | 'warning' | 'muted' | 'danger';
@@ -84,6 +90,34 @@ export type EquipmentSubmission = {
     status_tone: StatusTone;
     status_explanation: string | null;
     created_at: string | null;
+};
+
+/**
+ * One listing as its own page (Portal/SellerListingDetail). Extends the list summary
+ * with the broker's enrichment — the buyer-facing copy and spec fields — plus publish
+ * state and the offers logged against it.
+ */
+export type EquipmentSubmissionDetail = EquipmentSubmission & {
+    public_id: string | null;
+    /** Set only when the listing is actually reachable on the public marketplace. */
+    public_href: string | null;
+    public_description: string | null;
+    manufacturer: string | null;
+    model: string | null;
+    year: number | null;
+    capacity: string | null;
+    featured: boolean;
+    published_at: string | null;
+    sold_at: string | null;
+    offers: {
+        id: number;
+        amount: string;
+        counter_amount: string | null;
+        offered_at: string | null;
+        status: string;
+        status_label: string;
+        status_tone: StatusTone;
+    }[];
 };
 
 export type EquipmentRequest = {
