@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -71,6 +72,18 @@ class User extends Authenticatable
     public function equipmentRequests(): HasMany
     {
         return $this->hasMany(EquipmentRequest::class);
+    }
+
+    /**
+     * Offers made on this seller's listings, reached through their submissions.
+     * Scoping every offer query through this relationship guarantees a seller only
+     * ever sees offers tied to their own listings — never another seller's.
+     *
+     * @return HasManyThrough<Offer, EquipmentSubmission, $this>
+     */
+    public function offers(): HasManyThrough
+    {
+        return $this->hasManyThrough(Offer::class, EquipmentSubmission::class);
     }
 
     /**
