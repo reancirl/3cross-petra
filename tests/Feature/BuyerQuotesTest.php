@@ -112,7 +112,7 @@ class BuyerQuotesTest extends TestCase
         ]);
 
         $this->actingAs($buyer)
-            ->get('/buyer/saved-equipment')
+            ->get('/buyer/requests')
             ->assertOk()
             ->assertSee('Free Form Item')
             ->assertDontSee('Listing Bound Item');
