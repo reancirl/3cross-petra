@@ -39,7 +39,9 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
 
     return (
         <main
-            className={`min-h-screen bg-[#f3f1ec] text-neutral-950 lg:grid ${
+            // portal-shell scopes the soft-edge rules in app.css to authenticated screens,
+            // leaving the public marketplace's squared edges alone.
+            className={`portal-shell min-h-screen bg-[#f3f1ec] text-neutral-950 lg:grid ${
                 collapsed ? 'lg:grid-cols-[80px_minmax(0,1fr)]' : 'lg:grid-cols-[296px_minmax(0,1fr)]'
             }`}
         >
