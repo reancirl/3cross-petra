@@ -62,7 +62,7 @@ export default function Profile({ portal }: ProfileProps) {
                         </div>
                     )}
 
-                    <form onSubmit={updateProfile} className="grid gap-5 border border-[#dad5cb] bg-white p-7 sm:grid-cols-2 sm:p-8">
+                    <form onSubmit={updateProfile} className="grid gap-5 rounded-xl border border-[#dad5cb] bg-white p-7 shadow-sm sm:grid-cols-2 sm:p-8">
                         <div className="sm:col-span-2">
                             <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
                                 Account
@@ -93,13 +93,13 @@ export default function Profile({ portal }: ProfileProps) {
                         </Field>
 
                         <div className="self-end">
-                            <button type="submit" disabled={profileForm.processing} className="button-press focus-copper inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60">
+                            <button type="submit" disabled={profileForm.processing} className="button-press focus-copper inline-flex h-12 items-center justify-center rounded-lg bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60">
                                 {profileForm.processing ? 'Saving' : 'Save profile'}
                             </button>
                         </div>
                     </form>
 
-                    <form onSubmit={updatePassword} className="grid gap-5 border border-[#dad5cb] bg-white p-7 sm:p-8">
+                    <form onSubmit={updatePassword} className="grid gap-5 rounded-xl border border-[#dad5cb] bg-white p-7 shadow-sm sm:p-8">
                         <div>
                             <span className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]">
                                 Security
@@ -123,7 +123,7 @@ export default function Profile({ portal }: ProfileProps) {
                             </Field>
                         </div>
 
-                        <button type="submit" disabled={passwordForm.processing} className="button-press focus-copper inline-flex h-12 w-fit items-center justify-center border border-neutral-500 px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white disabled:opacity-60">
+                        <button type="submit" disabled={passwordForm.processing} className="button-press focus-copper inline-flex h-12 w-fit items-center justify-center rounded-lg border border-neutral-500 px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white disabled:opacity-60">
                             {passwordForm.processing ? 'Updating' : 'Update password'}
                         </button>
                     </form>

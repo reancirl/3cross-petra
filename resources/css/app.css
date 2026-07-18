@@ -449,6 +449,84 @@
     }
 }
 
+/*
+ * Portal radius scale.
+ *
+ * The public marketplace keeps its squared, industrial edges — that is the brand. Inside
+ * the authenticated portal every surface is soft instead, so a page does not mix the two.
+ * The scale is deliberately two values:
+ *   surfaces (sections, cards, tables, panels) → rounded-xl, applied per element
+ *   controls (buttons, inputs, selects)        → rounded-lg
+ *
+ * .portal-input is shared with the public inquiry form and the auth screens, so its
+ * radius is scoped here to .portal-shell rather than set on the class itself. Descendant
+ * specificity (0,2,0) beats a Tailwind utility (0,1,0), so this wins without !important.
+ */
+.portal-shell .portal-input,
+.portal-shell select,
+.portal-shell textarea {
+    border-radius: 0.5rem;
+}
+
+@keyframes petra-fade-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes petra-slide-in-right {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes petra-slide-out-right {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/*
+ * Slide-over (Components/slide-over.tsx), built on Radix Dialog.
+ *
+ * Radix stamps data-state="open"/"closed" on the overlay and content, and its Presence
+ * layer holds the node mounted until these animations finish — which is what makes the
+ * close animate instead of the panel disappearing instantly. The easing is the iOS
+ * sheet curve: quick to start, long settle, so the panel feels weighted rather than
+ * linear. The prefers-reduced-motion block below already collapses all of it to 1ms.
+ */
+.slide-over-overlay[data-state='open'] {
+    animation: petra-fade-in 250ms ease-out;
+}
+
+.slide-over-overlay[data-state='closed'] {
+    animation: petra-fade-out 200ms ease-in;
+}
+
+.slide-over-panel[data-state='open'] {
+    animation: petra-slide-in-right 280ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.slide-over-panel[data-state='closed'] {
+    animation: petra-slide-out-right 220ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
