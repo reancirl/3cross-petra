@@ -86,6 +86,13 @@ class OfferController extends Controller
             'counter_amount' => $counterAmount,
         ]);
 
+        // A seller accepting closes the negotiation, so the listing moves to Pending
+        // rather than sitting on a status that contradicts its own accepted offer
+        // (see EquipmentSubmission::markDealAgreed).
+        if ($status === OfferStatus::Accepted) {
+            $offer->equipmentSubmission?->markDealAgreed();
+        }
+
         return back()->with('status', $message);
     }
 

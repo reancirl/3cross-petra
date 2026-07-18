@@ -83,6 +83,20 @@ class Offer extends Model
     }
 
     /**
+     * Still under negotiation — the ball is with the seller (Pending) or back with the
+     * broker (Countered). Accepted and Declined are final for both sides.
+     *
+     * A listing may only carry one open offer at a time (see
+     * EquipmentSubmission::hasOpenOffer): logging a second offer alongside an unresolved
+     * one produced contradictory state, e.g. a Pending $10,000 sitting next to an
+     * Accepted $1,000 on the same unit, with nothing saying which one governs.
+     */
+    public function isOpen(): bool
+    {
+        return $this->isOpenForSeller() || $this->isOpenForBroker();
+    }
+
+    /**
      * The amount the two sides actually settled on.
      *
      * A counter overwrites the number under negotiation, so once an offer is

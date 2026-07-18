@@ -551,6 +551,12 @@ function OfferManager({ submission, statusOptions }: { submission: SellerSubmiss
 
     const errors = form.errors as Record<string, string>;
 
+    // A listing carries one negotiation at a time. While an offer is still open the
+    // log-offer form is replaced by an explanation of what has to happen first —
+    // showing a form whose submit is guaranteed to bounce is worse than not showing it.
+    // Mirrors the server guard in Broker\SubmissionReviewController::storeOffer.
+    const openOffer = submission.offers.find((offer) => offer.status === 'pending' || offer.status === 'countered');
+
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         form.post(`/broker/seller-submissions/${submission.id}/offers`, {
@@ -573,6 +579,13 @@ function OfferManager({ submission, statusOptions }: { submission: SellerSubmiss
                 <p className="mt-3 text-sm leading-6 text-neutral-500">No offers logged yet.</p>
             )}
 
+            {openOffer ? (
+                <p className="mt-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3 text-sm leading-6 text-neutral-600">
+                    {openOffer.status === 'countered'
+                        ? `The seller countered ${formatUSD(openOffer.counter_amount ?? openOffer.amount)}. Accept, decline, or re-offer above — a re-offer replaces this negotiation rather than starting a second one.`
+                        : `${formatUSD(openOffer.amount)} is awaiting the seller's response. You can log another offer once the seller accepts, declines, or counters it.`}
+                </p>
+            ) : (
             <form onSubmit={submit} className="mt-4 flex flex-wrap items-end gap-3">
                 <label className="grid gap-2">
                     <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Amount (USD)</span>
@@ -599,7 +612,10 @@ function OfferManager({ submission, statusOptions }: { submission: SellerSubmiss
                     />
                 </label>
                 <label className="grid gap-2">
-                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Status</span>
+                    {/* "Offer status", not "Status" — the listing has its own separate status
+                        vocabulary below, and both sets contain a "Pending" meaning different
+                        things (offer: awaiting the seller; listing: a deal is in progress). */}
+                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Offer status</span>
                     <select
                         value={form.data.status}
                         onChange={(event) => form.setData('status', event.target.value)}
@@ -614,12 +630,13 @@ function OfferManager({ submission, statusOptions }: { submission: SellerSubmiss
                 </label>
                 <button
                     type="submit"
-                    disabled={form.processing}
+                    disabled={form.processing || form.data.amount.trim() === ''}
                     className="button-press focus-copper h-10 rounded-lg bg-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60"
                 >
                     Log offer
                 </button>
             </form>
+            )}
             {(errors.amount || errors.offered_at || errors.status) && (
                 <p className="mt-2 text-sm text-[#b3261e]">{errors.amount ?? errors.offered_at ?? errors.status}</p>
             )}
@@ -881,7 +898,12 @@ function SellerReviewForm({ submission, options }: { submission: SellerSubmissio
 
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        form.patch(`/broker/seller-submissions/${submission.id}`, { preserveScroll: true });
+        form.patch(`/broker/seller-submissions/${submission.id}`, {
+            preserveScroll: true,
+            // Re-baseline so the button goes back to disabled after a save; without this
+            // isDirty stays true against the original props and the button stays live.
+            onSuccess: () => form.setDefaults(),
+        });
     }
 
     return (
@@ -962,7 +984,9 @@ function SellerReviewForm({ submission, options }: { submission: SellerSubmissio
 
             <div className="mt-6 flex flex-wrap items-end gap-3 border-t border-[#dad5cb] pt-5">
                 <label className="grid gap-2">
-                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Status</span>
+                    {/* "Listing status" — distinct from the per-offer status above. Both
+                        vocabularies have a "Pending"; this one means a deal is in progress. */}
+                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">Listing status</span>
                     <select
                         value={form.data.status}
                         onChange={(event) => form.setData('status', event.target.value)}
@@ -977,11 +1001,14 @@ function SellerReviewForm({ submission, options }: { submission: SellerSubmissio
                 </label>
                 <button
                     type="submit"
-                    disabled={form.processing}
+                    disabled={form.processing || !form.isDirty}
                     className="button-press focus-copper h-10 rounded-lg bg-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60"
                 >
                     {form.data.status === 'published' ? 'Publish' : 'Save'}
                 </button>
+                {!form.isDirty && !form.processing && (
+                    <span className="pb-2.5 text-sm text-neutral-400">No unsaved changes</span>
+                )}
             </div>
         </form>
     );
@@ -1002,7 +1029,11 @@ function StatusForm({ value, options, action }: { value: string; options: Record
 
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        form.patch(action, { preserveScroll: true });
+        form.patch(action, {
+            preserveScroll: true,
+            // See SellerReviewForm: re-baseline so the button re-disables after saving.
+            onSuccess: () => form.setDefaults(),
+        });
     }
 
     return (
@@ -1015,7 +1046,7 @@ function StatusForm({ value, options, action }: { value: string; options: Record
                     </option>
                 ))}
             </select>
-            <button type="submit" disabled={form.processing} className="button-press focus-copper h-10 rounded-lg border border-[#a56437] px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] hover:bg-[#a56437] hover:text-white disabled:opacity-60">
+            <button type="submit" disabled={form.processing || !form.isDirty} className="button-press focus-copper h-10 rounded-lg border border-[#a56437] px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] hover:bg-[#a56437] hover:text-white disabled:opacity-60">
                 Save
             </button>
         </form>

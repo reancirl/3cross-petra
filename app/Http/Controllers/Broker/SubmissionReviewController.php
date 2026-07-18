@@ -107,7 +107,22 @@ class SubmissionReviewController extends Controller
      */
     public function storeOffer(StoreOfferRequest $request, EquipmentSubmission $equipmentSubmission): RedirectResponse
     {
-        $equipmentSubmission->offers()->create($request->validated());
+        // One open negotiation per listing. Without this a broker could stack a second
+        // offer on top of an unresolved one, leaving contradictory state on the unit
+        // (a Pending offer beside an Accepted one) with nothing saying which governs.
+        // The UI hides the form in this case; this is the guard behind it. Flashes
+        // rather than 4xx-ing, matching respondToOffer's handling of a resolved offer.
+        if ($equipmentSubmission->hasOpenOffer()) {
+            return back()->with('status', 'This listing already has an open offer. Resolve it before logging another.');
+        }
+
+        $offer = $equipmentSubmission->offers()->create($request->validated());
+
+        // A broker may log an already-agreed deal directly as Accepted, which should
+        // move the listing just as a seller's acceptance does.
+        if ($offer->offerStatus() === OfferStatus::Accepted) {
+            $equipmentSubmission->markDealAgreed();
+        }
 
         return back()->with('status', 'Offer logged for the seller.');
     }
@@ -156,6 +171,12 @@ class SubmissionReviewController extends Controller
         };
 
         $offer->update($attributes);
+
+        // Accepting the seller's counter closes the negotiation, so the listing moves
+        // to Pending alongside it (see EquipmentSubmission::markDealAgreed).
+        if ($validated['action'] === RespondToOfferRequest::ACTION_ACCEPT) {
+            $offer->equipmentSubmission?->markDealAgreed();
+        }
 
         return back()->with('status', $message);
     }

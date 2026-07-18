@@ -81,6 +81,65 @@ class SellerOffersTest extends TestCase
         $this->assertDatabaseHas('offers', ['id' => $offer->id, 'status' => 'accepted']);
     }
 
+    public function test_seller_accepting_moves_the_listing_to_pending(): void
+    {
+        $seller = User::factory()->seller()->create();
+        $listing = $this->listingFor($seller);
+        $offer = $this->offerOn($listing);
+
+        $this->actingAs($seller)
+            ->patch("/seller/offers/{$offer->id}", ['action' => 'accept'])
+            ->assertSessionHasNoErrors();
+
+        // The listing must not stay on Published while carrying an accepted offer.
+        $this->assertSame(ListingStatus::Pending, $listing->fresh()->listingStatus());
+    }
+
+    public function test_declining_leaves_the_listing_status_alone(): void
+    {
+        $seller = User::factory()->seller()->create();
+        $listing = $this->listingFor($seller);
+        $offer = $this->offerOn($listing);
+
+        $this->actingAs($seller)
+            ->patch("/seller/offers/{$offer->id}", ['action' => 'decline'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(ListingStatus::Published, $listing->fresh()->listingStatus());
+    }
+
+    public function test_accepting_does_not_reopen_a_sold_listing(): void
+    {
+        $seller = User::factory()->seller()->create();
+        $listing = $this->listingFor($seller);
+        $listing->update(['status' => ListingStatus::Sold, 'sold_at' => now()]);
+        $offer = $this->offerOn($listing);
+
+        $this->actingAs($seller)
+            ->patch("/seller/offers/{$offer->id}", ['action' => 'accept'])
+            ->assertSessionHasNoErrors();
+
+        // Sold is terminal — an accepted offer must not walk it back to Pending.
+        $this->assertSame(ListingStatus::Sold, $listing->fresh()->listingStatus());
+    }
+
+    public function test_accepting_on_an_unpublished_listing_does_not_leak_it_to_the_marketplace(): void
+    {
+        $seller = User::factory()->seller()->create();
+        // No public id / published_at — never published.
+        $listing = $this->listingFor($seller, 'Never Published Separator', null);
+        $offer = $this->offerOn($listing);
+
+        $this->actingAs($seller)
+            ->patch("/seller/offers/{$offer->id}", ['action' => 'accept'])
+            ->assertSessionHasNoErrors();
+
+        // Pending is publicly-visible *status*, but scopePubliclyVisible also requires
+        // public_id + published_at, so this listing stays off the marketplace.
+        $this->assertSame(ListingStatus::Pending, $listing->fresh()->listingStatus());
+        $this->get('/equipment')->assertOk()->assertDontSee('Never Published Separator');
+    }
+
     public function test_seller_can_decline_a_pending_offer(): void
     {
         $seller = User::factory()->seller()->create();
@@ -212,6 +271,94 @@ class SellerOffersTest extends TestCase
             ->get('/seller/offers')
             ->assertOk()
             ->assertSee('3-Phase Production Separator');
+    }
+
+    public function test_broker_cannot_log_a_second_offer_while_one_is_pending(): void
+    {
+        $broker = User::factory()->broker()->create();
+        $seller = User::factory()->seller()->create();
+        $listing = $this->listingFor($seller);
+        $this->offerOn($listing, OfferStatus::Pending->value, 42500);
+
+        $this->actingAs($broker)
+            ->post("/broker/seller-submissions/{$listing->id}/offers", [
+                'amount' => '75000',
+                'offered_at' => now()->toDateString(),
+                'status' => 'pending',
+            ])
+            ->assertSessionHas('status', 'This listing already has an open offer. Resolve it before logging another.');
+
+        // Still just the original — no contradictory second offer on the same unit.
+        $this->assertDatabaseCount('offers', 1);
+    }
+
+    public function test_broker_cannot_log_a_second_offer_while_a_counter_is_open(): void
+    {
+        $broker = User::factory()->broker()->create();
+        $seller = User::factory()->seller()->create();
+        $listing = $this->listingFor($seller);
+        $this->offerOn($listing, OfferStatus::Countered->value, 42500);
+
+        $this->actingAs($broker)
+            ->post("/broker/seller-submissions/{$listing->id}/offers", [
+                'amount' => '75000',
+                'offered_at' => now()->toDateString(),
+                'status' => 'pending',
+            ])
+            ->assertSessionHas('status', 'This listing already has an open offer. Resolve it before logging another.');
+
+        $this->assertDatabaseCount('offers', 1);
+    }
+
+    public function test_broker_can_log_a_new_offer_once_the_previous_one_is_resolved(): void
+    {
+        $broker = User::factory()->broker()->create();
+        $seller = User::factory()->seller()->create();
+        $listing = $this->listingFor($seller);
+        $this->offerOn($listing, OfferStatus::Declined->value, 42500);
+
+        $this->actingAs($broker)
+            ->post("/broker/seller-submissions/{$listing->id}/offers", [
+                'amount' => '75000',
+                'offered_at' => now()->toDateString(),
+                'status' => 'pending',
+            ])
+            ->assertSessionHas('status', 'Offer logged for the seller.');
+
+        $this->assertDatabaseCount('offers', 2);
+    }
+
+    public function test_broker_accepting_a_counter_moves_the_listing_to_pending(): void
+    {
+        $broker = User::factory()->broker()->create();
+        $seller = User::factory()->seller()->create();
+        $listing = $this->listingFor($seller);
+        $offer = $this->offerOn($listing);
+        $offer->update(['status' => OfferStatus::Countered, 'counter_amount' => 50000]);
+
+        $this->actingAs($broker)
+            ->patch("/broker/offers/{$offer->id}", ['action' => 'accept'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(ListingStatus::Pending, $listing->fresh()->listingStatus());
+    }
+
+    public function test_broker_logging_an_already_accepted_offer_moves_the_listing_to_pending(): void
+    {
+        $broker = User::factory()->broker()->create();
+        $seller = User::factory()->seller()->create();
+        $listing = $this->listingFor($seller);
+
+        // A broker may record a deal that was already agreed off-platform.
+        $this->actingAs($broker)
+            ->post("/broker/seller-submissions/{$listing->id}/offers", [
+                'amount' => '75000',
+                'offered_at' => now()->toDateString(),
+                'status' => 'accepted',
+            ])
+            ->assertSessionHas('status', 'Offer logged for the seller.');
+
+        $this->assertSame(ListingStatus::Pending, $listing->fresh()->listingStatus());
     }
 
     public function test_broker_offer_creation_validates_the_fields(): void
