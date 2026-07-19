@@ -33,6 +33,11 @@ services:
       MESSAGE_NOTIFICATION_BATCH_MINUTES: ${MESSAGE_NOTIFICATION_BATCH_MINUTES:-10}
     volumes:
       - app_public:/var/www/html/public     # share public/ with Nginx
+      # Uploaded files must outlive the container. storage/app holds listing photos
+      # and documents (public/) and message attachments (private/); without this they
+      # live in the container filesystem and every rebuild or --force-recreate
+      # destroys them, leaving DB rows pointing at files that no longer exist.
+      - app_storage:/var/www/html/storage/app
     depends_on: [db, cache]
 
   web:                       # Nginx
@@ -41,6 +46,11 @@ services:
       - "${APP_PORT:-8000}:80"
     volumes:
       - app_public:/var/www/html/public:ro
+      # public/storage is a symlink to ../storage/app/public. Nginx serves those
+      # files directly, so the symlink target has to exist in THIS container too —
+      # without it the link dangles here and every listing photo 403s, even though
+      # it resolves fine inside the app container.
+      - app_storage:/var/www/html/storage/app:ro
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on: [app]
 
@@ -59,3 +69,4 @@ services:
 volumes:
   db_data:
   app_public:
+  app_storage:

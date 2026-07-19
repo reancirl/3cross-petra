@@ -14,6 +14,20 @@ if [ -d /var/www/html/public-dist ]; then
 fi
 
 mkdir -p storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/views bootstrap/cache
+mkdir -p storage/app/public storage/app/private
+
+# Recreate public/storage if it is missing or dangling.
+#
+# `storage:link` run on the host writes an ABSOLUTE host path, which does not exist
+# inside the container — the link looked fine in `ls` but every listing photo 403'd.
+# -e follows the link, so this catches a dangling one too. --relative keeps the link
+# valid in both places.
+if [ ! -e public/storage ]; then
+    rm -f public/storage
+    # ln -s directly rather than `storage:link --relative`, which needs the
+    # symfony/filesystem package this project does not install.
+    ln -s ../storage/app/public public/storage
+fi
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R ug+rwX storage bootstrap/cache
 
