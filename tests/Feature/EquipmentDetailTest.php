@@ -103,14 +103,20 @@ class EquipmentDetailTest extends TestCase
 
         $this->actingAs($buyer)
             ->post("/equipment/{$listing->public_id}/inquiries", ['note' => 'First ask.'])
-            ->assertSessionHas('status', 'Request sent to Petra broker review.');
+            ->assertSessionHas('status', 'Request sent — Petra will follow up in your portal messages.');
 
+        // A repeat ask still creates no second request row, but it is no longer a dead
+        // end: the note lands in the thread the buyer already has, so the second copy
+        // points them at the conversation rather than telling them to wait.
         $this->actingAs($buyer)
             ->post("/equipment/{$listing->public_id}/inquiries", ['note' => 'Same ask again.'])
             ->assertSessionHasNoErrors()
-            ->assertSessionHas('status', 'You already have an open quote request on this listing — Petra will follow up there.');
+            ->assertSessionHas('status', 'Message sent — Petra will follow up in your portal messages.');
 
         $this->assertDatabaseCount('equipment_requests', 1);
+        // One thread, both notes on it — find-or-create, not a duplicate.
+        $this->assertDatabaseCount('threads', 1);
+        $this->assertDatabaseCount('messages', 2);
     }
 
     public function test_guest_cannot_raise_a_second_open_quote_on_the_same_listing(): void
@@ -155,7 +161,7 @@ class EquipmentDetailTest extends TestCase
         $this->actingAs($buyer)->post("/equipment/{$first->public_id}/inquiries", ['note' => 'A']);
         $this->actingAs($buyer)
             ->post("/equipment/{$second->public_id}/inquiries", ['note' => 'B'])
-            ->assertSessionHas('status', 'Request sent to Petra broker review.');
+            ->assertSessionHas('status', 'Request sent — Petra will follow up in your portal messages.');
 
         $this->assertDatabaseCount('equipment_requests', 2);
     }
@@ -173,7 +179,7 @@ class EquipmentDetailTest extends TestCase
 
         $this->actingAs($buyer)
             ->post("/equipment/{$listing->public_id}/inquiries", ['note' => 'Circling back months later.'])
-            ->assertSessionHas('status', 'Request sent to Petra broker review.');
+            ->assertSessionHas('status', 'Request sent — Petra will follow up in your portal messages.');
 
         $this->assertDatabaseCount('equipment_requests', 2);
     }
