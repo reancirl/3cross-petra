@@ -8,10 +8,10 @@ use App\Http\Requests\Portal\StoreEquipmentSubmissionRequest;
 use App\Models\EquipmentSubmission;
 use App\Models\Offer;
 use App\Models\User;
+use App\Support\UploadStore;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -93,16 +93,7 @@ class EquipmentSubmissionController extends Controller
      */
     private function storeUploads(array $files, string $folder): array
     {
-        return collect($files)->map(function (UploadedFile $file) use ($folder): array {
-            $path = $file->store("portal/equipment-submissions/{$folder}", 'public');
-
-            return [
-                'name' => $file->getClientOriginalName(),
-                'path' => $path,
-                'url' => Storage::disk('public')->url($path),
-                'size' => $file->getSize(),
-            ];
-        })->values()->all();
+        return UploadStore::storePublicBatch($files, "portal/equipment-submissions/{$folder}");
     }
 
     /**
