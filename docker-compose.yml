@@ -22,6 +22,15 @@ services:
       DB_PASSWORD: ${POSTGRES_PASSWORD:-secret}
       REDIS_HOST: ${REDIS_HOST:-cache}
       REDIS_PORT: ${REDIS_PORT:-6379}
+      # Mail. The container has no .env file — every setting is passed here — so a
+      # var that exists only in .env resolves to null inside the app. Portal message
+      # notifications to Petra depend on BROKER_NOTIFICATION_EMAIL, and without it
+      # customer messages reach nobody.
+      MAIL_MAILER: ${MAIL_MAILER:-log}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-hello@example.com}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-${APP_NAME:-Laravel}}
+      BROKER_NOTIFICATION_EMAIL: ${BROKER_NOTIFICATION_EMAIL:-brokers@example.com}
+      MESSAGE_NOTIFICATION_BATCH_MINUTES: ${MESSAGE_NOTIFICATION_BATCH_MINUTES:-10}
     volumes:
       - app_public:/var/www/html/public     # share public/ with Nginx
     depends_on: [db, cache]
