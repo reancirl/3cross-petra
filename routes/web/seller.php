@@ -2,13 +2,14 @@
 
 use App\Http\Controllers\Portal\DashboardController;
 use App\Http\Controllers\Portal\EquipmentSubmissionController;
+use App\Http\Controllers\Portal\MessageThreadController;
 use App\Http\Controllers\Portal\OfferController;
 use App\Http\Controllers\Portal\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Messages and notifications are deferred. Quotes/documents stay as "Soon" placeholders.
-// 'offers' is now a real seller page (see the dedicated routes below), so it is no
-// longer served by the generic "Soon" placeholder.
+// Notifications stay deferred. Quotes/documents stay as "Soon" placeholders.
+// 'offers' and 'messages' are now real seller pages (see the dedicated routes below),
+// so they are no longer served by the generic "Soon" placeholder.
 $portalSections = ['quotes', 'documents'];
 
 Route::middleware(['auth', 'no.back.history', 'user.type:seller'])
@@ -28,6 +29,13 @@ Route::middleware(['auth', 'no.back.history', 'user.type:seller'])
         // redirects any buyer/broker who hits /seller/offers directly to their own portal.
         Route::get('/offers', [OfferController::class, 'index'])->name('offers');
         Route::patch('/offers/{offer}', [OfferController::class, 'respond'])->name('offers.respond');
+        // Messaging with Petra — the same controller and screen the buyer portal uses.
+        // Sellers were previously excluded from Messages entirely; they now reach their
+        // broker about their own submissions here.
+        Route::get('/messages', [MessageThreadController::class, 'index'])->name('messages');
+        Route::get('/messages/{thread}', [MessageThreadController::class, 'show'])->whereNumber('thread')->name('messages.show');
+        Route::post('/messages/{thread}/messages', [MessageThreadController::class, 'store'])->whereNumber('thread')->name('messages.store');
+        Route::post('/messages/{thread}/read', [MessageThreadController::class, 'markRead'])->whereNumber('thread')->name('messages.read');
         Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'seller')->name('profile');
         Route::patch('/profile', [ProfileController::class, 'update'])->defaults('userType', 'seller')->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->defaults('userType', 'seller')->name('profile.password');
