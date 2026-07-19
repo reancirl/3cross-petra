@@ -72,13 +72,19 @@ export default function ThreadList({ threads, activeId, showParticipant = false,
                         <Link
                             href={thread.url}
                             aria-current={active ? 'true' : undefined}
-                            className={`grid min-w-0 gap-1 rounded-lg border p-3 transition-colors ${
+                            // overflow-hidden so nothing can paint past the rounded
+                            // border of the row itself.
+                            className={`grid min-w-0 gap-1 overflow-hidden rounded-lg border p-3 transition-colors ${
                                 active
                                     ? 'border-[#a56437]/40 bg-[#f4ece4]'
                                     : 'border-transparent hover:border-[#dad5cb] hover:bg-[#f9f7f3]'
                             }`}
                         >
-                            <span className="flex items-start justify-between gap-2">
+                            {/* min-w-0 on every flex/grid wrapper, not just the text:
+                                a flex container defaults to min-width:auto, so without
+                                it the row grows to fit its content and the `truncate`
+                                on the child never gets a narrower box to clamp to. */}
+                            <span className="flex min-w-0 items-start justify-between gap-2">
                                 <span
                                     className={`min-w-0 truncate text-sm ${
                                         unread ? 'font-semibold text-neutral-950' : 'font-medium text-neutral-800'
@@ -90,12 +96,12 @@ export default function ThreadList({ threads, activeId, showParticipant = false,
                             </span>
 
                             {showParticipant && thread.userName && (
-                                <span className="truncate font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-neutral-500">
+                                <span className="min-w-0 truncate font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-neutral-500">
                                     {thread.userName} · {thread.userRole}
                                 </span>
                             )}
 
-                            <span className="flex items-center justify-between gap-2">
+                            <span className="flex min-w-0 items-center justify-between gap-2">
                                 <span className={`min-w-0 truncate text-xs ${unread ? 'text-neutral-700' : 'text-neutral-500'}`}>
                                     {thread.snippet}
                                 </span>
