@@ -58,6 +58,7 @@
   "resources/js/data/resources.json": [],
   "resources/js/data/sell-equipment.json": [],
   "resources/js/data/services.json": [],
+  "resources/js/messaging.ts": [],
   "resources/js/navigation.ts": [],
   "resources/js/scroll-memory.ts": [],
   "resources/js/ssr.tsx": []

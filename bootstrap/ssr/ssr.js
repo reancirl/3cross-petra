@@ -976,7 +976,10 @@ function ConfirmDialog({ open, title, description, confirmLabel, cancelLabel = "
 		})]
 	});
 }
+/** Mirrors the `body` rule in StoreMessageRequest. */
+var MAX_BODY_LENGTH = 5e3;
 var ACCEPTED_ATTACHMENT_TYPES = ".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,image/*,application/pdf";
+/** Mirrors App\Models\MessageAttachment::ALLOWED_EXTENSIONS. */
 var ACCEPTED_EXTENSIONS = [
 	"jpg",
 	"jpeg",
@@ -986,12 +989,19 @@ var ACCEPTED_EXTENSIONS = [
 	"heif",
 	"pdf"
 ];
+/**
+* Sent on visits that should not show navigation chrome — read by BlankLayout so
+* sending a message does not dim the page behind the composer.
+*/
+var QUIET_VISIT_HEADERS = { "X-Petra-Quiet-Visit": "1" };
 function formatFileSize$1(bytes) {
 	if (bytes === null) return "";
 	if (bytes < 1024) return `${bytes} B`;
 	if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
 	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
+//#endregion
+//#region resources/js/Components/attachment-picker.tsx
 /**
 * The picker is split into a trigger and a list so the composer can put the button
 * inline with Send while the selected files sit above it. Keeping them as one block
@@ -1116,12 +1126,6 @@ function PaperclipIcon() {
 //#endregion
 //#region resources/js/Components/message-composer.tsx
 /**
-* Sent on visits that should not show navigation chrome. Read by BlankLayout.
-*/
-var QUIET_VISIT_HEADERS = { "X-Petra-Quiet-Visit": "1" };
-var MAX_ATTACHMENTS = 8;
-var MAX_BODY_LENGTH = 5e3;
-/**
 * The message input, shared by both sides.
 *
 * Enter inserts a newline and never submits — equipment questions run long and
@@ -1199,7 +1203,7 @@ function MessageComposer({ action, toolbar, placeholder, disabledNotice }) {
 				children: [
 					/* @__PURE__ */ jsx(AttachmentTrigger, {
 						files: form.data.attachments,
-						max: MAX_ATTACHMENTS,
+						max: 8,
 						onChange: (files) => form.setData("attachments", files),
 						onReject: (message) => toast.error(message)
 					}),
@@ -1996,10 +2000,10 @@ function ThreadList({ threads, activeId, showParticipant = false, emptyLabel }) 
 				children: /* @__PURE__ */ jsxs(Link, {
 					href: thread.url,
 					"aria-current": active ? "true" : void 0,
-					className: `grid min-w-0 gap-1 rounded-lg border p-3 transition-colors ${active ? "border-[#a56437]/40 bg-[#f4ece4]" : "border-transparent hover:border-[#dad5cb] hover:bg-[#f9f7f3]"}`,
+					className: `grid min-w-0 gap-1 overflow-hidden rounded-lg border p-3 transition-colors ${active ? "border-[#a56437]/40 bg-[#f4ece4]" : "border-transparent hover:border-[#dad5cb] hover:bg-[#f9f7f3]"}`,
 					children: [
 						/* @__PURE__ */ jsxs("span", {
-							className: "flex items-start justify-between gap-2",
+							className: "flex min-w-0 items-start justify-between gap-2",
 							children: [/* @__PURE__ */ jsx("span", {
 								className: `min-w-0 truncate text-sm ${unread ? "font-semibold text-neutral-950" : "font-medium text-neutral-800"}`,
 								children: thread.subjectTitle
@@ -2009,7 +2013,7 @@ function ThreadList({ threads, activeId, showParticipant = false, emptyLabel }) 
 							})]
 						}),
 						showParticipant && thread.userName && /* @__PURE__ */ jsxs("span", {
-							className: "truncate font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-neutral-500",
+							className: "min-w-0 truncate font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-neutral-500",
 							children: [
 								thread.userName,
 								" · ",
@@ -2017,7 +2021,7 @@ function ThreadList({ threads, activeId, showParticipant = false, emptyLabel }) 
 							]
 						}),
 						/* @__PURE__ */ jsxs("span", {
-							className: "flex items-center justify-between gap-2",
+							className: "flex min-w-0 items-center justify-between gap-2",
 							children: [/* @__PURE__ */ jsx("span", {
 								className: `min-w-0 truncate text-xs ${unread ? "text-neutral-700" : "text-neutral-500"}`,
 								children: thread.snippet
