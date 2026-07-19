@@ -8,6 +8,8 @@ import type { PortalData } from '../types';
 
 const SIDEBAR_COLLAPSED_KEY = 'petra-portal-sidebar-collapsed';
 
+const UNREAD_POLL_MS = 45_000;
+
 type PortalShellProps = {
     portal: PortalData;
     title: string;
@@ -22,6 +24,35 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
     // Restore the collapsed preference after mount so SSR and first client render match.
     useEffect(() => {
         setCollapsed(window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === '1');
+    }, []);
+
+    /**
+     * Keep the Messages nav badge current on every portal screen.
+     *
+     * A partial reload of the single shared `unreadMessageThreads` prop, so the poll
+     * costs one indexed count and never re-serializes the page the user is reading —
+     * important because a mutation on this codebase otherwise re-sends all props.
+     *
+     * Paused while the tab is hidden, and fired once on becoming visible so a user
+     * returning to a backgrounded tab sees a current count immediately rather than
+     * waiting out the remainder of an interval.
+     */
+    useEffect(() => {
+        function refreshUnread() {
+            if (document.hidden) {
+                return;
+            }
+
+            router.reload({ only: ['unreadMessageThreads'] });
+        }
+
+        const timer = window.setInterval(refreshUnread, UNREAD_POLL_MS);
+        document.addEventListener('visibilitychange', refreshUnread);
+
+        return () => {
+            window.clearInterval(timer);
+            document.removeEventListener('visibilitychange', refreshUnread);
+        };
     }, []);
 
     function toggleCollapsed() {
