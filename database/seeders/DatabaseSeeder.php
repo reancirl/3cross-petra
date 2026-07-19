@@ -52,5 +52,6 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(EquipmentListingSeeder::class);
+        $this->call(CannedResponseSeeder::class);
     }
 }
