@@ -994,6 +994,27 @@ var ACCEPTED_EXTENSIONS = [
 * sending a message does not dim the page behind the composer.
 */
 var QUIET_VISIT_HEADERS = { "X-Petra-Quiet-Visit": "1" };
+/**
+* Cancellation handle for the in-flight thread poll.
+*
+* The 20s poll and sending a message are separate Inertia visits, so they can
+* overlap: a poll fired a moment before you hit Send is still fetching the
+* pre-send state, and if its response lands after the send's, it overwrites the
+* props and the message you just sent vanishes from the transcript until the next
+* poll. The row is safely in the database the whole time — it is purely the
+* rendered state going backwards.
+*
+* The composer cancels any active poll before posting, so a stale response can
+* never win that race.
+*/
+var cancelActivePoll = null;
+function registerPollCancel(cancel) {
+	cancelActivePoll = cancel;
+}
+function cancelActivePolling() {
+	cancelActivePoll?.();
+	cancelActivePoll = null;
+}
 function formatFileSize$1(bytes) {
 	if (bytes === null) return "";
 	if (bytes < 1024) return `${bytes} B`;
@@ -1165,6 +1186,7 @@ function MessageComposer({ action, toolbar, placeholder, disabledNotice }) {
 			toast.error("Write a message or attach a file.");
 			return;
 		}
+		cancelActivePolling();
 		form.post(action, {
 			forceFormData: true,
 			preserveScroll: true,
@@ -1357,6 +1379,19 @@ function MessageThread({ page, onNewMessages, emptyLabel }) {
 	});
 }
 function AttachmentView({ attachment, mine }) {
+	if (!attachment.available) return /* @__PURE__ */ jsx("span", {
+		className: `flex items-center gap-2 rounded-lg px-3 py-2 text-sm ${mine ? "bg-white/10 text-white/70" : "bg-[#f3f1ec] text-neutral-500"}`,
+		children: /* @__PURE__ */ jsxs("span", {
+			className: "min-w-0 flex-1",
+			children: [/* @__PURE__ */ jsx("span", {
+				className: "block truncate line-through",
+				children: attachment.name
+			}), /* @__PURE__ */ jsx("span", {
+				className: `block text-xs ${mine ? "text-white/60" : "text-neutral-400"}`,
+				children: "File no longer available"
+			})]
+		})
+	});
 	if (attachment.isImage) return /* @__PURE__ */ jsx("a", {
 		href: attachment.url,
 		target: "_blank",
@@ -2070,12 +2105,16 @@ function Inbox({ portal, threads, thread, messages, context, cannedResponses, fi
 		if (threadId === null) return;
 		function refresh() {
 			if (document.hidden) return;
-			router.reload({ only: [
-				"thread",
-				"messages",
-				"threads",
-				"unreadMessageThreads"
-			] });
+			router.reload({
+				only: [
+					"thread",
+					"messages",
+					"threads",
+					"unreadMessageThreads"
+				],
+				onCancelToken: (token) => registerPollCancel(token.cancel),
+				onFinish: () => registerPollCancel(null)
+			});
 		}
 		const timer = window.setInterval(refresh, THREAD_POLL_MS$1);
 		document.addEventListener("visibilitychange", refresh);
@@ -7017,12 +7056,16 @@ function Messages({ portal, threads, thread, messages }) {
 		if (threadId === null) return;
 		function refresh() {
 			if (document.hidden) return;
-			router.reload({ only: [
-				"thread",
-				"messages",
-				"threads",
-				"unreadMessageThreads"
-			] });
+			router.reload({
+				only: [
+					"thread",
+					"messages",
+					"threads",
+					"unreadMessageThreads"
+				],
+				onCancelToken: (token) => registerPollCancel(token.cancel),
+				onFinish: () => registerPollCancel(null)
+			});
 		}
 		const timer = window.setInterval(refresh, THREAD_POLL_MS);
 		document.addEventListener("visibilitychange", refresh);

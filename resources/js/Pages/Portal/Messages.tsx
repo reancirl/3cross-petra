@@ -7,6 +7,7 @@ import PortalPageHeader from '../../Components/portal-page-header';
 import PortalShell from '../../Components/portal-shell';
 import StatusBadge from '../../Components/status-badge';
 import ThreadList from '../../Components/thread-list';
+import { registerPollCancel } from '../../messaging';
 import type { PortalData, SharedPageProps, ThreadMessagePage, ThreadSummary } from '../../types';
 
 const THREAD_POLL_MS = 20_000;
@@ -54,7 +55,13 @@ export default function Messages({ portal, threads, thread, messages }: Messages
                 return;
             }
 
-            router.reload({ only: ['thread', 'messages', 'threads', 'unreadMessageThreads'] });
+            router.reload({
+                only: ['thread', 'messages', 'threads', 'unreadMessageThreads'],
+                // Hand the cancel token to the composer, which aborts this poll
+                // before sending so a stale response cannot clobber the new message.
+                onCancelToken: (token) => registerPollCancel(token.cancel),
+                onFinish: () => registerPollCancel(null),
+            });
         }
 
         const timer = window.setInterval(refresh, THREAD_POLL_MS);

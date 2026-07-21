@@ -2,7 +2,7 @@ import { useForm } from '@inertiajs/react';
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { AttachmentList, AttachmentTrigger } from './attachment-picker';
-import { MAX_ATTACHMENTS, MAX_BODY_LENGTH, QUIET_VISIT_HEADERS } from '../messaging';
+import { MAX_ATTACHMENTS, MAX_BODY_LENGTH, QUIET_VISIT_HEADERS, cancelActivePolling } from '../messaging';
 
 type MessageComposerProps = {
     action: string;
@@ -75,6 +75,11 @@ export default function MessageComposer({ action, toolbar, placeholder, disabled
             toast.error('Write a message or attach a file.');
             return;
         }
+
+        // Kill any in-flight poll first. Its response was fetched before this
+        // message existed, and if it lands after the post it rewinds the transcript
+        // and the just-sent message disappears until the next poll.
+        cancelActivePolling();
 
         form.post(action, {
             // Attachments make this multipart; without it the files are dropped.

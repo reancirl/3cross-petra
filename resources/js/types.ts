@@ -30,6 +30,11 @@ export type MessageAttachment = {
     size: number;
     /** Render as an inline preview rather than a file chip. */
     isImage: boolean;
+    /**
+     * Whether the stored file still exists. False for anything uploaded before
+     * storage/app became a persisted volume — the row survived, the bytes did not.
+     */
+    available: boolean;
     /** An authorizing route, not a static file — attachments are on the private disk. */
     url: string;
 };

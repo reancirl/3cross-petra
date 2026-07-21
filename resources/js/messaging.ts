@@ -28,6 +28,30 @@ export const ACCEPTED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif'
  */
 export const QUIET_VISIT_HEADERS = { 'X-Petra-Quiet-Visit': '1' } as const;
 
+/**
+ * Cancellation handle for the in-flight thread poll.
+ *
+ * The 20s poll and sending a message are separate Inertia visits, so they can
+ * overlap: a poll fired a moment before you hit Send is still fetching the
+ * pre-send state, and if its response lands after the send's, it overwrites the
+ * props and the message you just sent vanishes from the transcript until the next
+ * poll. The row is safely in the database the whole time — it is purely the
+ * rendered state going backwards.
+ *
+ * The composer cancels any active poll before posting, so a stale response can
+ * never win that race.
+ */
+let cancelActivePoll: (() => void) | null = null;
+
+export function registerPollCancel(cancel: (() => void) | null): void {
+    cancelActivePoll = cancel;
+}
+
+export function cancelActivePolling(): void {
+    cancelActivePoll?.();
+    cancelActivePoll = null;
+}
+
 export function formatFileSize(bytes: number | null): string {
     if (bytes === null) {
         return '';
