@@ -113,7 +113,7 @@ class AuthPortalTest extends TestCase
                 'category' => 'Compressors',
                 'region' => 'Wyoming',
                 'city' => 'Casper',
-                'condition' => 'sitting_idle',
+                'condition' => 'operational_but_idle',
                 'condition_notes' => 'Pulled last spring, stored inside.',
                 'asking_price' => '42500',
                 'photos' => [
@@ -132,7 +132,7 @@ class AuthPortalTest extends TestCase
             'category' => 'Compressors',
             'region' => 'Wyoming',
             'city' => 'Casper',
-            'condition' => 'sitting_idle',
+            'condition' => 'operational_but_idle',
             'asking_price' => '42500.00',
             'needs_valuation' => false,
             'status' => 'under_review',
@@ -151,7 +151,7 @@ class AuthPortalTest extends TestCase
         $this->actingAs($user)
             ->post('/seller/listings', [
                 'title' => 'Tank battery',
-                'category' => 'Tanks',
+                'category' => 'Tanks & Tank Batteries',
                 'region' => 'Montana',
                 'condition' => 'unknown',
                 'asking_price' => '',
@@ -273,9 +273,9 @@ class AuthPortalTest extends TestCase
 
         $submission = $seller->equipmentSubmissions()->create([
             'title' => 'Tank battery',
-            'category' => 'Tanks',
+            'category' => 'Tanks & Tank Batteries',
             'region' => 'Montana',
-            'condition' => 'sitting_idle',
+            'condition' => 'operational_but_idle',
             'photos' => [['name' => 'tank.jpg', 'path' => 'p/tank.jpg', 'url' => '/storage/p/tank.jpg', 'size' => 1]],
         ]);
 
@@ -324,9 +324,9 @@ class AuthPortalTest extends TestCase
 
         $submission = $seller->equipmentSubmissions()->create([
             'title' => 'Tank battery',
-            'category' => 'Tanks',
+            'category' => 'Tanks & Tank Batteries',
             'region' => 'Montana',
-            'condition' => 'sitting_idle',
+            'condition' => 'operational_but_idle',
             'photos' => [['name' => 'tank.jpg', 'path' => 'p/tank.jpg', 'url' => '/storage/p/tank.jpg', 'size' => 1]],
         ]);
 

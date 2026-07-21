@@ -15,9 +15,11 @@ use Illuminate\Support\Str;
     'user_id',
     'public_id',
     'title',
+    'quantity',
     'category',
     'region',
     'city',
+    'wyoming_subregion',
     'condition',
     'condition_notes',
     'manufacturer',
@@ -28,6 +30,16 @@ use Illuminate\Support\Str;
     'featured',
     'asking_price',
     'needs_valuation',
+    'is_owner',
+    'intent',
+    'availability',
+    'estimated_value_range',
+    'contact_name',
+    'contact_company',
+    'contact_email',
+    'contact_phone',
+    'consented_at',
+    'source',
     'photos',
     'documents',
     'status',
@@ -43,20 +55,25 @@ class EquipmentSubmission extends Model
 
     public const CARD_IMAGE_PLACEHOLDER = '/images/petra-equipment-yard-hero.png';
 
+    /**
+     * Ordered as the content doc's submission-form dropdown. The order flows straight to
+     * the portal form and the marketplace filter, so both stay in step with the doc.
+     */
     public const CATEGORIES = [
         'Compressors',
         'Separators',
         'Production Equipment',
         'Processing Equipment',
         'Pumps',
-        'Tanks',
+        'Tanks & Tank Batteries',
         'Generators',
-        'Drilling Equipment',
-        'Electrical Equipment',
+        'Flowback Equipment',
         'Pipe & Tubular',
         'Valves & Controls',
         'Instrumentation',
         'Wellhead Equipment',
+        'Electrical Equipment',
+        'Drilling Equipment',
         'Other Equipment',
     ];
 
@@ -74,23 +91,66 @@ class EquipmentSubmission extends Model
 
     public const REGION_FALLBACK = 'Other';
 
-    public const CONDITION_RUNNING = 'running';
+    public const CONDITION_OPERATING = 'operating';
 
-    public const CONDITION_RECENTLY_PULLED = 'recently_pulled';
+    public const CONDITION_OPERATIONAL_BUT_IDLE = 'operational_but_idle';
 
-    public const CONDITION_SITTING_IDLE = 'sitting_idle';
+    public const CONDITION_REMOVED_FROM_SERVICE = 'removed_from_service';
 
-    public const CONDITION_NEEDS_WORK = 'needs_work';
+    public const CONDITION_NEEDS_REPAIR = 'needs_repair';
 
     public const CONDITION_UNKNOWN = 'unknown';
 
     public const CONDITIONS = [
-        self::CONDITION_RUNNING => 'Running',
-        self::CONDITION_RECENTLY_PULLED => 'Recently pulled',
-        self::CONDITION_SITTING_IDLE => 'Sitting idle',
-        self::CONDITION_NEEDS_WORK => 'Needs work',
+        self::CONDITION_OPERATING => 'Operating',
+        self::CONDITION_OPERATIONAL_BUT_IDLE => 'Operational but Idle',
+        self::CONDITION_REMOVED_FROM_SERVICE => 'Removed from Service',
+        self::CONDITION_NEEDS_REPAIR => 'Needs Repair',
         self::CONDITION_UNKNOWN => 'Unknown',
     ];
+
+    public const WYOMING_SUBREGIONS = [
+        'powder_river' => 'Powder River',
+        'jonah' => 'Jonah',
+        'green_river_basin' => 'Green River Basin',
+    ];
+
+    public const OWNERSHIP_OPTIONS = [
+        'owner' => 'Yes',
+        'no' => 'No',
+        'representing_owner' => 'Representing the Owner',
+    ];
+
+    /**
+     * Selecting "request_valuation" is what sets the existing needs_valuation flag — the
+     * two are kept in step by the controller rather than stored twice.
+     */
+    public const INTENT_REQUEST_VALUATION = 'request_valuation';
+
+    public const INTENT_OPTIONS = [
+        'sell_one' => 'Sell one piece of equipment',
+        'sell_multiple' => 'Sell multiple assets',
+        'liquidate_surplus' => 'Liquidate surplus inventory',
+        self::INTENT_REQUEST_VALUATION => 'Request a market-based valuation',
+    ];
+
+    public const AVAILABILITY_OPTIONS = [
+        'available_now' => 'Yes',
+        'available_soon' => 'Available Soon',
+        'exploring' => 'Just Exploring My Options',
+    ];
+
+    public const VALUE_RANGE_OPTIONS = [
+        'under_25k' => 'Under $25,000',
+        '25k_100k' => '$25,000 – $100,000',
+        '100k_500k' => '$100,000 – $500,000',
+        'over_500k' => 'Over $500,000',
+        'not_sure' => 'Not Sure',
+    ];
+
+    public const SOURCE_PORTAL = 'portal';
+
+    public const SOURCE_PUBLIC = 'public';
 
     /**
      * @return BelongsTo<User, EquipmentSubmission>
@@ -156,6 +216,70 @@ class EquipmentSubmission extends Model
     public function conditionLabel(): string
     {
         return self::CONDITIONS[$this->condition] ?? self::CONDITIONS[self::CONDITION_UNKNOWN];
+    }
+
+    /**
+     * A submission nobody owns: it came from the public form without a signed-in seller,
+     * so a broker works it from the contact_* details instead of messaging an account.
+     */
+    public function isUnclaimedLead(): bool
+    {
+        return $this->user_id === null;
+    }
+
+    public function wyomingSubregionLabel(): ?string
+    {
+        return self::WYOMING_SUBREGIONS[$this->wyoming_subregion] ?? null;
+    }
+
+    public function ownershipLabel(): ?string
+    {
+        return self::OWNERSHIP_OPTIONS[$this->is_owner] ?? null;
+    }
+
+    public function availabilityLabel(): ?string
+    {
+        return self::AVAILABILITY_OPTIONS[$this->availability] ?? null;
+    }
+
+    public function valueRangeLabel(): ?string
+    {
+        return self::VALUE_RANGE_OPTIONS[$this->estimated_value_range] ?? null;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function intentLabels(): array
+    {
+        return array_values(array_filter(array_map(
+            fn (string $intent): ?string => self::INTENT_OPTIONS[$intent] ?? null,
+            $this->intent ?? [],
+        )));
+    }
+
+    /**
+     * Contact details for whoever submitted this listing — the account holder when there is
+     * one, otherwise the details the public form captured.
+     */
+    public function contactName(): ?string
+    {
+        return $this->user?->name ?? $this->contact_name;
+    }
+
+    public function contactEmail(): ?string
+    {
+        return $this->user?->email ?? $this->contact_email;
+    }
+
+    public function contactPhone(): ?string
+    {
+        return $this->user?->phone ?? $this->contact_phone;
+    }
+
+    public function contactCompany(): ?string
+    {
+        return $this->user?->company_name ?? $this->contact_company;
     }
 
     /**
@@ -251,10 +375,13 @@ class EquipmentSubmission extends Model
         return [
             'photos' => 'array',
             'documents' => 'array',
+            'intent' => 'array',
             'asking_price' => 'decimal:2',
             'needs_valuation' => 'boolean',
             'featured' => 'boolean',
             'year' => 'integer',
+            'quantity' => 'integer',
+            'consented_at' => 'datetime',
             'status' => ListingStatus::class,
             'published_at' => 'datetime',
             'sold_at' => 'datetime',

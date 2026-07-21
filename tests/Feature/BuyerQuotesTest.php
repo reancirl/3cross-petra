@@ -21,7 +21,7 @@ class BuyerQuotesTest extends TestCase
             'category' => 'Separators',
             'region' => 'Wyoming',
             'city' => 'Casper',
-            'condition' => 'sitting_idle',
+            'condition' => 'operational_but_idle',
             'public_description' => 'Field-proven separator available for redeployment.',
             'photos' => [['name' => 'a.jpg', 'path' => 'p/a.jpg', 'url' => '/storage/p/a.jpg', 'size' => 1]],
             'status' => ListingStatus::Published,
