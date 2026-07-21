@@ -31,6 +31,13 @@ services:
       MAIL_FROM_NAME: ${MAIL_FROM_NAME:-${APP_NAME:-Laravel}}
       BROKER_NOTIFICATION_EMAIL: ${BROKER_NOTIFICATION_EMAIL:-brokers@example.com}
       MESSAGE_NOTIFICATION_BATCH_MINUTES: ${MESSAGE_NOTIFICATION_BATCH_MINUTES:-10}
+      # Public contact details beside the Talk to a Broker form. Same caveat as above:
+      # setting these in .env alone does nothing, they have to be passed through here.
+      # The defaults are the content doc's placeholders — replace before launch.
+      PETRA_CONTACT_PHONE: ${PETRA_CONTACT_PHONE:-(307) XXX-XXXX}
+      PETRA_CONTACT_EMAIL: ${PETRA_CONTACT_EMAIL:-info@petraequipment.com}
+      PETRA_CONTACT_HOURS_DAYS: ${PETRA_CONTACT_HOURS_DAYS:-Monday–Friday}
+      PETRA_CONTACT_HOURS_TIME: ${PETRA_CONTACT_HOURS_TIME:-8:00 AM – 5:00 PM}
     volumes:
       - app_public:/var/www/html/public     # share public/ with Nginx
       # Uploaded files must outlive the container. storage/app holds listing photos

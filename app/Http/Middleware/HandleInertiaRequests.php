@@ -54,6 +54,10 @@ class HandleInertiaRequests extends Middleware
                 ] : null,
             ],
             'status' => $request->session()->get('status'),
+            // Phone/email/hours/service area for the Talk to a Broker sidebar. A plain
+            // config read, so it costs nothing to share app-wide and any page that needs
+            // to print a contact detail can, without a controller passing it down.
+            'siteContact' => config('petra.contact'),
             // The Messages nav badge. A closure so guests and public marketplace
             // pages never pay for the query, and so the 45s poll can refresh it on
             // its own via router.reload({ only: ['unreadMessageThreads'] }) without

@@ -41,4 +41,44 @@ return [
 
     'message_notification_batch_minutes' => (int) env('MESSAGE_NOTIFICATION_BATCH_MINUTES', 10),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Public Contact Details
+    |--------------------------------------------------------------------------
+    |
+    | The phone, email, hours and service area shown beside the Talk to a Broker
+    | form. Shared with every page as the `siteContact` Inertia prop so the copy
+    | lives in one place instead of being typed into components.
+    |
+    | The defaults are the placeholders the content doc ships with — the client has
+    | not supplied a real number yet. Anything still holding an X is treated as
+    | unset by the UI, which renders it as plain text rather than a dead tel: link,
+    | so a forgotten env var can never publish a broken "call us" affordance.
+    |
+    | Set PETRA_CONTACT_PHONE / _EMAIL / _HOURS_DAYS / _HOURS_TIME in the
+    | environment before launch. The Docker image ships no .env, so anything not
+    | passed through docker-compose.yml falls back to these defaults.
+    |
+    | Service area is a list, which does not express well in an env var, so it is
+    | edited here. It is display copy, not the listing region vocabulary — those
+    | are EquipmentSubmission::REGIONS and PublicLocationOptions.
+    |
+    */
+
+    'contact' => [
+        'phone' => env('PETRA_CONTACT_PHONE', '(307) XXX-XXXX'),
+        'email' => env('PETRA_CONTACT_EMAIL', 'info@petraequipment.com'),
+        'hours_days' => env('PETRA_CONTACT_HOURS_DAYS', 'Monday–Friday'),
+        'hours_time' => env('PETRA_CONTACT_HOURS_TIME', '8:00 AM – 5:00 PM'),
+        'service_area' => [
+            'Wyoming Oilfields (Powder River, Jonah, Green River Basin)',
+            'North Dakota (Bakken)',
+            'Colorado Energy Corridors',
+            'Utah & New Mexico Producing Regions',
+            'Montana Industrial Yards',
+            'Regional Surplus Equipment Yards & Private Sellers',
+            'Surrounding Producing Regions',
+        ],
+    ],
+
 ];
