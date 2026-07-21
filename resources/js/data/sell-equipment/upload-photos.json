@@ -1,0 +1,123 @@
+{
+    "meta": {
+        "title": "Equipment Photo Guide | Petra Equipment Brokerage",
+        "description": "Upload clear photos of your used oilfield and industrial equipment for brokerage review. Learn which images help Petra evaluate and market your equipment."
+    },
+    "hero": {
+        "title": "Upload Equipment Photos",
+        "subtitle": "Help Us Represent Your Equipment Accurately",
+        "body": [
+            "Good photos help us understand your equipment, evaluate its condition, and present it accurately to qualified buyers.",
+            "Professional photography isn't required.",
+            "Clear photos taken with your phone are usually enough to begin the review process.",
+            "If you only have a few photos, submit what you have. Additional images can always be provided later if needed."
+        ],
+        "primaryCta": { "label": "Continue to Equipment Submission", "href": "/sell-equipment/equipment-submission" },
+        "secondaryCta": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" }
+    },
+    "whyPhotosMatter": {
+        "title": "Why Equipment Photos Matter",
+        "intro": "Photos allow Petra to:",
+        "items": [
+            "Faster Equipment Review",
+            "Better Buyer Interest",
+            "More Accurate Representation",
+            "Less Back-and-Forth"
+        ],
+        "outro": "The better we understand your equipment, the better we can represent it."
+    },
+    "recommendedPhotos": {
+        "title": "Recommended Equipment Photos",
+        "items": [
+            {
+                "title": "Overall Equipment",
+                "body": ["Show the complete piece of equipment.", "Take a photo from far enough away so the entire asset is visible."]
+            },
+            {
+                "title": "Multiple Angles",
+                "body": ["Capture the equipment from:"],
+                "items": ["Front", "Rear", "Both sides"],
+                "outro": "This helps buyers understand the overall condition and layout."
+            },
+            {
+                "title": "Equipment Nameplate",
+                "body": ["Include a clear photo of the manufacturer plate if available.", "Examples:"],
+                "items": ["Manufacturer", "Model", "Serial Number", "Capacity"],
+                "outro": "This information helps verify specifications during the brokerage process."
+            },
+            {
+                "title": "Controls & Operating Components",
+                "body": ["Photograph important operating areas such as:"],
+                "items": ["Control panels", "Gauges", "Displays", "Engines", "Pumps", "Compressors"],
+                "outro": "These images help buyers better understand the equipment configuration."
+            },
+            {
+                "title": "Interior Components (If Accessible)",
+                "body": ["If safe and practical, include photos of:"],
+                "items": ["Internal compartments", "Mechanical components", "Accessible systems"],
+                "outro": "This provides additional information without requiring an on-site inspection."
+            },
+            {
+                "title": "Current Condition",
+                "body": ["Don't worry about hiding wear.", "Photos showing:"],
+                "items": ["Normal wear", "Surface rust", "Cosmetic damage", "Missing components", "Repairs"],
+                "outro": "help us represent the equipment honestly and reduce surprises later in the process."
+            }
+        ]
+    },
+    "tips": {
+        "title": "Tips for Better Equipment Photos",
+        "intro": ["Getting useful photos doesn't have to be complicated.", "A few simple tips can make a big difference."],
+        "items": [
+            "Daylight is best.",
+            "Keep the equipment fully visible.",
+            "Avoid blurry images.",
+            "Include several angles.",
+            "Photograph the nameplate.",
+            "Show any visible wear honestly.",
+            "Phone photos are acceptable"
+        ]
+    },
+    "notEveryPhoto": {
+        "title": "Don't Have Every Photo?",
+        "body": [
+            "That's okay.",
+            "Many sellers begin with only a few available images.",
+            "Submit what you have today.",
+            "If additional photos would help during the review process, Petra will let you know exactly what is needed."
+        ]
+    },
+    "faqSection": { "title": "Frequently Asked Questions" },
+    "faqs": [
+        {
+            "question": "Do I need professional photographs?",
+            "answer": "No. Clear photos taken with your phone are usually sufficient."
+        },
+        {
+            "question": "How many photos should I upload?",
+            "answer": "There isn't a required number, but multiple photos from different angles help us better evaluate your equipment."
+        },
+        {
+            "question": "Should I photograph damaged areas?",
+            "answer": "Yes. Showing wear or damage helps buyers understand the equipment and builds trust throughout the brokerage process."
+        },
+        {
+            "question": "What if my equipment is still operating in the field?",
+            "answer": "That's perfectly fine. Field photos often provide valuable context and are commonly used during the initial review."
+        },
+        {
+            "question": "Can I upload additional photos later?",
+            "answer": "Yes. If additional photos are needed, Petra will contact you during the review process."
+        }
+    ],
+    "finalCta": {
+        "title": "Ready to Upload Your Equipment Photos?",
+        "body": [
+            "Every submission begins with understanding the equipment.",
+            "Clear photos help Petra evaluate your equipment, answer buyer questions, and present it professionally within our regional brokerage network.",
+            "We'll review what you submit and let you know if anything else is needed."
+        ],
+        "primaryCta": { "label": "Continue to Equipment Submission", "href": "/sell-equipment/equipment-submission" },
+        "secondaryCta": { "label": "Contact a Broker", "href": "/sell-equipment/contact-broker" }
+    }
+}

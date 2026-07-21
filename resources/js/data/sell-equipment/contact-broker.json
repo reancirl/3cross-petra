@@ -1,0 +1,203 @@
+{
+    "meta": {
+        "title": "Talk to an Equipment Broker | Used Oilfield Equipment | Petra",
+        "description": "Talk with a Petra equipment broker about selling used oilfield or industrial equipment, requesting a valuation, or finding qualified buyers across Wyoming and the Rockies."
+    },
+    "hero": {
+        "title": "Contact a Broker",
+        "subtitle": "Let's Talk About Your Equipment",
+        "body": [
+            "Whether you're thinking about selling used oilfield equipment, wondering what your equipment may be worth, or simply looking for straightforward advice, Petra is here to help.",
+            "You don't need to have every detail figured out before reaching out. Sometimes the best first step is simply having a conversation with someone who understands the equipment market.",
+            "Our brokers work with equipment owners, operators, contractors, and buyers throughout Wyoming, the Rockies, and surrounding producing regions to provide honest guidance based on your equipment, your goals, and current market conditions."
+        ],
+        "primaryCta": { "label": "Talk to a Broker", "href": "#talk-to-a-broker-form" }
+    },
+    "whenToTalk": {
+        "title": "When Should You Talk to a Broker?",
+        "intro": ["You don't have to be ready to sell before contacting Petra.", "Many conversations begin with questions, not commitments."],
+        "items": [
+            {
+                "title": "You're Thinking About Selling",
+                "body": ["Not sure if now is the right time?", "We'll help you understand your options and discuss current market conditions."],
+                "outro": {
+                    "before": "If you're already ready to begin, you can ",
+                    "link": { "label": "Submit Your Equipment", "href": "/sell-equipment/equipment-submission" },
+                    "after": " for review at any time."
+                }
+            },
+            {
+                "title": "You're Unsure What Your Equipment May Be Worth",
+                "body": ["If you're evaluating whether to sell, we'll explain the factors that influence market value and help you determine the best next step."],
+                "outro": {
+                    "before": "If you're still evaluating your options, start with a ",
+                    "link": { "label": "Request a Market-Based Valuation", "href": "/sell-equipment/request-valuation" },
+                    "after": " before deciding how you'd like to proceed."
+                }
+            },
+            {
+                "title": "You're Looking for the Right Buyer",
+                "body": [
+                    "Finding qualified buyers takes more than posting a listing.",
+                    "We'll explain how Petra markets equipment and connects sellers with buyers across our regional network."
+                ]
+            },
+            {
+                "title": "You Need Market Insight",
+                "body": ["Equipment values and buyer demand change over time.", "We'll provide practical guidance based on today's market—not guesswork."]
+            },
+            {
+                "title": "You Have Questions About the Brokerage Process",
+                "body": ["If you're unsure how the process works, we'll walk you through it and explain what to expect before you make any decisions."],
+                "outro": {
+                    "before": "We'll answer your questions and explain what to expect throughout the brokerage process. If you'd like to review the process beforehand, explore our ",
+                    "link": { "label": "Seller Process", "href": "/sell-equipment/seller-process" },
+                    "after": "."
+                }
+            },
+            {
+                "title": "You're Looking for Specific Equipment",
+                "body": [
+                    "If you're searching for a compressor, separator, generator, production package, or other industrial equipment, we can help you source equipment through our brokerage network."
+                ]
+            }
+        ]
+    },
+    "duringConversation": {
+        "title": "What Happens During the Conversation?",
+        "intro": [
+            "Our goal isn't to pressure you into making a decision.",
+            "It's to help you better understand your options.",
+            "During your conversation with Petra, we'll:"
+        ],
+        "items": [
+            "Learn about your equipment or project",
+            "Answer your questions",
+            "Discuss current market conditions",
+            "Explain how the brokerage process works",
+            "Recommend practical next steps based on your goals"
+        ],
+        "outro": [
+            "If you're ready to move forward, we'll guide you through the appropriate process.",
+            "If you're still evaluating your options, that's perfectly fine too."
+        ]
+    },
+    "whatToHaveReady": {
+        "title": "What Should You Have Ready?",
+        "intro": ["You don't need every detail before reaching out.", "Helpful information may include:"],
+        "items": [
+            "Equipment type",
+            "Manufacturer and model",
+            "General location",
+            "Equipment condition",
+            "Photos (if available)",
+            "Supporting documents (if available)",
+            "Any questions you'd like to discuss"
+        ],
+        "outro": "Even if you only have basic information, we're happy to start the conversation."
+    },
+    "whyOwnersChoose": {
+        "title": "Why Equipment Owners Choose to Talk With Petra",
+        "items": [
+            {
+                "title": "Honest Guidance",
+                "body": ["We'll provide straightforward recommendations based on your equipment and today's market."]
+            },
+            {
+                "title": "Regional Market Knowledge",
+                "body": ["We understand the equipment markets across Wyoming, the Rockies, and surrounding producing regions."]
+            },
+            {
+                "title": "Practical Brokerage Experience",
+                "body": ["Our team understands the challenges of buying and selling used oilfield and industrial equipment."]
+            },
+            {
+                "title": "Qualified Buyer Network",
+                "body": ["We focus on connecting sellers with serious buyers rather than relying solely on public listings."]
+            },
+            {
+                "title": "No Pressure",
+                "body": [
+                    "A conversation with Petra doesn't obligate you to sell your equipment.",
+                    "Sometimes the right decision is simply having more information before moving forward."
+                ]
+            }
+        ]
+    },
+    "faqSection": {
+        "title": "Frequently Asked Questions",
+        "outro": {
+            "before": "Looking for additional answers before reaching out? Visit our ",
+            "link": { "label": "Sell Equipment FAQs", "href": "/sell-equipment/faqs" },
+            "after": "."
+        }
+    },
+    "faqs": [
+        {
+            "question": "Do I need to submit equipment before talking to a broker?",
+            "answer": "No. You're welcome to contact Petra at any point, whether you're gathering information or ready to begin the brokerage process."
+        },
+        {
+            "question": "Is there a cost to speak with a broker?",
+            "answer": "No. Initial conversations are simply an opportunity to discuss your equipment, answer questions, and understand your goals."
+        },
+        {
+            "question": "What if I'm not ready to sell yet?",
+            "answer": "That's completely fine. Many equipment owners contact Petra early in the decision-making process to better understand their options before making any commitments."
+        },
+        {
+            "question": "Can buyers also contact Petra?",
+            "answer": "Yes. Petra works with both buyers and sellers throughout the equipment brokerage process."
+        },
+        {
+            "question": "What happens after our conversation?",
+            "answer": "If moving forward makes sense, we'll recommend the appropriate next step, whether that's requesting a valuation, submitting equipment, sourcing equipment, or continuing the discussion as your plans develop."
+        }
+    ],
+    "startConversation": {
+        "title": "Let's Start the Conversation",
+        "body": [
+            "Every equipment owner has different goals, and every transaction begins with a conversation.",
+            "Whether you're selling one asset, managing surplus equipment, searching for equipment, or simply looking for honest advice, Petra is here to help.",
+            "Let's talk about your equipment, answer your questions, and help you determine the best path forward."
+        ],
+        "primaryCta": { "label": "Talk to a Broker", "href": "#talk-to-a-broker-form" },
+        "secondaryCta": { "label": "Submit Equipment", "href": "/sell-equipment/equipment-submission" }
+    },
+    "form": {
+        "title": "Talk to a Broker",
+        "intro": "You don't need to know exactly what your equipment is worth or whether you're ready to sell. Start with a conversation, and we'll help you determine the most appropriate next step based on your goals.",
+        "requiredNote": "Fields marked with * are required.",
+        "labels": {
+            "fullName": "Full Name",
+            "company": "Company Name",
+            "email": "Email Address",
+            "phone": "Phone Number",
+            "topic": "How Can We Help You?",
+            "equipmentType": "Equipment Type (if applicable)",
+            "message": "Message",
+            "preferredContact": "Preferred Contact Method"
+        },
+        "placeholders": {
+            "equipmentType": "Example: CAT Generator, Separator, Pump Package",
+            "message": "Tell us about your equipment or let us know how we can help."
+        },
+        "consent": "I authorize Petra to contact me regarding my inquiry.",
+        "submitLabel": "Talk to a Broker",
+        "successTitle": "Thank You!",
+        "successBody": [
+            "Your inquiry has been received.",
+            "A Petra broker will review your message and follow up using your preferred contact method."
+        ]
+    },
+    "sidebar": {
+        "title": "Let's Talk About Your Equipment",
+        "intro": "Whether you're thinking about selling equipment, looking for a specific asset, or simply have questions about the brokerage process, our team is here to help.",
+        "contactHeading": "Contact Information",
+        "phoneLabel": "Phone",
+        "emailLabel": "Email",
+        "hoursLabel": "Business Hours",
+        "serviceAreaLabel": "Service Area",
+        "closing": "Not sure where to start? That's okay."
+    }
+}

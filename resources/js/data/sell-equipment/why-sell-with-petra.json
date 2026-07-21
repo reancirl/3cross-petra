@@ -1,0 +1,168 @@
+{
+    "meta": {
+        "title": "Why Sell With Petra | Oilfield Equipment Brokerage",
+        "description": "Learn why companies trust Petra to broker used oilfield and industrial equipment. Connect with qualified buyers through our Wyoming and Rockies brokerage network."
+    },
+    "hero": {
+        "title": "Why Sell With Petra",
+        "subtitle": "Selling Equipment Is Easy. Selling It Well Takes the Right Partner.",
+        "body": [
+            "Finding a buyer isn't the hardest part of selling used oilfield or industrial equipment.",
+            "Finding the right buyer, understanding today's market, pricing equipment realistically, and keeping the transaction moving—that's where experience matters.",
+            "Petra helps equipment owners across Wyoming, the Rockies, and surrounding producing regions navigate the selling process with practical brokerage guidance, regional market knowledge, and a network of qualified buyers.",
+            "Whether you're selling a single asset or managing surplus equipment across multiple locations, we're here to help you make informed decisions with confidence."
+        ],
+        "primaryCta": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" },
+        "secondaryCta": { "label": "Request a Market-Based Valuation", "href": "/sell-equipment/request-valuation" }
+    },
+    "moreThanPosting": {
+        "title": "Selling Equipment Is More Than Posting a Listing",
+        "intro": ["Many equipment owners begin by listing equipment online and waiting for inquiries.", "Unfortunately, that often leads to:"],
+        "items": [
+            "Limited exposure to qualified buyers",
+            "Uncertainty about market pricing",
+            "Time spent answering repetitive questions",
+            "Negotiations that go nowhere",
+            "Equipment sitting idle for months"
+        ],
+        "outro": {
+            "before": "If you're still evaluating whether now is the right time to sell, ",
+            "link": { "label": "request a market-based valuation", "href": "/sell-equipment/request-valuation" },
+            "after": " to better understand your equipment's potential before making a decision."
+        }
+    },
+    "whatMakesDifferent": {
+        "title": "What Makes Petra Different?",
+        "items": [
+            {
+                "title": "Regional Market Knowledge",
+                "body": [
+                    "Petra understands the equipment markets across Wyoming, the Rockies, and surrounding producing regions.",
+                    "Regional demand, industry activity, and buyer expectations all influence how equipment moves through the market.",
+                    "Our recommendations are based on real market conditions—not assumptions."
+                ]
+            },
+            {
+                "title": "Qualified Buyer Network",
+                "body": [
+                    "Successful brokerage isn't about generating the most inquiries.",
+                    "It's about connecting equipment with buyers who are actively looking for the right equipment.",
+                    "Petra focuses on building relationships with qualified buyers to help create meaningful opportunities for sellers."
+                ]
+            },
+            {
+                "title": "Market-Based Guidance",
+                "body": [
+                    "Pricing equipment too high can delay a sale.",
+                    "Pricing it too low can leave money on the table.",
+                    "Petra helps sellers understand current market conditions so they can make informed pricing decisions supported by brokerage experience and buyer activity."
+                ]
+            },
+            {
+                "title": "Straightforward Communication",
+                "body": [
+                    "You'll always know where things stand.",
+                    "We believe honest communication builds stronger relationships and better transactions.",
+                    "Whether market conditions are favorable or challenging, we'll provide practical recommendations based on your equipment and your goals."
+                ]
+            },
+            {
+                "title": "Support Throughout the Brokerage Process",
+                "body": [
+                    "Selling equipment often involves more than finding a buyer.",
+                    "From initial conversations through negotiations and transaction support, Petra works alongside sellers to help keep the process organized and moving forward."
+                ]
+            },
+            {
+                "title": "Built on Relationships",
+                "body": [
+                    "Equipment brokerage is ultimately a people business.",
+                    "Long-term relationships with equipment owners, buyers, and industry professionals allow Petra to create opportunities that go beyond public equipment listings."
+                ]
+            }
+        ],
+        "outro": {
+            "before": "Curious about how we put this approach into practice? Explore our ",
+            "link": { "label": "Seller Process", "href": "/sell-equipment/seller-process" },
+            "after": " to see how Petra supports equipment owners from the initial review through buyer negotiations."
+        }
+    },
+    "builtForWyoming": {
+        "title": "Built for Wyoming's Energy Industry",
+        "body": [
+            "The equipment market in Wyoming and the surrounding Rockies is different from many other regions.",
+            "Equipment demand shifts with energy activity, transportation logistics, seasonal conditions, and regional projects.",
+            "Petra understands these market dynamics and works within the industries and communities we serve every day.",
+            "That regional perspective helps sellers make more informed decisions throughout the brokerage process."
+        ]
+    },
+    "supportingOwners": {
+        "title": "Supporting Equipment Owners Across the Energy Industry",
+        "intro": [
+            "Petra works with businesses throughout Wyoming, the Rockies, and surrounding producing regions, supporting equipment transactions across a wide range of energy and industrial operations.",
+            "We regularly work with:"
+        ],
+        "items": [
+            "Oil & gas operators",
+            "Production companies",
+            "Midstream operations",
+            "Energy service companies",
+            "Industrial facilities",
+            "General contractors",
+            "Equipment managers",
+            "Asset management teams"
+        ],
+        "outro": "Whether you're selling a single piece of equipment, managing surplus assets, or preparing a larger equipment liquidation, Petra helps connect equipment owners with qualified buyers through a trusted regional brokerage network."
+    },
+    "rightFit": {
+        "title": "Is Petra the Right Fit?",
+        "intro": "Petra may be a good fit if you:",
+        "items": [
+            "Have surplus or idle equipment you'd like to sell",
+            "Want to better understand your equipment's market potential",
+            "Don't have time to manage buyer inquiries and negotiations",
+            "Prefer working with experienced equipment brokers",
+            "Want honest guidance before making a decision",
+            "Value long-term relationships over one-time transactions"
+        ],
+        "outro": {
+            "before": "If you're ready to take the next step, you can ",
+            "link": { "label": "submit your equipment", "href": "/sell-equipment/equipment-submission" },
+            "middle": " for review, or ",
+            "secondLink": { "label": "talk to a broker", "href": "/sell-equipment/contact-broker" },
+            "after": " if you'd like to discuss your situation first."
+        }
+    },
+    "ourApproach": {
+        "title": "Our Approach",
+        "intro": "Everything we do is guided by a few simple principles.",
+        "items": [
+            {
+                "title": "Trust First",
+                "body": "Honest communication and realistic expectations always come first."
+            },
+            {
+                "title": "Field Realism",
+                "body": "We understand equipment because we understand how it's used in the field."
+            },
+            {
+                "title": "Practical Guidance",
+                "body": "Our recommendations are based on market knowledge, industry experience, and your specific situation—not generic advice."
+            },
+            {
+                "title": "Long-Term Relationships",
+                "body": "We're committed to building relationships that continue long after a transaction is complete."
+            }
+        ]
+    },
+    "finalCta": {
+        "title": "Let's Talk About Your Equipment",
+        "body": [
+            "Every equipment owner has different goals, and every selling decision deserves thoughtful guidance.",
+            "Whether you're ready to sell today or simply exploring your options, Petra is here to provide practical recommendations, honest answers, and market insight that helps you move forward with confidence.",
+            "Let's start with a conversation."
+        ],
+        "primaryCta": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" },
+        "secondaryCta": { "label": "Request a Valuation", "href": "/sell-equipment/request-valuation" }
+    }
+}

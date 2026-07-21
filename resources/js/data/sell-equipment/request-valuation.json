@@ -1,0 +1,165 @@
+{
+    "meta": {
+        "title": "Oilfield Equipment Valuation | Petra Equipment Brokerage",
+        "description": "Request a market-based valuation for your used oilfield and industrial equipment. Petra reviews buyer demand, equipment condition, and regional market activity."
+    },
+    "hero": {
+        "title": "Request Equipment Valuation",
+        "subtitle": "Understand What Your Equipment May Be Worth",
+        "body": [
+            "Before deciding to sell, it's helpful to understand how your equipment fits within today's market.",
+            "Petra provides market-based equipment valuations using regional market knowledge, current buyer demand, equipment condition, and brokerage experience across Wyoming, the Rockies, and surrounding producing regions.",
+            "Whether you're selling a single asset or evaluating surplus equipment, we'll provide straightforward guidance to help you make informed decisions."
+        ],
+        "primaryCta": { "label": "Request a Market-Based Valuation", "href": "/sell-equipment/equipment-submission" }
+    },
+    "whyRequest": {
+        "title": "Why Request a Market-Based Valuation?",
+        "intro": ["Knowing your equipment's potential market value helps you make better decisions before selling.", "A valuation can help you:"],
+        "items": [
+            "Understand current market demand",
+            "Set realistic pricing expectations",
+            "Evaluate whether now is the right time to sell",
+            "Identify factors that may influence buyer interest",
+            "Prepare your equipment for the brokerage process"
+        ],
+        "outro": {
+            "before": "If you're still deciding whether Petra is the right brokerage partner, learn ",
+            "link": { "label": "Why Sell With Petra", "href": "/sell-equipment/why-sell-with-petra" },
+            "after": " and see how we help equipment owners make informed selling decisions."
+        }
+    },
+    "whatWeConsider": {
+        "title": "What We Consider During Our Review",
+        "items": [
+            {
+                "title": "Current Market Demand",
+                "body": [
+                    "Equipment values change based on buyer demand and market activity.",
+                    "We consider what buyers are actively looking for across Wyoming, the Rockies, and surrounding producing regions."
+                ]
+            },
+            {
+                "title": "Equipment Condition",
+                "body": ["Condition plays an important role in valuation.", "We'll review information such as:"],
+                "items": ["Operating condition", "Visible wear", "Maintenance history", "Overall equipment readiness"]
+            },
+            {
+                "title": "Equipment Type & Specifications",
+                "body": [
+                    "The type of equipment you're selling helps determine market interest.",
+                    "Information such as manufacturer, model, age, capacity, and specifications provides valuable context during our review."
+                ]
+            },
+            {
+                "title": "Regional Market Activity",
+                "body": [
+                    "Equipment demand varies by region.",
+                    "Petra focuses on Wyoming and the surrounding energy-producing markets, allowing us to consider regional buyer activity when reviewing your equipment."
+                ]
+            },
+            {
+                "title": "Supporting Information",
+                "body": [
+                    "Photos, maintenance records, inspection reports, and other supporting documents help us better understand your equipment and provide more informed guidance.",
+                    "Don't worry if you don't have everything—submit what you have."
+                ]
+            },
+            {
+                "title": "Comparable Market Opportunities",
+                "body": [
+                    "We also consider current brokerage activity and comparable equipment opportunities to better understand how your equipment may fit within today's market."
+                ]
+            }
+        ],
+        "outro": {
+            "before": "Once you're ready, you can ",
+            "link": { "label": "submit your equipment", "href": "/sell-equipment/equipment-submission" },
+            "after": " for a full review by our brokerage team."
+        }
+    },
+    "whatYoullNeed": {
+        "title": "What You'll Need",
+        "intro": "To request a valuation, it's helpful to provide:",
+        "items": [
+            "Equipment type",
+            "Manufacturer and model",
+            "Equipment location",
+            "General condition",
+            "Photos (if available)",
+            "Supporting documents (if available)"
+        ],
+        "outro": "The more information you provide, the more accurately we can review your equipment."
+    },
+    "afterYouRequest": {
+        "title": "What Happens After You Request a Valuation?",
+        "steps": [
+            "Submit your equipment information.",
+            "Petra reviews the available details and supporting information.",
+            "We evaluate current market conditions, regional demand, and comparable opportunities.",
+            "If additional information is needed, we'll contact you directly.",
+            "We'll discuss our observations, answer your questions, and explain the recommended next steps."
+        ],
+        "outro": "There is no obligation to move forward with the brokerage process after receiving a valuation.",
+        "processLink": {
+            "before": "After reviewing your equipment, we'll discuss our recommendations and, if appropriate, guide you through the ",
+            "link": { "label": "Seller Process", "href": "/sell-equipment/seller-process" },
+            "after": "."
+        }
+    },
+    "whyDifferent": {
+        "title": "Why Petra's Approach Is Different",
+        "body": [
+            "Petra doesn't rely on automated pricing tools or generic estimates.",
+            "Every valuation is reviewed using current market activity, regional buyer demand, equipment condition, and brokerage experience.",
+            "Our goal is to provide practical guidance—not unrealistic expectations.",
+            "If we believe your equipment has strong market potential, we'll explain why.",
+            "If market conditions are challenging, we'll tell you that, too.",
+            "Honest communication is part of our brokerage process."
+        ]
+    },
+    "faqSection": {
+        "title": "Frequently Asked Questions",
+        "outro": {
+            "before": "Have questions about valuations, pricing, or the brokerage process? Visit our ",
+            "link": { "label": "Sell Equipment FAQs", "href": "/sell-equipment/faqs" },
+            "after": " for additional answers."
+        }
+    },
+    "faqs": [
+        {
+            "question": "Is requesting a valuation free?",
+            "answer": "Yes. Petra provides an initial market-based valuation review at no cost."
+        },
+        {
+            "question": "Is this a certified equipment appraisal?",
+            "answer": "No. Our valuation is a brokerage opinion based on market conditions, buyer demand, equipment information, and regional industry experience. It is not a certified appraisal."
+        },
+        {
+            "question": "Am I required to sell after receiving a valuation?",
+            "answer": "No. Requesting a valuation does not obligate you to sell your equipment."
+        },
+        {
+            "question": "How long does the review take?",
+            "answer": "Review times vary depending on the equipment and the information provided. If additional details are needed, Petra will contact you directly."
+        },
+        {
+            "question": "Can I request valuations for multiple pieces of equipment?",
+            "answer": "Yes. We regularly review individual assets, complete equipment packages, and surplus equipment inventories."
+        }
+    ],
+    "finalCta": {
+        "title": "Ready to Understand Your Equipment's Market Potential?",
+        "body": [
+            "If you're considering selling used oilfield or industrial equipment, understanding its market potential is the best place to start.",
+            "Petra provides straightforward, market-based guidance using the information you provide, regional market activity, buyer demand, and brokerage experience—helping you make informed decisions before moving forward.",
+            "Every piece of equipment is different. Some assets may be a strong fit for our buyer network, while others may require a different sales strategy. A market-based valuation helps you better understand your equipment's potential and the options available before deciding to sell."
+        ],
+        "primaryCta": { "label": "Request a Market-Based Valuation", "href": "/sell-equipment/equipment-submission" },
+        "secondaryCta": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" }
+    },
+    "valuationNotice": {
+        "title": "Brokerage Valuation Notice",
+        "body": "Petra provides market-based brokerage valuations to help equipment owners understand potential market opportunities. These valuations are intended for brokerage guidance only and should not be considered certified equipment appraisals."
+    }
+}

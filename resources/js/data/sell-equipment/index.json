@@ -1,0 +1,154 @@
+{
+    "meta": {
+        "title": "Sell Used Oilfield Equipment | Petra Equipment Brokerage",
+        "description": "Sell used oilfield and industrial equipment with Petra. We connect qualified buyers with compressors, separators, tanks, generators, and surplus equipment."
+    },
+    "hero": {
+        "title": "Sell Used Oilfield & Industrial Equipment",
+        "body": [
+            "Got equipment sitting idle in a yard or out in the field?",
+            "Petra helps companies turn unused oilfield and industrial equipment into working capital by connecting sellers with qualified buyers across Wyoming, the Rockies, and surrounding producing regions."
+        ],
+        "primaryCta": { "label": "Submit Equipment", "href": "/sell-equipment/equipment-submission" },
+        "secondaryCta": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" }
+    },
+    "workingCapital": {
+        "title": "Turn Idle Equipment Into Working Capital",
+        "body": [
+            "Unused equipment does not have to sit and lose value.",
+            "Whether you are clearing surplus inventory, replacing production equipment, or liquidating idle assets, Petra helps move equipment through a regional brokerage network built around real buyers and real market demand."
+        ],
+        "cta": { "label": "Submit Equipment", "href": "/sell-equipment/equipment-submission" }
+    },
+    "whyEquipmentDoesNotSell": {
+        "title": "Why Equipment Does Not Sell",
+        "intro": ["Most equipment does not fail to sell because it is bad.", "It usually sits because:"],
+        "reasons": [
+            "It is not reaching the right buyers",
+            "Pricing is not aligned with the market",
+            "It is only shown to a small local network",
+            "Internal teams do not have time to manage calls, questions, and negotiation"
+        ],
+        "outro": "Petra helps sellers avoid the runaround by handling the brokerage process from positioning your equipment through buyer communication and negotiations."
+    },
+    "equipmentYouCanSell": {
+        "title": "What Equipment Can You Sell?",
+        "intro": "Petra brokers a wide range of used oilfield and industrial equipment, including:",
+        "items": [
+            "Compressors",
+            "Separators",
+            "Production equipment packages",
+            "Heater treaters",
+            "Pump packages",
+            "Storage tanks and tank batteries",
+            "Generators and power units",
+            "Flowback equipment",
+            "Pipe and tubular",
+            "Valves and control systems",
+            "Surplus yard inventory",
+            "Single assets or full packages"
+        ],
+        "outro": {
+            "before": "Not sure whether your equipment has value in today's market? ",
+            "link": { "label": "Request a market-based valuation", "href": "/sell-equipment/request-valuation" },
+            "after": " and we'll review your equipment before you decide to sell."
+        }
+    },
+    "whatWeNeed": {
+        "title": "What We Need From You",
+        "intro": "To review your equipment, Petra typically needs:",
+        "items": [
+            "Equipment description",
+            "Current location",
+            "General condition",
+            "Photos, if available",
+            "Documents or maintenance records, if available"
+        ],
+        "outro": {
+            "before": "If you're ready, you can ",
+            "link": { "label": "submit your equipment", "href": "/sell-equipment/equipment-submission" },
+            "after": " with whatever information you have today. Additional photos or documentation can always be added later."
+        }
+    },
+    "process": {
+        "title": "How Our Equipment Brokerage Process Works",
+        "steps": [
+            {
+                "title": "Submit Your Equipment",
+                "body": "Send the basic details, location, condition, and available photos."
+            },
+            {
+                "title": "We Review the Equipment",
+                "body": "Petra evaluates market fit, demand, condition, and buyer potential."
+            },
+            {
+                "title": "We Connect With Qualified Buyers",
+                "body": "We present the equipment to buyers who are actually looking for assets like yours."
+            },
+            {
+                "title": "We Manage the Back-and-Forth",
+                "body": "Petra handles questions, buyer communication, negotiation, and coordination."
+            },
+            {
+                "title": "The Deal Moves Forward",
+                "body": "Once terms are agreed on, we help move the transaction toward completion."
+            }
+        ],
+        "cta": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" }
+    },
+    "valuation": {
+        "title": "Equipment Valuation",
+        "body": [
+            "Not sure what your equipment is worth?",
+            "Petra helps position equipment based on current market conditions, demand, condition, location, and comparable sales — not guesswork."
+        ],
+        "outro": {
+            "before": "Learn more about our ",
+            "link": { "label": "Equipment Valuation", "href": "/sell-equipment/request-valuation" },
+            "after": " process."
+        }
+    },
+    "faqSection": {
+        "title": "Frequently Asked Questions",
+        "outro": {
+            "before": "Looking for more answers? Visit our ",
+            "link": { "label": "Sell Equipment FAQs", "href": "/sell-equipment/faqs" },
+            "after": "."
+        }
+    },
+    "faqs": [
+        {
+            "question": "What types of equipment can I sell?",
+            "answer": "Petra brokers used oilfield and industrial equipment, including compressors, separators, tanks, generators, pump packages, production equipment, and surplus inventory."
+        },
+        {
+            "question": "Do you purchase equipment directly?",
+            "answer": "Petra primarily operates as a brokerage, connecting sellers with qualified buyers through our regional network."
+        },
+        {
+            "question": "How is my equipment valued?",
+            "answer": "Valuation is based on market demand, equipment type, condition, location, documentation, and comparable sales."
+        },
+        {
+            "question": "Can I submit equipment outside Wyoming?",
+            "answer": "Yes. Petra focuses on Wyoming and surrounding producing regions, but also works across the Rockies and other energy-producing markets."
+        },
+        {
+            "question": "Do I need inspection reports or maintenance records?",
+            "answer": "No. They are helpful, but not required to begin the review process."
+        },
+        {
+            "question": "Can I speak with a broker before submitting?",
+            "answer": "Yes. You can contact a broker before submitting equipment if you have questions about value, fit, or the selling process."
+        }
+    ],
+    "finalCta": {
+        "title": "Ready to Sell Your Equipment?",
+        "body": [
+            "If your equipment is sitting idle, Petra can help determine whether there is a real market for it.",
+            "We will tell you straight whether we can help."
+        ],
+        "primaryCta": { "label": "Submit Equipment", "href": "/sell-equipment/equipment-submission" },
+        "secondaryCta": { "label": "Contact a Broker", "href": "/sell-equipment/contact-broker" }
+    }
+}
