@@ -58,8 +58,12 @@ Route::prefix('sell-equipment')->group(function (): void {
     Route::get('/request-valuation', $page('RequestValuation', '/sell-equipment/request-valuation'))
         ->name('sell-equipment.valuation');
     Route::get('/faqs', $page('Faqs', '/sell-equipment/faqs'))->name('sell-equipment.faqs');
-    Route::get('/contact-broker', $page('ContactBroker', '/sell-equipment/contact-broker'))
+    Route::get('/contact-broker', [SellEquipmentController::class, 'contactBroker'])
         ->name('sell-equipment.contact-broker');
+    // Throttled and honeypotted for the same reason as the submission POST above.
+    Route::post('/contact-broker', [SellEquipmentController::class, 'storeBrokerInquiry'])
+        ->middleware('throttle:10,1')
+        ->name('sell-equipment.contact-broker.store');
 });
 
 Route::get('/request-equipment', fn () => Inertia::render('RequestEquipment', [

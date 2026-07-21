@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Broker\InboxController;
+use App\Http\Controllers\Broker\LeadController;
 use App\Http\Controllers\Broker\SubmissionReviewController;
 use App\Http\Controllers\Portal\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,10 @@ Route::middleware(['auth', 'no.back.history', 'user.type:broker'])
         // The buyer queue. Split out of /broker/submissions, where both queues shared
         // one tabbed page and made a single very long scroll.
         Route::get('/requests', [SubmissionReviewController::class, 'requests'])->name('requests');
+        // Talk to a Broker inquiries from the public Sell Equipment section. A third queue
+        // rather than a tab, for the same reason the two above are separate pages.
+        Route::get('/leads', [LeadController::class, 'index'])->name('leads');
+        Route::patch('/leads/{brokerInquiry}', [LeadController::class, 'update'])->name('leads.update');
         // Same generic profile screen the seller and buyer portals use; the userType
         // default drives the shell chrome and the form's own patch/put URLs.
         Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'broker')->name('profile');

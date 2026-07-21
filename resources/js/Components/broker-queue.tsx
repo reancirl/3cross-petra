@@ -73,6 +73,32 @@ export type BuyerRequest = {
     created_at_timestamp: number | null;
 };
 
+/**
+ * A Talk to a Broker inquiry (App\Models\BrokerInquiry). Unlike the two queues above there
+ * is no record behind it to act on — the contact fields are the whole lead, so they are
+ * always present rather than nullable account lookups.
+ */
+export type BrokerLead = {
+    id: number;
+    full_name: string;
+    company: string | null;
+    email: string;
+    phone: string;
+    topic: string;
+    topic_label: string;
+    equipment_type: string | null;
+    message: string;
+    preferred_contact_label: string;
+    // Set only when the visitor happened to be signed in. Context, not the reply address.
+    account_name: string | null;
+    account_email: string | null;
+    status: string;
+    status_label: string;
+    status_tone: StatusTone;
+    created_at: string | null;
+    created_at_timestamp: number | null;
+};
+
 export type SortDirection = 'desc' | 'asc';
 
 export type StatusChip = { value: string; label: string; count: number };
@@ -410,9 +436,17 @@ function statusBadgeClass(status: string): string {
             return 'border-indigo-300 bg-indigo-50 text-indigo-800';
         case 'reviewing_options':
             return 'border-emerald-300 bg-emerald-50 text-emerald-800';
-        // Terminal — closing a quote also frees the buyer to request one again.
+        // Terminal — closing a quote also frees the buyer to request one again. Shared with
+        // the broker-lead lifecycle below, which ends the same way and reads the same.
         case 'closed':
             return 'border-neutral-300 bg-neutral-100 text-neutral-500';
+
+        // Broker lead statuses (App\Models\BrokerInquiry). 'new' wears the copper the portal
+        // uses for "this one is waiting on you"; nothing else in the app claims it.
+        case 'new':
+            return 'border-[#a56437]/30 bg-[#f4ece4] text-[#8a5330]';
+        case 'contacted':
+            return 'border-sky-300 bg-sky-50 text-sky-800';
 
         // Offer statuses (App\Enums\OfferStatus). 'pending'/'accepted' overlap with
         // listing wording above; the remaining two are offer-specific.

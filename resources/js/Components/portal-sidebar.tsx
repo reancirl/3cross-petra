@@ -6,6 +6,7 @@ type PortalNavIconName =
     | 'equipment'
     | 'quotes'
     | 'offers'
+    | 'leads'
     | 'documents'
     | 'messages'
     | 'notifications'
@@ -86,6 +87,9 @@ const brokerNavGroups: PortalNavGroup[] = [
         items: [
             { label: 'Seller Submissions', path: 'submissions', real: true, icon: 'equipment' },
             { label: 'Buyer Requests', path: 'requests', real: true, icon: 'quotes' },
+            // Talk to a Broker inquiries from the public site. Unclaimed public submissions
+            // are NOT here — those are listings, so they sit in Seller Submissions.
+            { label: 'Leads', path: 'leads', real: true, icon: 'leads' },
             // Every customer conversation, from buyers and sellers alike.
             { label: 'Inbox', path: 'inbox', real: true, icon: 'messages', badge: 'unread' },
         ],
@@ -364,6 +368,16 @@ function PortalNavIcon({ name }: { name: PortalNavIconName }) {
                     <path d="M20 12l-8 8-8-8 8-8z" />
                     <path d="M12 8v8" />
                     <path d="M8 12h8" />
+                </svg>
+            );
+        case 'leads':
+            // A person with a "new contact" mark — a lead is someone to call back, not a record.
+            return (
+                <svg {...common}>
+                    <path d="M10 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                    <path d="M3 20a7 7 0 0 1 11.3-5.5" />
+                    <path d="M18 14v6" />
+                    <path d="M15 17h6" />
                 </svg>
             );
         case 'documents':

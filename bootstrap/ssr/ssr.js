@@ -1593,6 +1593,12 @@ var brokerNavGroups = [{
 			icon: "quotes"
 		},
 		{
+			label: "Leads",
+			path: "leads",
+			real: true,
+			icon: "leads"
+		},
+		{
 			label: "Inbox",
 			path: "inbox",
 			real: true,
@@ -1817,6 +1823,15 @@ function PortalNavIcon({ name }) {
 				/* @__PURE__ */ jsx("path", { d: "M20 12l-8 8-8-8 8-8z" }),
 				/* @__PURE__ */ jsx("path", { d: "M12 8v8" }),
 				/* @__PURE__ */ jsx("path", { d: "M8 12h8" })
+			]
+		});
+		case "leads": return /* @__PURE__ */ jsxs("svg", {
+			...common,
+			children: [
+				/* @__PURE__ */ jsx("path", { d: "M10 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" }),
+				/* @__PURE__ */ jsx("path", { d: "M3 20a7 7 0 0 1 11.3-5.5" }),
+				/* @__PURE__ */ jsx("path", { d: "M18 14v6" }),
+				/* @__PURE__ */ jsx("path", { d: "M15 17h6" })
 			]
 		});
 		case "documents": return /* @__PURE__ */ jsxs("svg", {
@@ -2977,6 +2992,8 @@ function statusBadgeClass(status) {
 		case "options_presented": return "border-indigo-300 bg-indigo-50 text-indigo-800";
 		case "reviewing_options": return "border-emerald-300 bg-emerald-50 text-emerald-800";
 		case "closed": return "border-neutral-300 bg-neutral-100 text-neutral-500";
+		case "new": return "border-[#a56437]/30 bg-[#f4ece4] text-[#8a5330]";
+		case "contacted": return "border-sky-300 bg-sky-50 text-sky-800";
 		case "accepted": return "border-emerald-800/25 bg-emerald-50 text-emerald-800";
 		case "declined": return "border-[#b3261e]/25 bg-red-50 text-[#b3261e]";
 		case "countered": return "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700";
@@ -2998,6 +3015,174 @@ function EmptyState$1({ text }) {
 		children: text
 	});
 }
+//#endregion
+//#region resources/js/Pages/Broker/Leads.tsx
+var Leads_exports = /* @__PURE__ */ __exportAll({ default: () => BrokerLeads });
+/**
+* Talk to a Broker inquiries from the public Sell Equipment section. Same shape as the two
+* review queues — rows in the list, detail in a slide-over — but a lead has no record to
+* publish or price, so the panel is contact details, the message, and a status to move.
+*/
+function BrokerLeads({ portal, leads, leadStatusOptions }) {
+	const { status } = usePage().props;
+	const [activeId, setActiveId] = useState(null);
+	const active = leads.find((lead) => lead.id === activeId) ?? null;
+	const queue = useQueue(leads, leadStatusOptions, (item) => [
+		item.full_name,
+		item.company,
+		item.email,
+		item.phone,
+		item.topic_label,
+		item.equipment_type,
+		item.status_label
+	]);
+	useEffect(() => {
+		if (status) toast.success(status);
+	}, [status]);
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Leads | Broker Portal" }), /* @__PURE__ */ jsxs(PortalShell, {
+		portal,
+		title: "Leads",
+		eyebrow: `${leads.length} ${leads.length === 1 ? "inquiry" : "inquiries"}`,
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "grid gap-4",
+			children: [/* @__PURE__ */ jsx(QueueToolbar, {
+				search: queue.search,
+				onSearch: queue.onSearch,
+				chips: queue.chips,
+				activeStatus: queue.statusFilter,
+				onStatus: queue.setStatusFilter,
+				sort: queue.sort,
+				onSort: queue.setSort,
+				placeholder: "Search by name, company, email, or topic"
+			}), leads.length === 0 ? /* @__PURE__ */ jsx(EmptyState$1, { text: "No broker inquiries have been submitted yet." }) : queue.visible.length === 0 ? /* @__PURE__ */ jsx(NoResults$1, { onClear: queue.clear }) : /* @__PURE__ */ jsx(DataTable, {
+				columns: LEAD_COLUMNS,
+				rows: queue.visible,
+				rowKey: (lead) => lead.id,
+				onRowClick: (lead) => setActiveId(lead.id),
+				rowLabel: (lead) => `Review inquiry from ${lead.full_name}`,
+				caption: "Talk to a Broker inquiries awaiting a response"
+			})]
+		}), /* @__PURE__ */ jsx(SlideOver, {
+			open: active !== null,
+			onClose: () => setActiveId(null),
+			eyebrow: "Broker inquiry",
+			title: active?.full_name ?? "",
+			children: active && /* @__PURE__ */ jsxs("div", {
+				className: "grid gap-6",
+				children: [/* @__PURE__ */ jsxs("dl", {
+					className: "grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
+					children: [
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Company",
+							value: active.company
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Topic",
+							value: active.topic_label
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Email",
+							value: active.email
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Phone",
+							value: active.phone
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Prefers",
+							value: active.preferred_contact_label
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Equipment type",
+							value: active.equipment_type
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Submitted",
+							value: active.created_at
+						}),
+						active.account_name && /* @__PURE__ */ jsx(Detail$3, {
+							label: "Signed in as",
+							value: `${active.account_name} (${active.account_email})`
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "sm:col-span-2",
+							children: [/* @__PURE__ */ jsx("dt", {
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+								children: "Message"
+							}), /* @__PURE__ */ jsx("dd", {
+								className: "mt-1 whitespace-pre-line text-neutral-700",
+								children: active.message
+							})]
+						})
+					]
+				}), /* @__PURE__ */ jsxs("div", {
+					className: "border-t border-[#dad5cb] pt-6",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]",
+						children: "Lead status"
+					}), /* @__PURE__ */ jsx("div", {
+						className: "mt-3",
+						children: /* @__PURE__ */ jsx(StatusForm, {
+							value: active.status,
+							options: leadStatusOptions,
+							action: `/broker/leads/${active.id}`
+						}, `${active.id}:${active.status}`)
+					})]
+				})]
+			})
+		})]
+	})] });
+}
+/** Column layout for the lead queue. Mirrors the other two queues' responsive priorities. */
+var LEAD_COLUMNS = [
+	{
+		key: "contact",
+		header: "Contact",
+		cell: (lead) => /* @__PURE__ */ jsx(CellStack, {
+			primary: /* @__PURE__ */ jsx("span", {
+				className: "font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950",
+				children: lead.full_name
+			}),
+			secondary: lead.company ?? void 0
+		})
+	},
+	{
+		key: "topic",
+		header: "Topic",
+		hideBelow: "md",
+		cell: (lead) => /* @__PURE__ */ jsx(CellStack, {
+			primary: lead.topic_label,
+			secondary: lead.equipment_type ?? void 0
+		})
+	},
+	{
+		key: "reach",
+		header: "Reach them",
+		hideBelow: "lg",
+		cell: (lead) => /* @__PURE__ */ jsx(CellStack, {
+			primary: lead.email,
+			secondary: lead.phone
+		})
+	},
+	{
+		key: "prefers",
+		header: "Prefers",
+		hideBelow: "xl",
+		cell: (lead) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: lead.preferred_contact_label
+		})
+	},
+	{
+		key: "status",
+		header: "Status",
+		align: "right",
+		cell: (lead) => /* @__PURE__ */ jsx(StatusBadge$4, {
+			status: lead.status,
+			label: lead.status_label
+		})
+	}
+];
 //#endregion
 //#region resources/js/Pages/Broker/Requests.tsx
 var Requests_exports = /* @__PURE__ */ __exportAll({ default: () => BrokerRequests });
@@ -9292,6 +9477,574 @@ function Resources({ canonicalUrl, ogImageUrl }) {
 	})] });
 }
 //#endregion
+//#region resources/js/Components/public-form-fields.tsx
+/**
+* Field primitives shared by the two public Sell Equipment forms — the Equipment Submission
+* form and Talk to a Broker. Extracted from public-submission-form.tsx when the second form
+* landed, the same way file-pickers.tsx was lifted out of the seller portal.
+*
+* These are the public-site counterparts to the portal's form styling: same `portal-input`
+* classes and copper error treatment, but laid out for a wide marketing page rather than a
+* slide-over.
+*/
+function Legend({ children }) {
+	return /* @__PURE__ */ jsx("legend", {
+		className: "mb-1 font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+		children
+	});
+}
+function Field({ label, error, required = false, className = "", hint, children }) {
+	return /* @__PURE__ */ jsxs("label", {
+		className: `grid gap-2 ${className}`,
+		children: [
+			/* @__PURE__ */ jsxs("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: [label, required ? /* @__PURE__ */ jsx("span", {
+					className: "ml-1 text-[#a56437]",
+					children: "*"
+				}) : /* @__PURE__ */ jsx("span", {
+					className: "ml-2 text-neutral-400",
+					children: "Optional"
+				})]
+			}),
+			hint && /* @__PURE__ */ jsx("span", {
+				className: "text-sm leading-6 text-neutral-500",
+				children: hint
+			}),
+			children,
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			})
+		]
+	});
+}
+function RadioGroup({ legend, options, value, error, required = false, onChange, firstRef }) {
+	return /* @__PURE__ */ jsxs("div", {
+		role: "group",
+		className: "grid gap-3",
+		children: [
+			/* @__PURE__ */ jsxs("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: [legend, required && /* @__PURE__ */ jsx("span", {
+					className: "ml-1 text-[#a56437]",
+					children: "*"
+				})]
+			}),
+			/* @__PURE__ */ jsx("div", {
+				className: "grid gap-2",
+				children: Object.entries(options).map(([optionValue, label], index) => /* @__PURE__ */ jsxs("label", {
+					className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+					children: [/* @__PURE__ */ jsx("input", {
+						ref: index === 0 ? firstRef : void 0,
+						type: "radio",
+						name: legend,
+						checked: value === optionValue,
+						onChange: () => onChange(optionValue),
+						className: "mt-1.5 h-4 w-4 shrink-0 accent-[#a56437]"
+					}), label]
+				}, optionValue))
+			}),
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			})
+		]
+	});
+}
+function Consent({ label, checked, error, onChange, inputRef }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-1",
+		children: [/* @__PURE__ */ jsxs("label", {
+			className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+			children: [/* @__PURE__ */ jsx("input", {
+				ref: inputRef,
+				type: "checkbox",
+				checked,
+				onChange: (event) => onChange(event.target.checked),
+				className: "mt-1.5 h-4 w-4 shrink-0 accent-[#a56437]"
+			}), /* @__PURE__ */ jsxs("span", { children: [label, /* @__PURE__ */ jsx("span", {
+				className: "ml-1 text-[#a56437]",
+				children: "*"
+			})] })]
+		}), error && /* @__PURE__ */ jsx("span", {
+			className: "pl-7 text-sm text-[#b3261e]",
+			children: error
+		})]
+	});
+}
+/**
+* Hidden from people and from screen readers, tempting to bots. The controllers treat a
+* filled `website` as spam and answer exactly as they would a real submission.
+*/
+function Honeypot({ value, onChange }) {
+	return /* @__PURE__ */ jsx("div", {
+		"aria-hidden": "true",
+		className: "hidden",
+		children: /* @__PURE__ */ jsxs("label", { children: ["Website", /* @__PURE__ */ jsx("input", {
+			type: "text",
+			tabIndex: -1,
+			autoComplete: "off",
+			value,
+			onChange: (event) => onChange(event.target.value)
+		})] })
+	});
+}
+function inputClass(error) {
+	return `portal-input${error ? " portal-input-error" : ""}`;
+}
+//#endregion
+//#region resources/js/use-form-draft.ts
+var WRITE_DELAY_MS = 400;
+function useFormDraft(key, data, setData, { omit = [], enabled = true } = {}) {
+	const hasRestored = useRef(false);
+	const omitted = useRef(omit);
+	omitted.current = omit;
+	function serialisable(values) {
+		const draft = {};
+		Object.entries(values).forEach(([field, value]) => {
+			if (omitted.current.includes(field)) return;
+			if (value instanceof File || Array.isArray(value) && value.some((item) => item instanceof File)) return;
+			draft[field] = value;
+		});
+		return draft;
+	}
+	useEffect(() => {
+		if (!enabled) {
+			hasRestored.current = true;
+			return;
+		}
+		try {
+			const stored = window.localStorage.getItem(key);
+			if (stored) {
+				const parsed = JSON.parse(stored);
+				const restored = {};
+				Object.keys(data).forEach((field) => {
+					if (field in parsed && !omitted.current.includes(field)) restored[field] = parsed[field];
+				});
+				if (Object.keys(restored).length > 0) setData(restored);
+			}
+		} catch {
+			clear();
+		}
+		hasRestored.current = true;
+	}, []);
+	useEffect(() => {
+		if (!enabled || !hasRestored.current) return;
+		const timer = window.setTimeout(() => {
+			try {
+				window.localStorage.setItem(key, JSON.stringify(serialisable(data)));
+			} catch {}
+		}, WRITE_DELAY_MS);
+		return () => window.clearTimeout(timer);
+	}, [
+		key,
+		data,
+		enabled
+	]);
+	function clear() {
+		try {
+			window.localStorage.removeItem(key);
+		} catch {}
+	}
+	return { clear };
+}
+//#endregion
+//#region resources/js/Components/broker-contact-form.tsx
+var DRAFT_KEY$1 = "petra:draft:contact-broker";
+var REQUIRED_FIELDS = [
+	{
+		name: "full_name",
+		message: "Enter your full name."
+	},
+	{
+		name: "email",
+		message: "Enter your email address."
+	},
+	{
+		name: "phone",
+		message: "Enter your phone number."
+	},
+	{
+		name: "topic",
+		message: "Let us know how we can help."
+	},
+	{
+		name: "message",
+		message: "Tell us a little about your equipment or question."
+	},
+	{
+		name: "preferred_contact",
+		message: "Choose how you would like us to reach you."
+	},
+	{
+		name: "consent",
+		message: "Please authorize Petra to contact you."
+	}
+];
+function BrokerContactForm({ topicOptions, preferredContactOptions, inquirySent, copy, sidebar }) {
+	const { auth } = usePage().props;
+	const form = useForm({
+		full_name: auth.user?.name ?? "",
+		company: auth.user?.company_name ?? "",
+		email: auth.user?.email ?? "",
+		phone: auth.user?.phone ?? "",
+		topic: "",
+		equipment_type: "",
+		message: "",
+		preferred_contact: "",
+		consent: false,
+		website: ""
+	});
+	const [clientErrors, setClientErrors] = useState({});
+	const fieldRefs = useRef({});
+	const draft = useFormDraft(DRAFT_KEY$1, form.data, form.setData, {
+		omit: ["website"],
+		enabled: !inquirySent
+	});
+	function errorFor(field) {
+		const serverErrors = form.errors;
+		return clientErrors[field] ?? serverErrors[field];
+	}
+	function clearError(field) {
+		setClientErrors((errors) => {
+			if (!errors[field]) return errors;
+			const next = { ...errors };
+			delete next[field];
+			return next;
+		});
+	}
+	function isEmpty(field) {
+		const value = form.data[field];
+		return typeof value === "boolean" ? !value : !String(value ?? "").trim();
+	}
+	function submit(event) {
+		event.preventDefault();
+		const errors = {};
+		REQUIRED_FIELDS.forEach((field) => {
+			if (isEmpty(field.name)) errors[field.name] = field.message;
+		});
+		setClientErrors(errors);
+		const firstInvalid = REQUIRED_FIELDS.find((field) => errors[field.name]);
+		if (firstInvalid) {
+			fieldRefs.current[firstInvalid.name]?.focus();
+			fieldRefs.current[firstInvalid.name]?.scrollIntoView({
+				block: "center",
+				behavior: "smooth"
+			});
+			return;
+		}
+		form.post("/sell-equipment/contact-broker", { onSuccess: () => draft.clear() });
+	}
+	return /* @__PURE__ */ jsx("section", {
+		id: "talk-to-a-broker-form",
+		className: "border-b border-[#dad5cb] bg-white py-16 sm:py-20 lg:py-24",
+		children: /* @__PURE__ */ jsxs("div", {
+			className: "mx-auto grid max-w-[1280px] gap-12 px-5 sm:px-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16",
+			children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h2", {
+				className: "font-heading text-3xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl",
+				children: copy.title
+			}), inquirySent ? /* @__PURE__ */ jsx(SuccessPanel, {
+				title: copy.successTitle,
+				body: copy.successBody
+			}) : /* @__PURE__ */ jsxs(Fragment, { children: [
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-4 text-base leading-7 text-neutral-600",
+					children: copy.intro
+				}),
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-2 text-sm leading-6 text-neutral-500",
+					children: copy.requiredNote
+				}),
+				/* @__PURE__ */ jsxs("form", {
+					onSubmit: submit,
+					noValidate: true,
+					className: "mt-10 grid gap-10",
+					children: [
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [/* @__PURE__ */ jsx(Legend, { children: "Your Details" }), /* @__PURE__ */ jsxs("div", {
+								className: "grid gap-5 sm:grid-cols-2",
+								children: [
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.fullName,
+										required: true,
+										error: errorFor("full_name"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.full_name = element;
+											},
+											type: "text",
+											value: form.data.full_name,
+											onChange: (event) => {
+												clearError("full_name");
+												form.setData("full_name", event.target.value);
+											},
+											className: inputClass(errorFor("full_name"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.company,
+										error: errorFor("company"),
+										children: /* @__PURE__ */ jsx("input", {
+											type: "text",
+											value: form.data.company,
+											onChange: (event) => form.setData("company", event.target.value),
+											className: inputClass(errorFor("company"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.email,
+										required: true,
+										error: errorFor("email"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.email = element;
+											},
+											type: "email",
+											value: form.data.email,
+											onChange: (event) => {
+												clearError("email");
+												form.setData("email", event.target.value);
+											},
+											className: inputClass(errorFor("email"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.phone,
+										required: true,
+										error: errorFor("phone"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.phone = element;
+											},
+											type: "tel",
+											value: form.data.phone,
+											onChange: (event) => {
+												clearError("phone");
+												form.setData("phone", event.target.value);
+											},
+											className: inputClass(errorFor("phone"))
+										})
+									})
+								]
+							})]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: "How We Can Help" }),
+								/* @__PURE__ */ jsx(Field, {
+									label: copy.labels.topic,
+									required: true,
+									error: errorFor("topic"),
+									children: /* @__PURE__ */ jsxs("select", {
+										ref: (element) => {
+											fieldRefs.current.topic = element;
+										},
+										value: form.data.topic,
+										onChange: (event) => {
+											clearError("topic");
+											form.setData("topic", event.target.value);
+										},
+										className: inputClass(errorFor("topic")),
+										children: [/* @__PURE__ */ jsx("option", {
+											value: "",
+											children: "Select an option"
+										}), Object.entries(topicOptions).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+											value,
+											children: label
+										}, value))]
+									})
+								}),
+								/* @__PURE__ */ jsx(Field, {
+									label: copy.labels.equipmentType,
+									error: errorFor("equipment_type"),
+									children: /* @__PURE__ */ jsx("input", {
+										type: "text",
+										placeholder: copy.placeholders.equipmentType,
+										value: form.data.equipment_type,
+										onChange: (event) => form.setData("equipment_type", event.target.value),
+										className: inputClass(errorFor("equipment_type"))
+									})
+								}),
+								/* @__PURE__ */ jsx(Field, {
+									label: copy.labels.message,
+									required: true,
+									error: errorFor("message"),
+									children: /* @__PURE__ */ jsx("textarea", {
+										ref: (element) => {
+											fieldRefs.current.message = element;
+										},
+										rows: 6,
+										placeholder: copy.placeholders.message,
+										value: form.data.message,
+										onChange: (event) => {
+											clearError("message");
+											form.setData("message", event.target.value);
+										},
+										className: inputClass(errorFor("message"))
+									})
+								}),
+								/* @__PURE__ */ jsx(RadioGroup, {
+									legend: copy.labels.preferredContact,
+									required: true,
+									options: preferredContactOptions,
+									value: form.data.preferred_contact,
+									error: errorFor("preferred_contact"),
+									onChange: (value) => {
+										clearError("preferred_contact");
+										form.setData("preferred_contact", value);
+									},
+									firstRef: (element) => {
+										fieldRefs.current.preferred_contact = element;
+									}
+								})
+							]
+						}),
+						/* @__PURE__ */ jsx(Consent, {
+							label: copy.consent,
+							checked: form.data.consent,
+							error: errorFor("consent"),
+							inputRef: (element) => {
+								fieldRefs.current.consent = element;
+							},
+							onChange: (checked) => {
+								clearError("consent");
+								form.setData("consent", checked);
+							}
+						}),
+						/* @__PURE__ */ jsx(Honeypot, {
+							value: form.data.website,
+							onChange: (value) => form.setData("website", value)
+						}),
+						/* @__PURE__ */ jsx("div", {
+							className: "border-t border-[#dad5cb] pt-8",
+							children: /* @__PURE__ */ jsx("button", {
+								type: "submit",
+								disabled: form.processing,
+								className: "button-press inline-flex h-14 w-fit items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+								children: form.processing ? "Sending…" : copy.submitLabel
+							})
+						})
+					]
+				})
+			] })] }), /* @__PURE__ */ jsx(ContactSidebar, { copy: sidebar })]
+		})
+	});
+}
+function SuccessPanel({ title, body }) {
+	return /* @__PURE__ */ jsxs("div", {
+		role: "status",
+		className: "mt-8 border-l-4 border-[#a56437] bg-[#f3f1ec] p-8",
+		children: [/* @__PURE__ */ jsx("h3", {
+			className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+			children: title
+		}), /* @__PURE__ */ jsx("div", {
+			className: "mt-4 space-y-3",
+			children: body.map((paragraph) => /* @__PURE__ */ jsx("p", {
+				className: "text-base leading-7 text-neutral-600",
+				children: paragraph
+			}, paragraph))
+		})]
+	});
+}
+/**
+* The contact block beside the form. Every value comes from the shared `siteContact` prop
+* (config/petra.php), so the phone number and address live in one place and can be corrected
+* by an env var rather than a code change.
+*/
+function ContactSidebar({ copy }) {
+	const { siteContact } = usePage().props;
+	return /* @__PURE__ */ jsxs("aside", {
+		className: "h-fit border border-[#dad5cb] bg-[#f3f1ec] p-8 lg:sticky lg:top-8",
+		children: [
+			/* @__PURE__ */ jsx("h3", {
+				className: "font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+				children: copy.title
+			}),
+			/* @__PURE__ */ jsx("p", {
+				className: "mt-4 text-base leading-7 text-neutral-600",
+				children: copy.intro
+			}),
+			/* @__PURE__ */ jsx("h4", {
+				className: "mt-8 font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]",
+				children: copy.contactHeading
+			}),
+			/* @__PURE__ */ jsxs("dl", {
+				className: "mt-4 grid gap-4",
+				children: [
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: copy.phoneLabel
+					}), /* @__PURE__ */ jsx("dd", {
+						className: "mt-1 text-base leading-7 text-neutral-700",
+						children: isDiallable(siteContact.phone) ? /* @__PURE__ */ jsx("a", {
+							href: `tel:${telHref(siteContact.phone)}`,
+							className: contactLinkClass,
+							children: siteContact.phone
+						}) : siteContact.phone
+					})] }),
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: copy.emailLabel
+					}), /* @__PURE__ */ jsx("dd", {
+						className: "mt-1 break-words text-base leading-7 text-neutral-700",
+						children: /* @__PURE__ */ jsx("a", {
+							href: `mailto:${siteContact.email}`,
+							className: contactLinkClass,
+							children: siteContact.email
+						})
+					})] }),
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: copy.hoursLabel
+					}), /* @__PURE__ */ jsxs("dd", {
+						className: "mt-1 text-base leading-7 text-neutral-700",
+						children: [
+							siteContact.hours_days,
+							/* @__PURE__ */ jsx("br", {}),
+							siteContact.hours_time
+						]
+					})] }),
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: copy.serviceAreaLabel
+					}), /* @__PURE__ */ jsx("dd", {
+						className: "mt-2",
+						children: /* @__PURE__ */ jsx("ul", {
+							className: "grid gap-2",
+							children: siteContact.service_area.map((area) => /* @__PURE__ */ jsxs("li", {
+								className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+								children: [/* @__PURE__ */ jsx("span", {
+									"aria-hidden": "true",
+									className: "mt-3 h-1 w-1 shrink-0 bg-[#a56437]"
+								}), area]
+							}, area))
+						})
+					})] })
+				]
+			}),
+			/* @__PURE__ */ jsx("p", {
+				className: "mt-8 border-t border-[#dad5cb] pt-6 text-base leading-7 text-neutral-600",
+				children: copy.closing
+			})
+		]
+	});
+}
+var contactLinkClass = "font-semibold text-[#a56437] underline underline-offset-4 transition-colors hover:text-neutral-950";
+/**
+* config/petra.php still defaults to the content doc's placeholder, "(307) XXX-XXXX". A
+* tel: link to that is a dead affordance — worse than plain text, because it looks callable.
+* Anything holding an X is treated as not yet supplied.
+*/
+function isDiallable(phone) {
+	return phone.trim().length > 0 && !/x/i.test(phone);
+}
+function telHref(phone) {
+	return phone.replace(/[^\d+]/g, "");
+}
+//#endregion
 //#region resources/js/Components/faq-accordion.tsx
 /**
 * FAQPage structured data for a set of question/answer pairs.
@@ -9960,8 +10713,8 @@ var contact_broker_default = {
 //#endregion
 //#region resources/js/Pages/SellEquipment/ContactBroker.tsx
 var ContactBroker_exports = /* @__PURE__ */ __exportAll({ default: () => ContactBroker });
-var { meta: meta$16, hero: hero$16, whenToTalk, duringConversation, whatToHaveReady, whyOwnersChoose, faqSection: faqSection$12, faqs: faqs$14, startConversation } = contact_broker_default;
-function ContactBroker({ canonicalUrl, ogImageUrl }) {
+var { meta: meta$16, hero: hero$16, whenToTalk, duringConversation, whatToHaveReady, whyOwnersChoose, form: form$2, sidebar, faqSection: faqSection$12, faqs: faqs$14, startConversation } = contact_broker_default;
+function ContactBroker({ canonicalUrl, ogImageUrl, topicOptions, preferredContactOptions, inquirySent }) {
 	const structuredData = {
 		"@context": "https://schema.org",
 		"@graph": [
@@ -10074,6 +10827,13 @@ function ContactBroker({ canonicalUrl, ogImageUrl }) {
 					columns: 3
 				})]
 			}),
+			/* @__PURE__ */ jsx(BrokerContactForm, {
+				topicOptions,
+				preferredContactOptions,
+				inquirySent,
+				copy: form$2,
+				sidebar
+			}),
 			/* @__PURE__ */ jsxs(Section, {
 				background: "cream",
 				children: [/* @__PURE__ */ jsx(SectionHeading, {
@@ -10090,62 +10850,6 @@ function ContactBroker({ canonicalUrl, ogImageUrl }) {
 			/* @__PURE__ */ jsx(FinalCta, { ...startConversation })
 		]
 	})] });
-}
-//#endregion
-//#region resources/js/use-form-draft.ts
-var WRITE_DELAY_MS = 400;
-function useFormDraft(key, data, setData, { omit = [], enabled = true } = {}) {
-	const hasRestored = useRef(false);
-	const omitted = useRef(omit);
-	omitted.current = omit;
-	function serialisable(values) {
-		const draft = {};
-		Object.entries(values).forEach(([field, value]) => {
-			if (omitted.current.includes(field)) return;
-			if (value instanceof File || Array.isArray(value) && value.some((item) => item instanceof File)) return;
-			draft[field] = value;
-		});
-		return draft;
-	}
-	useEffect(() => {
-		if (!enabled) {
-			hasRestored.current = true;
-			return;
-		}
-		try {
-			const stored = window.localStorage.getItem(key);
-			if (stored) {
-				const parsed = JSON.parse(stored);
-				const restored = {};
-				Object.keys(data).forEach((field) => {
-					if (field in parsed && !omitted.current.includes(field)) restored[field] = parsed[field];
-				});
-				if (Object.keys(restored).length > 0) setData(restored);
-			}
-		} catch {
-			clear();
-		}
-		hasRestored.current = true;
-	}, []);
-	useEffect(() => {
-		if (!enabled || !hasRestored.current) return;
-		const timer = window.setTimeout(() => {
-			try {
-				window.localStorage.setItem(key, JSON.stringify(serialisable(data)));
-			} catch {}
-		}, WRITE_DELAY_MS);
-		return () => window.clearTimeout(timer);
-	}, [
-		key,
-		data,
-		enabled
-	]);
-	function clear() {
-		try {
-			window.localStorage.removeItem(key);
-		} catch {}
-	}
-	return { clear };
 }
 //#endregion
 //#region resources/js/Components/public-submission-form.tsx
@@ -10710,16 +11414,9 @@ function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptio
 								})
 							]
 						}),
-						/* @__PURE__ */ jsx("div", {
-							"aria-hidden": "true",
-							className: "hidden",
-							children: /* @__PURE__ */ jsxs("label", { children: ["Website", /* @__PURE__ */ jsx("input", {
-								type: "text",
-								tabIndex: -1,
-								autoComplete: "off",
-								value: form.data.website,
-								onChange: (event) => form.setData("website", event.target.value)
-							})] })
+						/* @__PURE__ */ jsx(Honeypot, {
+							value: form.data.website,
+							onChange: (value) => form.setData("website", value)
 						}),
 						/* @__PURE__ */ jsxs("div", {
 							className: "grid gap-4 border-t border-[#dad5cb] pt-8",
@@ -10737,92 +11434,6 @@ function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptio
 				})
 			]
 		})
-	});
-}
-function Legend({ children }) {
-	return /* @__PURE__ */ jsx("legend", {
-		className: "mb-1 font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-		children
-	});
-}
-function Field({ label, error, required = false, className = "", hint, children }) {
-	return /* @__PURE__ */ jsxs("label", {
-		className: `grid gap-2 ${className}`,
-		children: [
-			/* @__PURE__ */ jsxs("span", {
-				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
-				children: [label, required ? /* @__PURE__ */ jsx("span", {
-					className: "ml-1 text-[#a56437]",
-					children: "*"
-				}) : /* @__PURE__ */ jsx("span", {
-					className: "ml-2 text-neutral-400",
-					children: "Optional"
-				})]
-			}),
-			hint && /* @__PURE__ */ jsx("span", {
-				className: "text-sm leading-6 text-neutral-500",
-				children: hint
-			}),
-			children,
-			error && /* @__PURE__ */ jsx("span", {
-				className: "text-sm text-[#b3261e]",
-				children: error
-			})
-		]
-	});
-}
-function RadioGroup({ legend, options, value, error, required = false, onChange, firstRef }) {
-	return /* @__PURE__ */ jsxs("div", {
-		role: "group",
-		className: "grid gap-3",
-		children: [
-			/* @__PURE__ */ jsxs("span", {
-				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
-				children: [legend, required && /* @__PURE__ */ jsx("span", {
-					className: "ml-1 text-[#a56437]",
-					children: "*"
-				})]
-			}),
-			/* @__PURE__ */ jsx("div", {
-				className: "grid gap-2",
-				children: Object.entries(options).map(([optionValue, label], index) => /* @__PURE__ */ jsxs("label", {
-					className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
-					children: [/* @__PURE__ */ jsx("input", {
-						ref: index === 0 ? firstRef : void 0,
-						type: "radio",
-						name: legend,
-						checked: value === optionValue,
-						onChange: () => onChange(optionValue),
-						className: "mt-1.5 h-4 w-4 shrink-0 accent-[#a56437]"
-					}), label]
-				}, optionValue))
-			}),
-			error && /* @__PURE__ */ jsx("span", {
-				className: "text-sm text-[#b3261e]",
-				children: error
-			})
-		]
-	});
-}
-function Consent({ label, checked, error, onChange, inputRef }) {
-	return /* @__PURE__ */ jsxs("div", {
-		className: "grid gap-1",
-		children: [/* @__PURE__ */ jsxs("label", {
-			className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
-			children: [/* @__PURE__ */ jsx("input", {
-				ref: inputRef,
-				type: "checkbox",
-				checked,
-				onChange: (event) => onChange(event.target.checked),
-				className: "mt-1.5 h-4 w-4 shrink-0 accent-[#a56437]"
-			}), /* @__PURE__ */ jsxs("span", { children: [label, /* @__PURE__ */ jsx("span", {
-				className: "ml-1 text-[#a56437]",
-				children: "*"
-			})] })]
-		}), error && /* @__PURE__ */ jsx("span", {
-			className: "pl-7 text-sm text-[#b3261e]",
-			children: error
-		})]
 	});
 }
 function HelpfulList({ intro, items }) {
@@ -10862,9 +11473,6 @@ function GuidePrompt({ prompt, link }) {
 			})
 		]
 	});
-}
-function inputClass(error) {
-	return `portal-input${error ? " portal-input-error" : ""}`;
 }
 var equipment_submission_default = {
 	meta: {
@@ -14171,6 +14779,7 @@ createServer((page) => createInertiaApp({
 			"./Pages/Auth/Register.tsx": Register_exports,
 			"./Pages/Auth/ResetPassword.tsx": ResetPassword_exports,
 			"./Pages/Broker/Inbox.tsx": Inbox_exports,
+			"./Pages/Broker/Leads.tsx": Leads_exports,
 			"./Pages/Broker/Requests.tsx": Requests_exports,
 			"./Pages/Broker/Submissions.tsx": Submissions_exports,
 			"./Pages/Contact.tsx": Contact_exports,

@@ -1,3 +1,4 @@
+import BrokerContactForm from '../../Components/broker-contact-form';
 import { FaqAccordion, faqPageNode } from '../../Components/faq-accordion';
 import { breadcrumbNode, PublicPageMeta, siteOrigin } from '../../Components/public-page-meta';
 import {
@@ -15,12 +16,32 @@ import content from '../../data/sell-equipment/contact-broker.json';
 type Props = {
     canonicalUrl: string;
     ogImageUrl: string;
+    topicOptions: Record<string, string>;
+    preferredContactOptions: Record<string, string>;
+    inquirySent: boolean;
 };
 
-const { meta, hero, whenToTalk, duringConversation, whatToHaveReady, whyOwnersChoose, faqSection, faqs, startConversation } =
-    content;
+const {
+    meta,
+    hero,
+    whenToTalk,
+    duringConversation,
+    whatToHaveReady,
+    whyOwnersChoose,
+    form,
+    sidebar,
+    faqSection,
+    faqs,
+    startConversation,
+} = content;
 
-export default function ContactBroker({ canonicalUrl, ogImageUrl }: Props) {
+export default function ContactBroker({
+    canonicalUrl,
+    ogImageUrl,
+    topicOptions,
+    preferredContactOptions,
+    inquirySent,
+}: Props) {
     const structuredData = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -89,7 +110,13 @@ export default function ContactBroker({ canonicalUrl, ogImageUrl }: Props) {
                     <CardGrid items={whyOwnersChoose.items} columns={3} />
                 </Section>
 
-                {/* The Talk to a Broker form and its contact sidebar mount here — see Phase 6. */}
+                <BrokerContactForm
+                    topicOptions={topicOptions}
+                    preferredContactOptions={preferredContactOptions}
+                    inquirySent={inquirySent}
+                    copy={form}
+                    sidebar={sidebar}
+                />
 
                 <Section background="cream">
                     <SectionHeading eyebrow="Questions" title={faqSection.title} />

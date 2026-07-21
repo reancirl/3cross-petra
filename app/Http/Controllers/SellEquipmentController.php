@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ListingStatus;
+use App\Http\Requests\StoreBrokerInquiryRequest;
 use App\Http\Requests\StorePublicEquipmentSubmissionRequest;
+use App\Models\BrokerInquiry;
 use App\Models\EquipmentSubmission;
 use App\Models\User;
 use App\Support\PublicLocationOptions;
@@ -91,6 +93,56 @@ class SellEquipmentController extends Controller
         ]);
 
         return redirect('/sell-equipment/equipment-submission/thank-you');
+    }
+
+    public function contactBroker(): Response
+    {
+        return Inertia::render('SellEquipment/ContactBroker', [
+            'canonicalUrl' => url('/sell-equipment/contact-broker'),
+            'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+            'topicOptions' => BrokerInquiry::TOPICS,
+            'preferredContactOptions' => BrokerInquiry::PREFERRED_CONTACT,
+            // A dedicated flash key rather than the shared `status` prop, which the portal
+            // renders as a toast: here it swaps the whole form out for a success panel, and
+            // that is not something an unrelated flash message should be able to trigger.
+            'inquirySent' => (bool) session('broker_inquiry_sent'),
+        ]);
+    }
+
+    /**
+     * Record a Talk to a Broker inquiry for the broker Leads queue.
+     *
+     * Unlike a submission, this never becomes a listing and never creates an account. The
+     * row carries its own contact details even for a signed-in visitor — user_id is recorded
+     * alongside so a broker can see the account, not instead of the details typed here.
+     */
+    public function storeBrokerInquiry(StoreBrokerInquiryRequest $request): RedirectResponse
+    {
+        // Same silent honeypot handling as the submission form above.
+        if (filled($request->input('website'))) {
+            return $this->backToContactForm();
+        }
+
+        BrokerInquiry::create([
+            ...$request->safe()->except('consent'),
+            'type' => BrokerInquiry::TYPE_BROKER_INQUIRY,
+            'user_id' => $request->user()?->id,
+            'consented_at' => now(),
+            'status' => BrokerInquiry::STATUS_NEW,
+        ]);
+
+        return $this->backToContactForm();
+    }
+
+    /**
+     * Land back on the form's own section so the success panel is what the visitor sees,
+     * rather than the top of a long editorial page.
+     */
+    private function backToContactForm(): RedirectResponse
+    {
+        return redirect()
+            ->to(route('sell-equipment.contact-broker').'#talk-to-a-broker-form')
+            ->with('broker_inquiry_sent', true);
     }
 
     /**
