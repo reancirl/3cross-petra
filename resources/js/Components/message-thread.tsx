@@ -218,6 +218,24 @@ export default function MessageThread({ page, onNewMessages, emptyLabel }: Messa
 }
 
 function AttachmentView({ attachment, mine }: { attachment: MessageAttachment; mine: boolean }) {
+    // Say so outright rather than linking to a 404 or showing a broken-image icon.
+    if (!attachment.available) {
+        return (
+            <span
+                className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm ${
+                    mine ? 'bg-white/10 text-white/70' : 'bg-[#f3f1ec] text-neutral-500'
+                }`}
+            >
+                <span className="min-w-0 flex-1">
+                    <span className="block truncate line-through">{attachment.name}</span>
+                    <span className={`block text-xs ${mine ? 'text-white/60' : 'text-neutral-400'}`}>
+                        File no longer available
+                    </span>
+                </span>
+            </span>
+        );
+    }
+
     if (attachment.isImage) {
         return (
             <a href={attachment.url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-lg">

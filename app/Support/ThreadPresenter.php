@@ -7,8 +7,10 @@ use App\Enums\ThreadSubjectType;
 use App\Models\EquipmentRequest;
 use App\Models\EquipmentSubmission;
 use App\Models\Message;
+use App\Models\MessageAttachment;
 use App\Models\Thread;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * The single place threads, messages, and their subjects become JSON.
@@ -93,14 +95,21 @@ class ThreadPresenter
     /**
      * @return array<string, mixed>
      */
-    public static function attachment(\App\Models\MessageAttachment $attachment): array
+    public static function attachment(MessageAttachment $attachment): array
     {
+        // Whether the bytes are still there. Rows can outlive their file — anything
+        // uploaded before storage/app became a persisted volume was destroyed on the
+        // next container rebuild. Reporting it lets the UI say so plainly instead of
+        // rendering a broken-image icon and leaving the reader to guess.
+        $available = Storage::disk('local')->exists($attachment->file_path);
+
         return [
             'id' => $attachment->id,
             'name' => $attachment->name,
             'mime' => $attachment->mime,
             'size' => $attachment->size,
             'isImage' => $attachment->isPreviewable(),
+            'available' => $available,
             // A route, not a stored URL: the file is on the private disk and only
             // this endpoint may hand it out, after checking thread access.
             'url' => route('messages.attachments.show', $attachment),
