@@ -40,11 +40,24 @@ class SubmissionReviewController extends Controller
                     // form is still reachable — it has no account behind it to read a name off.
                     'seller' => $submission->contactName(),
                     'email' => $submission->contactEmail(),
+                    'phone' => $submission->contactPhone(),
+                    'company' => $submission->contactCompany(),
                     'is_unclaimed_lead' => $submission->isUnclaimedLead(),
+                    // 'portal' or 'public'. Distinct from is_unclaimed_lead: a signed-in seller
+                    // can submit through the public form, which is owned but still public-sourced.
+                    'source' => $submission->source,
                     'title' => $submission->title,
                     'category' => $submission->category,
+                    'quantity' => $submission->quantity,
                     'region' => $submission->region,
                     'city' => $submission->city,
+                    'wyoming_subregion_label' => $submission->wyomingSubregionLabel(),
+                    // The public form's selling-intent answers. Null / empty for every portal
+                    // submission, which never asked them — the UI renders them only when present.
+                    'ownership_label' => $submission->ownershipLabel(),
+                    'intent_labels' => $submission->intentLabels(),
+                    'availability_label' => $submission->availabilityLabel(),
+                    'value_range_label' => $submission->valueRangeLabel(),
                     'condition_label' => $submission->conditionLabel(),
                     'condition_notes' => $submission->condition_notes,
                     'asking_price' => $submission->asking_price,
@@ -151,6 +164,14 @@ class SubmissionReviewController extends Controller
         // (a Pending offer beside an Accepted one) with nothing saying which governs.
         // The UI hides the form in this case; this is the guard behind it. Flashes
         // rather than 4xx-ing, matching respondToOffer's handling of a resolved offer.
+        // An offer is answered by the seller from their own Offers page, so a listing with no
+        // account behind it has nobody who can ever accept, decline or counter one. Left
+        // unguarded, the offer would also sit Pending forever and trip hasOpenOffer below,
+        // permanently blocking the listing. The UI hides the form; this is the guard behind it.
+        if ($equipmentSubmission->isUnclaimedLead()) {
+            return back()->with('status', 'This submission has no seller account, so an offer logged against it could never be answered. Negotiate using the contact details on the submission.');
+        }
+
         if ($equipmentSubmission->hasOpenOffer()) {
             return back()->with('status', 'This listing already has an open offer. Resolve it before logging another.');
         }

@@ -238,7 +238,75 @@ class PublicEquipmentSubmissionTest extends TestCase
             ->get('/broker/submissions')
             ->assertOk()
             ->assertSee('Dale Rivers')
-            ->assertSee('dale@riversproduction.test');
+            ->assertSee('dale@riversproduction.test')
+            ->assertSee('307-555-0142')
+            ->assertSee('Rivers Production')
+            ->assertSee('"is_unclaimed_lead":true', false);
+    }
+
+    public function test_the_broker_queue_carries_the_public_forms_selling_intent_answers(): void
+    {
+        $this->post('/sell-equipment/equipment-submission', $this->payload());
+
+        $broker = User::factory()->create(['user_type' => User::TYPE_BROKER]);
+
+        $this->actingAs($broker)
+            ->get('/broker/submissions')
+            ->assertOk()
+            ->assertSee('"quantity":2', false)
+            ->assertSee('"source":"public"', false)
+            ->assertSee('Powder River')
+            // Labels, not raw keys — the queue renders these straight into the slide-over.
+            ->assertSee('Sell one piece of equipment')
+            // Prefix only: JSON-encoding the props escapes the label's en-dash to –, the
+            // same way it escapes "/" (see the note on the seller test above).
+            ->assertSee('"value_range_label":"$100,000', false);
+    }
+
+    public function test_a_portal_submission_carries_no_selling_intent_answers(): void
+    {
+        // The portal form never asks them, so the broker UI has nothing to render and the
+        // payload must say so rather than inventing defaults.
+        $seller = User::factory()->create(['user_type' => User::TYPE_SELLER]);
+        EquipmentSubmission::create([
+            'user_id' => $seller->id,
+            'title' => 'Portal Separator',
+            'category' => 'Separators',
+            'region' => 'Wyoming',
+            'condition' => EquipmentSubmission::CONDITION_OPERATING,
+            'status' => ListingStatus::UnderReview,
+        ]);
+
+        $broker = User::factory()->create(['user_type' => User::TYPE_BROKER]);
+
+        $this->actingAs($broker)
+            ->get('/broker/submissions')
+            ->assertOk()
+            ->assertSee('"is_unclaimed_lead":false', false)
+            ->assertSee('"source":"portal"', false)
+            ->assertSee('"ownership_label":null', false)
+            ->assertSee('"intent_labels":[]', false)
+            ->assertSee('"wyoming_subregion_label":null', false);
+    }
+
+    public function test_an_offer_cannot_be_logged_against_an_unclaimed_lead(): void
+    {
+        // There is no seller account to accept, decline or counter it, and an offer stuck on
+        // Pending would trip the one-open-offer guard and block the listing for good.
+        $this->post('/sell-equipment/equipment-submission', $this->payload());
+
+        $submission = EquipmentSubmission::sole();
+        $broker = User::factory()->create(['user_type' => User::TYPE_BROKER]);
+
+        $this->actingAs($broker)
+            ->post("/broker/seller-submissions/{$submission->id}/offers", [
+                'amount' => '45000',
+                'offered_at' => now()->toDateString(),
+                'status' => 'pending',
+            ])
+            ->assertSessionHas('status');
+
+        $this->assertSame(0, $submission->offers()->count());
     }
 
     public function test_submission_form_and_thank_you_pages_render(): void

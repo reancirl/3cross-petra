@@ -29,12 +29,27 @@ export type BrokerOffer = {
 
 export type SellerSubmission = {
     id: number;
+    // Account details when there is an account, otherwise what the public form captured.
     seller: string | null;
     email: string | null;
+    phone: string | null;
+    company: string | null;
+    /** No account behind this row — a broker works it from the contact fields above. */
+    is_unclaimed_lead: boolean;
+    /** 'portal' | 'public'. An owned submission can still be public-sourced. */
+    source: string;
     title: string;
     category: string;
+    quantity: number;
     region: string;
     city: string | null;
+    wyoming_subregion_label: string | null;
+    // The public form's selling-intent answers. Null / empty on portal submissions, which
+    // never asked them — render each only when present.
+    ownership_label: string | null;
+    intent_labels: string[];
+    availability_label: string | null;
+    value_range_label: string | null;
     condition_label: string;
     condition_notes: string | null;
     asking_price: string | null;

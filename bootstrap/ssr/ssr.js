@@ -3369,6 +3369,8 @@ function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, off
 		item.title,
 		item.seller,
 		item.email,
+		item.company,
+		item.phone,
 		item.category,
 		item.region,
 		item.city,
@@ -3410,16 +3412,31 @@ function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, off
 			children: active && /* @__PURE__ */ jsxs("div", {
 				className: "grid gap-6",
 				children: [
+					active.is_unclaimed_lead && /* @__PURE__ */ jsxs("p", {
+						className: "rounded-lg border border-[#a56437]/30 bg-[#f4ece4] px-4 py-3 text-sm leading-6 text-[#8a5330]",
+						children: [/* @__PURE__ */ jsx("strong", {
+							className: "font-semibold",
+							children: "Unclaimed lead."
+						}), " This came from the public form without a signed-in seller, so there is no account to message. Reach out using the contact details below."]
+					}),
 					/* @__PURE__ */ jsxs("dl", {
 						className: "grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
 						children: [
 							/* @__PURE__ */ jsx(Detail$3, {
-								label: "Seller",
+								label: active.is_unclaimed_lead ? "Contact" : "Seller",
 								value: active.seller
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Company",
+								value: active.company
 							}),
 							/* @__PURE__ */ jsx(Detail$3, {
 								label: "Email",
 								value: active.email
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Phone",
+								value: active.phone
 							}),
 							/* @__PURE__ */ jsx(Detail$3, {
 								label: "Category",
@@ -3433,6 +3450,10 @@ function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, off
 								label: "Condition",
 								value: active.condition_label
 							}),
+							active.quantity > 1 && /* @__PURE__ */ jsx(Detail$3, {
+								label: "Quantity",
+								value: `${active.quantity} units`
+							}),
 							/* @__PURE__ */ jsx(Detail$3, {
 								label: "Asking price",
 								value: active.needs_valuation ? "Valuation requested" : active.asking_price ? formatUSD$2(active.asking_price) : null
@@ -3444,6 +3465,32 @@ function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, off
 							/* @__PURE__ */ jsx(Detail$3, {
 								label: "Submitted",
 								value: active.created_at
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Submitted via",
+								value: sourceLabel(active.source)
+							}),
+							active.ownership_label && /* @__PURE__ */ jsx(Detail$3, {
+								label: "Owns the equipment",
+								value: active.ownership_label
+							}),
+							active.availability_label && /* @__PURE__ */ jsx(Detail$3, {
+								label: "Available to sell",
+								value: active.availability_label
+							}),
+							active.value_range_label && /* @__PURE__ */ jsx(Detail$3, {
+								label: "Seller's value estimate",
+								value: active.value_range_label
+							}),
+							active.intent_labels.length > 0 && /* @__PURE__ */ jsxs("div", {
+								className: "sm:col-span-2",
+								children: [/* @__PURE__ */ jsx("dt", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+									children: "Looking to"
+								}), /* @__PURE__ */ jsx("dd", {
+									className: "mt-1 text-neutral-700",
+									children: active.intent_labels.join(" · ")
+								})]
 							}),
 							active.condition_notes && /* @__PURE__ */ jsxs("div", {
 								className: "sm:col-span-2",
@@ -3470,8 +3517,27 @@ function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, off
 		})]
 	})] });
 }
+/**
+* "Wyoming — Powder River" / "Wyoming — Casper". The portal form collects a city, the public
+* form collects a Wyoming sub-region instead; a row carries at most one of them.
+*/
 function regionOf(submission) {
-	return submission.city ? `${submission.region} — ${submission.city}` : submission.region;
+	const detail = submission.city ?? submission.wyoming_subregion_label;
+	return detail ? `${submission.region} — ${detail}` : submission.region;
+}
+/**
+* Flags a submission with nobody behind it. The broker's whole workflow changes: there is no
+* account to message and no seller who can answer an offer, so the contact details on the row
+* are the only way to reach this person.
+*/
+function sourceLabel(source) {
+	return source === "public" ? "Public website form" : "Seller portal";
+}
+function UnclaimedLeadChip() {
+	return /* @__PURE__ */ jsx("span", {
+		className: "rounded-full bg-[#f4ece4] px-2 py-0.5 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-[#8a5330]",
+		children: "Unclaimed lead"
+	});
 }
 /**
 * Column layout for the seller queue. Equipment and Status stay at every width; the
@@ -3496,9 +3562,10 @@ var SUBMISSION_COLUMNS = [
 					openOffers > 0 && /* @__PURE__ */ jsx("span", {
 						className: "rounded-full bg-amber-50 px-2 py-0.5 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-amber-800",
 						children: openOffers === 1 ? "Offer open" : `${openOffers} offers open`
-					})
+					}),
+					submission.is_unclaimed_lead && /* @__PURE__ */ jsx(UnclaimedLeadChip, {})
 				] }),
-				secondary: `${submission.category} · ${regionOf(submission)}`
+				secondary: `${submission.category} · ${regionOf(submission)}${submission.quantity > 1 ? ` · ${submission.quantity} units` : ""}`
 			});
 		}
 	},
@@ -3744,7 +3811,10 @@ function OfferManager({ submission, statusOptions }) {
 				className: "mt-3 text-sm leading-6 text-neutral-500",
 				children: "No offers logged yet."
 			}),
-			openOffer ? /* @__PURE__ */ jsx("p", {
+			submission.is_unclaimed_lead ? /* @__PURE__ */ jsx("p", {
+				className: "mt-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3 text-sm leading-6 text-neutral-600",
+				children: "Offers cannot be logged against an unclaimed lead. An offer is answered by the seller from their own Offers page, and this submission has no account behind it — one logged here could never be accepted, declined, or countered. Negotiate using the contact details above; once this person has a seller account the submission can be attached to it."
+			}) : openOffer ? /* @__PURE__ */ jsx("p", {
 				className: "mt-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3 text-sm leading-6 text-neutral-600",
 				children: openOffer.status === "countered" ? `The seller countered ${formatUSD$2(openOffer.counter_amount ?? openOffer.amount)}. Accept, decline, or re-offer above — a re-offer replaces this negotiation rather than starting a second one.` : `${formatUSD$2(openOffer.amount)} is awaiting the seller's response. You can log another offer once the seller accepts, declines, or counters it.`
 			}) : /* @__PURE__ */ jsxs("form", {
