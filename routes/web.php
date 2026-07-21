@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\EquipmentListingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
+use App\Http\Controllers\MessageAttachmentController;
 use App\Models\EquipmentSubmission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -104,6 +105,15 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 Route::get('/dashboard', fn () => redirect()->route(request()->user()->portalRouteName()))
     ->middleware(['auth', 'no.back.history'])
     ->name('dashboard');
+
+// Message attachments are on the private disk, so they are served by a controller
+// that checks thread access first — never as a static file. Registered once outside
+// the portal groups because all three roles reach the same endpoint and the access
+// question ("can you see this thread") is identical for each.
+Route::get('/messages/attachments/{attachment}', [MessageAttachmentController::class, 'show'])
+    ->middleware(['auth'])
+    ->whereNumber('attachment')
+    ->name('messages.attachments.show');
 
 require __DIR__.'/web/seller.php';
 require __DIR__.'/web/buyer.php';

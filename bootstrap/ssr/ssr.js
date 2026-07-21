@@ -1,7 +1,8 @@
-import { Head, Link, createInertiaApp, router, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, createInertiaApp, router, useForm, usePage, useRemember } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Toaster, toast } from "sonner";
+import * as Dialog from "@radix-ui/react-dialog";
 import createServer from "@inertiajs/react/server";
 import { renderToString } from "react-dom/server";
 //#region \0rolldown/runtime.js
@@ -918,196 +919,1773 @@ function Field$4({ label, error, children }) {
 	});
 }
 //#endregion
-//#region resources/js/Pages/Broker/Submissions.tsx
-var Submissions_exports = /* @__PURE__ */ __exportAll({ default: () => BrokerSubmissions });
-function BrokerSubmissions({ sellerSubmissions, buyerRequests, sellerStatusOptions, buyerStatusOptions }) {
-	const { auth, status } = usePage().props;
-	const [sellerSortDirection, setSellerSortDirection] = useState("desc");
-	const [buyerSortDirection, setBuyerSortDirection] = useState("desc");
-	const sortedSellerSubmissions = useMemo(() => sortByDate(sellerSubmissions, sellerSortDirection), [sellerSubmissions, sellerSortDirection]);
-	const sortedBuyerRequests = useMemo(() => sortByDate(buyerRequests, buyerSortDirection), [buyerRequests, buyerSortDirection]);
+//#region resources/js/Components/confirm-dialog.tsx
+function ConfirmDialog({ open, title, description, confirmLabel, cancelLabel = "Cancel", onConfirm, onCancel }) {
 	useEffect(() => {
-		if (status) toast.success(status);
-	}, [status]);
-	function logout() {
-		router.post("/logout", {}, { replace: true });
-	}
-	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Broker Submissions | Petra" }), /* @__PURE__ */ jsxs("main", {
-		className: "min-h-screen bg-[#f3f1ec] text-neutral-950",
-		children: [/* @__PURE__ */ jsx("header", {
-			className: "border-b border-[#dad5cb] bg-white",
-			children: /* @__PURE__ */ jsxs("div", {
-				className: "mx-auto flex max-w-[1440px] flex-col gap-4 px-5 py-5 sm:px-8 lg:flex-row lg:items-center lg:justify-between",
-				children: [/* @__PURE__ */ jsxs("div", { children: [
-					/* @__PURE__ */ jsx("span", {
-						className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-						children: "Internal Broker View"
-					}),
-					/* @__PURE__ */ jsx("h1", {
-						className: "mt-2 font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950",
-						children: "Submission Review"
-					}),
-					/* @__PURE__ */ jsxs("p", {
-						className: "mt-2 text-sm leading-6 text-neutral-600",
-						children: ["Signed in as ", auth.user?.name ?? "Petra Broker"]
-					})
-				] }), /* @__PURE__ */ jsx("button", {
-					type: "button",
-					onClick: logout,
-					className: "button-press focus-copper inline-flex h-10 w-fit items-center justify-center border border-neutral-500 px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
-					children: "Log out"
-				})]
-			})
-		}), /* @__PURE__ */ jsxs("div", {
-			className: "mx-auto grid max-w-[1440px] gap-6 px-5 py-6 sm:px-8 lg:grid-cols-2",
+		if (!open) return;
+		function closeOnEscape(event) {
+			if (event.key === "Escape") onCancel();
+		}
+		window.addEventListener("keydown", closeOnEscape);
+		return () => window.removeEventListener("keydown", closeOnEscape);
+	}, [open, onCancel]);
+	if (!open) return null;
+	return /* @__PURE__ */ jsxs("div", {
+		className: "fixed inset-0 z-[100] flex items-center justify-center bg-neutral-950/55 px-5 py-6",
+		children: [/* @__PURE__ */ jsx("button", {
+			type: "button",
+			"aria-label": cancelLabel,
+			className: "absolute inset-0 cursor-default",
+			onClick: onCancel
+		}), /* @__PURE__ */ jsxs("section", {
+			role: "dialog",
+			"aria-modal": "true",
+			"aria-labelledby": "confirm-dialog-title",
+			"aria-describedby": "confirm-dialog-description",
+			className: "relative w-full max-w-md border border-[#dad5cb] bg-[#f8f8f6] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)]",
 			children: [
-				/* @__PURE__ */ jsxs("article", {
-					className: "border border-[#dad5cb] bg-white p-5 lg:col-span-2",
-					children: [/* @__PURE__ */ jsx("h2", {
-						className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-						children: "Client Flag"
-					}), /* @__PURE__ */ jsx("p", {
-						className: "mt-3 max-w-5xl text-base leading-7 text-neutral-600",
-						children: "The sitemap does not define an admin or broker portal. This internal page is the minimum addition needed for Petra staff to manually move seller submissions and buyer requests through the documented process statuses."
+				/* @__PURE__ */ jsx("span", {
+					className: "font-heading text-sm font-semibold uppercase tracking-[0.18em] text-[#a56437]",
+					children: "Petra Portal"
+				}),
+				/* @__PURE__ */ jsx("h2", {
+					id: "confirm-dialog-title",
+					className: "mt-3 font-heading text-3xl font-semibold uppercase leading-none tracking-[0.08em] text-neutral-950",
+					children: title
+				}),
+				/* @__PURE__ */ jsx("p", {
+					id: "confirm-dialog-description",
+					className: "mt-4 text-base leading-7 text-neutral-600",
+					children: description
+				}),
+				/* @__PURE__ */ jsxs("div", {
+					className: "mt-7 grid grid-cols-2 gap-3",
+					children: [/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: onCancel,
+						className: "button-press focus-copper inline-flex h-11 items-center justify-center border border-neutral-400 px-5 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-white",
+						children: cancelLabel
+					}), /* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: onConfirm,
+						className: "button-press focus-copper inline-flex h-11 items-center justify-center bg-[#a56437] px-5 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
+						children: confirmLabel
 					})]
-				}),
-				/* @__PURE__ */ jsxs(SubmissionPanel, {
-					title: "Seller Submissions",
-					itemCount: sellerSubmissions.length,
-					sortDirection: sellerSortDirection,
-					onSortDirectionChange: setSellerSortDirection,
-					children: [sortedSellerSubmissions.map((submission) => /* @__PURE__ */ jsxs("article", {
-						className: "border border-[#dad5cb] p-5",
-						children: [
-							/* @__PURE__ */ jsxs("div", {
-								className: "flex flex-wrap items-start justify-between gap-4",
-								children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("h3", {
-									className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-									children: [submission.title, submission.public_id && /* @__PURE__ */ jsx("span", {
-										className: "ml-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-[#a56437]",
-										children: submission.public_id
-									})]
-								}), /* @__PURE__ */ jsxs("p", {
-									className: "mt-1 text-sm leading-6 text-neutral-500",
-									children: [
-										submission.seller,
-										" · ",
-										submission.email,
-										" · ",
-										submission.created_at
-									]
-								})] }), /* @__PURE__ */ jsx(StatusBadge$2, {
-									status: submission.status,
-									label: submission.status_label
-								})]
-							}),
-							/* @__PURE__ */ jsxs("dl", {
-								className: "mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
-								children: [
-									/* @__PURE__ */ jsx(Detail$2, {
-										label: "Category",
-										value: submission.category
-									}),
-									/* @__PURE__ */ jsx(Detail$2, {
-										label: "Region",
-										value: submission.city ? `${submission.region} — ${submission.city}` : submission.region
-									}),
-									/* @__PURE__ */ jsx(Detail$2, {
-										label: "Condition",
-										value: submission.condition_label
-									}),
-									/* @__PURE__ */ jsx(Detail$2, {
-										label: "Asking price",
-										value: submission.needs_valuation ? "Valuation requested" : submission.asking_price ? Number(submission.asking_price).toLocaleString("en-US", {
-											style: "currency",
-											currency: "USD",
-											maximumFractionDigits: 0
-										}) : null
-									}),
-									/* @__PURE__ */ jsx(Detail$2, {
-										label: "Photos",
-										value: `${submission.photo_count} uploaded`
-									}),
-									submission.condition_notes && /* @__PURE__ */ jsxs("div", {
-										className: "sm:col-span-2",
-										children: [/* @__PURE__ */ jsx("dt", {
-											className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
-											children: "Condition notes (private)"
-										}), /* @__PURE__ */ jsx("dd", {
-											className: "mt-1 whitespace-pre-line text-neutral-700",
-											children: submission.condition_notes
-										})]
-									})
-								]
-							}),
-							/* @__PURE__ */ jsx(SellerReviewForm, {
-								submission,
-								options: sellerStatusOptions
-							})
-						]
-					}, submission.id)), sellerSubmissions.length === 0 && /* @__PURE__ */ jsx(EmptyState$1, { text: "No seller equipment has been submitted yet." })]
-				}),
-				/* @__PURE__ */ jsxs(SubmissionPanel, {
-					title: "Buyer Requests",
-					itemCount: buyerRequests.length,
-					sortDirection: buyerSortDirection,
-					onSortDirectionChange: setBuyerSortDirection,
-					children: [sortedBuyerRequests.map((request) => /* @__PURE__ */ jsxs("article", {
-						className: "border border-[#dad5cb] p-5",
-						children: [/* @__PURE__ */ jsxs("div", {
-							className: "flex flex-wrap items-start justify-between gap-4",
-							children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
-								className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-								children: request.equipment_type
-							}), /* @__PURE__ */ jsxs("p", {
-								className: "mt-1 text-sm leading-6 text-neutral-500",
-								children: [
-									request.buyer,
-									" · ",
-									request.email,
-									" · ",
-									request.created_at
-								]
-							})] }), /* @__PURE__ */ jsx(StatusForm, {
-								value: request.status,
-								options: buyerStatusOptions,
-								action: `/broker/buyer-requests/${request.id}`
-							})]
-						}), /* @__PURE__ */ jsxs("dl", {
-							className: "mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
-							children: [
-								/* @__PURE__ */ jsx(Detail$2, {
-									label: "Phone",
-									value: request.phone
-								}),
-								/* @__PURE__ */ jsx(Detail$2, {
-									label: "Company",
-									value: request.company_name
-								}),
-								/* @__PURE__ */ jsx(Detail$2, {
-									label: "Specifications",
-									value: request.specifications
-								}),
-								/* @__PURE__ */ jsx(Detail$2, {
-									label: "Budget range",
-									value: request.budget_range
-								}),
-								/* @__PURE__ */ jsx(Detail$2, {
-									label: "Location preference",
-									value: request.location_preference
-								}),
-								/* @__PURE__ */ jsx(Detail$2, {
-									label: "Timeline",
-									value: request.timeline
-								})
-							]
-						})]
-					}, request.id)), buyerRequests.length === 0 && /* @__PURE__ */ jsx(EmptyState$1, { text: "No buyer requests have been submitted yet." })]
 				})
 			]
 		})]
-	})] });
+	});
 }
+/** Mirrors the `body` rule in StoreMessageRequest. */
+var MAX_BODY_LENGTH = 5e3;
+var ACCEPTED_ATTACHMENT_TYPES = ".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,image/*,application/pdf";
+/** Mirrors App\Models\MessageAttachment::ALLOWED_EXTENSIONS. */
+var ACCEPTED_EXTENSIONS = [
+	"jpg",
+	"jpeg",
+	"png",
+	"webp",
+	"heic",
+	"heif",
+	"pdf"
+];
+/**
+* Sent on visits that should not show navigation chrome — read by BlankLayout so
+* sending a message does not dim the page behind the composer.
+*/
+var QUIET_VISIT_HEADERS = { "X-Petra-Quiet-Visit": "1" };
+function formatFileSize$1(bytes) {
+	if (bytes === null) return "";
+	if (bytes < 1024) return `${bytes} B`;
+	if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+//#endregion
+//#region resources/js/Components/attachment-picker.tsx
+/**
+* The picker is split into a trigger and a list so the composer can put the button
+* inline with Send while the selected files sit above it. Keeping them as one block
+* cost a whole extra row of composer height, which comes straight out of the
+* transcript on a laptop screen.
+*/
+function AttachmentTrigger({ files, max, onChange, onReject }) {
+	function addFiles(picked) {
+		const accepted = [];
+		const rejected = [];
+		for (const file of picked) {
+			const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+			if (!ACCEPTED_EXTENSIONS.includes(extension)) {
+				rejected.push(`${file.name} is not an accepted type`);
+				continue;
+			}
+			if (file.size > 10485760) {
+				rejected.push(`${file.name} is larger than 10MB`);
+				continue;
+			}
+			accepted.push(file);
+		}
+		const combined = [...files, ...accepted];
+		if (combined.length > max) rejected.push(`You can attach at most ${max} files to one message`);
+		if (rejected.length > 0) onReject(rejected.join(". "));
+		onChange(combined.slice(0, max));
+	}
+	return /* @__PURE__ */ jsxs("label", {
+		title: "Attach images or PDFs (max 10MB each)",
+		className: "button-press focus-within:ring-2 focus-within:ring-[#a56437]/40 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-[#dad5cb] bg-white text-neutral-500 transition-colors hover:border-[#a56437] hover:text-[#a56437]",
+		children: [
+			/* @__PURE__ */ jsx("input", {
+				type: "file",
+				multiple: true,
+				accept: ACCEPTED_ATTACHMENT_TYPES,
+				onChange: (event) => {
+					addFiles(Array.from(event.target.files ?? []));
+					event.currentTarget.value = "";
+				},
+				className: "sr-only"
+			}),
+			/* @__PURE__ */ jsx("span", {
+				className: "sr-only",
+				children: "Attach files"
+			}),
+			/* @__PURE__ */ jsx(PaperclipIcon, {})
+		]
+	});
+}
+function AttachmentList({ files, onChange }) {
+	const [previews, setPreviews] = useState([]);
+	useEffect(() => {
+		const next = files.filter((file) => file.type.startsWith("image/")).map((file) => ({
+			file,
+			url: URL.createObjectURL(file)
+		}));
+		setPreviews(next);
+		return () => {
+			next.forEach((preview) => URL.revokeObjectURL(preview.url));
+		};
+	}, [files]);
+	if (files.length === 0) return null;
+	return /* @__PURE__ */ jsx("ul", {
+		className: "flex flex-wrap gap-1.5",
+		children: files.map((file, index) => {
+			const preview = previews.find((item) => item.file === file);
+			return /* @__PURE__ */ jsxs("li", {
+				className: "flex max-w-full items-center gap-2 rounded-lg border border-[#dad5cb] bg-white py-1 pl-1 pr-2",
+				children: [
+					preview ? /* @__PURE__ */ jsx("img", {
+						src: preview.url,
+						alt: "",
+						className: "h-7 w-7 shrink-0 rounded object-cover"
+					}) : /* @__PURE__ */ jsx("span", {
+						className: "flex h-7 w-7 shrink-0 items-center justify-center rounded bg-[#f3f1ec] font-heading text-[0.5rem] font-semibold uppercase text-neutral-500",
+						children: "PDF"
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "min-w-0 truncate text-xs font-medium text-neutral-800",
+						children: file.name
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "shrink-0 text-[0.65rem] text-neutral-400",
+						children: formatFileSize$1(file.size)
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => onChange(files.filter((_, fileIndex) => fileIndex !== index)),
+						"aria-label": `Remove ${file.name}`,
+						className: "focus-copper shrink-0 text-neutral-400 transition-colors hover:text-[#b3261e]",
+						children: /* @__PURE__ */ jsx(CloseIcon$3, {})
+					})
+				]
+			}, `${file.name}-${file.lastModified}-${index}`);
+		})
+	});
+}
+function CloseIcon$3() {
+	return /* @__PURE__ */ jsx("svg", {
+		width: "14",
+		height: "14",
+		viewBox: "0 0 24 24",
+		fill: "none",
+		stroke: "currentColor",
+		strokeWidth: "2.5",
+		"aria-hidden": "true",
+		children: /* @__PURE__ */ jsx("path", { d: "M18 6 6 18M6 6l12 12" })
+	});
+}
+function PaperclipIcon() {
+	return /* @__PURE__ */ jsx("svg", {
+		width: "16",
+		height: "16",
+		viewBox: "0 0 24 24",
+		fill: "none",
+		stroke: "currentColor",
+		strokeWidth: "2",
+		"aria-hidden": "true",
+		children: /* @__PURE__ */ jsx("path", { d: "M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" })
+	});
+}
+//#endregion
+//#region resources/js/Components/message-composer.tsx
+/**
+* The message input, shared by both sides.
+*
+* Enter inserts a newline and never submits — equipment questions run long and
+* contain lists, and a stray Enter mid-thought sending a half-written message is
+* worse than requiring a deliberate click. Submission is the button only.
+*/
+function MessageComposer({ action, toolbar, placeholder, disabledNotice }) {
+	const textareaRef = useRef(null);
+	const form = useForm({
+		body: "",
+		attachments: []
+	});
+	useEffect(() => {
+		const firstError = Object.values(form.errors)[0];
+		if (firstError) toast.error(firstError);
+	}, [form.errors]);
+	function insertAtCursor(text) {
+		const textarea = textareaRef.current;
+		if (!textarea) {
+			form.setData("body", form.data.body ? `${form.data.body}\n\n${text}` : text);
+			return;
+		}
+		const { selectionStart, selectionEnd } = textarea;
+		const current = form.data.body;
+		const next = `${current.slice(0, selectionStart)}${text}${current.slice(selectionEnd)}`;
+		form.setData("body", next.slice(0, MAX_BODY_LENGTH));
+		window.requestAnimationFrame(() => {
+			textarea.focus();
+			const caret = selectionStart + text.length;
+			textarea.setSelectionRange(caret, caret);
+		});
+	}
+	function submit(event) {
+		event.preventDefault();
+		if (form.processing) return;
+		if (!(form.data.body.trim() !== "") && form.data.attachments.length === 0) {
+			toast.error("Write a message or attach a file.");
+			return;
+		}
+		form.post(action, {
+			forceFormData: true,
+			preserveScroll: true,
+			headers: QUIET_VISIT_HEADERS,
+			onSuccess: () => form.reset()
+		});
+	}
+	if (disabledNotice) return /* @__PURE__ */ jsx("div", {
+		className: "border-t border-[#ece7dd] bg-[#f9f7f3] px-4 py-4 text-sm text-neutral-600 sm:px-6",
+		children: disabledNotice
+	});
+	const remaining = MAX_BODY_LENGTH - form.data.body.length;
+	return /* @__PURE__ */ jsxs("form", {
+		onSubmit: submit,
+		className: "grid gap-2 border-t border-[#ece7dd] bg-white px-3 py-3 sm:px-4",
+		children: [
+			toolbar && /* @__PURE__ */ jsx("div", {
+				className: "-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:thin]",
+				children: toolbar(insertAtCursor)
+			}),
+			/* @__PURE__ */ jsx("textarea", {
+				ref: textareaRef,
+				value: form.data.body,
+				maxLength: MAX_BODY_LENGTH,
+				onChange: (event) => form.setData("body", event.target.value),
+				rows: 2,
+				placeholder: placeholder ?? "Write a message…",
+				className: "focus-copper max-h-40 w-full resize-y rounded-lg border border-[#dad5cb] bg-white px-3 py-2 text-sm leading-6 text-neutral-900 placeholder:text-neutral-400"
+			}),
+			/* @__PURE__ */ jsx(AttachmentList, {
+				files: form.data.attachments,
+				onChange: (files) => form.setData("attachments", files)
+			}),
+			/* @__PURE__ */ jsxs("div", {
+				className: "flex items-center gap-2",
+				children: [
+					/* @__PURE__ */ jsx(AttachmentTrigger, {
+						files: form.data.attachments,
+						max: 8,
+						onChange: (files) => form.setData("attachments", files),
+						onReject: (message) => toast.error(message)
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "min-w-0 flex-1 truncate text-xs text-neutral-400",
+						children: remaining < 500 ? `${remaining} characters left` : "Enter adds a new line"
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "submit",
+						className: "button-press focus-copper h-9 shrink-0 rounded-lg bg-[#a56437] px-4 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:bg-[#8a5330]",
+						children: "Send"
+					})
+				]
+			})
+		]
+	});
+}
+//#endregion
+//#region resources/js/Components/message-thread.tsx
+function dayKey(iso) {
+	return new Date(iso).toDateString();
+}
+function formatDaySeparator(iso) {
+	const date = new Date(iso);
+	const today = /* @__PURE__ */ new Date();
+	const yesterday = /* @__PURE__ */ new Date();
+	yesterday.setDate(today.getDate() - 1);
+	if (date.toDateString() === today.toDateString()) return "Today";
+	if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+	return date.toLocaleDateString(void 0, {
+		month: "long",
+		day: "numeric",
+		year: "numeric"
+	});
+}
+function formatTime(iso) {
+	return new Date(iso).toLocaleTimeString(void 0, {
+		hour: "numeric",
+		minute: "2-digit"
+	});
+}
+/**
+* Consecutive messages from one side collapse into a run.
+*
+* A run breaks on a change of sender, a new day, or a gap long enough that the
+* two messages are not really the same thought. Without this the transcript
+* repeats "Petra" above every single bubble, which is noise: in a two-party
+* thread the alignment and colour already say who is speaking, so the name only
+* earns its space when the speaker actually changes.
+*/
+var RUN_GAP_MS = 300 * 1e3;
+function groupMessages(messages) {
+	return messages.map((message, index) => {
+		const previous = index > 0 ? messages[index - 1] : null;
+		const next = index < messages.length - 1 ? messages[index + 1] : null;
+		const startsDay = previous === null || dayKey(previous.createdAt) !== dayKey(message.createdAt);
+		return {
+			message,
+			startsRun: previous === null || previous.senderType !== message.senderType || startsDay || new Date(message.createdAt).getTime() - new Date(previous.createdAt).getTime() > RUN_GAP_MS,
+			endsRun: next === null || next.senderType !== message.senderType || dayKey(next.createdAt) !== dayKey(message.createdAt) || new Date(next.createdAt).getTime() - new Date(message.createdAt).getTime() > RUN_GAP_MS,
+			startsDay
+		};
+	});
+}
+/**
+* Square off the corners facing the rest of a run, so stacked bubbles read as one
+* block instead of a column of separate pills.
+*/
+function bubbleShape(mine, startsRun, endsRun) {
+	const corners = ["rounded-xl"];
+	if (!startsRun) corners.push(mine ? "rounded-tr-sm" : "rounded-tl-sm");
+	if (!endsRun) corners.push(mine ? "rounded-br-sm" : "rounded-bl-sm");
+	return corners.join(" ");
+}
+function DaySeparator({ iso }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "my-4 flex items-center gap-3 first:mt-0",
+		children: [
+			/* @__PURE__ */ jsx("span", { className: "h-px flex-1 bg-[#e4dfd5]" }),
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-neutral-400",
+				children: formatDaySeparator(iso)
+			}),
+			/* @__PURE__ */ jsx("span", { className: "h-px flex-1 bg-[#e4dfd5]" })
+		]
+	});
+}
+function MessageThread({ page, onNewMessages, emptyLabel }) {
+	const scrollRef = useRef(null);
+	const lastSeenId = useRef(null);
+	const messages = page.items;
+	const latestId = messages.length > 0 ? messages[messages.length - 1].id : null;
+	useEffect(() => {
+		if (latestId === null) return;
+		if (lastSeenId.current !== latestId) {
+			scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+			if (lastSeenId.current !== null) onNewMessages?.(latestId);
+			lastSeenId.current = latestId;
+		}
+	}, [latestId, onNewMessages]);
+	if (messages.length === 0) return /* @__PURE__ */ jsx("div", {
+		className: "flex flex-1 items-center justify-center p-8 text-center text-sm leading-6 text-neutral-500",
+		children: emptyLabel ?? "No messages in this conversation yet."
+	});
+	const grouped = groupMessages(messages);
+	return /* @__PURE__ */ jsxs("div", {
+		ref: scrollRef,
+		className: "flex-1 overflow-y-auto px-4 py-5 sm:px-6",
+		children: [page.hasOlder && /* @__PURE__ */ jsxs("p", {
+			className: "mb-5 text-center text-xs text-neutral-500",
+			children: [
+				"Showing the most recent ",
+				page.items.length,
+				" of ",
+				page.total,
+				" messages."
+			]
+		}), /* @__PURE__ */ jsx("ol", {
+			className: "grid",
+			children: grouped.map(({ message, startsRun, endsRun, startsDay }) => /* @__PURE__ */ jsxs("li", {
+				className: startsRun ? "mt-4 first:mt-0" : "mt-0.5",
+				children: [
+					startsDay && /* @__PURE__ */ jsx(DaySeparator, { iso: message.createdAt }),
+					startsRun && !message.mine && /* @__PURE__ */ jsx("p", {
+						className: "mb-1 ml-1 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: message.authorName
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: `flex ${message.mine ? "justify-end" : "justify-start"}`,
+						children: /* @__PURE__ */ jsxs("div", {
+							className: `max-w-[85%] px-4 py-2.5 sm:max-w-[70%] ${bubbleShape(message.mine, startsRun, endsRun)} ${message.mine ? "bg-[#a56437] text-white" : "border border-[#dad5cb] bg-white text-neutral-900"}`,
+							children: [message.body && /* @__PURE__ */ jsx("p", {
+								className: "whitespace-pre-wrap break-words text-sm leading-6",
+								children: message.body
+							}), message.attachments.length > 0 && /* @__PURE__ */ jsx("ul", {
+								className: `grid gap-2 ${message.body ? "mt-2" : ""}`,
+								children: message.attachments.map((attachment) => /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsx(AttachmentView, {
+									attachment,
+									mine: message.mine
+								}) }, attachment.id))
+							})]
+						})
+					}),
+					endsRun && /* @__PURE__ */ jsx("p", {
+						className: `mt-1 text-[0.7rem] text-neutral-400 ${message.mine ? "pr-1 text-right" : "pl-1"}`,
+						children: formatTime(message.createdAt)
+					})
+				]
+			}, message.id))
+		})]
+	});
+}
+function AttachmentView({ attachment, mine }) {
+	if (attachment.isImage) return /* @__PURE__ */ jsx("a", {
+		href: attachment.url,
+		target: "_blank",
+		rel: "noreferrer",
+		className: "block overflow-hidden rounded-lg",
+		children: /* @__PURE__ */ jsx("img", {
+			src: attachment.url,
+			alt: attachment.name,
+			className: "max-h-64 w-full object-cover",
+			loading: "lazy"
+		})
+	});
+	return /* @__PURE__ */ jsxs("a", {
+		href: attachment.url,
+		target: "_blank",
+		rel: "noreferrer",
+		className: `flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${mine ? "bg-white/15 text-white hover:bg-white/25" : "bg-[#f3f1ec] text-neutral-800 hover:bg-[#ece7dd]"}`,
+		children: [/* @__PURE__ */ jsx("span", {
+			className: `flex h-8 w-8 shrink-0 items-center justify-center rounded font-heading text-[0.55rem] font-semibold uppercase ${mine ? "bg-white/20" : "bg-white"}`,
+			children: "PDF"
+		}), /* @__PURE__ */ jsxs("span", {
+			className: "min-w-0 flex-1",
+			children: [/* @__PURE__ */ jsx("span", {
+				className: "block truncate font-semibold",
+				children: attachment.name
+			}), /* @__PURE__ */ jsx("span", {
+				className: `block text-xs ${mine ? "text-white/70" : "text-neutral-500"}`,
+				children: formatFileSize$1(attachment.size)
+			})]
+		})]
+	});
+}
+//#endregion
+//#region resources/js/Components/portal-page-header.tsx
+function PortalPageHeader({ eyebrow, title, description, actions }) {
+	return /* @__PURE__ */ jsxs("section", {
+		className: "flex flex-col gap-4 rounded-xl border border-[#dad5cb] bg-white px-5 py-4 shadow-sm lg:flex-row lg:items-center lg:justify-between lg:px-6",
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "min-w-0",
+			children: [
+				/* @__PURE__ */ jsx("span", {
+					className: "font-heading text-xs font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+					children: eyebrow
+				}),
+				/* @__PURE__ */ jsx("h2", {
+					className: "mt-1 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+					children: title
+				}),
+				description && /* @__PURE__ */ jsx("p", {
+					className: "mt-1 text-sm leading-6 text-neutral-500",
+					children: description
+				})
+			]
+		}), actions && /* @__PURE__ */ jsx("div", {
+			className: "flex flex-col gap-3 sm:flex-row sm:items-center",
+			children: actions
+		})]
+	});
+}
+/**
+* Standard action button styling for the header's right-hand slot, sized to the compact
+* header (h-11, matching the search field on My Listings).
+*/
+var portalHeaderActionClass = "button-press focus-copper inline-flex h-11 w-full items-center justify-center rounded-lg bg-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto";
+//#endregion
+//#region resources/js/Components/portal-sidebar.tsx
+var sellerNavGroups = [
+	{
+		label: "Main Menu",
+		items: [
+			{
+				label: "Dashboard",
+				path: "dashboard",
+				real: true,
+				icon: "dashboard"
+			},
+			{
+				label: "My Listings",
+				path: "listings",
+				real: true,
+				icon: "equipment"
+			},
+			{
+				label: "Quotes",
+				path: "quotes",
+				real: false,
+				icon: "quotes"
+			},
+			{
+				label: "Offers",
+				path: "offers",
+				real: true,
+				icon: "offers"
+			}
+		]
+	},
+	{
+		label: "Other",
+		items: [{
+			label: "Documents",
+			path: "documents",
+			real: false,
+			icon: "documents"
+		}, {
+			label: "Messages",
+			path: "messages",
+			real: true,
+			icon: "messages",
+			badge: "unread"
+		}]
+	},
+	{
+		label: "Account",
+		items: [{
+			label: "Profile",
+			path: "profile",
+			real: true,
+			icon: "profile"
+		}]
+	}
+];
+var buyerNavGroups = [
+	{
+		label: "Main Menu",
+		items: [
+			{
+				label: "Dashboard",
+				path: "dashboard",
+				real: true,
+				icon: "dashboard"
+			},
+			{
+				label: "My Requests",
+				path: "requests",
+				real: true,
+				icon: "equipment"
+			},
+			{
+				label: "Saved Equipment",
+				path: "saved-equipment",
+				real: false,
+				icon: "equipment"
+			},
+			{
+				label: "Quotes",
+				path: "quotes",
+				real: true,
+				icon: "quotes"
+			}
+		]
+	},
+	{
+		label: "Other",
+		items: [
+			{
+				label: "Documents",
+				path: "documents",
+				real: false,
+				icon: "documents"
+			},
+			{
+				label: "Messages",
+				path: "messages",
+				real: true,
+				icon: "messages",
+				badge: "unread"
+			},
+			{
+				label: "Notifications",
+				path: "notifications",
+				real: false,
+				icon: "notifications"
+			}
+		]
+	},
+	{
+		label: "Account",
+		items: [{
+			label: "Profile",
+			path: "profile",
+			real: true,
+			icon: "profile"
+		}]
+	}
+];
+var brokerNavGroups = [{
+	label: "Main Menu",
+	items: [
+		{
+			label: "Seller Submissions",
+			path: "submissions",
+			real: true,
+			icon: "equipment"
+		},
+		{
+			label: "Buyer Requests",
+			path: "requests",
+			real: true,
+			icon: "quotes"
+		},
+		{
+			label: "Inbox",
+			path: "inbox",
+			real: true,
+			icon: "messages",
+			badge: "unread"
+		}
+	]
+}, {
+	label: "Account",
+	items: [{
+		label: "Profile",
+		path: "profile",
+		real: true,
+		icon: "profile"
+	}]
+}];
+function hrefFor(portal, path) {
+	if (path === "dashboard") return `/${portal.userType}/dashboard`;
+	return `/${portal.userType}/${path}`;
+}
+/**
+* Where the logo links back to. Sellers and buyers land on a dashboard; brokers have
+* none, so they go to the seller review queue instead of a /broker/dashboard 404.
+*/
+function portalHome(portal) {
+	return portal.userType === "broker" ? "/broker/submissions" : `/${portal.userType}/dashboard`;
+}
+function navGroupsFor(portal) {
+	switch (portal.userType) {
+		case "seller": return sellerNavGroups;
+		case "broker": return brokerNavGroups;
+		default: return buyerNavGroups;
+	}
+}
+function PortalSidebar({ portal, collapsed, onToggleCollapsed, onLogout }) {
+	const page = usePage();
+	const { auth } = page.props;
+	const unreadThreads = page.props.unreadMessageThreads ?? 0;
+	const currentPath = page.url.split("?")[0];
+	const userName = auth.user?.name ?? portal.profileName;
+	const userInitial = (userName ?? portal.roleLabel).charAt(0).toUpperCase();
+	const navGroups = navGroupsFor(portal);
+	return /* @__PURE__ */ jsxs("aside", {
+		className: "border-b border-[#dad5cb] bg-white text-neutral-900 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:self-start lg:border-b-0 lg:border-r",
+		children: [
+			/* @__PURE__ */ jsxs("div", {
+				className: `flex items-center gap-3 border-b border-[#ece7dd] px-5 py-4 lg:min-h-[72px] lg:py-3 ${collapsed ? "lg:flex-col lg:justify-center lg:gap-2 lg:px-2" : "justify-between lg:px-5"}`,
+				children: [/* @__PURE__ */ jsxs(Link, {
+					href: portalHome(portal),
+					className: "focus-copper flex min-w-0 items-center gap-3",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#a56437] font-heading text-xl font-bold uppercase leading-none text-white",
+						children: "P"
+					}), /* @__PURE__ */ jsxs("span", {
+						className: `min-w-0 ${collapsed ? "lg:hidden" : ""}`,
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "block truncate font-heading text-xl font-semibold uppercase leading-none tracking-[0.18em] text-neutral-950",
+							children: "Petra"
+						}), /* @__PURE__ */ jsxs("span", {
+							className: "mt-1 block truncate font-heading text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-neutral-400",
+							children: [portal.roleLabel, " Portal"]
+						})]
+					})]
+				}), /* @__PURE__ */ jsx("button", {
+					type: "button",
+					onClick: onToggleCollapsed,
+					"aria-label": collapsed ? "Expand sidebar" : "Collapse sidebar",
+					className: "focus-copper hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#dad5cb] text-neutral-500 transition-colors hover:bg-[#f3f1ec] hover:text-neutral-900 lg:flex",
+					children: /* @__PURE__ */ jsx(SidebarToggleIcon, { collapsed })
+				})]
+			}),
+			/* @__PURE__ */ jsx("nav", {
+				"aria-label": `${portal.roleLabel} portal navigation`,
+				className: "overflow-x-auto lg:flex-1 lg:overflow-x-visible lg:overflow-y-auto",
+				children: /* @__PURE__ */ jsx("div", {
+					className: "flex min-w-max gap-1 p-3 lg:min-w-0 lg:flex-col lg:gap-0 lg:p-3",
+					children: navGroups.map((group, groupIndex) => /* @__PURE__ */ jsxs("div", {
+						className: "flex gap-1 lg:flex-col lg:gap-1",
+						children: [collapsed ? groupIndex > 0 && /* @__PURE__ */ jsx("span", {
+							"aria-hidden": "true",
+							className: "hidden lg:mx-2 lg:my-2 lg:block lg:h-px lg:bg-[#ece7dd]"
+						}) : /* @__PURE__ */ jsx("span", {
+							className: `hidden px-3 pb-1 font-heading text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-neutral-400 lg:block ${groupIndex === 0 ? "pt-1" : "pt-4"}`,
+							children: group.label
+						}), group.items.map((item) => {
+							const href = hrefFor(portal, item.path);
+							const active = currentPath === href || currentPath.startsWith(`${href}/`);
+							const badgeCount = item.badge === "unread" ? unreadThreads : 0;
+							return /* @__PURE__ */ jsxs(Link, {
+								href,
+								"aria-current": active ? "page" : void 0,
+								title: collapsed ? item.label : void 0,
+								className: `group flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 font-heading text-[0.9rem] font-semibold uppercase tracking-[0.06em] transition-colors ${collapsed ? "lg:justify-center lg:px-0" : "justify-between"} ${active ? "bg-[#f4ece4] text-[#8a5330]" : "text-neutral-600 hover:bg-[#f3f1ec] hover:text-neutral-900"}`,
+								children: [
+									/* @__PURE__ */ jsxs("span", {
+										className: "flex min-w-0 items-center gap-3",
+										children: [/* @__PURE__ */ jsx("span", {
+											className: active ? "text-[#a56437]" : "text-neutral-400 group-hover:text-neutral-600",
+											children: /* @__PURE__ */ jsx(PortalNavIcon, { name: item.icon })
+										}), /* @__PURE__ */ jsx("span", {
+											className: `truncate ${collapsed ? "lg:hidden" : ""}`,
+											children: item.label
+										})]
+									}),
+									!item.real && /* @__PURE__ */ jsx("span", {
+										className: `rounded-full px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-[0.1em] ${active ? "bg-[#a56437]/15 text-[#8a5330]" : "bg-neutral-100 text-neutral-400"} ${collapsed ? "lg:hidden" : ""}`,
+										children: "Soon"
+									}),
+									item.real && badgeCount > 0 && /* @__PURE__ */ jsx("span", {
+										className: "ml-auto flex min-w-5 shrink-0 items-center justify-center rounded-full bg-[#a56437] px-1.5 py-0.5 text-[0.65rem] font-semibold leading-none text-white lg:ml-0",
+										"aria-label": `${badgeCount} unread ${badgeCount === 1 ? "conversation" : "conversations"}`,
+										children: badgeCount > 99 ? "99+" : badgeCount
+									})
+								]
+							}, item.path);
+						})]
+					}, group.label))
+				})
+			}),
+			/* @__PURE__ */ jsx("div", {
+				className: `hidden border-t border-[#ece7dd] lg:block ${collapsed ? "lg:p-2" : "lg:p-4"}`,
+				children: /* @__PURE__ */ jsxs("div", {
+					className: `flex items-center rounded-xl border border-[#dad5cb] bg-[#f9f7f3] ${collapsed ? "lg:justify-center lg:p-2" : "gap-3 p-3"}`,
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#a56437] font-heading text-lg font-semibold uppercase text-white",
+						children: userInitial
+					}), !collapsed && /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs("span", {
+						className: "min-w-0 flex-1",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "block truncate text-sm font-semibold text-neutral-900",
+							children: userName
+						}), /* @__PURE__ */ jsx("span", {
+							className: "mt-0.5 block font-heading text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-neutral-400",
+							children: portal.roleLabel
+						})]
+					}), /* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: onLogout,
+						"aria-label": "Log out",
+						title: "Log out",
+						className: "focus-copper flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-transparent text-neutral-400 transition-colors hover:border-[#dad5cb] hover:bg-white hover:text-[#a56437]",
+						children: /* @__PURE__ */ jsx(LogoutIcon, {})
+					})] })]
+				})
+			})
+		]
+	});
+}
+function SidebarToggleIcon({ collapsed }) {
+	return /* @__PURE__ */ jsx("svg", {
+		className: "h-4 w-4 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.8,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: collapsed ? /* @__PURE__ */ jsx("path", { d: "M9 6l6 6-6 6" }) : /* @__PURE__ */ jsx("path", { d: "M15 6l-6 6 6 6" })
+	});
+}
+function LogoutIcon() {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: "h-4 w-4 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.8,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [
+			/* @__PURE__ */ jsx("path", { d: "M15 12H4" }),
+			/* @__PURE__ */ jsx("path", { d: "M8 8l-4 4 4 4" }),
+			/* @__PURE__ */ jsx("path", { d: "M12 4h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6" })
+		]
+	});
+}
+function PortalNavIcon({ name }) {
+	const common = {
+		className: "h-4 w-4 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.8,
+		viewBox: "0 0 24 24",
+		"aria-hidden": true
+	};
+	switch (name) {
+		case "dashboard": return /* @__PURE__ */ jsxs("svg", {
+			...common,
+			children: [
+				/* @__PURE__ */ jsx("path", { d: "M4 13h6V4H4z" }),
+				/* @__PURE__ */ jsx("path", { d: "M14 20h6v-9h-6z" }),
+				/* @__PURE__ */ jsx("path", { d: "M4 20h6v-4H4z" }),
+				/* @__PURE__ */ jsx("path", { d: "M14 7h6V4h-6z" })
+			]
+		});
+		case "equipment": return /* @__PURE__ */ jsxs("svg", {
+			...common,
+			children: [
+				/* @__PURE__ */ jsx("path", { d: "M4 16h16" }),
+				/* @__PURE__ */ jsx("path", { d: "M6 16l2-6h8l2 6" }),
+				/* @__PURE__ */ jsx("path", { d: "M8 18.5h.01" }),
+				/* @__PURE__ */ jsx("path", { d: "M16 18.5h.01" }),
+				/* @__PURE__ */ jsx("path", { d: "M9 10V7h6v3" })
+			]
+		});
+		case "quotes": return /* @__PURE__ */ jsxs("svg", {
+			...common,
+			children: [
+				/* @__PURE__ */ jsx("path", { d: "M7 7h10" }),
+				/* @__PURE__ */ jsx("path", { d: "M7 12h8" }),
+				/* @__PURE__ */ jsx("path", { d: "M7 17h5" }),
+				/* @__PURE__ */ jsx("path", { d: "M5 3h14v18H5z" })
+			]
+		});
+		case "offers": return /* @__PURE__ */ jsxs("svg", {
+			...common,
+			children: [
+				/* @__PURE__ */ jsx("path", { d: "M20 12l-8 8-8-8 8-8z" }),
+				/* @__PURE__ */ jsx("path", { d: "M12 8v8" }),
+				/* @__PURE__ */ jsx("path", { d: "M8 12h8" })
+			]
+		});
+		case "documents": return /* @__PURE__ */ jsxs("svg", {
+			...common,
+			children: [
+				/* @__PURE__ */ jsx("path", { d: "M7 3h7l4 4v14H7z" }),
+				/* @__PURE__ */ jsx("path", { d: "M14 3v5h5" }),
+				/* @__PURE__ */ jsx("path", { d: "M10 13h6" }),
+				/* @__PURE__ */ jsx("path", { d: "M10 17h4" })
+			]
+		});
+		case "messages": return /* @__PURE__ */ jsxs("svg", {
+			...common,
+			children: [
+				/* @__PURE__ */ jsx("path", { d: "M4 5h16v11H8l-4 4z" }),
+				/* @__PURE__ */ jsx("path", { d: "M8 9h8" }),
+				/* @__PURE__ */ jsx("path", { d: "M8 13h5" })
+			]
+		});
+		case "notifications": return /* @__PURE__ */ jsxs("svg", {
+			...common,
+			children: [/* @__PURE__ */ jsx("path", { d: "M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" }), /* @__PURE__ */ jsx("path", { d: "M10 21h4" })]
+		});
+		case "profile": return /* @__PURE__ */ jsxs("svg", {
+			...common,
+			children: [/* @__PURE__ */ jsx("path", { d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8" }), /* @__PURE__ */ jsx("path", { d: "M4 21a8 8 0 0 1 16 0" })]
+		});
+	}
+}
+//#endregion
+//#region resources/js/Components/portal-topbar.tsx
+function PortalTopbar({ portal, title, subtitle, onLogout }) {
+	const { auth } = usePage().props;
+	const userName = auth.user?.name ?? portal.profileName ?? portal.roleLabel;
+	const userInitial = userName.charAt(0).toUpperCase();
+	const profileHref = `/${portal.userType}/profile`;
+	return /* @__PURE__ */ jsx("header", {
+		className: "sticky top-0 z-30 border-b border-[#dad5cb] bg-white/95 backdrop-blur-sm",
+		children: /* @__PURE__ */ jsxs("div", {
+			className: "flex min-h-[72px] items-center justify-between gap-4 px-5 py-3 sm:px-7 lg:px-8",
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "min-w-0",
+				children: [/* @__PURE__ */ jsx("h1", {
+					className: "truncate font-heading text-2xl font-bold uppercase leading-none tracking-[0.08em] text-neutral-950 sm:text-[1.75rem]",
+					children: title
+				}), subtitle && /* @__PURE__ */ jsx("p", {
+					className: "mt-1 truncate text-sm text-neutral-500",
+					children: subtitle
+				})]
+			}), /* @__PURE__ */ jsxs("div", {
+				className: "flex shrink-0 items-center gap-2 sm:gap-3 lg:hidden",
+				children: [/* @__PURE__ */ jsxs(Link, {
+					href: profileHref,
+					className: "focus-copper button-press group flex items-center gap-2.5 rounded-full border border-[#dad5cb] bg-white py-1 pl-1 pr-2 transition-colors hover:border-[#a56437] sm:pr-3",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#a56437] font-heading text-sm font-semibold uppercase text-white",
+						children: userInitial
+					}), /* @__PURE__ */ jsxs("span", {
+						className: "hidden min-w-0 sm:block",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "block max-w-[10rem] truncate text-sm font-semibold text-neutral-900",
+							children: userName
+						}), /* @__PURE__ */ jsx("span", {
+							className: "block font-heading text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-neutral-400",
+							children: portal.roleLabel
+						})]
+					})]
+				}), /* @__PURE__ */ jsx("button", {
+					type: "button",
+					onClick: onLogout,
+					className: "button-press focus-copper inline-flex h-10 w-fit items-center justify-center rounded-lg border border-[#a56437] px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] transition-colors hover:bg-[#a56437] hover:text-white sm:px-6",
+					children: "Log out"
+				})]
+			})]
+		})
+	});
+}
+//#endregion
+//#region resources/js/Components/portal-shell.tsx
+var SIDEBAR_COLLAPSED_KEY = "petra-portal-sidebar-collapsed";
+var UNREAD_POLL_MS = 45e3;
+function PortalShell({ portal, title, eyebrow, children }) {
+	const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
+	useEffect(() => {
+		setCollapsed(window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1");
+	}, []);
+	/**
+	* Keep the Messages nav badge current on every portal screen.
+	*
+	* A partial reload of the single shared `unreadMessageThreads` prop, so the poll
+	* costs one indexed count and never re-serializes the page the user is reading —
+	* important because a mutation on this codebase otherwise re-sends all props.
+	*
+	* Paused while the tab is hidden, and fired once on becoming visible so a user
+	* returning to a backgrounded tab sees a current count immediately rather than
+	* waiting out the remainder of an interval.
+	*/
+	useEffect(() => {
+		function refreshUnread() {
+			if (document.hidden) return;
+			router.reload({ only: ["unreadMessageThreads"] });
+		}
+		const timer = window.setInterval(refreshUnread, UNREAD_POLL_MS);
+		document.addEventListener("visibilitychange", refreshUnread);
+		return () => {
+			window.clearInterval(timer);
+			document.removeEventListener("visibilitychange", refreshUnread);
+		};
+	}, []);
+	function toggleCollapsed() {
+		setCollapsed((value) => {
+			const next = !value;
+			window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? "1" : "0");
+			return next;
+		});
+	}
+	function logout() {
+		setLogoutDialogOpen(false);
+		router.post("/logout", {}, { replace: true });
+	}
+	return /* @__PURE__ */ jsxs("main", {
+		className: `portal-shell min-h-screen bg-[#f3f1ec] text-neutral-950 lg:grid ${collapsed ? "lg:grid-cols-[80px_minmax(0,1fr)]" : "lg:grid-cols-[296px_minmax(0,1fr)]"}`,
+		children: [
+			/* @__PURE__ */ jsx(PortalSidebar, {
+				portal,
+				collapsed,
+				onToggleCollapsed: toggleCollapsed,
+				onLogout: () => setLogoutDialogOpen(true)
+			}),
+			/* @__PURE__ */ jsxs("section", {
+				className: "min-w-0",
+				children: [/* @__PURE__ */ jsx(PortalTopbar, {
+					portal,
+					title,
+					subtitle: eyebrow,
+					onLogout: () => setLogoutDialogOpen(true)
+				}), /* @__PURE__ */ jsx("div", {
+					className: "px-5 py-6 sm:px-8 lg:px-10 lg:py-8",
+					children
+				})]
+			}),
+			/* @__PURE__ */ jsx(ConfirmDialog, {
+				open: logoutDialogOpen,
+				title: "Log out?",
+				description: "You will be signed out of your Petra portal session and returned to the login page.",
+				confirmLabel: "Log out",
+				onCancel: () => setLogoutDialogOpen(false),
+				onConfirm: logout
+			})
+		]
+	});
+}
+//#endregion
+//#region resources/js/Components/status-badge.tsx
+/**
+* Tone-driven status pill.
+*
+* Lifted verbatim from the copy in Pages/Portal/SellerOffers so the messaging
+* screens render statuses identically to the rest of the portal. Near-identical
+* private copies also live in BuyerQuotes and broker-queue; those are left alone
+* rather than refactored as a side effect of the messaging work, but this is the
+* one to consolidate on if they are ever unified.
+*/
+var toneClasses$3 = {
+	neutral: "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700",
+	success: "border-emerald-800/25 bg-emerald-50 text-emerald-800",
+	warning: "border-amber-800/25 bg-amber-50 text-amber-800",
+	muted: "border-neutral-300 bg-neutral-100 text-neutral-500",
+	danger: "border-[#b3261e]/25 bg-red-50 text-[#b3261e]"
+};
+function StatusBadge$5({ label, tone = "neutral" }) {
+	return /* @__PURE__ */ jsx("span", {
+		className: `inline-flex h-7 shrink-0 items-center rounded-full border px-3 font-heading text-xs font-semibold uppercase tracking-[0.12em] ${toneClasses$3[tone] ?? toneClasses$3.neutral}`,
+		children: label
+	});
+}
+//#endregion
+//#region resources/js/Components/thread-list.tsx
+function formatTimestamp(iso) {
+	if (!iso) return "";
+	const date = new Date(iso);
+	const now = /* @__PURE__ */ new Date();
+	if (date.toDateString() === now.toDateString()) return date.toLocaleTimeString(void 0, {
+		hour: "numeric",
+		minute: "2-digit"
+	});
+	if (date.getFullYear() === now.getFullYear()) return date.toLocaleDateString(void 0, {
+		month: "short",
+		day: "numeric"
+	});
+	return date.toLocaleDateString(void 0, {
+		month: "short",
+		day: "numeric",
+		year: "numeric"
+	});
+}
+function Chip$1({ children, muted = false }) {
+	return /* @__PURE__ */ jsx("span", {
+		className: `max-w-full truncate rounded-full px-2 py-0.5 font-heading text-[0.6rem] font-semibold uppercase tracking-[0.08em] ${muted ? "bg-neutral-100 text-neutral-400" : "bg-[#f3f1ec] text-neutral-500"}`,
+		children
+	});
+}
+function ThreadList({ threads, activeId, showParticipant = false, emptyLabel }) {
+	if (threads.length === 0) return /* @__PURE__ */ jsx("div", {
+		className: "rounded-xl border border-dashed border-[#dad5cb] bg-white p-6 text-sm leading-6 text-neutral-500",
+		children: emptyLabel ?? "No conversations."
+	});
+	return /* @__PURE__ */ jsx("ul", {
+		className: "grid max-h-[calc(100dvh-15rem)] min-w-0 gap-1 overflow-y-auto overflow-x-hidden rounded-xl border border-[#dad5cb] bg-white p-2 shadow-sm",
+		children: threads.map((thread) => {
+			const active = thread.id === activeId;
+			const unread = thread.unreadCount > 0;
+			return /* @__PURE__ */ jsx("li", {
+				className: "min-w-0",
+				children: /* @__PURE__ */ jsxs(Link, {
+					href: thread.url,
+					"aria-current": active ? "true" : void 0,
+					className: `grid min-w-0 gap-1 overflow-hidden rounded-lg border p-3 transition-colors ${active ? "border-[#a56437]/40 bg-[#f4ece4]" : "border-transparent hover:border-[#dad5cb] hover:bg-[#f9f7f3]"}`,
+					children: [
+						/* @__PURE__ */ jsxs("span", {
+							className: "flex min-w-0 items-start justify-between gap-2",
+							children: [/* @__PURE__ */ jsx("span", {
+								className: `min-w-0 truncate text-sm ${unread ? "font-semibold text-neutral-950" : "font-medium text-neutral-800"}`,
+								children: thread.subjectTitle
+							}), /* @__PURE__ */ jsx("span", {
+								className: "shrink-0 text-[0.7rem] text-neutral-400",
+								children: formatTimestamp(thread.lastMessageAt)
+							})]
+						}),
+						showParticipant && thread.userName && /* @__PURE__ */ jsxs("span", {
+							className: "min-w-0 truncate font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-neutral-500",
+							children: [
+								thread.userName,
+								" · ",
+								thread.userRole
+							]
+						}),
+						/* @__PURE__ */ jsxs("span", {
+							className: "flex min-w-0 items-center justify-between gap-2",
+							children: [/* @__PURE__ */ jsx("span", {
+								className: `min-w-0 truncate text-xs ${unread ? "text-neutral-700" : "text-neutral-500"}`,
+								children: thread.snippet
+							}), unread && /* @__PURE__ */ jsx("span", {
+								className: "flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#a56437] px-1.5 text-[0.65rem] font-semibold leading-none text-white",
+								"aria-label": `${thread.unreadCount} unread`,
+								children: thread.unreadCount > 99 ? "99+" : thread.unreadCount
+							})]
+						}),
+						/* @__PURE__ */ jsxs("span", {
+							className: "flex min-w-0 flex-wrap items-center gap-1",
+							children: [
+								/* @__PURE__ */ jsx(Chip$1, { children: thread.subjectTypeLabel }),
+								thread.subjectStatus && /* @__PURE__ */ jsx(Chip$1, { children: thread.subjectStatus.label }),
+								thread.isClosed && /* @__PURE__ */ jsx(Chip$1, {
+									muted: true,
+									children: "Closed"
+								})
+							]
+						})
+					]
+				})
+			}, thread.id);
+		})
+	});
+}
+//#endregion
+//#region resources/js/Pages/Broker/Inbox.tsx
+var Inbox_exports = /* @__PURE__ */ __exportAll({ default: () => Inbox });
+var THREAD_POLL_MS$1 = 2e4;
+/**
+* The broker inbox: every customer conversation, unread first.
+*
+* Same three-part shape as the customer Messages screen (list / transcript /
+* composer) plus the two things only a broker needs: a context panel on the linked
+* subject, and canned responses.
+*/
+function Inbox({ portal, threads, thread, messages, context, cannedResponses, filters, filterOptions }) {
+	const { status } = usePage().props;
+	const [closeDialogOpen, setCloseDialogOpen] = useState(false);
+	useEffect(() => {
+		if (status) toast.success(status);
+	}, [status]);
+	const threadId = thread?.id ?? null;
+	useEffect(() => {
+		if (threadId === null) return;
+		function refresh() {
+			if (document.hidden) return;
+			router.reload({ only: [
+				"thread",
+				"messages",
+				"threads",
+				"unreadMessageThreads"
+			] });
+		}
+		const timer = window.setInterval(refresh, THREAD_POLL_MS$1);
+		document.addEventListener("visibilitychange", refresh);
+		return () => {
+			window.clearInterval(timer);
+			document.removeEventListener("visibilitychange", refresh);
+		};
+	}, [threadId]);
+	const markRead = useCallback(() => {
+		if (threadId === null) return;
+		router.post(`/broker/inbox/${threadId}/read`, {}, {
+			preserveScroll: true,
+			preserveState: true,
+			only: ["threads", "unreadMessageThreads"]
+		});
+	}, [threadId]);
+	function applyFilter(next) {
+		const query = {};
+		const unreadOnly = next.unread_only ?? filters.unreadOnly;
+		const subjectType = next.subject_type ?? filters.subjectType ?? "";
+		const listingStatus = next.listing_status ?? filters.listingStatus ?? "";
+		if (unreadOnly) query.unread_only = "1";
+		if (subjectType) query.subject_type = subjectType;
+		if (listingStatus) query.listing_status = listingStatus;
+		router.get(threadId ? `/broker/inbox/${threadId}` : "/broker/inbox", query, {
+			preserveState: true,
+			preserveScroll: true
+		});
+	}
+	function setThreadStatus(nextStatus) {
+		setCloseDialogOpen(false);
+		if (threadId === null) return;
+		router.patch(`/broker/inbox/${threadId}/status`, { status: nextStatus }, { preserveScroll: true });
+	}
+	return /* @__PURE__ */ jsxs(Fragment, { children: [
+		/* @__PURE__ */ jsx(Head, { title: "Inbox | Broker Portal" }),
+		/* @__PURE__ */ jsx(PortalShell, {
+			portal,
+			title: "Inbox",
+			children: /* @__PURE__ */ jsxs("div", {
+				className: "grid gap-6",
+				children: [
+					/* @__PURE__ */ jsx(PortalPageHeader, {
+						eyebrow: "Conversations",
+						title: "Inbox",
+						description: "Every buyer and seller conversation, unread first."
+					}),
+					/* @__PURE__ */ jsx(InboxFilters, {
+						filters,
+						options: filterOptions,
+						onChange: applyFilter
+					}),
+					/* @__PURE__ */ jsxs("div", {
+						className: "grid gap-4 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]",
+						children: [/* @__PURE__ */ jsx("div", {
+							className: `min-w-0 ${thread ? "hidden lg:block" : "block"}`,
+							children: /* @__PURE__ */ jsx(ThreadList, {
+								threads,
+								activeId: threadId,
+								showParticipant: true,
+								emptyLabel: filters.unreadOnly || filters.subjectType || filters.listingStatus ? "No conversations match these filters." : "No conversations yet."
+							})
+						}), thread && messages ? /* @__PURE__ */ jsxs("section", {
+							className: "grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,20rem)]",
+							children: [/* @__PURE__ */ jsxs("div", {
+								className: "flex min-h-[26rem] flex-col overflow-hidden rounded-xl border border-[#dad5cb] bg-[#f9f7f3] shadow-sm lg:h-[calc(100dvh-15rem)]",
+								children: [
+									/* @__PURE__ */ jsxs("header", {
+										className: "grid gap-0.5 border-b border-[#ece7dd] bg-white px-4 py-2.5 sm:px-5",
+										children: [
+											/* @__PURE__ */ jsx(Link, {
+												href: "/broker/inbox",
+												className: "focus-copper w-fit font-heading text-xs font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline lg:hidden",
+												children: "← All conversations"
+											}),
+											/* @__PURE__ */ jsxs("div", {
+												className: "flex flex-wrap items-center justify-between gap-2",
+												children: [/* @__PURE__ */ jsxs("div", {
+													className: "flex flex-wrap items-center gap-2",
+													children: [/* @__PURE__ */ jsx("h2", {
+														className: "font-heading text-lg font-semibold uppercase tracking-[0.06em] text-neutral-950",
+														children: thread.subjectTitle
+													}), thread.isClosed && /* @__PURE__ */ jsx(StatusBadge$5, {
+														label: "Closed",
+														tone: "muted"
+													})]
+												}), thread.isClosed ? /* @__PURE__ */ jsx("button", {
+													type: "button",
+													onClick: () => setThreadStatus("open"),
+													className: "focus-copper font-heading text-xs font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline",
+													children: "Reopen"
+												}) : /* @__PURE__ */ jsx("button", {
+													type: "button",
+													onClick: () => setCloseDialogOpen(true),
+													className: "focus-copper font-heading text-xs font-semibold uppercase tracking-[0.1em] text-neutral-500 underline-offset-4 hover:text-[#a56437] hover:underline",
+													children: "Close thread"
+												})]
+											}),
+											/* @__PURE__ */ jsxs("p", {
+												className: "text-sm text-neutral-500",
+												children: [
+													thread.userName,
+													" · ",
+													thread.userRole
+												]
+											})
+										]
+									}),
+									/* @__PURE__ */ jsx(MessageThread, {
+										page: messages,
+										onNewMessages: markRead
+									}),
+									/* @__PURE__ */ jsx(MessageComposer, {
+										action: `/broker/inbox/${thread.id}/messages`,
+										placeholder: "Reply as Petra…",
+										toolbar: (insert) => /* @__PURE__ */ jsx(CannedResponses, {
+											responses: cannedResponses,
+											onInsert: insert
+										})
+									})
+								]
+							}), context && /* @__PURE__ */ jsx(ContextPanel, { context })]
+						}) : /* @__PURE__ */ jsx("section", {
+							className: "hidden items-center justify-center rounded-xl border border-dashed border-[#dad5cb] bg-white p-10 text-center text-sm text-neutral-500 lg:flex",
+							children: "Select a conversation to read it."
+						})]
+					})
+				]
+			})
+		}),
+		/* @__PURE__ */ jsx(ConfirmDialog, {
+			open: closeDialogOpen,
+			title: "Close this thread?",
+			description: "The customer keeps full access and any new message reopens it automatically.",
+			confirmLabel: "Close thread",
+			onCancel: () => setCloseDialogOpen(false),
+			onConfirm: () => setThreadStatus("closed")
+		})
+	] });
+}
+function InboxFilters({ filters, options, onChange }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "flex flex-wrap items-center gap-3 rounded-xl border border-[#dad5cb] bg-white p-3 shadow-sm",
+		children: [
+			/* @__PURE__ */ jsxs("label", {
+				className: "flex items-center gap-2 text-sm font-medium text-neutral-700",
+				children: [/* @__PURE__ */ jsx("input", {
+					type: "checkbox",
+					checked: filters.unreadOnly,
+					onChange: (event) => onChange({ unread_only: event.target.checked }),
+					className: "h-4 w-4 rounded border-[#dad5cb] text-[#a56437] focus:ring-[#a56437]/40"
+				}), "Unread only"]
+			}),
+			/* @__PURE__ */ jsxs("label", {
+				className: "flex items-center gap-2 text-sm text-neutral-700",
+				children: [/* @__PURE__ */ jsx("span", {
+					className: "font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-neutral-500",
+					children: "Subject"
+				}), /* @__PURE__ */ jsxs("select", {
+					value: filters.subjectType ?? "",
+					onChange: (event) => onChange({ subject_type: event.target.value }),
+					className: "focus-copper rounded-lg border border-[#dad5cb] bg-white px-2 py-1.5 text-sm",
+					children: [/* @__PURE__ */ jsx("option", {
+						value: "",
+						children: "All"
+					}), Object.entries(options.subjectTypes).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+						value,
+						children: label
+					}, value))]
+				})]
+			}),
+			/* @__PURE__ */ jsxs("label", {
+				className: "flex items-center gap-2 text-sm text-neutral-700",
+				children: [/* @__PURE__ */ jsx("span", {
+					className: "font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-neutral-500",
+					children: "Listing status"
+				}), /* @__PURE__ */ jsxs("select", {
+					value: filters.listingStatus ?? "",
+					onChange: (event) => onChange({ listing_status: event.target.value }),
+					className: "focus-copper rounded-lg border border-[#dad5cb] bg-white px-2 py-1.5 text-sm",
+					children: [/* @__PURE__ */ jsx("option", {
+						value: "",
+						children: "Any"
+					}), Object.entries(options.listingStatuses).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+						value,
+						children: label
+					}, value))]
+				})]
+			})
+		]
+	});
+}
+/**
+* Canned responses insert at the caret rather than replacing the draft, so a broker
+* can top-and-tail a snippet instead of losing what they had already typed.
+*/
+function CannedResponses({ responses, onInsert }) {
+	if (responses.length === 0) return null;
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx("span", {
+		className: "flex shrink-0 items-center font-heading text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-neutral-400",
+		children: "Quick replies"
+	}), responses.map((response) => /* @__PURE__ */ jsx("button", {
+		type: "button",
+		onClick: () => onInsert(response.body),
+		title: response.body,
+		className: "button-press focus-copper shrink-0 whitespace-nowrap rounded-full border border-[#dad5cb] bg-white px-2.5 py-1 text-xs font-medium text-neutral-700 transition-colors hover:border-[#a56437] hover:text-[#8a5330]",
+		children: response.title
+	}, response.id))] });
+}
+function ContextPanel({ context }) {
+	const isListing = context.kind === "listing";
+	return /* @__PURE__ */ jsxs("aside", {
+		className: "grid h-fit gap-3 rounded-xl border border-[#dad5cb] bg-white p-4 shadow-sm",
+		children: [
+			/* @__PURE__ */ jsxs("div", {
+				className: "grid gap-2",
+				children: [
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-neutral-400",
+						children: isListing ? "Linked listing" : "Buyer request"
+					}),
+					/* @__PURE__ */ jsx("h3", {
+						className: "font-heading text-base font-semibold uppercase tracking-[0.04em] text-neutral-950",
+						children: context.title
+					}),
+					/* @__PURE__ */ jsx(StatusBadge$5, {
+						label: context.statusLabel,
+						tone: context.statusTone
+					})
+				]
+			}),
+			isListing && context.photos && context.photos.length > 0 && /* @__PURE__ */ jsx("div", {
+				className: "grid grid-cols-2 gap-2",
+				children: context.photos.slice(0, 4).map((photo) => /* @__PURE__ */ jsx("img", {
+					src: photo.url,
+					alt: photo.name,
+					loading: "lazy",
+					className: "aspect-[4/3] w-full rounded-lg object-cover"
+				}, photo.url))
+			}),
+			/* @__PURE__ */ jsx("dl", {
+				className: "grid gap-2 text-sm",
+				children: isListing ? /* @__PURE__ */ jsxs(Fragment, { children: [
+					/* @__PURE__ */ jsx(ContextRow, {
+						label: "Listing ID",
+						value: context.publicId ?? "Not published"
+					}),
+					/* @__PURE__ */ jsx(ContextRow, {
+						label: "Category",
+						value: context.category
+					}),
+					/* @__PURE__ */ jsx(ContextRow, {
+						label: "Region",
+						value: context.region
+					}),
+					/* @__PURE__ */ jsx(ContextRow, {
+						label: "Condition",
+						value: context.condition
+					}),
+					/* @__PURE__ */ jsx(ContextRow, {
+						label: "Condition notes",
+						value: context.conditionNotes
+					}),
+					/* @__PURE__ */ jsx(ContextRow, {
+						label: "Asking price",
+						value: context.needsValuation ? "Valuation requested" : context.askingPrice
+					})
+				] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+					/* @__PURE__ */ jsx(ContextRow, {
+						label: "Specifications",
+						value: context.specifications
+					}),
+					/* @__PURE__ */ jsx(ContextRow, {
+						label: "Budget",
+						value: context.budget
+					}),
+					/* @__PURE__ */ jsx(ContextRow, {
+						label: "Timeline",
+						value: context.timeline
+					}),
+					/* @__PURE__ */ jsx(ContextRow, {
+						label: "Location",
+						value: context.locationPreference
+					})
+				] })
+			}),
+			context.href && /* @__PURE__ */ jsx(Link, {
+				href: context.href,
+				className: "focus-copper w-fit font-heading text-xs font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline",
+				children: "Open full record"
+			})
+		]
+	});
+}
+function ContextRow({ label, value }) {
+	if (!value) return null;
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-0.5",
+		children: [/* @__PURE__ */ jsx("dt", {
+			className: "font-heading text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-neutral-400",
+			children: label
+		}), /* @__PURE__ */ jsx("dd", {
+			className: "text-sm leading-6 text-neutral-800",
+			children: value
+		})]
+	});
+}
+//#endregion
+//#region resources/js/Components/slide-over.tsx
+/**
+* Right-hand slide-over panel, built on Radix Dialog.
+*
+* This was hand-rolled: a rAF/setTimeout pair drove the transition, and it handled
+* Escape and body-scroll locking itself. It did NOT trap focus — Tab walked straight out
+* of the panel into the page behind it — nor restore focus to the trigger on close, nor
+* hide the background from screen readers. Radix supplies all three, plus a Presence
+* layer that keeps the node mounted through the exit animation, which is what makes
+* closing animate rather than snap.
+*
+* The props are unchanged from the hand-rolled version so call sites did not move; the
+* animation lives in app.css keyed off Radix's data-state attributes.
+*/
+function SlideOver({ children, eyebrow, open, title, onClose }) {
+	return /* @__PURE__ */ jsx(Dialog.Root, {
+		open,
+		onOpenChange: (next) => {
+			if (!next) onClose();
+		},
+		children: /* @__PURE__ */ jsxs(Dialog.Portal, { children: [/* @__PURE__ */ jsx(Dialog.Overlay, { className: "slide-over-overlay fixed inset-0 z-[80] bg-neutral-950/40" }), /* @__PURE__ */ jsxs(Dialog.Content, {
+			"aria-describedby": void 0,
+			className: "portal-shell slide-over-panel fixed right-0 top-0 z-[80] grid h-dvh w-full max-w-none content-start overflow-y-auto overscroll-contain border-[#dad5cb] bg-[#f8f8f6] shadow-2xl focus:outline-none sm:max-w-2xl sm:border-l",
+			children: [/* @__PURE__ */ jsxs("header", {
+				className: "sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-[#dad5cb] bg-white px-5 py-5 sm:px-7",
+				children: [/* @__PURE__ */ jsxs("div", { children: [eyebrow && /* @__PURE__ */ jsx("span", {
+					className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
+					children: eyebrow
+				}), /* @__PURE__ */ jsx(Dialog.Title, {
+					className: "mt-2 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+					children: title
+				})] }), /* @__PURE__ */ jsx(Dialog.Close, {
+					"aria-label": "Close panel",
+					className: "button-press focus-copper inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#dad5cb] text-neutral-500 transition-colors hover:border-[#a56437] hover:bg-[#f3f1ec] hover:text-neutral-900",
+					children: /* @__PURE__ */ jsx(CloseIcon$2, {})
+				})]
+			}), /* @__PURE__ */ jsx("div", {
+				className: "px-5 py-6 sm:px-7",
+				children
+			})]
+		})] })
+	});
+}
+function CloseIcon$2() {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: "h-4 w-4 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 2,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [/* @__PURE__ */ jsx("path", { d: "M6 6l12 12" }), /* @__PURE__ */ jsx("path", { d: "M18 6L6 18" })]
+	});
+}
+//#endregion
+//#region resources/js/Components/pagination.tsx
+/**
+* Client-side pagination controls: a range readout, an optional page-size selector, and
+* a page-number nav that collapses to ellipses past seven pages.
+*
+* Extracted from My Listings, which had the only implementation in the codebase. Nothing
+* is paginated server-side — every controller returns its full collection — so this
+* slices an in-memory array. That is fine at current volumes but will not hold if a
+* broker queue grows into the thousands; at that point this becomes the seam to swap for
+* a real paginated endpoint.
+*/
+var PAGE_SIZE_OPTIONS = [
+	10,
+	20,
+	50
+];
+function pageWindow(current, total) {
+	if (total <= 7) return Array.from({ length: total }, (_, index) => index + 1);
+	const shown = [...new Set([
+		1,
+		total,
+		current - 1,
+		current,
+		current + 1
+	])].filter((value) => value >= 1 && value <= total).sort((a, b) => a - b);
+	const result = [];
+	let previous = 0;
+	for (const value of shown) {
+		if (value - previous > 1) result.push("ellipsis");
+		result.push(value);
+		previous = value;
+	}
+	return result;
+}
+function Pagination({ page, totalPages, rangeStart, rangeEnd, total, onChange, pageSize, onPageSizeChange }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "flex flex-col items-center justify-between gap-3 sm:flex-row",
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "flex flex-wrap items-center gap-3",
+			children: [/* @__PURE__ */ jsxs("p", {
+				className: "text-sm text-neutral-500",
+				children: [
+					"Showing ",
+					rangeStart,
+					"–",
+					rangeEnd,
+					" of ",
+					total
+				]
+			}), pageSize !== void 0 && onPageSizeChange && /* @__PURE__ */ jsxs("label", {
+				className: "flex items-center gap-2",
+				children: [/* @__PURE__ */ jsx("span", {
+					className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+					children: "Per page"
+				}), /* @__PURE__ */ jsx("select", {
+					value: pageSize,
+					onChange: (event) => onPageSizeChange(Number(event.target.value)),
+					className: "polished-select h-9 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] pl-3 pr-8 font-heading text-sm font-semibold text-neutral-800",
+					children: PAGE_SIZE_OPTIONS.map((size) => /* @__PURE__ */ jsx("option", {
+						value: size,
+						children: size
+					}, size))
+				})]
+			})]
+		}), totalPages > 1 && /* @__PURE__ */ jsxs("nav", {
+			"aria-label": "Pagination",
+			className: "flex items-center gap-1.5",
+			children: [
+				/* @__PURE__ */ jsx(PageButton, {
+					label: "Previous page",
+					disabled: page <= 1,
+					onClick: () => onChange(page - 1),
+					children: /* @__PURE__ */ jsx(ChevronIcon, { dir: "left" })
+				}),
+				pageWindow(page, totalPages).map((entry, index) => entry === "ellipsis" ? /* @__PURE__ */ jsx("span", {
+					className: "px-1 text-neutral-400",
+					children: "…"
+				}, `ellipsis-${index}`) : /* @__PURE__ */ jsx(PageButton, {
+					active: entry === page,
+					onClick: () => onChange(entry),
+					children: entry
+				}, entry)),
+				/* @__PURE__ */ jsx(PageButton, {
+					label: "Next page",
+					disabled: page >= totalPages,
+					onClick: () => onChange(page + 1),
+					children: /* @__PURE__ */ jsx(ChevronIcon, { dir: "right" })
+				})
+			]
+		})]
+	});
+}
+function PageButton({ children, onClick, active = false, disabled = false, label }) {
+	return /* @__PURE__ */ jsx("button", {
+		type: "button",
+		onClick,
+		disabled,
+		"aria-label": label,
+		"aria-current": active ? "page" : void 0,
+		className: `focus-copper flex h-9 min-w-9 items-center justify-center rounded-lg border px-2.5 font-heading text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${active ? "border-[#a56437] bg-[#a56437] text-white" : "border-[#dad5cb] bg-white text-neutral-700 hover:border-[#a56437] hover:text-[#a56437]"}`,
+		children
+	});
+}
+function ChevronIcon({ dir }) {
+	return /* @__PURE__ */ jsx("svg", {
+		className: "h-4 w-4 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 2,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: dir === "left" ? /* @__PURE__ */ jsx("path", { d: "M15 6l-6 6 6 6" }) : /* @__PURE__ */ jsx("path", { d: "M9 6l6 6-6 6" })
+	});
+}
+//#endregion
+//#region resources/js/Components/data-table.tsx
+var HIDE_BELOW_CLASS = {
+	sm: "hidden sm:table-cell",
+	md: "hidden md:table-cell",
+	lg: "hidden lg:table-cell",
+	xl: "hidden xl:table-cell"
+};
+function DataTable({ columns, rows, rowKey, onRowClick, rowLabel, caption, paginated = true }) {
+	const interactive = Boolean(onRowClick);
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
+	const showPagination = paginated && rows.length > 10;
+	const totalPages = showPagination ? Math.max(1, Math.ceil(rows.length / pageSize)) : 1;
+	const currentPage = Math.min(page, totalPages);
+	const visibleRows = useMemo(() => showPagination ? rows.slice((currentPage - 1) * pageSize, currentPage * pageSize) : rows, [
+		rows,
+		showPagination,
+		currentPage,
+		pageSize
+	]);
+	useEffect(() => {
+		setPage(1);
+	}, [rows.length]);
+	const rangeStart = rows.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+	const rangeEnd = Math.min(currentPage * pageSize, rows.length);
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-3",
+		children: [/* @__PURE__ */ jsx("div", {
+			className: "overflow-x-auto rounded-xl border border-[#dad5cb] bg-white shadow-sm",
+			children: /* @__PURE__ */ jsxs("table", {
+				className: "w-full min-w-[38rem] border-collapse text-left",
+				children: [
+					caption && /* @__PURE__ */ jsx("caption", {
+						className: "sr-only",
+						children: caption
+					}),
+					/* @__PURE__ */ jsx("thead", { children: /* @__PURE__ */ jsxs("tr", {
+						className: "border-b border-[#dad5cb] bg-[#faf8f5]",
+						children: [columns.map((column) => /* @__PURE__ */ jsx("th", {
+							scope: "col",
+							className: [
+								"px-4 py-3 font-heading text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-neutral-500",
+								column.align === "right" ? "text-right" : "text-left",
+								column.width ?? "",
+								column.hideBelow ? HIDE_BELOW_CLASS[column.hideBelow] : ""
+							].filter(Boolean).join(" "),
+							children: column.header
+						}, column.key)), interactive && /* @__PURE__ */ jsx("th", {
+							scope: "col",
+							className: "w-12 px-4 py-3",
+							children: /* @__PURE__ */ jsx("span", {
+								className: "sr-only",
+								children: "Actions"
+							})
+						})]
+					}) }),
+					/* @__PURE__ */ jsx("tbody", { children: visibleRows.map((item) => /* @__PURE__ */ jsxs("tr", {
+						onClick: onRowClick ? () => onRowClick(item) : void 0,
+						className: `border-b border-[#ece7dd] last:border-b-0 ${interactive ? "cursor-pointer transition-colors hover:bg-[#faf8f5]" : ""}`,
+						children: [columns.map((column) => /* @__PURE__ */ jsx("td", {
+							className: [
+								"px-4 py-3 align-middle text-sm text-neutral-600",
+								column.align === "right" ? "text-right" : "text-left",
+								column.hideBelow ? HIDE_BELOW_CLASS[column.hideBelow] : ""
+							].filter(Boolean).join(" "),
+							children: column.cell(item)
+						}, column.key)), onRowClick && /* @__PURE__ */ jsx("td", {
+							className: "px-4 py-3 text-right align-middle",
+							children: /* @__PURE__ */ jsx("button", {
+								type: "button",
+								onClick: (event) => {
+									event.stopPropagation();
+									onRowClick(item);
+								},
+								"aria-label": rowLabel ? rowLabel(item) : "Open row",
+								className: "focus-copper inline-flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 transition-colors hover:bg-[#f3f1ec] hover:text-neutral-900",
+								children: /* @__PURE__ */ jsx(ChevronRight, {})
+							})
+						})]
+					}, rowKey(item))) })
+				]
+			})
+		}), showPagination && /* @__PURE__ */ jsx(Pagination, {
+			page: currentPage,
+			totalPages,
+			rangeStart,
+			rangeEnd,
+			total: rows.length,
+			onChange: setPage,
+			pageSize,
+			onPageSizeChange: (size) => {
+				setPageSize(size);
+				setPage(1);
+			}
+		})]
+	});
+}
+function ChevronRight() {
+	return /* @__PURE__ */ jsx("svg", {
+		className: "h-5 w-5 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.8,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: /* @__PURE__ */ jsx("path", { d: "M9 6l6 6-6 6" })
+	});
+}
+/**
+* Stacked primary/secondary text for a table's identifying column — a title with its
+* supporting line, without every caller re-inventing the type scale.
+*/
+function CellStack({ primary, secondary }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "min-w-0",
+		children: [/* @__PURE__ */ jsx("div", {
+			className: "flex flex-wrap items-center gap-x-2 gap-y-1",
+			children: primary
+		}), secondary && /* @__PURE__ */ jsx("p", {
+			className: "mt-0.5 truncate text-xs leading-5 text-neutral-500",
+			children: secondary
+		})]
+	});
+}
+//#endregion
+//#region resources/js/Components/broker-queue.tsx
 function sortByDate(items, direction) {
 	return [...items].sort((first, second) => {
 		const firstTimestamp = first.created_at_timestamp ?? 0;
@@ -1115,35 +2693,629 @@ function sortByDate(items, direction) {
 		return direction === "desc" ? secondTimestamp - firstTimestamp : firstTimestamp - secondTimestamp;
 	});
 }
-function SubmissionPanel({ title, itemCount, sortDirection, onSortDirectionChange, children }) {
-	return /* @__PURE__ */ jsxs("section", {
-		className: "grid content-start gap-4 border border-[#dad5cb] bg-white p-5",
+function searchItems(items, search, fields) {
+	const term = search.trim().toLowerCase();
+	if (!term) return items;
+	return items.filter((item) => fields(item).filter(Boolean).join(" ").toLowerCase().includes(term));
+}
+function buildStatusChips(items, options) {
+	const counts = {};
+	items.forEach((item) => {
+		counts[item.status] = (counts[item.status] ?? 0) + 1;
+	});
+	const chips = [{
+		value: "all",
+		label: "All",
+		count: items.length
+	}];
+	Object.entries(options).forEach(([value, label]) => {
+		if (counts[value]) chips.push({
+			value,
+			label,
+			count: counts[value]
+		});
+	});
+	return chips;
+}
+/**
+* Search + status-chip + sort state for one queue. Searching resets the status filter,
+* since the chip counts are derived from the search results and a stale filter would
+* otherwise hide everything the new search found.
+*/
+function useQueue(items, statusOptions, fields) {
+	const [search, setSearch] = useState("");
+	const [statusFilter, setStatusFilter] = useState("all");
+	const [sort, setSort] = useState("desc");
+	const fieldsRef = useRef(fields);
+	fieldsRef.current = fields;
+	const searched = useMemo(() => searchItems(items, search, (item) => fieldsRef.current(item)), [items, search]);
+	const chips = useMemo(() => buildStatusChips(searched, statusOptions), [searched, statusOptions]);
+	const visible = useMemo(() => sortByDate(searched.filter((item) => statusFilter === "all" || item.status === statusFilter), sort), [
+		searched,
+		statusFilter,
+		sort
+	]);
+	function onSearch(value) {
+		setSearch(value);
+		setStatusFilter("all");
+	}
+	function clear() {
+		setSearch("");
+		setStatusFilter("all");
+	}
+	return {
+		search,
+		onSearch,
+		chips,
+		statusFilter,
+		setStatusFilter,
+		sort,
+		setSort,
+		visible,
+		clear
+	};
+}
+function formatUSD$2(value) {
+	const amount = Number(value);
+	return Number.isNaN(amount) ? value : amount.toLocaleString("en-US", {
+		style: "currency",
+		currency: "USD",
+		maximumFractionDigits: 0
+	});
+}
+function todayIso() {
+	const now = /* @__PURE__ */ new Date();
+	const offset = now.getTimezoneOffset() * 6e4;
+	return new Date(now.getTime() - offset).toISOString().slice(0, 10);
+}
+function summaryPrice(submission) {
+	if (submission.needs_valuation) return "Valuation requested";
+	return submission.asking_price ? formatUSD$2(submission.asking_price) : "No price set";
+}
+function QueueToolbar({ search, onSearch, chips, activeStatus, onStatus, sort, onSort, placeholder = "Search by title, name, or email" }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-3",
 		children: [/* @__PURE__ */ jsxs("div", {
-			className: "flex flex-wrap items-center justify-between gap-3",
-			children: [/* @__PURE__ */ jsx("h2", {
-				className: "font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-				children: title
-			}), itemCount > 10 && /* @__PURE__ */ jsxs("label", {
+			className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "relative sm:w-80",
+				children: [
+					/* @__PURE__ */ jsx("span", {
+						className: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400",
+						children: /* @__PURE__ */ jsx(SearchIcon$1, {})
+					}),
+					/* @__PURE__ */ jsx("input", {
+						type: "search",
+						value: search,
+						onChange: (event) => onSearch(event.target.value),
+						placeholder,
+						"aria-label": "Search",
+						className: "h-11 w-full rounded-lg border border-[#dad5cb] bg-white pl-10 pr-9 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-[#a56437] focus:ring-2 focus:ring-[#a56437]/15 [&::-webkit-search-cancel-button]:appearance-none"
+					}),
+					search && /* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => onSearch(""),
+						"aria-label": "Clear search",
+						className: "focus-copper absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-[#f3f1ec] hover:text-neutral-700",
+						children: /* @__PURE__ */ jsx(CloseIcon$1, {})
+					})
+				]
+			}), /* @__PURE__ */ jsxs("label", {
 				className: "flex items-center gap-2",
 				children: [/* @__PURE__ */ jsx("span", {
-					className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+					className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
 					children: "Sort"
 				}), /* @__PURE__ */ jsxs("select", {
-					value: sortDirection,
-					onChange: (event) => onSortDirectionChange(event.target.value),
-					className: "h-9 border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800",
+					value: sort,
+					onChange: (event) => onSort(event.target.value),
+					className: "polished-select h-11 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] pl-3 pr-9 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800",
 					children: [/* @__PURE__ */ jsx("option", {
 						value: "desc",
-						children: "Newest First"
+						children: "Newest first"
 					}), /* @__PURE__ */ jsx("option", {
 						value: "asc",
-						children: "Oldest First"
+						children: "Oldest first"
 					})]
 				})]
 			})]
-		}), children]
+		}), /* @__PURE__ */ jsx("div", {
+			className: "flex flex-wrap gap-2",
+			children: chips.map((chip) => /* @__PURE__ */ jsx(Chip, {
+				active: chip.value === activeStatus,
+				count: chip.count,
+				onClick: () => onStatus(chip.value),
+				children: chip.label
+			}, chip.value))
+		})]
 	});
 }
+function Chip({ active, count, onClick, children }) {
+	return /* @__PURE__ */ jsxs("button", {
+		type: "button",
+		onClick,
+		"aria-pressed": active,
+		className: `focus-copper inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-heading text-xs font-semibold uppercase tracking-[0.08em] transition-colors ${active ? "border-[#a56437] bg-[#a56437] text-white" : "border-[#dad5cb] bg-white text-neutral-600 hover:border-[#a56437] hover:text-[#a56437]"}`,
+		children: [children, /* @__PURE__ */ jsx("span", {
+			className: `rounded-full px-1.5 text-[0.65rem] ${active ? "bg-white/20 text-white" : "bg-neutral-100 text-neutral-500"}`,
+			children: count
+		})]
+	});
+}
+function NoResults$1({ onClear }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "rounded-xl border border-[#dad5cb] bg-white p-8 text-center shadow-sm",
+		children: [/* @__PURE__ */ jsx("p", {
+			className: "text-base leading-7 text-neutral-600",
+			children: "No items match your search or filter."
+		}), /* @__PURE__ */ jsx("button", {
+			type: "button",
+			onClick: onClear,
+			className: "button-press focus-copper mt-4 inline-flex h-10 items-center justify-center rounded-lg border border-[#a56437] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] transition-colors hover:bg-[#a56437] hover:text-white",
+			children: "Clear filters"
+		})]
+	});
+}
+function SearchIcon$1() {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: "h-5 w-5 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.8,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [/* @__PURE__ */ jsx("circle", {
+			cx: "11",
+			cy: "11",
+			r: "7"
+		}), /* @__PURE__ */ jsx("path", { d: "M20 20l-3.5-3.5" })]
+	});
+}
+function CloseIcon$1() {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: "h-4 w-4 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 2,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [/* @__PURE__ */ jsx("path", { d: "M6 6l12 12" }), /* @__PURE__ */ jsx("path", { d: "M18 6L6 18" })]
+	});
+}
+function StatusForm({ value, options, action, label = "Save" }) {
+	const form = useForm({ status: value });
+	function submit(event) {
+		event.preventDefault();
+		form.patch(action, {
+			preserveScroll: true,
+			onSuccess: () => form.setDefaults()
+		});
+	}
+	return /* @__PURE__ */ jsxs("form", {
+		onSubmit: submit,
+		className: "flex flex-wrap items-center gap-2",
+		children: [
+			/* @__PURE__ */ jsx(StatusBadge$4, {
+				status: form.data.status,
+				label: options[form.data.status] ?? form.data.status
+			}),
+			/* @__PURE__ */ jsx("select", {
+				value: form.data.status,
+				onChange: (event) => form.setData("status", event.target.value),
+				className: "polished-select h-10 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] pl-3 pr-9 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800",
+				children: Object.entries(options).map(([status, optionLabel]) => /* @__PURE__ */ jsx("option", {
+					value: status,
+					children: optionLabel
+				}, status))
+			}),
+			/* @__PURE__ */ jsx("button", {
+				type: "submit",
+				disabled: form.processing || !form.isDirty,
+				className: "button-press focus-copper h-10 rounded-lg border border-[#a56437] px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] transition-colors hover:bg-[#a56437] hover:text-white disabled:opacity-60",
+				children: label
+			})
+		]
+	});
+}
+function StatusBadge$4({ status, label }) {
+	return /* @__PURE__ */ jsx("span", {
+		className: `inline-flex h-7 items-center rounded-full border px-3 font-heading text-xs font-semibold uppercase tracking-[0.12em] shadow-sm ${statusBadgeClass(status)}`,
+		children: label
+	});
+}
+function statusBadgeClass(status) {
+	switch (status) {
+		case "under_review": return "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700";
+		case "published": return "border-emerald-800/25 bg-emerald-50 text-emerald-800";
+		case "pending": return "border-amber-800/25 bg-amber-50 text-amber-800";
+		case "sold": return "border-neutral-300 bg-neutral-100 text-neutral-500";
+		case "not_accepted": return "border-[#b3261e]/25 bg-red-50 text-[#b3261e]";
+		case "checking_inventory": return "border-amber-300 bg-amber-50 text-amber-800";
+		case "contacting_sellers": return "border-sky-300 bg-sky-50 text-sky-800";
+		case "options_presented": return "border-indigo-300 bg-indigo-50 text-indigo-800";
+		case "reviewing_options": return "border-emerald-300 bg-emerald-50 text-emerald-800";
+		case "closed": return "border-neutral-300 bg-neutral-100 text-neutral-500";
+		case "accepted": return "border-emerald-800/25 bg-emerald-50 text-emerald-800";
+		case "declined": return "border-[#b3261e]/25 bg-red-50 text-[#b3261e]";
+		case "countered": return "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700";
+		default: return "border-neutral-300 bg-neutral-50 text-neutral-700";
+	}
+}
+function Detail$3({ label, value }) {
+	return /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+		className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+		children: label
+	}), /* @__PURE__ */ jsx("dd", {
+		className: "mt-1 text-neutral-700",
+		children: value || "Not provided"
+	})] });
+}
+function EmptyState$1({ text }) {
+	return /* @__PURE__ */ jsx("p", {
+		className: "rounded-xl border border-[#dad5cb] bg-[#f8f8f6] p-5 text-base leading-7 text-neutral-600",
+		children: text
+	});
+}
+//#endregion
+//#region resources/js/Pages/Broker/Requests.tsx
+var Requests_exports = /* @__PURE__ */ __exportAll({ default: () => BrokerRequests });
+/**
+* The buyer request queue. Split out of Pages/Broker/Submissions, where it was the
+* second tab of a single page; it is now its own sidebar destination. Mirrors the
+* seller queue's shape — rows in the list, detail in a slide-over.
+*/
+function BrokerRequests({ portal, buyerRequests, buyerStatusOptions }) {
+	const { status } = usePage().props;
+	const [activeId, setActiveId] = useState(null);
+	const active = buyerRequests.find((request) => request.id === activeId) ?? null;
+	const queue = useQueue(buyerRequests, buyerStatusOptions, (item) => [
+		item.equipment_type,
+		item.buyer,
+		item.email,
+		item.company_name,
+		item.status_label
+	]);
+	useEffect(() => {
+		if (status) toast.success(status);
+	}, [status]);
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Buyer Requests | Broker Portal" }), /* @__PURE__ */ jsxs(PortalShell, {
+		portal,
+		title: "Buyer Requests",
+		eyebrow: `${buyerRequests.length} ${buyerRequests.length === 1 ? "request" : "requests"}`,
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "grid gap-4",
+			children: [/* @__PURE__ */ jsx(QueueToolbar, {
+				search: queue.search,
+				onSearch: queue.onSearch,
+				chips: queue.chips,
+				activeStatus: queue.statusFilter,
+				onStatus: queue.setStatusFilter,
+				sort: queue.sort,
+				onSort: queue.setSort,
+				placeholder: "Search by equipment, buyer, email, or company"
+			}), buyerRequests.length === 0 ? /* @__PURE__ */ jsx(EmptyState$1, { text: "No buyer requests have been submitted yet." }) : queue.visible.length === 0 ? /* @__PURE__ */ jsx(NoResults$1, { onClear: queue.clear }) : /* @__PURE__ */ jsx(DataTable, {
+				columns: REQUEST_COLUMNS$1,
+				rows: queue.visible,
+				rowKey: (request) => request.id,
+				onRowClick: (request) => setActiveId(request.id),
+				rowLabel: (request) => `Review request for ${request.equipment_type}`,
+				caption: "Buyer equipment requests awaiting broker review"
+			})]
+		}), /* @__PURE__ */ jsx(SlideOver, {
+			open: active !== null,
+			onClose: () => setActiveId(null),
+			eyebrow: "Buyer request",
+			title: active?.equipment_type ?? "",
+			children: active && /* @__PURE__ */ jsxs("div", {
+				className: "grid gap-6",
+				children: [/* @__PURE__ */ jsxs("dl", {
+					className: "grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
+					children: [
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Buyer",
+							value: active.buyer
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Email",
+							value: active.email
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Phone",
+							value: active.phone
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Company",
+							value: active.company_name
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Budget range",
+							value: active.budget_range
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Location preference",
+							value: active.location_preference
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Timeline",
+							value: active.timeline
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Submitted",
+							value: active.created_at
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "sm:col-span-2",
+							children: [/* @__PURE__ */ jsx("dt", {
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+								children: "Specifications"
+							}), /* @__PURE__ */ jsx("dd", {
+								className: "mt-1 whitespace-pre-line text-neutral-700",
+								children: active.specifications || "Not provided"
+							})]
+						})
+					]
+				}), /* @__PURE__ */ jsxs("div", {
+					className: "border-t border-[#dad5cb] pt-6",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]",
+						children: "Request status"
+					}), /* @__PURE__ */ jsx("div", {
+						className: "mt-3",
+						children: /* @__PURE__ */ jsx(StatusForm, {
+							value: active.status,
+							options: buyerStatusOptions,
+							action: `/broker/buyer-requests/${active.id}`
+						}, `${active.id}:${active.status}`)
+					})]
+				})]
+			})
+		})]
+	})] });
+}
+/** Column layout for the buyer queue. Mirrors the seller queue's responsive priorities. */
+var REQUEST_COLUMNS$1 = [
+	{
+		key: "equipment",
+		header: "Equipment",
+		cell: (request) => /* @__PURE__ */ jsx(CellStack, {
+			primary: /* @__PURE__ */ jsx("span", {
+				className: "font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950",
+				children: request.equipment_type
+			}),
+			secondary: request.location_preference
+		})
+	},
+	{
+		key: "buyer",
+		header: "Buyer",
+		hideBelow: "lg",
+		cell: (request) => /* @__PURE__ */ jsx(CellStack, {
+			primary: request.buyer ?? "—",
+			secondary: request.email ?? void 0
+		})
+	},
+	{
+		key: "budget",
+		header: "Budget",
+		hideBelow: "md",
+		align: "right",
+		cell: (request) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: request.budget_range || "—"
+		})
+	},
+	{
+		key: "timeline",
+		header: "Timeline",
+		hideBelow: "xl",
+		cell: (request) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: request.timeline || "—"
+		})
+	},
+	{
+		key: "status",
+		header: "Status",
+		align: "right",
+		cell: (request) => /* @__PURE__ */ jsx(StatusBadge$4, {
+			status: request.status,
+			label: request.status_label
+		})
+	}
+];
+//#endregion
+//#region resources/js/Pages/Broker/Submissions.tsx
+var Submissions_exports = /* @__PURE__ */ __exportAll({ default: () => BrokerSubmissions });
+/**
+* The seller review queue, and the broker's landing page.
+*
+* This used to be one page holding both queues behind tabs, with every submission's
+* full review form expanding inline — a single very long scroll. The buyer queue is now
+* its own sidebar destination (Pages/Broker/Requests), and the review form opens in a
+* slide-over so the list itself stays a scannable set of rows.
+*/
+function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, offerStatusOptions }) {
+	const { status } = usePage().props;
+	const [activeId, setActiveId] = useState(null);
+	const active = sellerSubmissions.find((submission) => submission.id === activeId) ?? null;
+	const queue = useQueue(sellerSubmissions, sellerStatusOptions, (item) => [
+		item.title,
+		item.seller,
+		item.email,
+		item.category,
+		item.region,
+		item.city,
+		item.status_label,
+		item.public_id
+	]);
+	const needsReview = sellerSubmissions.filter((item) => item.status === "under_review").length;
+	useEffect(() => {
+		if (status) toast.success(status);
+	}, [status]);
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Seller Submissions | Broker Portal" }), /* @__PURE__ */ jsxs(PortalShell, {
+		portal,
+		title: "Seller Submissions",
+		eyebrow: `${sellerSubmissions.length} total${needsReview > 0 ? ` · ${needsReview} need review` : ""}`,
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "grid gap-4",
+			children: [/* @__PURE__ */ jsx(QueueToolbar, {
+				search: queue.search,
+				onSearch: queue.onSearch,
+				chips: queue.chips,
+				activeStatus: queue.statusFilter,
+				onStatus: queue.setStatusFilter,
+				sort: queue.sort,
+				onSort: queue.setSort,
+				placeholder: "Search by title, seller, email, or ID"
+			}), sellerSubmissions.length === 0 ? /* @__PURE__ */ jsx(EmptyState$1, { text: "No seller equipment has been submitted yet." }) : queue.visible.length === 0 ? /* @__PURE__ */ jsx(NoResults$1, { onClear: queue.clear }) : /* @__PURE__ */ jsx(DataTable, {
+				columns: SUBMISSION_COLUMNS,
+				rows: queue.visible,
+				rowKey: (submission) => submission.id,
+				onRowClick: (submission) => setActiveId(submission.id),
+				rowLabel: (submission) => `Review ${submission.title}`,
+				caption: "Seller equipment submissions awaiting broker review"
+			})]
+		}), /* @__PURE__ */ jsx(SlideOver, {
+			open: active !== null,
+			onClose: () => setActiveId(null),
+			eyebrow: active?.public_id ?? "Review submission",
+			title: active?.title ?? "",
+			children: active && /* @__PURE__ */ jsxs("div", {
+				className: "grid gap-6",
+				children: [
+					/* @__PURE__ */ jsxs("dl", {
+						className: "grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
+						children: [
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Seller",
+								value: active.seller
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Email",
+								value: active.email
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Category",
+								value: active.category
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Region",
+								value: regionOf(active)
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Condition",
+								value: active.condition_label
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Asking price",
+								value: active.needs_valuation ? "Valuation requested" : active.asking_price ? formatUSD$2(active.asking_price) : null
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Photos",
+								value: `${active.photo_count} uploaded`
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Submitted",
+								value: active.created_at
+							}),
+							active.condition_notes && /* @__PURE__ */ jsxs("div", {
+								className: "sm:col-span-2",
+								children: [/* @__PURE__ */ jsx("dt", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+									children: "Condition notes (private)"
+								}), /* @__PURE__ */ jsx("dd", {
+									className: "mt-1 whitespace-pre-line text-neutral-700",
+									children: active.condition_notes
+								})]
+							})
+						]
+					}),
+					/* @__PURE__ */ jsx(SellerReviewForm, {
+						submission: active,
+						options: sellerStatusOptions
+					}, `${active.id}:${active.status}`),
+					/* @__PURE__ */ jsx(OfferManager, {
+						submission: active,
+						statusOptions: offerStatusOptions
+					})
+				]
+			})
+		})]
+	})] });
+}
+function regionOf(submission) {
+	return submission.city ? `${submission.region} — ${submission.city}` : submission.region;
+}
+/**
+* Column layout for the seller queue. Equipment and Status stay at every width; the
+* rest drop away on smaller screens rather than forcing a sideways scroll to read a row.
+*/
+var SUBMISSION_COLUMNS = [
+	{
+		key: "equipment",
+		header: "Equipment",
+		cell: (submission) => {
+			const openOffers = submission.offers.filter((offer) => offer.status === "pending" || offer.status === "countered").length;
+			return /* @__PURE__ */ jsx(CellStack, {
+				primary: /* @__PURE__ */ jsxs(Fragment, { children: [
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950",
+						children: submission.title
+					}),
+					submission.public_id && /* @__PURE__ */ jsx("span", {
+						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-[#a56437]",
+						children: submission.public_id
+					}),
+					openOffers > 0 && /* @__PURE__ */ jsx("span", {
+						className: "rounded-full bg-amber-50 px-2 py-0.5 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-amber-800",
+						children: openOffers === 1 ? "Offer open" : `${openOffers} offers open`
+					})
+				] }),
+				secondary: `${submission.category} · ${regionOf(submission)}`
+			});
+		}
+	},
+	{
+		key: "seller",
+		header: "Seller",
+		hideBelow: "lg",
+		cell: (submission) => /* @__PURE__ */ jsx(CellStack, {
+			primary: submission.seller ?? "—",
+			secondary: submission.email ?? void 0
+		})
+	},
+	{
+		key: "price",
+		header: "Asking price",
+		hideBelow: "md",
+		align: "right",
+		cell: (submission) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: summaryPrice(submission)
+		})
+	},
+	{
+		key: "submitted",
+		header: "Submitted",
+		hideBelow: "xl",
+		cell: (submission) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: submission.created_at ?? "—"
+		})
+	},
+	{
+		key: "status",
+		header: "Status",
+		align: "right",
+		cell: (submission) => /* @__PURE__ */ jsx(StatusBadge$4, {
+			status: submission.status,
+			label: submission.status_label
+		})
+	}
+];
 function SellerReviewForm({ submission, options }) {
 	const form = useForm({
 		status: submission.status,
@@ -1158,18 +3330,21 @@ function SellerReviewForm({ submission, options }) {
 	const errors = form.errors;
 	function submit(event) {
 		event.preventDefault();
-		form.patch(`/broker/seller-submissions/${submission.id}`, { preserveScroll: true });
+		form.patch(`/broker/seller-submissions/${submission.id}`, {
+			preserveScroll: true,
+			onSuccess: () => form.setDefaults()
+		});
 	}
 	return /* @__PURE__ */ jsxs("form", {
 		onSubmit: submit,
-		className: "mt-6 border-t border-[#dad5cb] pt-6",
+		className: "border-t border-[#dad5cb] pt-6",
 		children: [
 			/* @__PURE__ */ jsx("span", {
 				className: "font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]",
 				children: "Broker Enrichment"
 			}),
 			errors.publish_block && /* @__PURE__ */ jsx("p", {
-				className: "mt-3 border border-[#b3261e]/30 bg-red-50 px-4 py-3 text-sm leading-6 text-[#b3261e]",
+				className: "mt-3 rounded-lg border border-[#b3261e]/30 bg-red-50 px-4 py-3 text-sm leading-6 text-[#b3261e]",
 				children: errors.publish_block
 			}),
 			/* @__PURE__ */ jsxs("div", {
@@ -1234,7 +3409,7 @@ function SellerReviewForm({ submission, options }) {
 				}), /* @__PURE__ */ jsx("div", {
 					className: "mt-2 grid gap-2",
 					children: submission.documents.map((document, index) => /* @__PURE__ */ jsxs("label", {
-						className: "flex items-center gap-3 border border-[#dad5cb] bg-white p-3",
+						className: "flex items-center gap-3 rounded-lg border border-[#dad5cb] bg-white p-3",
 						children: [
 							/* @__PURE__ */ jsx("input", {
 								type: "checkbox",
@@ -1268,26 +3443,33 @@ function SellerReviewForm({ submission, options }) {
 			}),
 			/* @__PURE__ */ jsxs("div", {
 				className: "mt-6 flex flex-wrap items-end gap-3 border-t border-[#dad5cb] pt-5",
-				children: [/* @__PURE__ */ jsxs("label", {
-					className: "grid gap-2",
-					children: [/* @__PURE__ */ jsx("span", {
-						className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
-						children: "Status"
-					}), /* @__PURE__ */ jsx("select", {
-						value: form.data.status,
-						onChange: (event) => form.setData("status", event.target.value),
-						className: "h-10 border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800",
-						children: Object.entries(options).map(([status, label]) => /* @__PURE__ */ jsx("option", {
-							value: status,
-							children: label
-						}, status))
-					})]
-				}), /* @__PURE__ */ jsx("button", {
-					type: "submit",
-					disabled: form.processing,
-					className: "button-press focus-copper h-10 bg-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
-					children: form.data.status === "published" ? "Publish" : "Save"
-				})]
+				children: [
+					/* @__PURE__ */ jsxs("label", {
+						className: "grid gap-2",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+							children: "Listing status"
+						}), /* @__PURE__ */ jsx("select", {
+							value: form.data.status,
+							onChange: (event) => form.setData("status", event.target.value),
+							className: "polished-select h-10 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] pl-3 pr-9 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800",
+							children: Object.entries(options).map(([status, label]) => /* @__PURE__ */ jsx("option", {
+								value: status,
+								children: label
+							}, status))
+						})]
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "submit",
+						disabled: form.processing || !form.isDirty,
+						className: "button-press focus-copper h-10 rounded-lg bg-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+						children: form.data.status === "published" ? "Publish" : "Save"
+					}),
+					!form.isDirty && !form.processing && /* @__PURE__ */ jsx("span", {
+						className: "pb-2.5 text-sm text-neutral-400",
+						children: "No unsaved changes"
+					})
+				]
 			})
 		]
 	});
@@ -1308,71 +3490,228 @@ function EnrichField({ label, error, className = "", children }) {
 		]
 	});
 }
-function StatusForm({ value, options, action }) {
-	const form = useForm({ status: value });
+function OfferManager({ submission, statusOptions }) {
+	const defaultStatus = "pending" in statusOptions ? "pending" : Object.keys(statusOptions)[0] ?? "";
+	const form = useForm({
+		amount: "",
+		offered_at: todayIso(),
+		status: defaultStatus
+	});
+	const errors = form.errors;
+	const openOffer = submission.offers.find((offer) => offer.status === "pending" || offer.status === "countered");
 	function submit(event) {
 		event.preventDefault();
-		form.patch(action, { preserveScroll: true });
+		form.post(`/broker/seller-submissions/${submission.id}/offers`, {
+			preserveScroll: true,
+			onSuccess: () => form.reset("amount")
+		});
 	}
-	return /* @__PURE__ */ jsxs("form", {
-		onSubmit: submit,
-		className: "flex flex-wrap items-center justify-end gap-2",
+	return /* @__PURE__ */ jsxs("section", {
+		className: "border-t border-[#dad5cb] pt-6",
 		children: [
-			/* @__PURE__ */ jsx(StatusBadge$2, {
-				status: form.data.status,
-				label: options[form.data.status] ?? form.data.status
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]",
+				children: "Offers"
 			}),
-			/* @__PURE__ */ jsx("select", {
-				value: form.data.status,
-				onChange: (event) => form.setData("status", event.target.value),
-				className: "h-10 border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800",
-				children: Object.entries(options).map(([status, label]) => /* @__PURE__ */ jsx("option", {
-					value: status,
-					children: label
-				}, status))
+			submission.offers.length > 0 ? /* @__PURE__ */ jsx("div", {
+				className: "mt-3 grid gap-2",
+				children: submission.offers.map((offer) => /* @__PURE__ */ jsx(OfferRow, { offer }, offer.id))
+			}) : /* @__PURE__ */ jsx("p", {
+				className: "mt-3 text-sm leading-6 text-neutral-500",
+				children: "No offers logged yet."
 			}),
-			/* @__PURE__ */ jsx("button", {
-				type: "submit",
-				disabled: form.processing,
-				className: "button-press focus-copper h-10 border border-neutral-500 px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-neutral-950 hover:bg-neutral-950 hover:text-white disabled:opacity-60",
-				children: "Save"
+			openOffer ? /* @__PURE__ */ jsx("p", {
+				className: "mt-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3 text-sm leading-6 text-neutral-600",
+				children: openOffer.status === "countered" ? `The seller countered ${formatUSD$2(openOffer.counter_amount ?? openOffer.amount)}. Accept, decline, or re-offer above — a re-offer replaces this negotiation rather than starting a second one.` : `${formatUSD$2(openOffer.amount)} is awaiting the seller's response. You can log another offer once the seller accepts, declines, or counters it.`
+			}) : /* @__PURE__ */ jsxs("form", {
+				onSubmit: submit,
+				className: "mt-4 flex flex-wrap items-end gap-3",
+				children: [
+					/* @__PURE__ */ jsxs("label", {
+						className: "grid gap-2",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+							children: "Amount (USD)"
+						}), /* @__PURE__ */ jsx("input", {
+							type: "number",
+							min: "0",
+							step: "0.01",
+							inputMode: "decimal",
+							value: form.data.amount,
+							onChange: (event) => form.setData("amount", event.target.value),
+							placeholder: "USD",
+							"aria-invalid": Boolean(errors.amount),
+							className: `portal-input sm:w-44${errors.amount ? " portal-input-error" : ""}`
+						})]
+					}),
+					/* @__PURE__ */ jsxs("label", {
+						className: "grid gap-2",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+							children: "Offer date"
+						}), /* @__PURE__ */ jsx("input", {
+							type: "date",
+							value: form.data.offered_at,
+							onChange: (event) => form.setData("offered_at", event.target.value),
+							"aria-invalid": Boolean(errors.offered_at),
+							className: `portal-input sm:w-44${errors.offered_at ? " portal-input-error" : ""}`
+						})]
+					}),
+					/* @__PURE__ */ jsxs("label", {
+						className: "grid gap-2",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+							children: "Offer status"
+						}), /* @__PURE__ */ jsx("select", {
+							value: form.data.status,
+							onChange: (event) => form.setData("status", event.target.value),
+							className: "polished-select h-10 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] pl-3 pr-9 font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800",
+							children: Object.entries(statusOptions).map(([status, label]) => /* @__PURE__ */ jsx("option", {
+								value: status,
+								children: label
+							}, status))
+						})]
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "submit",
+						disabled: form.processing || form.data.amount.trim() === "",
+						className: "button-press focus-copper h-10 rounded-lg bg-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+						children: "Log offer"
+					})
+				]
+			}),
+			(errors.amount || errors.offered_at || errors.status) && /* @__PURE__ */ jsx("p", {
+				className: "mt-2 text-sm text-[#b3261e]",
+				children: errors.amount ?? errors.offered_at ?? errors.status
 			})
 		]
 	});
 }
-function StatusBadge$2({ status, label }) {
-	return /* @__PURE__ */ jsx("span", {
-		className: `inline-flex h-8 items-center border px-3 font-heading text-xs font-semibold uppercase tracking-[0.12em] ${statusBadgeClass(status)}`,
-		children: label
+/**
+* One logged offer. Read-only until the seller counters — at that point the ball is in
+* the broker's court (`can_respond`) and the counter is resolved in place: accept the
+* seller's number, decline it, or re-offer, which sends the offer back as Pending.
+*/
+function OfferRow({ offer }) {
+	const [reofferOpen, setReofferOpen] = useState(false);
+	const form = useForm({
+		action: "",
+		amount: ""
 	});
-}
-function statusBadgeClass(status) {
-	switch (status) {
-		case "under_review": return "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700";
-		case "published": return "border-emerald-800/25 bg-emerald-50 text-emerald-800";
-		case "pending": return "border-amber-800/25 bg-amber-50 text-amber-800";
-		case "sold": return "border-neutral-300 bg-neutral-100 text-neutral-500";
-		case "not_accepted": return "border-[#b3261e]/25 bg-red-50 text-[#b3261e]";
-		case "checking_inventory": return "border-amber-300 bg-amber-50 text-amber-800";
-		case "contacting_sellers": return "border-sky-300 bg-sky-50 text-sky-800";
-		case "options_presented": return "border-indigo-300 bg-indigo-50 text-indigo-800";
-		case "reviewing_options": return "border-emerald-300 bg-emerald-50 text-emerald-800";
-		default: return "border-neutral-300 bg-neutral-50 text-neutral-700";
+	function respond(action) {
+		form.transform((data) => ({
+			...data,
+			action,
+			amount: ""
+		}));
+		form.patch(`/broker/offers/${offer.id}`, { preserveScroll: true });
 	}
-}
-function Detail$2({ label, value }) {
-	return /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
-		className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
-		children: label
-	}), /* @__PURE__ */ jsx("dd", {
-		className: "mt-1 text-neutral-700",
-		children: value || "Not provided"
-	})] });
-}
-function EmptyState$1({ text }) {
-	return /* @__PURE__ */ jsx("p", {
-		className: "border border-[#dad5cb] bg-[#f8f8f6] p-5 text-base leading-7 text-neutral-600",
-		children: text
+	function submitReoffer(event) {
+		event.preventDefault();
+		form.transform((data) => ({
+			...data,
+			action: "counter"
+		}));
+		form.patch(`/broker/offers/${offer.id}`, {
+			preserveScroll: true,
+			onSuccess: () => {
+				setReofferOpen(false);
+				form.reset("amount");
+			}
+		});
+	}
+	const amountError = form.errors.amount;
+	const agreedAtCounter = offer.status === "accepted" && Boolean(offer.counter_amount);
+	return /* @__PURE__ */ jsxs("div", {
+		className: "rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3",
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "flex flex-wrap items-center justify-between gap-3",
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "min-w-0",
+				children: [/* @__PURE__ */ jsx("p", {
+					className: "font-heading text-base font-semibold text-neutral-900",
+					children: formatUSD$2(agreedAtCounter ? offer.counter_amount : offer.amount)
+				}), /* @__PURE__ */ jsxs("p", {
+					className: "mt-0.5 text-xs text-neutral-500",
+					children: [
+						"Offered ",
+						offer.offered_at ?? "n/a",
+						offer.counter_amount ? agreedAtCounter ? ` · Agreed at the seller's counter (offered ${formatUSD$2(offer.amount)})` : ` · Seller countered ${formatUSD$2(offer.counter_amount)}` : ""
+					]
+				})]
+			}), /* @__PURE__ */ jsx(StatusBadge$4, {
+				status: offer.status,
+				label: offer.status_label
+			})]
+		}), offer.can_respond && /* @__PURE__ */ jsxs("div", {
+			className: "mt-3 border-t border-[#dad5cb] pt-3",
+			children: [
+				/* @__PURE__ */ jsx("span", {
+					className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+					children: "Respond to counter"
+				}),
+				/* @__PURE__ */ jsxs("div", {
+					className: "mt-2 flex flex-wrap items-center gap-2",
+					children: [
+						/* @__PURE__ */ jsxs("button", {
+							type: "button",
+							disabled: form.processing,
+							onClick: () => respond("accept"),
+							className: "button-press focus-copper inline-flex h-9 items-center justify-center rounded-lg bg-[#a56437] px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+							children: ["Accept ", formatUSD$2(offer.counter_amount ?? offer.amount)]
+						}),
+						/* @__PURE__ */ jsx("button", {
+							type: "button",
+							disabled: form.processing,
+							onClick: () => respond("decline"),
+							className: "button-press focus-copper inline-flex h-9 items-center justify-center rounded-lg border border-[#b3261e] px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#b3261e] transition-colors hover:bg-[#b3261e] hover:text-white disabled:opacity-60",
+							children: "Decline"
+						}),
+						/* @__PURE__ */ jsx("button", {
+							type: "button",
+							disabled: form.processing,
+							onClick: () => setReofferOpen((open) => !open),
+							"aria-expanded": reofferOpen,
+							className: "button-press focus-copper inline-flex h-9 items-center justify-center rounded-lg border border-[#a56437] px-4 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] transition-colors hover:bg-[#a56437] hover:text-white disabled:opacity-60",
+							children: "Re-offer"
+						})
+					]
+				}),
+				reofferOpen && /* @__PURE__ */ jsxs("form", {
+					onSubmit: submitReoffer,
+					className: "mt-3 flex flex-wrap items-end gap-2",
+					children: [
+						/* @__PURE__ */ jsxs("label", {
+							className: "grid gap-2",
+							children: [/* @__PURE__ */ jsx("span", {
+								className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+								children: "New amount (USD)"
+							}), /* @__PURE__ */ jsx("input", {
+								type: "number",
+								min: "0",
+								step: "0.01",
+								inputMode: "decimal",
+								value: form.data.amount,
+								onChange: (event) => form.setData("amount", event.target.value),
+								placeholder: "USD",
+								"aria-invalid": Boolean(amountError),
+								className: `portal-input sm:w-44${amountError ? " portal-input-error" : ""}`
+							})]
+						}),
+						/* @__PURE__ */ jsx("button", {
+							type: "submit",
+							disabled: form.processing,
+							className: "button-press focus-copper inline-flex h-10 items-center justify-center rounded-lg bg-[#a56437] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+							children: "Send re-offer"
+						}),
+						amountError && /* @__PURE__ */ jsx("span", {
+							className: "text-sm text-[#b3261e]",
+							children: amountError
+						})
+					]
+				})
+			]
+		})]
 	});
 }
 //#endregion
@@ -1538,6 +3877,130 @@ function Contact({ canonicalUrl, ogImageUrl, assetContext }) {
 	})] });
 }
 //#endregion
+//#region resources/js/navigation.ts
+/**
+* Where the current page was reached from, plus remembered scroll offsets.
+*
+* Returning to a long list has to put the buyer back where they were regardless of how
+* they got there — the in-page back link, the top nav, or the browser back button.
+* Those take three different routes through the stack:
+*
+*   - Inertia <Link> visits are client-side, so document.referrer is never updated and
+*     only the tracker below knows the previous page.
+*   - Plain <a> navigations are full page loads that wipe the tracker, but the browser
+*     does set document.referrer.
+*   - Browser back is a popstate, which fires 'navigate' but never 'before'.
+*
+* TIMING: the previous page is recorded on 'before', not 'navigate'. 'navigate' fires
+* after React has committed the incoming page, so a component reading the tracker in
+* its first effect would always see the state from before the visit. 'before' fires
+* while the outgoing page is still mounted, which is early enough.
+*/
+var previousUrl = null;
+var SCROLL_PREFIX = "petra:scroll:";
+var leaveHandlers = /* @__PURE__ */ new Set();
+/**
+* Runs a callback at the moment the user navigates away, with the destination path.
+*
+* Scroll offsets are captured here rather than on every scroll event: during a visit
+* the page keeps emitting scroll events — including Inertia's own reset to the top on
+* arrival — so a continuously-saving listener overwrites the departure position with a
+* mid-transition value and then with 0.
+*
+* Knowing the destination is what lets a page decide whether the position is worth
+* keeping ("off to a detail page, I'll be back") or should be dropped ("off elsewhere,
+* next arrival is a fresh visit"). That decision has to happen on the way OUT, because
+* on the way back in there is no reliable way to tell how the user got there —
+* popstate never fires 'before', so the tracker is a step behind on browser back.
+*
+* @return unsubscribe
+*/
+function onLeavingPage(handler) {
+	leaveHandlers.add(handler);
+	return () => {
+		leaveHandlers.delete(handler);
+	};
+}
+/**
+* Pathname of the page the user came from, or null on a cold entry (typed URL, shared
+* link, search result). Prefers the tracker, since on a client-side visit
+* document.referrer still points at whatever last caused a full page load.
+*/
+function previousPath() {
+	if (previousUrl !== null) return previousUrl.split("?")[0];
+	if (typeof document === "undefined" || document.referrer === "") return null;
+	try {
+		const referrer = new URL(document.referrer);
+		return referrer.origin === window.location.origin ? referrer.pathname : null;
+	} catch {
+		return null;
+	}
+}
+function arrivedFrom(path) {
+	return previousPath() === path;
+}
+function saveScroll(key) {
+	if (typeof window === "undefined") return;
+	window.sessionStorage.setItem(SCROLL_PREFIX + key, String(Math.round(window.scrollY)));
+}
+/**
+* sessionStorage rather than memory: a plain <a> navigation reloads the document and
+* destroys anything held in JS.
+*/
+function clearScroll(key) {
+	if (typeof window === "undefined") return;
+	window.sessionStorage.removeItem(SCROLL_PREFIX + key);
+}
+function readScroll(key) {
+	if (typeof window === "undefined") return null;
+	const stored = Number(window.sessionStorage.getItem(SCROLL_PREFIX + key));
+	return Number.isFinite(stored) && stored > 0 ? stored : null;
+}
+//#endregion
+//#region resources/js/scroll-memory.ts
+var RESTORE_FRAMES = 40;
+/**
+* Returns a list to the position it was left at when the user comes back from one of
+* its detail pages.
+*
+* Opening the last row of a long list and then heading back used to land at the top,
+* forcing a re-scroll. This restores the offset for every route back — an in-page back
+* link, a nav item (a full page reload), and the browser back button.
+*
+* THE DECISION IS MADE ON THE WAY OUT. Detecting "the user is coming back" on arrival
+* is not reliable: browser back is a popstate, which never fires Inertia's 'before'
+* event, so any "where did I come from" check is a step stale by the time the list
+* mounts. Leaving *for a detail page* is unambiguous, so a stored offset simply means
+* "expected back". Leaving anywhere else drops it and the next arrival starts at the
+* top, which is what a genuinely fresh visit should do.
+*/
+function useScrollMemory({ key, detailPrefix }) {
+	useEffect(() => onLeavingPage((target) => {
+		if (target !== null && target.startsWith(detailPrefix)) saveScroll(key);
+		else clearScroll(key);
+	}), [key, detailPrefix]);
+	useEffect(() => {
+		const target = readScroll(key);
+		if (target === null) return;
+		clearScroll(key);
+		const jumpTo = (top) => window.scrollTo({
+			top,
+			left: 0,
+			behavior: "instant"
+		});
+		let frame = 0;
+		let attempts = 0;
+		const apply = () => {
+			if (Math.abs(window.scrollY - target) > 2) jumpTo(target);
+			attempts += 1;
+			if (attempts < RESTORE_FRAMES) frame = requestAnimationFrame(apply);
+		};
+		jumpTo(target);
+		frame = requestAnimationFrame(apply);
+		return () => cancelAnimationFrame(frame);
+	}, [key]);
+}
+//#endregion
 //#region resources/js/Pages/Equipment.tsx
 var Equipment_exports = /* @__PURE__ */ __exportAll({ default: () => Equipment });
 var PLACEHOLDER_IMAGE$1 = "/images/petra-equipment-yard-hero.png";
@@ -1561,7 +4024,11 @@ var emptyFilters = {
 var pageTitle$6 = "Used Oilfield Equipment Marketplace | Petra";
 var pageDescription$6 = "Browse used oilfield and industrial equipment handled by Petra, including compressors, separators, tank batteries, and pump packages across Wyoming, the Rockies, and the Bakken.";
 function Equipment({ canonicalUrl, ogImageUrl, listings, filterOptions, categories }) {
-	const [filters, setFilters] = useState(emptyFilters);
+	const [filters, setFilters] = useRemember(emptyFilters, "equipment-filters");
+	useScrollMemory({
+		key: "equipment-listings",
+		detailPrefix: "/equipment/"
+	});
 	const hasActiveFilters = Object.values(filters).some(Boolean);
 	const filterControls = [
 		{
@@ -1825,7 +4292,7 @@ function Equipment({ canonicalUrl, ogImageUrl, listings, filterOptions, categori
 								listing.year,
 								listing.capacity
 							].filter(Boolean).join(" · ");
-							return /* @__PURE__ */ jsxs("a", {
+							return /* @__PURE__ */ jsxs(Link, {
 								href: listing.href,
 								"data-polish-reveal": true,
 								className: "group flex flex-col overflow-hidden border border-[#dad5cb] bg-white transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-[#a56437] hover:shadow-[0_18px_40px_rgba(28,26,22,0.12)]",
@@ -1933,6 +4400,33 @@ function Equipment({ canonicalUrl, ogImageUrl, listings, filterOptions, categori
 	})] });
 }
 //#endregion
+//#region resources/js/Components/back-link.tsx
+/**
+* A "back to the list" control that actually goes back.
+*
+* A plain link to the list is a forward navigation: it lands at the top with the list's
+* own state (filters, search, page number) reset, so the user has to scroll and
+* re-filter to find where they were. Popping the history entry instead is what lets
+* Inertia restore the remembered state it saved on the way out.
+*
+* Cold entries — a shared link, a bookmark, a hop from somewhere else — have no list
+* entry to pop, so those fall back to a normal visit.
+*/
+function BackLink({ href, className, children }) {
+	const [canGoBack] = useState(() => arrivedFrom(href));
+	if (!canGoBack) return /* @__PURE__ */ jsx(Link, {
+		href,
+		className,
+		children
+	});
+	return /* @__PURE__ */ jsx("button", {
+		type: "button",
+		onClick: () => window.history.back(),
+		className,
+		children
+	});
+}
+//#endregion
 //#region resources/js/Pages/EquipmentDetail.tsx
 var EquipmentDetail_exports = /* @__PURE__ */ __exportAll({ default: () => EquipmentDetail });
 var PLACEHOLDER_IMAGE = "/images/petra-equipment-yard-hero.png";
@@ -1947,6 +4441,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 	}];
 	const [selectedPhoto, setSelectedPhoto] = useState(gallery[0]);
 	const isAuthed = Boolean(auth.user);
+	const isBuyer = auth.user?.user_type === "buyer";
 	const form = useForm({
 		name: auth.user?.name ?? "",
 		email: auth.user?.email ?? "",
@@ -1996,8 +4491,15 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 		}]
 	};
 	useEffect(() => {
-		if (status) toast.success(status);
-	}, [status]);
+		if (!status) return;
+		toast.success(status, isBuyer ? {
+			description: "Track it and the broker’s reply from your Quotes page.",
+			action: {
+				label: "View quotes",
+				onClick: () => router.visit("/buyer/quotes")
+			}
+		} : void 0);
+	}, [status, isBuyer]);
 	function submit(event) {
 		event.preventDefault();
 		form.post(`/equipment/${listing.public_id}/inquiries`, {
@@ -2072,7 +4574,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 			children: /* @__PURE__ */ jsxs("div", {
 				className: "mx-auto grid max-w-[1280px] gap-8 px-5 py-10 sm:px-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(420px,1.05fr)] lg:items-start lg:py-12",
 				children: [/* @__PURE__ */ jsxs("div", { children: [
-					/* @__PURE__ */ jsx("a", {
+					/* @__PURE__ */ jsx(BackLink, {
 						href: "/equipment",
 						className: "focus-copper mb-6 inline-flex font-heading text-sm font-semibold uppercase tracking-[0.14em] text-[#a56437] underline-offset-4 hover:underline",
 						children: "Back to Equipment"
@@ -3819,454 +6321,138 @@ function LegalPage({ pageKey, canonicalUrl }) {
 	})] });
 }
 //#endregion
-//#region resources/js/Components/confirm-dialog.tsx
-function ConfirmDialog({ open, title, description, confirmLabel, cancelLabel = "Cancel", onConfirm, onCancel }) {
+//#region resources/js/Pages/Portal/BuyerQuotes.tsx
+var BuyerQuotes_exports = /* @__PURE__ */ __exportAll({ default: () => BuyerQuotes });
+function BuyerQuotes({ portal, quotes }) {
+	const { status } = usePage().props;
+	const [activeId, setActiveId] = useState(null);
+	const active = quotes.find((quote) => quote.id === activeId) ?? null;
 	useEffect(() => {
-		if (!open) return;
-		function closeOnEscape(event) {
-			if (event.key === "Escape") onCancel();
-		}
-		window.addEventListener("keydown", closeOnEscape);
-		return () => window.removeEventListener("keydown", closeOnEscape);
-	}, [open, onCancel]);
-	if (!open) return null;
-	return /* @__PURE__ */ jsxs("div", {
-		className: "fixed inset-0 z-[100] flex items-center justify-center bg-neutral-950/55 px-5 py-6",
-		children: [/* @__PURE__ */ jsx("button", {
-			type: "button",
-			"aria-label": cancelLabel,
-			className: "absolute inset-0 cursor-default",
-			onClick: onCancel
-		}), /* @__PURE__ */ jsxs("section", {
-			role: "dialog",
-			"aria-modal": "true",
-			"aria-labelledby": "confirm-dialog-title",
-			"aria-describedby": "confirm-dialog-description",
-			className: "relative w-full max-w-md border border-[#dad5cb] bg-[#f8f8f6] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)]",
-			children: [
-				/* @__PURE__ */ jsx("span", {
-					className: "font-heading text-sm font-semibold uppercase tracking-[0.18em] text-[#a56437]",
-					children: "Petra Portal"
-				}),
-				/* @__PURE__ */ jsx("h2", {
-					id: "confirm-dialog-title",
-					className: "mt-3 font-heading text-3xl font-semibold uppercase leading-none tracking-[0.08em] text-neutral-950",
-					children: title
-				}),
-				/* @__PURE__ */ jsx("p", {
-					id: "confirm-dialog-description",
-					className: "mt-4 text-base leading-7 text-neutral-600",
-					children: description
-				}),
-				/* @__PURE__ */ jsxs("div", {
-					className: "mt-7 grid grid-cols-2 gap-3",
-					children: [/* @__PURE__ */ jsx("button", {
-						type: "button",
-						onClick: onCancel,
-						className: "button-press focus-copper inline-flex h-11 items-center justify-center border border-neutral-400 px-5 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-white",
-						children: cancelLabel
-					}), /* @__PURE__ */ jsx("button", {
-						type: "button",
-						onClick: onConfirm,
-						className: "button-press focus-copper inline-flex h-11 items-center justify-center bg-[#a56437] px-5 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
-						children: confirmLabel
-					})]
+		if (status) toast.success(status);
+	}, [status]);
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Quotes | Buyer Portal" }), /* @__PURE__ */ jsxs(PortalShell, {
+		portal,
+		title: "Quotes",
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "grid gap-6",
+			children: [/* @__PURE__ */ jsx(PortalPageHeader, {
+				eyebrow: "Quote Requests",
+				title: "Your Quotes",
+				description: quotes.length === 0 ? "Request a quote from any listing to start one." : `${quotes.length} ${quotes.length === 1 ? "quote" : "quotes"} · request more from any listing.`,
+				actions: /* @__PURE__ */ jsx(Link, {
+					href: "/equipment",
+					className: portalHeaderActionClass,
+					children: "Browse Equipment"
 				})
-			]
-		})]
-	});
-}
-//#endregion
-//#region resources/js/Components/portal-shell.tsx
-var SIDEBAR_COLLAPSED_KEY = "petra-portal-sidebar-collapsed";
-var sellerNavItems = [
-	{
-		label: "Dashboard",
-		path: "dashboard",
-		real: true,
-		icon: "dashboard"
-	},
-	{
-		label: "My Listings",
-		path: "listings",
-		real: true,
-		icon: "equipment"
-	},
-	{
-		label: "Quotes",
-		path: "quotes",
-		real: false,
-		icon: "quotes"
-	},
-	{
-		label: "Offers",
-		path: "offers",
-		real: false,
-		icon: "offers"
-	},
-	{
-		label: "Documents",
-		path: "documents",
-		real: false,
-		icon: "documents"
-	},
-	{
-		label: "Profile",
-		path: "profile",
-		real: true,
-		icon: "profile"
-	}
-];
-var buyerNavItems = [
-	{
-		label: "Dashboard",
-		path: "dashboard",
-		real: true,
-		icon: "dashboard"
-	},
-	{
-		label: "My Requests",
-		path: "saved-equipment",
-		real: true,
-		icon: "equipment"
-	},
-	{
-		label: "Saved Equipment",
-		path: "saved-equipment-watchlist",
-		real: false,
-		icon: "equipment"
-	},
-	{
-		label: "Quotes",
-		path: "quotes",
-		real: false,
-		icon: "quotes"
-	},
-	{
-		label: "Offers",
-		path: "offers",
-		real: false,
-		icon: "offers"
-	},
-	{
-		label: "Documents",
-		path: "documents",
-		real: false,
-		icon: "documents"
-	},
-	{
-		label: "Messages",
-		path: "messages",
-		real: false,
-		icon: "messages"
-	},
-	{
-		label: "Notifications",
-		path: "notifications",
-		real: false,
-		icon: "notifications"
-	},
-	{
-		label: "Profile",
-		path: "profile",
-		real: true,
-		icon: "profile"
-	}
-];
-function hrefFor(portal, path) {
-	if (path === "dashboard") return `/${portal.userType}/dashboard`;
-	return `/${portal.userType}/${path}`;
-}
-function PortalShell({ portal, title, eyebrow, children }) {
-	const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-	const [collapsed, setCollapsed] = useState(false);
-	const page = usePage();
-	const { auth } = page.props;
-	const currentPath = page.url.split("?")[0];
-	const userName = auth.user?.name ?? portal.profileName;
-	const userInitial = (userName ?? portal.roleLabel).charAt(0).toUpperCase();
-	const navItems = portal.userType === "seller" ? sellerNavItems : buyerNavItems;
-	useEffect(() => {
-		setCollapsed(window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1");
-	}, []);
-	function toggleCollapsed() {
-		setCollapsed((value) => {
-			const next = !value;
-			window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? "1" : "0");
-			return next;
-		});
-	}
-	function logout() {
-		setLogoutDialogOpen(false);
-		router.post("/logout", {}, { replace: true });
-	}
-	return /* @__PURE__ */ jsxs("main", {
-		className: `min-h-screen bg-[#f3f1ec] text-neutral-950 lg:grid ${collapsed ? "lg:grid-cols-[80px_minmax(0,1fr)]" : "lg:grid-cols-[296px_minmax(0,1fr)]"}`,
-		children: [
-			/* @__PURE__ */ jsxs("aside", {
-				className: "border-b border-neutral-800 bg-neutral-950 text-white lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:self-start lg:border-b-0",
+			}), quotes.length === 0 ? /* @__PURE__ */ jsx("article", {
+				className: "rounded-xl border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600 shadow-sm",
+				children: "You haven’t requested any quotes yet. Open a listing and use “Request Quote” to ask Petra about availability and pricing — your requests will appear here."
+			}) : /* @__PURE__ */ jsx(DataTable, {
+				columns: QUOTE_COLUMNS,
+				rows: quotes,
+				rowKey: (quote) => quote.id,
+				onRowClick: (quote) => setActiveId(quote.id),
+				rowLabel: (quote) => `View your quote request for ${quote.equipment_name}`,
+				caption: "Quotes you have requested from Petra"
+			})]
+		}), /* @__PURE__ */ jsx(SlideOver, {
+			open: active !== null,
+			onClose: () => setActiveId(null),
+			eyebrow: active?.listing_public_id ?? "Quote request",
+			title: active?.equipment_name ?? "",
+			children: active && /* @__PURE__ */ jsxs("dl", {
+				className: "grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
 				children: [
-					/* @__PURE__ */ jsxs("div", {
-						className: `flex items-center justify-between border-b border-white/10 px-5 py-4 lg:min-h-[72px] lg:py-2 ${collapsed ? "lg:justify-center lg:px-2" : "lg:px-5"}`,
-						children: [/* @__PURE__ */ jsxs(Link, {
-							href: `/${portal.userType}/dashboard`,
-							className: "focus-copper block w-fit",
-							children: [/* @__PURE__ */ jsx("span", {
-								className: `block font-heading text-[1.65rem] font-semibold uppercase tracking-[0.22em] text-white ${collapsed ? "lg:hidden" : ""}`,
-								children: "Petra"
-							}), collapsed && /* @__PURE__ */ jsx("span", {
-								className: "hidden font-heading text-[1.65rem] font-semibold uppercase text-white lg:block",
-								children: "P"
-							})]
-						}), /* @__PURE__ */ jsx("span", {
-							className: "border border-white/15 px-3 py-1 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white/70 lg:hidden",
-							children: portal.roleLabel
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: "Listing"
+					}), /* @__PURE__ */ jsx("dd", {
+						className: "mt-1",
+						children: active.listing_href && active.listing_public_id ? /* @__PURE__ */ jsx(Link, {
+							href: active.listing_href,
+							className: "focus-copper font-semibold text-[#a56437] underline-offset-4 hover:underline",
+							children: active.listing_public_id
+						}) : /* @__PURE__ */ jsx("span", {
+							className: "text-neutral-500",
+							children: "No longer listed"
+						})
+					})] }),
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: "Status"
+					}), /* @__PURE__ */ jsx("dd", {
+						className: "mt-1",
+						children: /* @__PURE__ */ jsx(StatusBadge$3, { label: active.status_label })
+					})] }),
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: "Requested"
+					}), /* @__PURE__ */ jsx("dd", {
+						className: "mt-1 text-neutral-700",
+						children: active.created_at ?? "Not available"
+					})] }),
+					active.note && /* @__PURE__ */ jsxs("div", {
+						className: "sm:col-span-2",
+						children: [/* @__PURE__ */ jsx("dt", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+							children: "What you sent"
+						}), /* @__PURE__ */ jsx("dd", {
+							className: "mt-2 whitespace-pre-line rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3 text-sm leading-6 text-neutral-700",
+							children: active.note
 						})]
-					}),
-					/* @__PURE__ */ jsx("nav", {
-						"aria-label": `${portal.roleLabel} portal navigation`,
-						className: "overflow-x-auto lg:flex-1 lg:overflow-x-visible lg:overflow-y-auto",
-						children: /* @__PURE__ */ jsx("div", {
-							className: "flex min-w-max lg:grid lg:min-w-0 lg:p-3",
-							children: navItems.map((item) => {
-								const href = hrefFor(portal, item.path);
-								const active = currentPath === href;
-								return /* @__PURE__ */ jsxs(Link, {
-									href,
-									"aria-current": active ? "page" : void 0,
-									title: collapsed ? item.label : void 0,
-									className: `flex min-h-14 items-center gap-4 border-r border-white/10 px-5 py-4 font-heading text-base font-semibold uppercase tracking-[0.08em] transition-colors last:border-r-0 lg:mb-1 lg:border-r-0 ${collapsed ? "lg:justify-center lg:px-0" : "justify-between lg:px-4"} ${active ? "bg-white text-neutral-950 lg:shadow-[inset_4px_0_0_#a56437]" : "bg-neutral-950 text-white/65 hover:bg-white/[0.06] hover:text-white"}`,
-									children: [/* @__PURE__ */ jsxs("span", {
-										className: "flex min-w-0 items-center gap-3",
-										children: [/* @__PURE__ */ jsx(PortalNavIcon, { name: item.icon }), /* @__PURE__ */ jsx("span", {
-											className: `truncate ${collapsed ? "lg:hidden" : ""}`,
-											children: item.label
-										})]
-									}), !item.real && /* @__PURE__ */ jsx("span", {
-										className: `text-xs font-semibold uppercase tracking-[0.12em] ${active ? "text-neutral-500" : "text-white/35"} ${collapsed ? "lg:hidden" : ""}`,
-										children: "Soon"
-									})]
-								}, item.path);
-							})
-						})
-					}),
-					/* @__PURE__ */ jsxs("button", {
-						type: "button",
-						onClick: toggleCollapsed,
-						"aria-label": collapsed ? "Expand sidebar" : "Collapse sidebar",
-						className: `hidden border-t border-white/10 py-4 font-heading text-xs font-semibold uppercase tracking-[0.12em] text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white lg:flex lg:items-center lg:gap-3 ${collapsed ? "lg:justify-center lg:px-0" : "lg:px-5"}`,
-						children: [/* @__PURE__ */ jsx(SidebarToggleIcon, { collapsed }), !collapsed && /* @__PURE__ */ jsx("span", { children: "Collapse" })]
-					}),
-					/* @__PURE__ */ jsx("div", {
-						className: `hidden border-t border-white/10 lg:block ${collapsed ? "lg:p-2" : "lg:p-5"}`,
-						children: /* @__PURE__ */ jsxs("div", {
-							className: `flex items-center border border-white/10 bg-white/[0.04] ${collapsed ? "lg:justify-center lg:p-2" : "gap-3 p-3"}`,
-							children: [/* @__PURE__ */ jsx("span", {
-								className: "flex h-10 w-10 shrink-0 items-center justify-center bg-[#a56437] font-heading text-lg font-semibold uppercase text-white",
-								children: userInitial
-							}), !collapsed && /* @__PURE__ */ jsxs("span", {
-								className: "min-w-0",
-								children: [/* @__PURE__ */ jsx("span", {
-									className: "block truncate text-sm font-semibold text-white",
-									children: userName
-								}), /* @__PURE__ */ jsx("span", {
-									className: "mt-0.5 block font-heading text-xs font-semibold uppercase tracking-[0.16em] text-white/45",
-									children: portal.roleLabel
-								})]
-							})]
-						})
 					})
 				]
-			}),
-			/* @__PURE__ */ jsxs("section", {
-				className: "min-w-0",
-				children: [/* @__PURE__ */ jsx("header", {
-					className: "border-b border-[#dad5cb] bg-white",
-					children: /* @__PURE__ */ jsxs("div", {
-						className: "flex min-h-[72px] flex-col gap-3 px-5 py-3 sm:px-7 lg:flex-row lg:items-center lg:justify-between lg:px-8",
-						children: [/* @__PURE__ */ jsx("div", {
-							className: "min-w-0",
-							children: /* @__PURE__ */ jsx("h1", {
-								className: "break-words font-heading text-3xl font-bold uppercase leading-none tracking-[0.08em] text-neutral-950 sm:text-[2rem]",
-								children: title
-							})
-						}), /* @__PURE__ */ jsx("button", {
-							type: "button",
-							onClick: () => setLogoutDialogOpen(true),
-							className: "button-press focus-copper inline-flex h-10 w-fit items-center justify-center border border-neutral-500 px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
-							children: "Log out"
-						})]
-					})
-				}), /* @__PURE__ */ jsx("div", {
-					className: "px-5 py-6 sm:px-8 lg:px-10 lg:py-8",
-					children
-				})]
-			}),
-			/* @__PURE__ */ jsx(ConfirmDialog, {
-				open: logoutDialogOpen,
-				title: "Log out?",
-				description: "You will be signed out of your Petra portal session and returned to the login page.",
-				confirmLabel: "Log out",
-				onCancel: () => setLogoutDialogOpen(false),
-				onConfirm: logout
 			})
-		]
-	});
-}
-function SidebarToggleIcon({ collapsed }) {
-	return /* @__PURE__ */ jsx("svg", {
-		className: "h-4 w-4 shrink-0",
-		fill: "none",
-		stroke: "currentColor",
-		strokeLinecap: "round",
-		strokeLinejoin: "round",
-		strokeWidth: 1.8,
-		viewBox: "0 0 24 24",
-		"aria-hidden": "true",
-		children: collapsed ? /* @__PURE__ */ jsx("path", { d: "M9 6l6 6-6 6" }) : /* @__PURE__ */ jsx("path", { d: "M15 6l-6 6 6 6" })
-	});
-}
-function PortalNavIcon({ name }) {
-	const common = {
-		className: "h-4 w-4 shrink-0",
-		fill: "none",
-		stroke: "currentColor",
-		strokeLinecap: "round",
-		strokeLinejoin: "round",
-		strokeWidth: 1.8,
-		viewBox: "0 0 24 24",
-		"aria-hidden": true
-	};
-	switch (name) {
-		case "dashboard": return /* @__PURE__ */ jsxs("svg", {
-			...common,
-			children: [
-				/* @__PURE__ */ jsx("path", { d: "M4 13h6V4H4z" }),
-				/* @__PURE__ */ jsx("path", { d: "M14 20h6v-9h-6z" }),
-				/* @__PURE__ */ jsx("path", { d: "M4 20h6v-4H4z" }),
-				/* @__PURE__ */ jsx("path", { d: "M14 7h6V4h-6z" })
-			]
-		});
-		case "equipment": return /* @__PURE__ */ jsxs("svg", {
-			...common,
-			children: [
-				/* @__PURE__ */ jsx("path", { d: "M4 16h16" }),
-				/* @__PURE__ */ jsx("path", { d: "M6 16l2-6h8l2 6" }),
-				/* @__PURE__ */ jsx("path", { d: "M8 18.5h.01" }),
-				/* @__PURE__ */ jsx("path", { d: "M16 18.5h.01" }),
-				/* @__PURE__ */ jsx("path", { d: "M9 10V7h6v3" })
-			]
-		});
-		case "quotes": return /* @__PURE__ */ jsxs("svg", {
-			...common,
-			children: [
-				/* @__PURE__ */ jsx("path", { d: "M7 7h10" }),
-				/* @__PURE__ */ jsx("path", { d: "M7 12h8" }),
-				/* @__PURE__ */ jsx("path", { d: "M7 17h5" }),
-				/* @__PURE__ */ jsx("path", { d: "M5 3h14v18H5z" })
-			]
-		});
-		case "offers": return /* @__PURE__ */ jsxs("svg", {
-			...common,
-			children: [
-				/* @__PURE__ */ jsx("path", { d: "M20 12l-8 8-8-8 8-8z" }),
-				/* @__PURE__ */ jsx("path", { d: "M12 8v8" }),
-				/* @__PURE__ */ jsx("path", { d: "M8 12h8" })
-			]
-		});
-		case "documents": return /* @__PURE__ */ jsxs("svg", {
-			...common,
-			children: [
-				/* @__PURE__ */ jsx("path", { d: "M7 3h7l4 4v14H7z" }),
-				/* @__PURE__ */ jsx("path", { d: "M14 3v5h5" }),
-				/* @__PURE__ */ jsx("path", { d: "M10 13h6" }),
-				/* @__PURE__ */ jsx("path", { d: "M10 17h4" })
-			]
-		});
-		case "messages": return /* @__PURE__ */ jsxs("svg", {
-			...common,
-			children: [
-				/* @__PURE__ */ jsx("path", { d: "M4 5h16v11H8l-4 4z" }),
-				/* @__PURE__ */ jsx("path", { d: "M8 9h8" }),
-				/* @__PURE__ */ jsx("path", { d: "M8 13h5" })
-			]
-		});
-		case "notifications": return /* @__PURE__ */ jsxs("svg", {
-			...common,
-			children: [/* @__PURE__ */ jsx("path", { d: "M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" }), /* @__PURE__ */ jsx("path", { d: "M10 21h4" })]
-		});
-		case "profile": return /* @__PURE__ */ jsxs("svg", {
-			...common,
-			children: [/* @__PURE__ */ jsx("path", { d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8" }), /* @__PURE__ */ jsx("path", { d: "M4 21a8 8 0 0 1 16 0" })]
-		});
-	}
-}
-//#endregion
-//#region resources/js/Components/slide-over.tsx
-function SlideOver({ children, eyebrow, open, title, onClose }) {
-	const [shouldRender, setShouldRender] = useState(open);
-	const [isVisible, setIsVisible] = useState(false);
-	useEffect(() => {
-		if (open) {
-			setShouldRender(true);
-			requestAnimationFrame(() => setIsVisible(true));
-			return;
-		}
-		setIsVisible(false);
-		const timeout = window.setTimeout(() => setShouldRender(false), 260);
-		return () => window.clearTimeout(timeout);
-	}, [open]);
-	useEffect(() => {
-		if (!shouldRender) return;
-		const handleKeyDown = (event) => {
-			if (event.key === "Escape") onClose();
-		};
-		document.body.style.overflow = "hidden";
-		window.addEventListener("keydown", handleKeyDown);
-		return () => {
-			document.body.style.overflow = "";
-			window.removeEventListener("keydown", handleKeyDown);
-		};
-	}, [shouldRender, onClose]);
-	if (!shouldRender) return null;
-	return /* @__PURE__ */ jsxs("div", {
-		className: "fixed inset-0 z-[80]",
-		children: [/* @__PURE__ */ jsx("button", {
-			type: "button",
-			"aria-label": "Close panel",
-			onClick: onClose,
-			className: `absolute inset-0 cursor-default bg-neutral-950/40 transition-opacity duration-[250ms] ease-out ${isVisible ? "opacity-100" : "opacity-0"}`
-		}), /* @__PURE__ */ jsxs("aside", {
-			role: "dialog",
-			"aria-modal": "true",
-			"aria-labelledby": "slide-over-title",
-			className: `absolute right-0 top-0 grid h-dvh w-full max-w-none content-start overflow-y-auto overscroll-contain border-[#dad5cb] bg-[#f8f8f6] shadow-2xl transition-[opacity,transform] duration-[250ms] ease-out sm:max-w-2xl sm:border-l ${isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`,
-			children: [/* @__PURE__ */ jsxs("header", {
-				className: "sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-[#dad5cb] bg-white px-5 py-5 sm:px-7",
-				children: [/* @__PURE__ */ jsxs("div", { children: [eyebrow && /* @__PURE__ */ jsx("span", {
-					className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-					children: eyebrow
-				}), /* @__PURE__ */ jsx("h2", {
-					id: "slide-over-title",
-					className: "mt-2 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-					children: title
-				})] }), /* @__PURE__ */ jsx("button", {
-					type: "button",
-					onClick: onClose,
-					className: "button-press focus-copper inline-flex h-10 w-10 shrink-0 items-center justify-center border border-neutral-400 font-heading text-2xl leading-none text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
-					"aria-label": "Close",
-					children: "X"
-				})]
-			}), /* @__PURE__ */ jsx("div", {
-				className: "px-5 py-6 sm:px-7",
-				children
-			})]
 		})]
+	})] });
+}
+var QUOTE_COLUMNS = [
+	{
+		key: "equipment",
+		header: "Equipment",
+		cell: (quote) => /* @__PURE__ */ jsx(CellStack, { primary: /* @__PURE__ */ jsx("span", {
+			className: "font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950",
+			children: quote.equipment_name
+		}) })
+	},
+	{
+		key: "listing",
+		header: "Listing",
+		hideBelow: "md",
+		cell: (quote) => quote.listing_href && quote.listing_public_id ? /* @__PURE__ */ jsx(Link, {
+			href: quote.listing_href,
+			className: "focus-copper font-semibold text-[#a56437] underline-offset-4 hover:underline",
+			children: quote.listing_public_id
+		}) : /* @__PURE__ */ jsx("span", {
+			className: "text-neutral-500",
+			children: "No longer listed"
+		})
+	},
+	{
+		key: "requested",
+		header: "Requested",
+		hideBelow: "lg",
+		cell: (quote) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: quote.created_at ?? "—"
+		})
+	},
+	{
+		key: "status",
+		header: "Status",
+		align: "right",
+		cell: (quote) => /* @__PURE__ */ jsx(StatusBadge$3, { label: quote.status_label })
+	}
+];
+function StatusBadge$3({ label }) {
+	return /* @__PURE__ */ jsx("span", {
+		className: "inline-flex h-8 items-center rounded-full border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-[#a56437]",
+		children: label
 	});
 }
 //#endregion
-//#region resources/js/Pages/Portal/BuyerSavedEquipment.tsx
-var BuyerSavedEquipment_exports = /* @__PURE__ */ __exportAll({ default: () => BuyerSavedEquipment });
+//#region resources/js/Pages/Portal/BuyerRequests.tsx
+var BuyerRequests_exports = /* @__PURE__ */ __exportAll({ default: () => BuyerRequests });
 var monthFormatter = new Intl.DateTimeFormat("en-US", {
 	month: "long",
 	year: "numeric"
@@ -4285,9 +6471,11 @@ var weekdayLabels = [
 	"Fr",
 	"Sa"
 ];
-function BuyerSavedEquipment({ portal, requests }) {
+function BuyerRequests({ portal, requests }) {
 	const { status } = usePage().props;
 	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [activeId, setActiveId] = useState(null);
+	const active = requests.find((request) => request.id === activeId) ?? null;
 	const [timelineRange, setTimelineRange] = useState({
 		start: null,
 		end: null
@@ -4308,7 +6496,7 @@ function BuyerSavedEquipment({ portal, requests }) {
 			form.setError("timeline", "Select a start and end date.");
 			return;
 		}
-		form.post("/buyer/saved-equipment", {
+		form.post("/buyer/requests", {
 			preserveScroll: true,
 			onSuccess: () => {
 				form.reset();
@@ -4325,33 +6513,22 @@ function BuyerSavedEquipment({ portal, requests }) {
 		form.setData("timeline", nextRange.start && nextRange.end ? formatDateRange(nextRange.start, nextRange.end) : "");
 		form.clearErrors("timeline");
 	}
-	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "My Requests | Buyer Portal" }), /* @__PURE__ */ jsx(PortalShell, {
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "My Requests | Buyer Portal" }), /* @__PURE__ */ jsxs(PortalShell, {
 		portal,
 		title: "My Requests",
-		children: /* @__PURE__ */ jsxs("div", {
+		children: [/* @__PURE__ */ jsxs("div", {
 			className: "grid gap-6",
 			children: [
-				/* @__PURE__ */ jsxs("section", {
-					className: "flex flex-col justify-between gap-4 border border-[#dad5cb] bg-white p-5 sm:flex-row sm:items-center sm:p-6",
-					children: [/* @__PURE__ */ jsxs("div", { children: [
-						/* @__PURE__ */ jsx("span", {
-							className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-							children: "Equipment Requests"
-						}),
-						/* @__PURE__ */ jsx("h2", {
-							className: "mt-2 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-							children: "Your Requests"
-						}),
-						/* @__PURE__ */ jsx("p", {
-							className: "mt-2 max-w-2xl text-base leading-7 text-neutral-600",
-							children: "Request equipment from Petra and track the current review status here."
-						})
-					] }), /* @__PURE__ */ jsx("button", {
+				/* @__PURE__ */ jsx(PortalPageHeader, {
+					eyebrow: "Equipment Requests",
+					title: "Your Requests",
+					description: requests.length === 0 ? "Ask Petra to source equipment for you." : `${requests.length} ${requests.length === 1 ? "request" : "requests"} · track review status here.`,
+					actions: /* @__PURE__ */ jsx("button", {
 						type: "button",
 						onClick: () => setIsFormOpen(true),
-						className: "button-press focus-copper inline-flex h-12 w-full items-center justify-center bg-[#a56437] px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto",
+						className: portalHeaderActionClass,
 						children: "Request Equipment"
-					})]
+					})
 				}),
 				/* @__PURE__ */ jsx(SlideOver, {
 					open: isFormOpen,
@@ -4429,57 +6606,66 @@ function BuyerSavedEquipment({ portal, requests }) {
 								children: /* @__PURE__ */ jsx("button", {
 									type: "submit",
 									disabled: form.processing,
-									className: "button-press focus-copper inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+									className: "button-press focus-copper inline-flex h-12 items-center justify-center rounded-lg bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
 									children: form.processing ? "Submitting" : "Submit Request"
 								})
 							})
 						]
 					})
 				}),
-				/* @__PURE__ */ jsx("section", {
-					className: "grid gap-4",
-					children: requests.length === 0 ? /* @__PURE__ */ jsx("article", {
-						className: "border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600",
-						children: "Submitted equipment requests will appear here."
-					}) : /* @__PURE__ */ jsx("div", {
-						className: "grid gap-4",
-						children: requests.map((request) => /* @__PURE__ */ jsxs("article", {
-							className: "border border-[#dad5cb] bg-white p-6",
-							children: [/* @__PURE__ */ jsxs("div", {
-								className: "flex flex-wrap items-start justify-between gap-4",
-								children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
-									className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-									children: request.equipment_type
-								}), /* @__PURE__ */ jsx("p", {
-									className: "mt-2 text-sm leading-6 text-neutral-500",
-									children: request.created_at
-								})] }), /* @__PURE__ */ jsx(StatusBadge$1, { label: request.status_label })]
-							}), /* @__PURE__ */ jsxs("dl", {
-								className: "mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
-								children: [
-									/* @__PURE__ */ jsx(Detail$1, {
-										label: "Specifications",
-										value: request.specifications
-									}),
-									/* @__PURE__ */ jsx(Detail$1, {
-										label: "Budget range",
-										value: request.budget_range
-									}),
-									/* @__PURE__ */ jsx(Detail$1, {
-										label: "Location preference",
-										value: request.location_preference
-									}),
-									/* @__PURE__ */ jsx(Detail$1, {
-										label: "Timeline",
-										value: request.timeline
-									})
-								]
-							})]
-						}, request.id))
-					})
+				requests.length === 0 ? /* @__PURE__ */ jsx("article", {
+					className: "rounded-xl border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600 shadow-sm",
+					children: "Submitted equipment requests will appear here."
+				}) : /* @__PURE__ */ jsx(DataTable, {
+					columns: REQUEST_COLUMNS,
+					rows: requests,
+					rowKey: (request) => request.id,
+					onRowClick: (request) => setActiveId(request.id),
+					rowLabel: (request) => `View your request for ${request.equipment_type}`,
+					caption: "Equipment you have asked Petra to source"
 				})
 			]
-		})
+		}), /* @__PURE__ */ jsx(SlideOver, {
+			open: active !== null,
+			onClose: () => setActiveId(null),
+			eyebrow: "Equipment request",
+			title: active?.equipment_type ?? "",
+			children: active && /* @__PURE__ */ jsxs("dl", {
+				className: "grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
+				children: [
+					/* @__PURE__ */ jsx(Detail$2, {
+						label: "Status",
+						value: active.status_label
+					}),
+					/* @__PURE__ */ jsx(Detail$2, {
+						label: "Submitted",
+						value: active.created_at
+					}),
+					/* @__PURE__ */ jsx(Detail$2, {
+						label: "Budget range",
+						value: active.budget_range
+					}),
+					/* @__PURE__ */ jsx(Detail$2, {
+						label: "Location preference",
+						value: active.location_preference
+					}),
+					/* @__PURE__ */ jsx(Detail$2, {
+						label: "Timeline",
+						value: active.timeline
+					}),
+					/* @__PURE__ */ jsxs("div", {
+						className: "sm:col-span-2",
+						children: [/* @__PURE__ */ jsx("dt", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+							children: "Specifications"
+						}), /* @__PURE__ */ jsx("dd", {
+							className: "mt-1 whitespace-pre-line text-neutral-700",
+							children: active.specifications || "Not provided"
+						})]
+					})
+				]
+			})
+		})]
 	})] });
 }
 function DateRangePicker({ id, value, onChange }) {
@@ -4500,12 +6686,12 @@ function DateRangePicker({ id, value, onChange }) {
 		});
 	}
 	return /* @__PURE__ */ jsxs("div", {
-		className: "border border-[#dad5cb] bg-white",
+		className: "rounded-lg border border-[#dad5cb] bg-white",
 		children: [
 			/* @__PURE__ */ jsxs("div", {
 				className: "grid gap-3 border-b border-[#dad5cb] bg-[#fbfaf8] p-3 sm:grid-cols-2",
 				children: [/* @__PURE__ */ jsxs("div", {
-					className: "border border-[#dad5cb] bg-white px-3 py-2",
+					className: "rounded-lg border border-[#dad5cb] bg-white px-3 py-2",
 					children: [/* @__PURE__ */ jsx("span", {
 						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
 						children: "Start date"
@@ -4514,7 +6700,7 @@ function DateRangePicker({ id, value, onChange }) {
 						children: value.start ? formatDate(value.start) : "Select date"
 					})]
 				}), /* @__PURE__ */ jsxs("div", {
-					className: "border border-[#dad5cb] bg-white px-3 py-2",
+					className: "rounded-lg border border-[#dad5cb] bg-white px-3 py-2",
 					children: [/* @__PURE__ */ jsx("span", {
 						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
 						children: "End date"
@@ -4530,7 +6716,7 @@ function DateRangePicker({ id, value, onChange }) {
 					/* @__PURE__ */ jsx("button", {
 						type: "button",
 						onClick: () => setVisibleMonth((current) => addMonths(current, -1)),
-						className: "button-press focus-copper inline-flex h-9 w-9 items-center justify-center border border-[#dad5cb] font-heading text-lg text-neutral-950 hover:bg-neutral-950 hover:text-white",
+						className: "button-press focus-copper inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#dad5cb] font-heading text-lg text-neutral-950 hover:bg-neutral-950 hover:text-white",
 						"aria-label": "Previous month",
 						children: "<"
 					}),
@@ -4546,7 +6732,7 @@ function DateRangePicker({ id, value, onChange }) {
 					/* @__PURE__ */ jsx("button", {
 						type: "button",
 						onClick: () => setVisibleMonth((current) => addMonths(current, 1)),
-						className: "button-press focus-copper inline-flex h-9 w-9 items-center justify-center border border-[#dad5cb] font-heading text-lg text-neutral-950 hover:bg-neutral-950 hover:text-white",
+						className: "button-press focus-copper inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#dad5cb] font-heading text-lg text-neutral-950 hover:bg-neutral-950 hover:text-white",
 						"aria-label": "Next month",
 						children: ">"
 					})
@@ -4586,7 +6772,7 @@ function MonthCalendar({ id, month, value, onSelect }) {
 	})] });
 }
 function dayButtonClass(day, value) {
-	const baseClass = "focus-copper grid aspect-square min-h-9 place-items-center border font-heading text-sm font-semibold transition-colors";
+	const baseClass = "focus-copper grid aspect-square min-h-9 place-items-center rounded-lg border font-heading text-sm font-semibold transition-colors";
 	if (isRangeBoundary(day, value)) return `${baseClass} border-neutral-950 bg-neutral-950 text-white`;
 	if (isWithinRange(day, value)) return `${baseClass} border-[#eadfd4] bg-[#f1e7dc] text-neutral-950`;
 	return `${baseClass} border-transparent text-neutral-700 hover:border-[#a56437] hover:bg-[#fbfaf8]`;
@@ -4608,7 +6794,58 @@ function Field$2({ id, label, error, className = "", children }) {
 		]
 	});
 }
-function Detail$1({ label, value }) {
+/**
+* Specifications is free text and can run long, so it is deliberately not a column —
+* it lives in the slide-over where it has room to wrap.
+*/
+var REQUEST_COLUMNS = [
+	{
+		key: "equipment",
+		header: "Equipment",
+		cell: (request) => /* @__PURE__ */ jsx(CellStack, {
+			primary: /* @__PURE__ */ jsx("span", {
+				className: "font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950",
+				children: request.equipment_type
+			}),
+			secondary: request.location_preference
+		})
+	},
+	{
+		key: "budget",
+		header: "Budget",
+		hideBelow: "md",
+		align: "right",
+		cell: (request) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: request.budget_range || "—"
+		})
+	},
+	{
+		key: "timeline",
+		header: "Timeline",
+		hideBelow: "lg",
+		cell: (request) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: request.timeline || "—"
+		})
+	},
+	{
+		key: "submitted",
+		header: "Submitted",
+		hideBelow: "xl",
+		cell: (request) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: request.created_at ?? "—"
+		})
+	},
+	{
+		key: "status",
+		header: "Status",
+		align: "right",
+		cell: (request) => /* @__PURE__ */ jsx(StatusBadge$2, { label: request.status_label })
+	}
+];
+function Detail$2({ label, value }) {
 	return /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
 		className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
 		children: label
@@ -4617,9 +6854,9 @@ function Detail$1({ label, value }) {
 		children: value || "Not provided"
 	})] });
 }
-function StatusBadge$1({ label }) {
+function StatusBadge$2({ label }) {
 	return /* @__PURE__ */ jsx("span", {
-		className: "inline-flex h-8 items-center border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-[#a56437]",
+		className: "inline-flex h-8 items-center rounded-full border border-[#dad5cb] bg-[#f8f8f6] px-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-[#a56437]",
 		children: label
 	});
 }
@@ -4679,8 +6916,8 @@ function Dashboard({ portal }) {
 		},
 		{
 			label: "Messages",
-			state: "Soon",
-			description: "Messaging is reserved for a later phase."
+			state: "Live",
+			description: "Message your Petra broker about any of your equipment."
 		}
 	] : [
 		{
@@ -4695,17 +6932,19 @@ function Dashboard({ portal }) {
 		},
 		{
 			label: "Quotes",
-			state: "Soon",
-			description: "Quote workflows are reserved for a later phase."
+			state: "Live",
+			description: "Track quotes you requested from listings and their review status from Quotes."
 		}
 	];
+	const subtitle = portal.userType === "seller" ? "Track your listings and portal activity" : "Track your requests and portal activity";
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: `${portal.roleLabel} Dashboard` }), /* @__PURE__ */ jsx(PortalShell, {
 		portal,
 		title: `${portal.roleLabel} Dashboard`,
+		eyebrow: subtitle,
 		children: /* @__PURE__ */ jsxs("section", {
 			className: "grid gap-6",
 			children: [/* @__PURE__ */ jsxs("article", {
-				className: "border border-[#dad5cb] bg-white p-7 sm:p-8",
+				className: "rounded-2xl border border-[#dad5cb] bg-white p-7 shadow-sm sm:p-8",
 				children: [
 					/* @__PURE__ */ jsx("span", {
 						className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
@@ -4721,14 +6960,17 @@ function Dashboard({ portal }) {
 					})
 				]
 			}), /* @__PURE__ */ jsx("div", {
-				className: "grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-3",
+				className: "grid grid-cols-1 gap-4 md:grid-cols-3",
 				children: summaryCards.map((card) => /* @__PURE__ */ jsxs("article", {
-					className: "bg-white p-6",
+					className: "interactive-lift rounded-2xl border border-[#dad5cb] bg-white p-6 shadow-sm",
 					children: [
 						/* @__PURE__ */ jsxs("div", {
 							className: "mb-5 flex items-center justify-between gap-3",
-							children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 bg-[#a56437]" }), /* @__PURE__ */ jsx("span", {
-								className: `border px-2.5 py-1 font-heading text-xs font-semibold uppercase tracking-[0.12em] ${card.state === "Live" ? "border-emerald-300 bg-emerald-50 text-emerald-800" : "border-neutral-300 bg-neutral-50 text-neutral-600"}`,
+							children: [/* @__PURE__ */ jsx("span", {
+								className: "flex h-9 w-9 items-center justify-center rounded-xl bg-[#f4ece4] text-[#a56437]",
+								children: /* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-[#a56437]" })
+							}), /* @__PURE__ */ jsx("span", {
+								className: `rounded-full border px-2.5 py-1 font-heading text-xs font-semibold uppercase tracking-[0.12em] ${card.state === "Live" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-neutral-200 bg-neutral-50 text-neutral-500"}`,
 								children: card.state
 							})]
 						}),
@@ -4747,10 +6989,138 @@ function Dashboard({ portal }) {
 	})] });
 }
 //#endregion
+//#region resources/js/Pages/Portal/Messages.tsx
+var Messages_exports = /* @__PURE__ */ __exportAll({ default: () => Messages });
+var THREAD_POLL_MS = 2e4;
+/**
+* The customer side of messaging, for both the buyer and seller portals.
+*
+* List and conversation are two URLs rather than client-side view state, which is
+* what makes the mobile split work: the list is its own screen, opening a thread is
+* a navigation, and Back is the browser's own. On desktop both panes show at once.
+*/
+function Messages({ portal, threads, thread, messages }) {
+	const { status } = usePage().props;
+	useEffect(() => {
+		if (status) toast.success(status);
+	}, [status]);
+	const threadId = thread?.id ?? null;
+	/**
+	* Refresh the open conversation every 20s.
+	*
+	* Partial reload of just the thread props, so a poll never re-fetches the whole
+	* page. Paused while the tab is hidden — a backgrounded tab polling every 20s is
+	* pure waste — and fired once on return so the reader is never looking at a stale
+	* conversation while the tab is in front of them.
+	*/
+	useEffect(() => {
+		if (threadId === null) return;
+		function refresh() {
+			if (document.hidden) return;
+			router.reload({ only: [
+				"thread",
+				"messages",
+				"threads",
+				"unreadMessageThreads"
+			] });
+		}
+		const timer = window.setInterval(refresh, THREAD_POLL_MS);
+		document.addEventListener("visibilitychange", refresh);
+		return () => {
+			window.clearInterval(timer);
+			document.removeEventListener("visibilitychange", refresh);
+		};
+	}, [threadId]);
+	/**
+	* Mark read when messages arrive while the thread is already open. Opening a
+	* thread is already marked server-side by the show() action, so this covers only
+	* the polling case.
+	*/
+	const markRead = useCallback(() => {
+		if (threadId === null) return;
+		router.post(`/${portal.userType}/messages/${threadId}/read`, {}, {
+			preserveScroll: true,
+			preserveState: true,
+			only: ["threads", "unreadMessageThreads"]
+		});
+	}, [portal.userType, threadId]);
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Messages | Petra Portal" }), /* @__PURE__ */ jsx(PortalShell, {
+		portal,
+		title: "Messages",
+		children: /* @__PURE__ */ jsxs("div", {
+			className: "grid gap-6",
+			children: [/* @__PURE__ */ jsx(PortalPageHeader, {
+				eyebrow: "Conversations",
+				title: "Messages",
+				description: "Talk to your Petra broker about your equipment."
+			}), threads.length === 0 ? /* @__PURE__ */ jsx("article", {
+				className: "rounded-xl border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600 shadow-sm",
+				children: "No messages yet — conversations with your broker about your equipment will appear here."
+			}) : /* @__PURE__ */ jsxs("div", {
+				className: "grid gap-4 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]",
+				children: [/* @__PURE__ */ jsx("div", {
+					className: `min-w-0 ${thread ? "hidden lg:block" : "block"}`,
+					children: /* @__PURE__ */ jsx(ThreadList, {
+						threads,
+						activeId: threadId
+					})
+				}), thread && messages ? /* @__PURE__ */ jsxs("section", {
+					className: "flex min-h-[26rem] flex-col overflow-hidden rounded-xl border border-[#dad5cb] bg-[#f9f7f3] shadow-sm lg:h-[calc(100dvh-15rem)]",
+					children: [
+						/* @__PURE__ */ jsxs("header", {
+							className: "grid gap-0.5 border-b border-[#ece7dd] bg-white px-4 py-2.5 sm:px-5",
+							children: [
+								/* @__PURE__ */ jsx(Link, {
+									href: `/${portal.userType}/messages`,
+									className: "focus-copper w-fit font-heading text-xs font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline lg:hidden",
+									children: "← All messages"
+								}),
+								/* @__PURE__ */ jsxs("div", {
+									className: "flex flex-wrap items-center gap-2",
+									children: [
+										/* @__PURE__ */ jsx("h2", {
+											className: "font-heading text-lg font-semibold uppercase tracking-[0.06em] text-neutral-950",
+											children: thread.subjectTitle
+										}),
+										thread.context?.statusLabel && /* @__PURE__ */ jsx(StatusBadge$5, {
+											label: thread.context.statusLabel,
+											tone: thread.context.statusTone
+										}),
+										thread.isClosed && /* @__PURE__ */ jsx(StatusBadge$5, {
+											label: "Closed",
+											tone: "muted"
+										})
+									]
+								}),
+								thread.context?.href && /* @__PURE__ */ jsxs(Link, {
+									href: thread.context.href,
+									className: "focus-copper w-fit text-sm text-[#a56437] underline-offset-4 hover:underline",
+									children: ["View ", thread.subjectTypeLabel.toLowerCase()]
+								})
+							]
+						}),
+						/* @__PURE__ */ jsx(MessageThread, {
+							page: messages,
+							onNewMessages: markRead
+						}),
+						/* @__PURE__ */ jsx(MessageComposer, {
+							action: `/${portal.userType}/messages/${thread.id}/messages`,
+							placeholder: "Write a message to Petra…"
+						})
+					]
+				}) : /* @__PURE__ */ jsx("section", {
+					className: "hidden items-center justify-center rounded-xl border border-dashed border-[#dad5cb] bg-white p-10 text-center text-sm text-neutral-500 lg:flex",
+					children: "Select a conversation to read it."
+				})]
+			})]
+		})
+	})] });
+}
+//#endregion
 //#region resources/js/Pages/Portal/Placeholder.tsx
 var Placeholder_exports = /* @__PURE__ */ __exportAll({ default: () => Placeholder });
 var sectionLabels = {
-	"saved-equipment-watchlist": "Saved Equipment",
+	"saved-equipment": "Saved Equipment",
 	quotes: "Quotes",
 	offers: "Offers",
 	documents: "Documents"
@@ -4761,7 +7131,7 @@ function Placeholder({ portal, section }) {
 		portal,
 		title,
 		children: /* @__PURE__ */ jsxs("article", {
-			className: "border border-[#dad5cb] bg-white p-7 sm:p-8",
+			className: "rounded-xl border border-[#dad5cb] bg-white p-7 shadow-sm sm:p-8",
 			children: [
 				/* @__PURE__ */ jsx("span", {
 					className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
@@ -4775,7 +7145,7 @@ function Placeholder({ portal, section }) {
 					className: "mt-5 max-w-3xl text-base leading-7 text-neutral-600",
 					children: "The sitemap names this section, but it does not yet define the underlying object model, workflow states, or permissions. This pass only reserves the route and navigation entry."
 				}),
-				section === "saved-equipment-watchlist" && /* @__PURE__ */ jsxs("p", {
+				section === "saved-equipment" && /* @__PURE__ */ jsxs("p", {
 					className: "mt-4 max-w-3xl text-base leading-7 text-neutral-600",
 					children: [
 						"For ",
@@ -4827,7 +7197,7 @@ function Profile({ portal }) {
 				}),
 				/* @__PURE__ */ jsxs("form", {
 					onSubmit: updateProfile,
-					className: "grid gap-5 border border-[#dad5cb] bg-white p-7 sm:grid-cols-2 sm:p-8",
+					className: "grid gap-5 rounded-xl border border-[#dad5cb] bg-white p-7 shadow-sm sm:grid-cols-2 sm:p-8",
 					children: [
 						/* @__PURE__ */ jsxs("div", {
 							className: "sm:col-span-2",
@@ -4895,7 +7265,7 @@ function Profile({ portal }) {
 							children: /* @__PURE__ */ jsx("button", {
 								type: "submit",
 								disabled: profileForm.processing,
-								className: "button-press focus-copper inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+								className: "button-press focus-copper inline-flex h-12 items-center justify-center rounded-lg bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
 								children: profileForm.processing ? "Saving" : "Save profile"
 							})
 						})
@@ -4903,7 +7273,7 @@ function Profile({ portal }) {
 				}),
 				/* @__PURE__ */ jsxs("form", {
 					onSubmit: updatePassword,
-					className: "grid gap-5 border border-[#dad5cb] bg-white p-7 sm:p-8",
+					className: "grid gap-5 rounded-xl border border-[#dad5cb] bg-white p-7 shadow-sm sm:p-8",
 					children: [
 						/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("span", {
 							className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
@@ -4956,7 +7326,7 @@ function Profile({ portal }) {
 						/* @__PURE__ */ jsx("button", {
 							type: "submit",
 							disabled: passwordForm.processing,
-							className: "button-press focus-copper inline-flex h-12 w-fit items-center justify-center border border-neutral-500 px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white disabled:opacity-60",
+							className: "button-press focus-copper inline-flex h-12 w-fit items-center justify-center rounded-lg border border-neutral-500 px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white disabled:opacity-60",
 							children: passwordForm.processing ? "Updating" : "Update password"
 						})
 					]
@@ -4979,6 +7349,323 @@ function Field$1({ label, error, children }) {
 				children: error
 			})
 		]
+	});
+}
+//#endregion
+//#region resources/js/Pages/Portal/SellerListingDetail.tsx
+var SellerListingDetail_exports = /* @__PURE__ */ __exportAll({ default: () => SellerListingDetail });
+/**
+* One listing, from its seller's side.
+*
+* A dedicated route rather than a slide-over like the other portal lists: the photo set,
+* the document list, and the broker's buyer-facing copy are more than a panel holds, and
+* a listing is the thing a seller actually wants to link to and come back to.
+*
+* Read-only by design. A seller submits a listing and Petra takes it from there, so
+* nothing here is editable — offers are answered on the Offers page, which this links to.
+*/
+function SellerListingDetail({ portal, listing }) {
+	const { status } = usePage().props;
+	const openOffers = listing.offers.filter((offer) => offer.status === "pending").length;
+	useEffect(() => {
+		if (status) toast.success(status);
+	}, [status]);
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: `${listing.title} | Seller Portal` }), /* @__PURE__ */ jsx(PortalShell, {
+		portal,
+		title: listing.title,
+		children: /* @__PURE__ */ jsxs("div", {
+			className: "grid gap-4",
+			children: [/* @__PURE__ */ jsx(PortalPageHeader, {
+				eyebrow: listing.public_id ?? "Listing",
+				title: listing.title,
+				description: [listing.status_label, listing.status_explanation].filter(Boolean).join(" · "),
+				actions: /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(BackLink, {
+					href: "/seller/listings",
+					className: "button-press focus-copper inline-flex h-11 w-full items-center justify-center rounded-lg border border-[#dad5cb] bg-white px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-neutral-700 transition-colors hover:border-[#a56437] hover:text-[#a56437] sm:w-auto",
+					children: "All listings"
+				}), listing.public_href && /* @__PURE__ */ jsx("a", {
+					href: listing.public_href,
+					target: "_blank",
+					rel: "noreferrer",
+					className: "button-press focus-copper inline-flex h-11 w-full items-center justify-center rounded-lg bg-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto",
+					children: "View public page"
+				})] })
+			}), /* @__PURE__ */ jsxs("div", {
+				className: "grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] xl:items-start",
+				children: [/* @__PURE__ */ jsxs("div", {
+					className: "grid gap-4 xl:order-2",
+					children: [/* @__PURE__ */ jsxs(Panel, {
+						title: "Listing details",
+						children: [
+							/* @__PURE__ */ jsxs("div", {
+								className: "rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3",
+								children: [/* @__PURE__ */ jsx("dt", {
+									className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+									children: "Asking price"
+								}), /* @__PURE__ */ jsx("dd", {
+									className: "mt-1 font-heading text-2xl font-semibold text-neutral-900",
+									children: listing.needs_valuation ? "Valuation requested" : formatUSD$1(listing.asking_price) ?? "Not provided"
+								})]
+							}),
+							/* @__PURE__ */ jsxs("dl", {
+								className: "mt-4 divide-y divide-[#ece7dd]",
+								children: [
+									/* @__PURE__ */ jsx(RailRow, {
+										label: "Category",
+										value: listing.category
+									}),
+									/* @__PURE__ */ jsx(RailRow, {
+										label: "Region",
+										value: listing.city ? `${listing.region} — ${listing.city}` : listing.region
+									}),
+									/* @__PURE__ */ jsx(RailRow, {
+										label: "Condition",
+										value: listing.condition_label
+									}),
+									/* @__PURE__ */ jsx(RailRow, {
+										label: "Submitted",
+										value: listing.created_at
+									}),
+									/* @__PURE__ */ jsx(RailRow, {
+										label: "Published",
+										value: listing.published_at
+									}),
+									listing.sold_at && /* @__PURE__ */ jsx(RailRow, {
+										label: "Sold",
+										value: listing.sold_at
+									})
+								]
+							}),
+							listing.condition_notes && /* @__PURE__ */ jsxs("div", {
+								className: "mt-4 border-t border-[#ece7dd] pt-4",
+								children: [/* @__PURE__ */ jsx("dt", {
+									className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+									children: "Your condition notes (private)"
+								}), /* @__PURE__ */ jsx("dd", {
+									className: "mt-1 whitespace-pre-line text-sm leading-6 text-neutral-700",
+									children: listing.condition_notes
+								})]
+							})
+						]
+					}), /* @__PURE__ */ jsx(Panel, {
+						title: "Offers",
+						aside: listing.offers.length > 0 ? /* @__PURE__ */ jsx(Link, {
+							href: "/seller/offers",
+							className: "focus-copper font-heading text-xs font-semibold uppercase tracking-[0.12em] text-[#a56437] underline-offset-4 hover:underline",
+							children: openOffers > 0 ? `Respond to ${openOffers}` : "Go to Offers"
+						}) : void 0,
+						children: listing.offers.length === 0 ? /* @__PURE__ */ jsx("p", {
+							className: "text-base leading-7 text-neutral-600",
+							children: "No offers yet. Petra logs them here once a buyer deal is worked up."
+						}) : /* @__PURE__ */ jsx("ul", {
+							className: "grid gap-2",
+							children: listing.offers.map((offer) => /* @__PURE__ */ jsxs("li", {
+								className: "flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3",
+								children: [/* @__PURE__ */ jsxs("div", {
+									className: "min-w-0",
+									children: [/* @__PURE__ */ jsx("p", {
+										className: "font-heading text-base font-semibold text-neutral-900",
+										children: formatUSD$1(offer.amount)
+									}), /* @__PURE__ */ jsxs("p", {
+										className: "mt-0.5 text-xs text-neutral-500",
+										children: [
+											"Offered ",
+											offer.offered_at ?? "n/a",
+											offer.counter_amount ? ` · countered ${formatUSD$1(offer.counter_amount)}` : ""
+										]
+									})]
+								}), /* @__PURE__ */ jsx(Pill, {
+									tone: offer.status_tone,
+									children: offer.status_label
+								})]
+							}, offer.id))
+						})
+					})]
+				}), /* @__PURE__ */ jsxs("div", {
+					className: "grid gap-4 xl:order-1",
+					children: [
+						/* @__PURE__ */ jsx(PhotoGallery, {
+							photos: listing.photos,
+							title: listing.title
+						}),
+						/* @__PURE__ */ jsx(Panel, {
+							title: "What buyers see",
+							aside: listing.featured ? /* @__PURE__ */ jsx(Pill, {
+								tone: "success",
+								children: "Featured"
+							}) : void 0,
+							children: hasEnrichment(listing) ? /* @__PURE__ */ jsxs("dl", {
+								className: "grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
+								children: [
+									/* @__PURE__ */ jsx(Detail$1, {
+										label: "Manufacturer",
+										value: listing.manufacturer
+									}),
+									/* @__PURE__ */ jsx(Detail$1, {
+										label: "Model",
+										value: listing.model
+									}),
+									/* @__PURE__ */ jsx(Detail$1, {
+										label: "Year",
+										value: listing.year != null ? String(listing.year) : null
+									}),
+									/* @__PURE__ */ jsx(Detail$1, {
+										label: "Capacity",
+										value: listing.capacity
+									}),
+									listing.public_description && /* @__PURE__ */ jsxs("div", {
+										className: "sm:col-span-2",
+										children: [/* @__PURE__ */ jsx("dt", {
+											className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+											children: "Public description"
+										}), /* @__PURE__ */ jsx("dd", {
+											className: "mt-1 whitespace-pre-line text-neutral-700",
+											children: listing.public_description
+										})]
+									})
+								]
+							}) : /* @__PURE__ */ jsx("p", {
+								className: "text-base leading-7 text-neutral-600",
+								children: "Petra has not written the buyer-facing copy for this unit yet. It appears here once a broker completes the review."
+							})
+						}),
+						/* @__PURE__ */ jsx(Panel, {
+							title: "Documents",
+							children: listing.documents.length === 0 ? /* @__PURE__ */ jsx("p", {
+								className: "text-base leading-7 text-neutral-600",
+								children: "No documents uploaded."
+							}) : /* @__PURE__ */ jsx("ul", {
+								className: "grid gap-2",
+								children: listing.documents.map((document) => /* @__PURE__ */ jsxs("li", {
+									className: "flex items-center justify-between gap-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3",
+									children: [/* @__PURE__ */ jsx("a", {
+										href: document.url,
+										target: "_blank",
+										rel: "noreferrer",
+										className: "focus-copper min-w-0 truncate text-sm font-semibold text-[#a56437] underline-offset-4 hover:underline",
+										children: document.name
+									}), /* @__PURE__ */ jsx(Pill, {
+										tone: document.public ? "success" : "muted",
+										children: document.public ? "Public" : "Private"
+									})]
+								}, document.path))
+							})
+						})
+					]
+				})]
+			})]
+		})
+	})] });
+}
+function hasEnrichment(listing) {
+	return Boolean(listing.public_description || listing.manufacturer || listing.model || listing.year != null || listing.capacity);
+}
+function PhotoGallery({ photos, title }) {
+	const [activeIndex, setActiveIndex] = useState(0);
+	const [failed, setFailed] = useState({});
+	const active = photos[activeIndex];
+	if (photos.length === 0) return /* @__PURE__ */ jsx("div", {
+		className: "grid h-32 place-items-center rounded-xl border border-[#dad5cb] bg-white text-sm text-neutral-500 shadow-sm",
+		children: "No photos uploaded."
+	});
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-2",
+		children: [/* @__PURE__ */ jsx("div", {
+			className: "aspect-[16/9] max-h-[360px] overflow-hidden rounded-xl border border-[#dad5cb] bg-[#f3f1ec] shadow-sm",
+			children: active && !failed[activeIndex] ? /* @__PURE__ */ jsx("img", {
+				src: active.url,
+				alt: `${title} — photo ${activeIndex + 1} of ${photos.length}`,
+				className: "h-full w-full object-cover",
+				onError: () => setFailed((current) => ({
+					...current,
+					[activeIndex]: true
+				}))
+			}) : /* @__PURE__ */ jsx("div", {
+				className: "grid h-full place-items-center text-sm text-neutral-500",
+				children: "Image unavailable"
+			})
+		}), photos.length > 1 && /* @__PURE__ */ jsx("div", {
+			className: "flex flex-wrap gap-2",
+			children: photos.map((photo, index) => /* @__PURE__ */ jsx("button", {
+				type: "button",
+				onClick: () => setActiveIndex(index),
+				"aria-label": `Show photo ${index + 1}`,
+				"aria-current": index === activeIndex,
+				className: `focus-copper h-16 w-20 overflow-hidden rounded-lg border-2 transition-colors ${index === activeIndex ? "border-[#a56437]" : "border-transparent hover:border-[#dad5cb]"}`,
+				children: failed[index] ? /* @__PURE__ */ jsx("span", {
+					className: "grid h-full w-full place-items-center bg-[#f3f1ec] text-[0.6rem] text-neutral-400",
+					children: "n/a"
+				}) : /* @__PURE__ */ jsx("img", {
+					src: photo.url,
+					alt: "",
+					loading: "lazy",
+					className: "h-full w-full object-cover",
+					onError: () => setFailed((current) => ({
+						...current,
+						[index]: true
+					}))
+				})
+			}, photo.path))
+		})]
+	});
+}
+function Panel({ title, aside, children }) {
+	return /* @__PURE__ */ jsxs("section", {
+		className: "rounded-xl border border-[#dad5cb] bg-white p-5 shadow-sm sm:p-6",
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "flex flex-wrap items-center justify-between gap-3",
+			children: [/* @__PURE__ */ jsx("h2", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]",
+				children: title
+			}), aside]
+		}), /* @__PURE__ */ jsx("div", {
+			className: "mt-4",
+			children
+		})]
+	});
+}
+var toneClasses$2 = {
+	neutral: "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700",
+	success: "border-emerald-800/25 bg-emerald-50 text-emerald-800",
+	warning: "border-amber-800/25 bg-amber-50 text-amber-800",
+	muted: "border-neutral-300 bg-neutral-100 text-neutral-500",
+	danger: "border-[#b3261e]/25 bg-red-50 text-[#b3261e]"
+};
+function Pill({ tone, children }) {
+	return /* @__PURE__ */ jsx("span", {
+		className: `inline-flex h-7 shrink-0 items-center rounded-full border px-3 font-heading text-xs font-semibold uppercase tracking-[0.12em] ${toneClasses$2[tone] ?? toneClasses$2.neutral}`,
+		children
+	});
+}
+/** A compact row for the side rail, where vertical space is worth more than symmetry. */
+function RailRow({ label, value }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "flex items-baseline justify-between gap-4 py-2.5",
+		children: [/* @__PURE__ */ jsx("dt", {
+			className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+			children: label
+		}), /* @__PURE__ */ jsx("dd", {
+			className: "min-w-0 text-right text-sm text-neutral-800",
+			children: value || "Not provided"
+		})]
+	});
+}
+function Detail$1({ label, value }) {
+	return /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+		className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+		children: label
+	}), /* @__PURE__ */ jsx("dd", {
+		className: "mt-1 text-neutral-700",
+		children: value || "Not provided"
+	})] });
+}
+function formatUSD$1(value) {
+	if (!value) return null;
+	const amount = Number(value);
+	return Number.isNaN(amount) ? value : amount.toLocaleString("en-US", {
+		style: "currency",
+		currency: "USD",
+		maximumFractionDigits: 0
 	});
 }
 //#endregion
@@ -5018,6 +7705,9 @@ function emptyForm() {
 }
 function SellerListings({ portal, submissions, categoryOptions, regionOptions, conditionOptions }) {
 	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [search, setSearch] = useRemember("", "seller-listings-search");
+	const [page, setPage] = useRemember(1, "seller-listings-page");
+	const [pageSize, setPageSize] = useRemember(10, "seller-listings-page-size");
 	const [clientErrors, setClientErrors] = useState({});
 	const fieldRefs = useRef({
 		title: null,
@@ -5026,6 +7716,10 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 		condition: null
 	});
 	const form = useForm(emptyForm());
+	useScrollMemory({
+		key: "seller-listings",
+		detailPrefix: "/seller/listings/"
+	});
 	function openForm(prefill) {
 		form.clearErrors();
 		setClientErrors({});
@@ -5080,33 +7774,67 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 			}
 		});
 	}
+	const filtered = useMemo(() => {
+		const term = search.trim().toLowerCase();
+		if (!term) return submissions;
+		return submissions.filter((submission) => [
+			submission.title,
+			submission.category,
+			submission.region,
+			submission.city,
+			submission.condition_label,
+			submission.status_label
+		].filter(Boolean).join(" ").toLowerCase().includes(term));
+	}, [submissions, search]);
+	const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+	const currentPage = Math.min(page, totalPages);
+	const pageItems = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+	const rangeStart = filtered.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+	const rangeEnd = Math.min(currentPage * pageSize, filtered.length);
+	const showPagination = filtered.length > 10;
+	function updateSearch(value) {
+		setSearch(value);
+		setPage(1);
+	}
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "My Listings | Seller Portal" }), /* @__PURE__ */ jsx(PortalShell, {
 		portal,
 		title: "My Listings",
 		children: /* @__PURE__ */ jsxs("div", {
-			className: "grid gap-6",
+			className: "grid gap-4",
 			children: [
-				/* @__PURE__ */ jsxs("section", {
-					className: "flex flex-col justify-between gap-4 border border-[#dad5cb] bg-white p-5 sm:flex-row sm:items-center sm:p-6",
-					children: [/* @__PURE__ */ jsxs("div", { children: [
-						/* @__PURE__ */ jsx("span", {
-							className: "font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-							children: "Listed Equipment"
-						}),
-						/* @__PURE__ */ jsx("h2", {
-							className: "mt-2 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-							children: "Your Submissions"
-						}),
-						/* @__PURE__ */ jsx("p", {
-							className: "mt-2 max-w-2xl text-base leading-7 text-neutral-600",
-							children: "Submit equipment to Petra and track the current review status here."
-						})
-					] }), /* @__PURE__ */ jsx("button", {
+				/* @__PURE__ */ jsx(PortalPageHeader, {
+					eyebrow: "Listed Equipment",
+					title: "Your Submissions",
+					description: search.trim() ? `${filtered.length} of ${submissions.length} ${submissions.length === 1 ? "listing" : "listings"}` : `${submissions.length} ${submissions.length === 1 ? "listing" : "listings"} · track review status here.`,
+					actions: /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs("div", {
+						className: "relative sm:w-72",
+						children: [
+							/* @__PURE__ */ jsx("span", {
+								className: "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400",
+								children: /* @__PURE__ */ jsx(SearchIcon, {})
+							}),
+							/* @__PURE__ */ jsx("input", {
+								type: "search",
+								value: search,
+								onChange: (event) => updateSearch(event.target.value),
+								placeholder: "Search listings",
+								"aria-label": "Search listings",
+								className: "h-11 w-full rounded-lg border border-[#dad5cb] bg-white pl-10 pr-9 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-[#a56437] focus:ring-2 focus:ring-[#a56437]/15 [&::-webkit-search-cancel-button]:appearance-none"
+							}),
+							search && /* @__PURE__ */ jsx("button", {
+								type: "button",
+								onClick: () => updateSearch(""),
+								"aria-label": "Clear search",
+								className: "focus-copper absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-[#f3f1ec] hover:text-neutral-700",
+								children: /* @__PURE__ */ jsx(CloseIcon, {})
+							})
+						]
+					}), /* @__PURE__ */ jsxs("button", {
 						type: "button",
 						onClick: () => openForm(),
-						className: "button-press focus-copper inline-flex h-12 w-full shrink-0 items-center justify-center bg-[#a56437] px-6 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto",
-						children: "Submit Equipment"
-					})]
+						className: "button-press focus-copper inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-[#a56437] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 sm:w-auto",
+						children: [/* @__PURE__ */ jsx(PlusIcon, {}), "Submit Equipment"]
+					})] })
 				}),
 				/* @__PURE__ */ jsx(SlideOver, {
 					open: isFormOpen,
@@ -5280,7 +8008,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 								children: /* @__PURE__ */ jsx("button", {
 									type: "submit",
 									disabled: form.processing,
-									className: "button-press focus-copper inline-flex h-12 w-full items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60 sm:w-auto",
+									className: "button-press focus-copper inline-flex h-12 w-full items-center justify-center rounded-lg bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60 sm:w-auto",
 									children: form.processing ? "Submitting" : "Submit Equipment"
 								})
 							})
@@ -5288,176 +8016,141 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 					})
 				}),
 				/* @__PURE__ */ jsx("section", {
-					className: "grid gap-4",
-					children: submissions.length === 0 ? /* @__PURE__ */ jsx(EmptyState, { onSubmit: () => openForm() }) : /* @__PURE__ */ jsx("div", {
-						className: "grid gap-4",
-						children: submissions.map((submission) => /* @__PURE__ */ jsxs("article", {
-							className: "border border-[#dad5cb] bg-white p-6",
-							children: [
-								/* @__PURE__ */ jsxs("div", {
-									className: "flex flex-wrap items-start justify-between gap-4",
-									children: [/* @__PURE__ */ jsxs("div", {
-										className: "min-w-0",
-										children: [/* @__PURE__ */ jsx("h3", {
-											className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-											children: submission.title
-										}), /* @__PURE__ */ jsx("p", {
-											className: "mt-2 text-sm leading-6 text-neutral-500",
-											children: submission.created_at
-										})]
-									}), /* @__PURE__ */ jsxs("div", {
-										className: "flex flex-col items-start gap-2 sm:items-end",
-										children: [/* @__PURE__ */ jsx(StatusBadge, {
-											label: submission.status_label,
-											tone: submission.status_tone
-										}), submission.status_explanation && /* @__PURE__ */ jsx("p", {
-											className: "text-sm leading-6 text-neutral-500 sm:text-right",
-											children: submission.status_explanation
-										})]
-									})]
-								}),
-								/* @__PURE__ */ jsxs("dl", {
-									className: "mt-5 grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
-									children: [
-										/* @__PURE__ */ jsx(Detail, {
-											label: "Category",
-											value: submission.category
-										}),
-										/* @__PURE__ */ jsx(Detail, {
-											label: "Region",
-											value: formatRegion(submission)
-										}),
-										/* @__PURE__ */ jsx(Detail, {
-											label: "Condition",
-											value: submission.condition_label
-										}),
-										/* @__PURE__ */ jsx(Detail, {
-											label: "Asking price",
-											value: formatPrice(submission)
-										}),
-										submission.condition_notes && /* @__PURE__ */ jsxs("div", {
-											className: "sm:col-span-2",
-											children: [/* @__PURE__ */ jsx("dt", {
-												className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
-												children: "Condition notes"
-											}), /* @__PURE__ */ jsx("dd", {
-												className: "mt-1 whitespace-pre-line text-neutral-700",
-												children: submission.condition_notes
-											})]
-										})
-									]
-								}),
-								/* @__PURE__ */ jsxs("div", {
-									className: "mt-5 grid gap-5 sm:grid-cols-2",
-									children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("span", {
-										className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
-										children: "Photos"
-									}), /* @__PURE__ */ jsx("div", {
-										className: "mt-2",
-										children: /* @__PURE__ */ jsx(PhotoThumbnails, { photos: submission.photos })
-									})] }), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("span", {
-										className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
-										children: "Documents"
-									}), /* @__PURE__ */ jsx("div", {
-										className: "mt-2",
-										children: /* @__PURE__ */ jsx(DocumentLinks, { documents: submission.documents })
-									})] })]
-								})
-							]
-						}, submission.id))
-					})
+					className: "grid gap-5",
+					children: submissions.length === 0 ? /* @__PURE__ */ jsx(EmptyState, { onSubmit: () => openForm() }) : filtered.length === 0 ? /* @__PURE__ */ jsx(NoResults, {
+						search,
+						onClear: () => updateSearch("")
+					}) : /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx("div", {
+						className: "grid gap-2",
+						children: pageItems.map((submission) => /* @__PURE__ */ jsx(ListingCard, { submission }, submission.id))
+					}), showPagination && /* @__PURE__ */ jsx(Pagination, {
+						page: currentPage,
+						totalPages,
+						rangeStart,
+						rangeEnd,
+						total: filtered.length,
+						onChange: setPage,
+						pageSize,
+						onPageSizeChange: (size) => {
+							setPageSize(size);
+							setPage(1);
+						}
+					})] })
 				})
 			]
 		})
 	})] });
 }
-var toneClasses = {
+var toneClasses$1 = {
 	neutral: "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700",
 	success: "border-emerald-800/25 bg-emerald-50 text-emerald-800",
 	warning: "border-amber-800/25 bg-amber-50 text-amber-800",
 	muted: "border-neutral-300 bg-neutral-100 text-neutral-500",
 	danger: "border-[#b3261e]/25 bg-red-50 text-[#b3261e]"
 };
-function StatusBadge({ label, tone }) {
+function StatusBadge$1({ label, tone }) {
 	return /* @__PURE__ */ jsx("span", {
-		className: `inline-flex h-8 shrink-0 items-center border px-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] ${toneClasses[tone] ?? toneClasses.neutral}`,
+		className: `inline-flex h-7 shrink-0 items-center rounded-full border px-3 font-heading text-xs font-semibold uppercase tracking-[0.12em] shadow-sm ${toneClasses$1[tone] ?? toneClasses$1.neutral}`,
 		children: label
+	});
+}
+function ListingCard({ submission }) {
+	const [coverFailed, setCoverFailed] = useState(false);
+	const cover = submission.photos[0];
+	const extraPhotos = submission.photos.length - 1;
+	const showCover = Boolean(cover) && !coverFailed;
+	return /* @__PURE__ */ jsxs(Link, {
+		href: `/seller/listings/${submission.id}`,
+		className: "interactive-lift focus-copper flex gap-4 overflow-hidden rounded-xl border border-[#dad5cb] bg-white p-3 shadow-sm transition-colors hover:border-[#a56437] sm:gap-5 sm:p-4",
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-[#f3f1ec] sm:h-28 sm:w-36",
+			children: [showCover ? /* @__PURE__ */ jsx("img", {
+				src: cover.url,
+				alt: "",
+				loading: "lazy",
+				onError: () => setCoverFailed(true),
+				className: "h-full w-full object-cover"
+			}) : /* @__PURE__ */ jsx("span", {
+				className: "flex h-full w-full items-center justify-center text-[#cbc0ae]",
+				children: /* @__PURE__ */ jsx(EquipmentGlyph, {})
+			}), extraPhotos > 0 && /* @__PURE__ */ jsxs("span", {
+				className: "absolute bottom-1 right-1 rounded-full bg-neutral-950/70 px-1.5 py-0.5 font-heading text-[0.6rem] font-semibold uppercase tracking-[0.08em] text-white",
+				children: ["+", extraPhotos]
+			})]
+		}), /* @__PURE__ */ jsxs("div", {
+			className: "flex min-w-0 flex-1 flex-col gap-1",
+			children: [
+				/* @__PURE__ */ jsxs("div", {
+					className: "flex items-start justify-between gap-3",
+					children: [/* @__PURE__ */ jsx("h3", {
+						className: "truncate font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950",
+						title: submission.title,
+						children: submission.title
+					}), /* @__PURE__ */ jsx(StatusBadge$1, {
+						label: submission.status_label,
+						tone: submission.status_tone
+					})]
+				}),
+				/* @__PURE__ */ jsx("p", {
+					className: "truncate text-xs leading-5 text-neutral-500",
+					children: [
+						submission.category,
+						formatRegion(submission),
+						submission.condition_label,
+						formatPrice(submission)
+					].filter(Boolean).join(" · ")
+				}),
+				/* @__PURE__ */ jsxs("p", {
+					className: "truncate text-xs leading-5 text-neutral-400",
+					children: [submission.created_at, submission.status_explanation ? ` · ${submission.status_explanation}` : ""]
+				}),
+				/* @__PURE__ */ jsxs("div", {
+					className: "mt-auto flex flex-wrap items-center gap-3 pt-1",
+					children: [/* @__PURE__ */ jsxs("span", {
+						className: "inline-flex items-center gap-1.5 font-heading text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-neutral-400",
+						children: [
+							/* @__PURE__ */ jsx(PhotoIcon, {}),
+							submission.photos.length,
+							" ",
+							submission.photos.length === 1 ? "photo" : "photos"
+						]
+					}), /* @__PURE__ */ jsxs("span", {
+						className: "inline-flex items-center gap-1.5 font-heading text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-neutral-400",
+						children: [/* @__PURE__ */ jsx(FileIcon, {}), submission.documents.length === 0 ? "No docs" : `${submission.documents.length} ${submission.documents.length === 1 ? "doc" : "docs"}`]
+					})]
+				})
+			]
+		})]
 	});
 }
 function EmptyState({ onSubmit }) {
 	return /* @__PURE__ */ jsxs("article", {
-		className: "border border-[#dad5cb] bg-white p-8 text-center sm:p-12",
+		className: "rounded-2xl border border-[#dad5cb] bg-white p-8 text-center shadow-sm sm:p-12",
 		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f4ece4] text-[#a56437]",
+				children: /* @__PURE__ */ jsx(EquipmentGlyph, {})
+			}),
 			/* @__PURE__ */ jsx("h3", {
-				className: "font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl",
+				className: "mt-6 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl",
 				children: "Got equipment sitting in a yard?"
 			}),
 			/* @__PURE__ */ jsx("p", {
 				className: "mx-auto mt-4 max-w-xl text-base leading-7 text-neutral-600",
 				children: "Submit it to Petra and a broker will review the asset, position it, and work the buyer side for you."
 			}),
-			/* @__PURE__ */ jsx("button", {
+			/* @__PURE__ */ jsxs("button", {
 				type: "button",
 				onClick: onSubmit,
-				className: "button-press focus-copper mt-8 inline-flex h-12 items-center justify-center bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
-				children: "Submit Equipment"
+				className: "button-press focus-copper mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#a56437] px-8 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
+				children: [/* @__PURE__ */ jsx(PlusIcon, {}), "Submit Equipment"]
 			})
 		]
 	});
 }
-function PhotoThumbnails({ photos }) {
-	if (photos.length === 0) return /* @__PURE__ */ jsx("p", {
-		className: "text-base leading-7 text-neutral-500",
-		children: "No photos uploaded"
-	});
-	const visible = photos.slice(0, 4);
-	const remaining = photos.length - visible.length;
-	return /* @__PURE__ */ jsxs("div", {
-		className: "flex flex-wrap gap-2",
-		children: [visible.map((photo) => /* @__PURE__ */ jsx("a", {
-			href: photo.url,
-			target: "_blank",
-			rel: "noreferrer",
-			className: "focus-copper block h-20 w-20 overflow-hidden border border-[#dad5cb] bg-[#f3f1ec]",
-			title: photo.name,
-			children: /* @__PURE__ */ jsx("img", {
-				src: photo.url,
-				alt: photo.name,
-				loading: "lazy",
-				className: "h-full w-full object-cover"
-			})
-		}, photo.path)), remaining > 0 && /* @__PURE__ */ jsxs("span", {
-			className: "flex h-20 w-20 items-center justify-center border border-[#dad5cb] bg-[#f3f1ec] px-1 text-center font-heading text-sm font-semibold uppercase tracking-[0.08em] text-neutral-600",
-			children: [
-				"+",
-				remaining,
-				" more"
-			]
-		})]
-	});
-}
-function DocumentLinks({ documents }) {
-	if (documents.length === 0) return /* @__PURE__ */ jsx("p", {
-		className: "text-base leading-7 text-neutral-500",
-		children: "No documents uploaded"
-	});
-	return /* @__PURE__ */ jsx("ul", {
-		className: "grid gap-2",
-		children: documents.map((document) => /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs("a", {
-			href: document.url,
-			target: "_blank",
-			rel: "noreferrer",
-			className: "focus-copper flex items-center gap-3 border border-[#dad5cb] bg-white p-3 transition-colors hover:border-[#a56437]",
-			children: [/* @__PURE__ */ jsx(FileIcon, {}), /* @__PURE__ */ jsx("span", {
-				className: "min-w-0 truncate text-sm font-semibold text-neutral-900",
-				children: document.name
-			})]
-		}) }, document.path))
-	});
-}
 function FileIcon() {
 	return /* @__PURE__ */ jsxs("svg", {
-		className: "h-5 w-5 shrink-0 text-[#a56437]",
+		className: "h-3.5 w-3.5 shrink-0",
 		fill: "none",
 		stroke: "currentColor",
 		strokeLinecap: "round",
@@ -5470,6 +8163,111 @@ function FileIcon() {
 			/* @__PURE__ */ jsx("path", { d: "M14 3v5h5" }),
 			/* @__PURE__ */ jsx("path", { d: "M10 13h6" }),
 			/* @__PURE__ */ jsx("path", { d: "M10 17h4" })
+		]
+	});
+}
+function PhotoIcon() {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: "h-3.5 w-3.5 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.8,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [
+			/* @__PURE__ */ jsx("path", { d: "M4 5h16v14H4z" }),
+			/* @__PURE__ */ jsx("path", { d: "M4 15l4-4 4 4 3-3 5 5" }),
+			/* @__PURE__ */ jsx("path", { d: "M9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0" })
+		]
+	});
+}
+function PlusIcon() {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: "h-4 w-4 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 2,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [/* @__PURE__ */ jsx("path", { d: "M12 5v14" }), /* @__PURE__ */ jsx("path", { d: "M5 12h14" })]
+	});
+}
+function EquipmentGlyph() {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: "h-7 w-7 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.6,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [
+			/* @__PURE__ */ jsx("path", { d: "M4 16h16" }),
+			/* @__PURE__ */ jsx("path", { d: "M6 16l2-6h8l2 6" }),
+			/* @__PURE__ */ jsx("path", { d: "M8 18.5h.01" }),
+			/* @__PURE__ */ jsx("path", { d: "M16 18.5h.01" }),
+			/* @__PURE__ */ jsx("path", { d: "M9 10V7h6v3" })
+		]
+	});
+}
+function SearchIcon({ className = "h-5 w-5" }) {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: `${className} shrink-0`,
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 1.8,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [/* @__PURE__ */ jsx("circle", {
+			cx: "11",
+			cy: "11",
+			r: "7"
+		}), /* @__PURE__ */ jsx("path", { d: "M20 20l-3.5-3.5" })]
+	});
+}
+function CloseIcon() {
+	return /* @__PURE__ */ jsxs("svg", {
+		className: "h-4 w-4 shrink-0",
+		fill: "none",
+		stroke: "currentColor",
+		strokeLinecap: "round",
+		strokeLinejoin: "round",
+		strokeWidth: 2,
+		viewBox: "0 0 24 24",
+		"aria-hidden": "true",
+		children: [/* @__PURE__ */ jsx("path", { d: "M6 6l12 12" }), /* @__PURE__ */ jsx("path", { d: "M18 6L6 18" })]
+	});
+}
+function NoResults({ search, onClear }) {
+	const term = search.trim();
+	return /* @__PURE__ */ jsxs("article", {
+		className: "rounded-2xl border border-[#dad5cb] bg-white p-8 text-center shadow-sm sm:p-12",
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f4ece4] text-[#a56437]",
+				children: /* @__PURE__ */ jsx(SearchIcon, { className: "h-7 w-7" })
+			}),
+			/* @__PURE__ */ jsxs("h3", {
+				className: "mt-6 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+				children: ["No listings match", term ? ` “${term}”` : ""]
+			}),
+			/* @__PURE__ */ jsx("p", {
+				className: "mx-auto mt-3 max-w-md text-base leading-7 text-neutral-600",
+				children: "Try a different search — by title, category, region, condition, or status."
+			}),
+			/* @__PURE__ */ jsx("button", {
+				type: "button",
+				onClick: onClear,
+				className: "button-press focus-copper mt-6 inline-flex h-11 items-center justify-center rounded-lg border border-[#a56437] px-6 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] transition-colors hover:bg-[#a56437] hover:text-white",
+				children: "Clear search"
+			})
 		]
 	});
 }
@@ -5525,7 +8323,7 @@ function PhotoPicker({ files, error, onChange }) {
 			previews.length > 0 && /* @__PURE__ */ jsx("div", {
 				className: "grid gap-3 sm:grid-cols-2",
 				children: previews.map((preview, index) => /* @__PURE__ */ jsxs("article", {
-					className: "overflow-hidden border border-[#dad5cb] bg-white",
+					className: "overflow-hidden rounded-lg border border-[#dad5cb] bg-white",
 					children: [/* @__PURE__ */ jsx("div", {
 						className: "aspect-[4/3] bg-[#f3f1ec]",
 						children: /* @__PURE__ */ jsx("img", {
@@ -5593,7 +8391,7 @@ function DocumentPicker({ files, error, onChange }) {
 			files.length > 0 && /* @__PURE__ */ jsx("div", {
 				className: "grid gap-2",
 				children: files.map((file, index) => /* @__PURE__ */ jsxs("article", {
-					className: "flex items-center justify-between gap-4 border border-[#dad5cb] bg-white p-3",
+					className: "flex items-center justify-between gap-4 rounded-lg border border-[#dad5cb] bg-white p-3",
 					children: [/* @__PURE__ */ jsxs("div", {
 						className: "min-w-0",
 						children: [/* @__PURE__ */ jsx("p", {
@@ -5633,15 +8431,6 @@ function Field({ label, error, required = false, className = "", children }) {
 		]
 	});
 }
-function Detail({ label, value }) {
-	return /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
-		className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
-		children: label
-	}), /* @__PURE__ */ jsx("dd", {
-		className: "mt-1 text-neutral-700",
-		children: value || "Not provided"
-	})] });
-}
 function inputClass(error) {
 	return `portal-input${error ? " portal-input-error" : ""}`;
 }
@@ -5662,6 +8451,293 @@ function formatPrice(submission) {
 function formatFileSize(bytes) {
 	if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
 	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+//#endregion
+//#region resources/js/Pages/Portal/SellerOffers.tsx
+var SellerOffers_exports = /* @__PURE__ */ __exportAll({ default: () => SellerOffers });
+function SellerOffers({ portal, offers }) {
+	const { status } = usePage().props;
+	const [activeId, setActiveId] = useState(null);
+	const active = offers.find((offer) => offer.id === activeId) ?? null;
+	const awaiting = offers.filter((offer) => offer.can_respond).length;
+	useEffect(() => {
+		if (status) toast.success(status);
+	}, [status]);
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Offers | Seller Portal" }), /* @__PURE__ */ jsxs(PortalShell, {
+		portal,
+		title: "Offers",
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "grid gap-6",
+			children: [/* @__PURE__ */ jsx(PortalPageHeader, {
+				eyebrow: "Received Offers",
+				title: "Your Offers",
+				description: offers.length === 0 ? "Petra negotiates, then logs each offer here." : `${offers.length} ${offers.length === 1 ? "offer" : "offers"} · ${awaiting > 0 ? `${awaiting} awaiting your response.` : "nothing awaiting you."}`,
+				actions: /* @__PURE__ */ jsx(Link, {
+					href: "/seller/listings",
+					className: portalHeaderActionClass,
+					children: "My Listings"
+				})
+			}), offers.length === 0 ? /* @__PURE__ */ jsx("article", {
+				className: "rounded-xl border border-[#dad5cb] bg-white p-6 text-base leading-7 text-neutral-600 shadow-sm",
+				children: "No offers yet. Once Petra works a buyer deal on one of your listings, the offer will appear here for you to accept, decline, or counter."
+			}) : /* @__PURE__ */ jsx(DataTable, {
+				columns: OFFER_COLUMNS,
+				rows: offers,
+				rowKey: (offer) => offer.id,
+				onRowClick: (offer) => setActiveId(offer.id),
+				rowLabel: (offer) => `Open offer on ${offer.listing_title ?? "removed listing"}`,
+				caption: "Offers Petra has logged on your equipment"
+			})]
+		}), /* @__PURE__ */ jsx(SlideOver, {
+			open: active !== null,
+			onClose: () => setActiveId(null),
+			eyebrow: active?.listing_public_id ?? "Offer",
+			title: active?.listing_title ?? "Listing removed",
+			children: active && /* @__PURE__ */ jsxs("div", {
+				className: "grid gap-6",
+				children: [/* @__PURE__ */ jsxs("dl", {
+					className: "grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
+					children: [
+						/* @__PURE__ */ jsx(Detail, {
+							label: "Listing",
+							children: active.listing_href && active.listing_public_id ? /* @__PURE__ */ jsx(Link, {
+								href: active.listing_href,
+								className: "focus-copper font-semibold text-[#a56437] underline-offset-4 hover:underline",
+								children: active.listing_public_id
+							}) : /* @__PURE__ */ jsx("span", {
+								className: "text-neutral-500",
+								children: active.listing_public_id ?? "Not yet published"
+							})
+						}),
+						/* @__PURE__ */ jsx(Detail, {
+							label: "Status",
+							children: /* @__PURE__ */ jsx(StatusBadge, {
+								label: active.status_label,
+								tone: active.status_tone
+							})
+						}),
+						/* @__PURE__ */ jsx(Detail, {
+							label: "Offer amount",
+							children: /* @__PURE__ */ jsx("span", {
+								className: "font-semibold text-neutral-900",
+								children: formatUSD(active.amount)
+							})
+						}),
+						/* @__PURE__ */ jsx(Detail, {
+							label: "Offered",
+							children: /* @__PURE__ */ jsx("span", { children: active.offered_at ?? "Date not available" })
+						}),
+						active.counter_amount && /* @__PURE__ */ jsx(Detail, {
+							label: active.status === "accepted" ? "Agreed amount" : "Your counter",
+							children: /* @__PURE__ */ jsx("span", {
+								className: "font-semibold text-neutral-900",
+								children: formatUSD(active.counter_amount)
+							})
+						})
+					]
+				}), active.can_respond ? /* @__PURE__ */ jsx(OfferResponse, { offer: active }, `${active.id}:${active.status}`) : /* @__PURE__ */ jsxs("p", {
+					className: "border-t border-[#dad5cb] pt-5 text-base leading-7 text-neutral-600",
+					children: [
+						"This offer is ",
+						active.status_label.toLowerCase(),
+						" — there is nothing left for you to respond to. Petra will be in touch if the negotiation reopens."
+					]
+				})]
+			})
+		})]
+	})] });
+}
+/**
+* Column layout. Listing and Status hold at every width; amounts and the offer date drop
+* away on narrower screens rather than forcing a sideways scroll.
+*/
+var OFFER_COLUMNS = [
+	{
+		key: "listing",
+		header: "Listing",
+		cell: (offer) => /* @__PURE__ */ jsx(CellStack, {
+			primary: /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950",
+				children: offer.listing_title ?? "Listing removed"
+			}), offer.can_respond && /* @__PURE__ */ jsx("span", {
+				className: "rounded-full bg-amber-50 px-2 py-0.5 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-amber-800",
+				children: "Action needed"
+			})] }),
+			secondary: offer.listing_public_id ?? "Not yet published"
+		})
+	},
+	{
+		key: "amount",
+		header: "Offer",
+		align: "right",
+		cell: (offer) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap font-semibold text-neutral-900",
+			children: formatUSD(offer.amount)
+		})
+	},
+	{
+		key: "counter",
+		header: "Counter",
+		hideBelow: "md",
+		align: "right",
+		cell: (offer) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: offer.counter_amount ? formatUSD(offer.counter_amount) : "—"
+		})
+	},
+	{
+		key: "offered_at",
+		header: "Offered",
+		hideBelow: "xl",
+		cell: (offer) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: offer.offered_at ?? "—"
+		})
+	},
+	{
+		key: "status",
+		header: "Status",
+		align: "right",
+		cell: (offer) => /* @__PURE__ */ jsx(StatusBadge, {
+			label: offer.status_label,
+			tone: offer.status_tone
+		})
+	}
+];
+/**
+* Accept / decline / counter. A counter records the amount and flips the status to
+* "Countered", handing the offer back to the broker. The broker answers it in the review
+* view — accepting your number, declining, or re-offering, which returns the offer here
+* as Pending for another round.
+*/
+function OfferResponse({ offer }) {
+	const [counterOpen, setCounterOpen] = useState(false);
+	const form = useForm({
+		action: "",
+		counter_amount: ""
+	});
+	function respond(action) {
+		form.transform((data) => ({
+			...data,
+			action,
+			counter_amount: ""
+		}));
+		form.patch(`/seller/offers/${offer.id}`, { preserveScroll: true });
+	}
+	function submitCounter(event) {
+		event.preventDefault();
+		form.transform((data) => ({
+			...data,
+			action: "counter"
+		}));
+		form.patch(`/seller/offers/${offer.id}`, {
+			preserveScroll: true,
+			onSuccess: () => {
+				setCounterOpen(false);
+				form.reset("counter_amount");
+			}
+		});
+	}
+	const counterError = form.errors.counter_amount;
+	return /* @__PURE__ */ jsxs("div", {
+		className: "border-t border-[#dad5cb] pt-5",
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+				children: "Respond"
+			}),
+			/* @__PURE__ */ jsxs("div", {
+				className: "mt-3 flex flex-wrap items-center gap-3",
+				children: [
+					/* @__PURE__ */ jsxs("button", {
+						type: "button",
+						disabled: form.processing,
+						onClick: () => respond("accept"),
+						className: "button-press focus-copper inline-flex h-10 items-center justify-center rounded-lg bg-[#a56437] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+						children: ["Accept ", formatUSD(offer.amount)]
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						disabled: form.processing,
+						onClick: () => respond("decline"),
+						className: "button-press focus-copper inline-flex h-10 items-center justify-center rounded-lg border border-[#b3261e] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#b3261e] transition-colors hover:bg-[#b3261e] hover:text-white disabled:opacity-60",
+						children: "Decline"
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						disabled: form.processing,
+						onClick: () => setCounterOpen((open) => !open),
+						"aria-expanded": counterOpen,
+						className: "button-press focus-copper inline-flex h-10 items-center justify-center rounded-lg border border-[#a56437] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] transition-colors hover:bg-[#a56437] hover:text-white disabled:opacity-60",
+						children: "Counter"
+					})
+				]
+			}),
+			counterOpen && /* @__PURE__ */ jsxs("form", {
+				onSubmit: submitCounter,
+				className: "mt-4 flex flex-col gap-2 sm:flex-row sm:items-end",
+				children: [
+					/* @__PURE__ */ jsxs("label", {
+						className: "grid gap-2",
+						children: [/* @__PURE__ */ jsx("span", {
+							className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+							children: "Counter amount (USD)"
+						}), /* @__PURE__ */ jsx("input", {
+							type: "number",
+							min: "0",
+							step: "0.01",
+							inputMode: "decimal",
+							value: form.data.counter_amount,
+							onChange: (event) => form.setData("counter_amount", event.target.value),
+							placeholder: "USD",
+							"aria-invalid": Boolean(counterError),
+							className: `portal-input sm:w-56${counterError ? " portal-input-error" : ""}`
+						})]
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "submit",
+						disabled: form.processing || form.data.counter_amount.trim() === "",
+						className: "button-press focus-copper inline-flex h-10 items-center justify-center rounded-lg bg-[#a56437] px-5 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+						children: "Send counter"
+					}),
+					counterError && /* @__PURE__ */ jsx("span", {
+						className: "text-sm text-[#b3261e]",
+						children: counterError
+					})
+				]
+			})
+		]
+	});
+}
+var toneClasses = {
+	neutral: "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700",
+	success: "border-emerald-800/25 bg-emerald-50 text-emerald-800",
+	warning: "border-amber-800/25 bg-amber-50 text-amber-800",
+	muted: "border-neutral-300 bg-neutral-100 text-neutral-500",
+	danger: "border-[#b3261e]/25 bg-red-50 text-[#b3261e]"
+};
+function StatusBadge({ label, tone }) {
+	return /* @__PURE__ */ jsx("span", {
+		className: `inline-flex h-7 shrink-0 items-center rounded-full border px-3 font-heading text-xs font-semibold uppercase tracking-[0.12em] ${toneClasses[tone] ?? toneClasses.neutral}`,
+		children: label
+	});
+}
+function Detail({ label, children }) {
+	return /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+		className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+		children: label
+	}), /* @__PURE__ */ jsx("dd", {
+		className: "mt-1",
+		children
+	})] });
+}
+function formatUSD(value) {
+	const amount = Number(value);
+	return Number.isNaN(amount) ? value : amount.toLocaleString("en-US", {
+		style: "currency",
+		currency: "USD",
+		maximumFractionDigits: 0
+	});
 }
 var request_equipment_default = {
 	heroImage: "/images/petra-equipment-yard-hero.png",
@@ -7206,10 +10282,26 @@ function AppLayout({ children }) {
 }
 //#endregion
 //#region resources/js/Layouts/BlankLayout.tsx
+/**
+* A visit the reader did not initiate as navigation: either a partial reload (the
+* messaging polls and mark-as-read, which carry `only`) or one explicitly flagged
+* quiet (sending a message).
+*
+* Read defensively — both fields are Inertia-internal, and anything unexpected
+* should fall through to "treat it as a real navigation" rather than throw.
+*/
+function isBackgroundVisit(event) {
+	const visit = event?.detail?.visit;
+	if (Array.isArray(visit?.only) && visit.only.length > 0) return true;
+	return visit?.headers?.["X-Petra-Quiet-Visit"] === "1";
+}
 function BlankLayout({ children }) {
 	const [isNavigating, setIsNavigating] = useState(false);
 	useEffect(() => {
-		const removeStartListener = router.on("start", () => setIsNavigating(true));
+		const removeStartListener = router.on("start", (event) => {
+			if (isBackgroundVisit(event)) return;
+			setIsNavigating(true);
+		});
 		const removeFinishListener = router.on("finish", () => setIsNavigating(false));
 		return () => {
 			removeStartListener();
@@ -7243,6 +10335,8 @@ createServer((page) => createInertiaApp({
 			"./Pages/Auth/Login.tsx": Login_exports,
 			"./Pages/Auth/Register.tsx": Register_exports,
 			"./Pages/Auth/ResetPassword.tsx": ResetPassword_exports,
+			"./Pages/Broker/Inbox.tsx": Inbox_exports,
+			"./Pages/Broker/Requests.tsx": Requests_exports,
 			"./Pages/Broker/Submissions.tsx": Submissions_exports,
 			"./Pages/Contact.tsx": Contact_exports,
 			"./Pages/Equipment.tsx": Equipment_exports,
@@ -7251,11 +10345,15 @@ createServer((page) => createInertiaApp({
 			"./Pages/Home.tsx": Home_exports,
 			"./Pages/Industries.tsx": Industries_exports,
 			"./Pages/LegalPage.tsx": LegalPage_exports,
-			"./Pages/Portal/BuyerSavedEquipment.tsx": BuyerSavedEquipment_exports,
+			"./Pages/Portal/BuyerQuotes.tsx": BuyerQuotes_exports,
+			"./Pages/Portal/BuyerRequests.tsx": BuyerRequests_exports,
 			"./Pages/Portal/Dashboard.tsx": Dashboard_exports,
+			"./Pages/Portal/Messages.tsx": Messages_exports,
 			"./Pages/Portal/Placeholder.tsx": Placeholder_exports,
 			"./Pages/Portal/Profile.tsx": Profile_exports,
+			"./Pages/Portal/SellerListingDetail.tsx": SellerListingDetail_exports,
 			"./Pages/Portal/SellerListings.tsx": SellerListings_exports,
+			"./Pages/Portal/SellerOffers.tsx": SellerOffers_exports,
 			"./Pages/RequestEquipment.tsx": RequestEquipment_exports,
 			"./Pages/Resources.tsx": Resources_exports,
 			"./Pages/SellEquipment.tsx": SellEquipment_exports,

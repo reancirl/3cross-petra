@@ -87,6 +87,26 @@ class User extends Authenticatable
     }
 
     /**
+     * Threads this user owns the customer side of.
+     *
+     * Brokers do not use this relationship — they are staff and see every thread
+     * (Thread::scopeVisibleTo). For buyers and sellers it is the access boundary:
+     * querying through it makes "you only see your own threads" structural rather
+     * than a check each new endpoint has to remember.
+     *
+     * @return HasMany<Thread, $this>
+     */
+    public function threads(): HasMany
+    {
+        return $this->hasMany(Thread::class);
+    }
+
+    public function isBroker(): bool
+    {
+        return $this->user_type === self::TYPE_BROKER;
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Thread;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -53,6 +54,18 @@ class HandleInertiaRequests extends Middleware
                 ] : null,
             ],
             'status' => $request->session()->get('status'),
+            // The Messages nav badge. A closure so guests and public marketplace
+            // pages never pay for the query, and so the 45s poll can refresh it on
+            // its own via router.reload({ only: ['unreadMessageThreads'] }) without
+            // re-serializing the whole page.
+            //
+            // It is one indexed EXISTS-per-thread aggregate on every authed request.
+            // That is affordable at the current scale and consistent with how the
+            // rest of the portal loads data; if the inbox ever grows past a few
+            // thousand threads this is the first thing to turn into a cached counter.
+            'unreadMessageThreads' => fn (): int => $user === null
+                ? 0
+                : Thread::unreadThreadCountFor($user),
         ];
     }
 }

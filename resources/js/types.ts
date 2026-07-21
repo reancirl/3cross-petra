@@ -15,6 +15,93 @@ export type SharedPageProps = {
         user: AuthUser | null;
     };
     status?: string | null;
+    /**
+     * Conversations (not messages) with something unread for the current user's side.
+     * Drives the Messages / Inbox nav badge. Refreshed app-wide every 45s by
+     * PortalShell via a partial reload; 0 for guests.
+     */
+    unreadMessageThreads?: number;
+};
+
+export type MessageAttachment = {
+    id: number;
+    name: string;
+    mime: string;
+    size: number;
+    /** Render as an inline preview rather than a file chip. */
+    isImage: boolean;
+    /** An authorizing route, not a static file — attachments are on the private disk. */
+    url: string;
+};
+
+export type ThreadMessage = {
+    id: number;
+    body: string | null;
+    senderType: 'user' | 'broker';
+    /** Always "Petra" for broker messages — individual brokers are never named. */
+    authorName: string;
+    /** Whether the viewer's own side wrote this, driving left/right alignment. */
+    mine: boolean;
+    createdAt: string;
+    attachments: MessageAttachment[];
+};
+
+export type ThreadSubjectContext = {
+    kind: string;
+    title: string;
+    statusLabel: string;
+    statusTone: StatusTone;
+    href: string | null;
+    // Listing subjects (broker context panel only).
+    region?: string;
+    condition?: string;
+    conditionNotes?: string | null;
+    category?: string;
+    publicId?: string | null;
+    askingPrice?: string | null;
+    needsValuation?: boolean;
+    photos?: { name: string; url: string }[];
+    // Buyer-request subjects.
+    specifications?: string | null;
+    budget?: string | null;
+    timeline?: string | null;
+    locationPreference?: string | null;
+    isQuoteInquiry?: boolean;
+};
+
+export type ThreadSummary = {
+    id: number;
+    url: string;
+    subjectType: string;
+    subjectTypeLabel: string;
+    subjectTitle: string;
+    subjectStatus: { label: string; tone: StatusTone } | null;
+    status: 'open' | 'closed';
+    statusLabel: string;
+    isClosed: boolean;
+    snippet: string;
+    lastMessageAt: string | null;
+    lastMessageFrom: 'user' | 'broker' | null;
+    unreadCount: number;
+    context?: ThreadSubjectContext;
+    // Broker inbox rows only.
+    userName?: string;
+    userRole?: string;
+    userType?: 'seller' | 'buyer' | 'broker';
+};
+
+export type ThreadMessagePage = {
+    items: ThreadMessage[];
+    currentPage: number;
+    lastPage: number;
+    total: number;
+    hasOlder: boolean;
+};
+
+export type CannedResponse = {
+    id: number;
+    title: string;
+    body: string;
 };
 
 export type PortalData = {

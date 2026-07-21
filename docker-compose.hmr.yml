@@ -1,7 +1,24 @@
 services:
   app:
+    # Bind public/ so the app container can see the `hot` file Vite writes, which is
+    # what flips Laravel from serving the built manifest to serving dev-server URLs.
     volumes:
       - ./public:/var/www/html/public
+    environment:
+      # Inertia SSR is unreachable in HMR mode and must be off.
+      #
+      # When `hot` exists, Inertia stops calling its own SSR process and instead POSTs
+      # to the Vite dev server at <hot-url>/__inertia_ssr. That URL is
+      # http://localhost:5173 — correct for the browser, but inside this container
+      # localhost is the container itself, and Vite runs in a separate one. So every
+      # page render attempted an unreachable request, failed, and silently fell back
+      # to client-side rendering (verified: the app container cannot reach
+      # localhost:5173, and pages ship an empty <div id="app">).
+      #
+      # Turning SSR off makes that fallback explicit instead of routing every request
+      # through a guaranteed-failing HTTP call. Dev renders client-side; production is
+      # untouched and still server-renders.
+      INERTIA_SSR_ENABLED: "false"
 
   web:
     volumes:

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Broker\InboxController;
 use App\Http\Controllers\Broker\SubmissionReviewController;
 use App\Http\Controllers\Portal\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -32,4 +33,17 @@ Route::middleware(['auth', 'no.back.history', 'user.type:broker'])
             ->name('offers.respond');
         Route::patch('/buyer-requests/{equipmentRequest}', [SubmissionReviewController::class, 'updateBuyerRequest'])
             ->name('buyer-requests.update');
+        // Inbox: every thread from every buyer and seller. Brokers are staff, so unlike
+        // the customer side there is no ownership filter — user.type:broker on this
+        // group is the whole authorization story, matching the queues above.
+        Route::get('/inbox', [InboxController::class, 'index'])->name('inbox');
+        // Declared before /inbox/{thread} so the literal path is not swallowed by the
+        // numeric binding.
+        Route::post('/inbox/threads', [InboxController::class, 'storeThread'])->name('inbox.threads.store');
+        Route::get('/inbox/{thread}', [InboxController::class, 'show'])->whereNumber('thread')->name('inbox.show');
+        Route::post('/inbox/{thread}/messages', [InboxController::class, 'store'])->whereNumber('thread')->name('inbox.messages.store');
+        Route::post('/inbox/{thread}/read', [InboxController::class, 'markRead'])->whereNumber('thread')->name('inbox.read');
+        // Close / reopen. Broker-only by design: a customer cannot close their own
+        // ticket, and any new message reopens it regardless.
+        Route::patch('/inbox/{thread}/status', [InboxController::class, 'updateStatus'])->whereNumber('thread')->name('inbox.status');
     });

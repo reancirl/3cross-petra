@@ -21,8 +21,8 @@ export default function Dashboard({ portal }: DashboardProps) {
             },
             {
                 label: 'Messages',
-                state: 'Soon',
-                description: 'Messaging is reserved for a later phase.',
+                state: 'Live',
+                description: 'Message your Petra broker about any of your equipment.',
             },
         ]
         : [

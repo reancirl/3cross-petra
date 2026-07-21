@@ -8,11 +8,42 @@ type BlankLayoutProps = {
     children: ReactNode;
 };
 
+/**
+ * A visit the reader did not initiate as navigation: either a partial reload (the
+ * messaging polls and mark-as-read, which carry `only`) or one explicitly flagged
+ * quiet (sending a message).
+ *
+ * Read defensively — both fields are Inertia-internal, and anything unexpected
+ * should fall through to "treat it as a real navigation" rather than throw.
+ */
+function isBackgroundVisit(event: unknown): boolean {
+    const visit = (event as {
+        detail?: { visit?: { only?: unknown; headers?: Record<string, string> } };
+    })?.detail?.visit;
+
+    if (Array.isArray(visit?.only) && visit.only.length > 0) {
+        return true;
+    }
+
+    return visit?.headers?.['X-Petra-Quiet-Visit'] === '1';
+}
+
 export default function BlankLayout({ children }: BlankLayoutProps) {
     const [isNavigating, setIsNavigating] = useState(false);
 
     useEffect(() => {
-        const removeStartListener = router.on('start', () => setIsNavigating(true));
+        // Only real navigations dim the page. Partial reloads — the messaging
+        // unread/thread polls and mark-as-read, which carry `only` — are background
+        // traffic the reader never asked for, and dimming the page every 20 seconds
+        // while someone is mid-sentence reads as the app glitching.
+        const removeStartListener = router.on('start', (event) => {
+            if (isBackgroundVisit(event)) {
+                return;
+            }
+
+            setIsNavigating(true);
+        });
+
         const removeFinishListener = router.on('finish', () => setIsNavigating(false));
 
         return () => {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EquipmentSubmission;
 use App\Models\User;
+use App\Support\MessageThreadService;
 use App\Support\PublicListingPresenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,8 @@ use Inertia\Response;
 
 class EquipmentListingController extends Controller
 {
+    public function __construct(private readonly MessageThreadService $threads) {}
+
     public function show(string $listing): Response
     {
         $equipment = $this->findPublicListing($listing);
@@ -37,6 +40,13 @@ class EquipmentListingController extends Controller
         // A signed-in buyer inquires as themselves; a guest gives contact details,
         // which back a shadow buyer account keyed on email.
         $buyer = $request->user();
+
+        // Whether this inquiry can also open a message thread. Threads are only for
+        // people who can actually read them: a guest's shadow account has a random
+        // password nobody can log in with, so a thread on it would be unreachable and
+        // its notification email would land on someone who does not know the account
+        // exists. Captured before $buyer is resolved, because it stops being null.
+        $isSignedIn = $buyer !== null;
 
         if ($buyer === null) {
             $validated = $request->validate([
@@ -83,6 +93,15 @@ class EquipmentListingController extends Controller
         // inquiring twice resolves to the same user. Once the broker closes the request
         // the buyer is free to ask again.
         if ($this->hasOpenQuoteInquiry($buyer, $equipment)) {
+            // Still route the note into the conversation. The duplicate guard exists to
+            // keep the broker queue clean, not to swallow what the buyer just typed —
+            // find-or-create means this lands in the thread they already have.
+            if ($isSignedIn) {
+                $this->threads->openListingInquiry($buyer, $equipment, $validated['note'] ?? null);
+
+                return back()->with('status', 'Message sent — Petra will follow up in your portal messages.');
+            }
+
             return back()->with('status', 'You already have an open quote request on this listing — Petra will follow up there.');
         }
 
@@ -94,6 +113,16 @@ class EquipmentListingController extends Controller
             'location_preference' => $equipment->city ? "{$equipment->region} — {$equipment->city}" : $equipment->region,
             'timeline' => 'Availability, pricing, and inspection confirmation requested',
         ]);
+
+        // The inquiry record stays the system of record for the broker queue and the
+        // buyer's Quotes page; the thread is where the conversation about it happens.
+        // Both exist deliberately — see the Phase 0 decision recorded in the messaging
+        // work — so nothing about the existing quote flow changes for guests.
+        if ($isSignedIn) {
+            $this->threads->openListingInquiry($buyer, $equipment, $validated['note'] ?? null);
+
+            return back()->with('status', 'Request sent — Petra will follow up in your portal messages.');
+        }
 
         return back()->with('status', 'Request sent to Petra broker review.');
     }

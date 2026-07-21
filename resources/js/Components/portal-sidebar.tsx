@@ -16,6 +16,10 @@ type PortalNavItem = {
     path: string;
     real: boolean;
     icon: PortalNavIconName;
+    // Which shared counter to render as a badge, if any. Only 'unread' exists today;
+    // the field is a name rather than a boolean so a second counter (notifications,
+    // say) does not need another flag.
+    badge?: 'unread';
 };
 
 type PortalNavGroup = {
@@ -23,7 +27,9 @@ type PortalNavGroup = {
     items: PortalNavItem[];
 };
 
-// Messages and notifications are deferred and intentionally absent from the seller portal.
+// Notifications remain deferred for sellers. Messages is live in all three portals —
+// it was previously absent here entirely, so a seller had no way to reach their broker
+// about their own submission.
 const sellerNavGroups: PortalNavGroup[] = [
     {
         label: 'Main Menu',
@@ -36,7 +42,10 @@ const sellerNavGroups: PortalNavGroup[] = [
     },
     {
         label: 'Other',
-        items: [{ label: 'Documents', path: 'documents', real: false, icon: 'documents' }],
+        items: [
+            { label: 'Documents', path: 'documents', real: false, icon: 'documents' },
+            { label: 'Messages', path: 'messages', real: true, icon: 'messages', badge: 'unread' },
+        ],
     },
     {
         label: 'Account',
@@ -58,7 +67,7 @@ const buyerNavGroups: PortalNavGroup[] = [
         label: 'Other',
         items: [
             { label: 'Documents', path: 'documents', real: false, icon: 'documents' },
-            { label: 'Messages', path: 'messages', real: false, icon: 'messages' },
+            { label: 'Messages', path: 'messages', real: true, icon: 'messages', badge: 'unread' },
             { label: 'Notifications', path: 'notifications', real: false, icon: 'notifications' },
         ],
     },
@@ -77,6 +86,8 @@ const brokerNavGroups: PortalNavGroup[] = [
         items: [
             { label: 'Seller Submissions', path: 'submissions', real: true, icon: 'equipment' },
             { label: 'Buyer Requests', path: 'requests', real: true, icon: 'quotes' },
+            // Every customer conversation, from buyers and sellers alike.
+            { label: 'Inbox', path: 'inbox', real: true, icon: 'messages', badge: 'unread' },
         ],
     },
     {
@@ -122,6 +133,8 @@ function navGroupsFor(portal: PortalData): PortalNavGroup[] {
 export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, onLogout }: PortalSidebarProps) {
     const page = usePage<SharedPageProps>();
     const { auth } = page.props;
+    // Shared prop, refreshed app-wide by the 45s poll in PortalShell.
+    const unreadThreads = page.props.unreadMessageThreads ?? 0;
     const currentPath = page.url.split('?')[0];
     const userName = auth.user?.name ?? portal.profileName;
     const userInitial = (userName ?? portal.roleLabel).charAt(0).toUpperCase();
@@ -181,7 +194,11 @@ export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, on
 
                             {group.items.map((item) => {
                                 const href = hrefFor(portal, item.path);
-                                const active = currentPath === href;
+                                // Prefix match so a nested page keeps its section lit —
+                                // an open thread at /buyer/messages/12 is still Messages.
+                                // The trailing slash keeps the boundary on a path segment.
+                                const active = currentPath === href || currentPath.startsWith(`${href}/`);
+                                const badgeCount = item.badge === 'unread' ? unreadThreads : 0;
 
                                 return (
                                     <Link
@@ -210,6 +227,16 @@ export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, on
                                                 } ${collapsed ? 'lg:hidden' : ''}`}
                                             >
                                                 Soon
+                                            </span>
+                                        )}
+                                        {item.real && badgeCount > 0 && (
+                                            <span
+                                                // Stays visible while collapsed — the count is the
+                                                // reason to look at a collapsed sidebar at all.
+                                                className="ml-auto flex min-w-5 shrink-0 items-center justify-center rounded-full bg-[#a56437] px-1.5 py-0.5 text-[0.65rem] font-semibold leading-none text-white lg:ml-0"
+                                                aria-label={`${badgeCount} unread ${badgeCount === 1 ? 'conversation' : 'conversations'}`}
+                                            >
+                                                {badgeCount > 99 ? '99+' : badgeCount}
                                             </span>
                                         )}
                                     </Link>

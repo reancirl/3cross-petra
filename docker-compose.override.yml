@@ -7,6 +7,9 @@ services:
       - ./database:/var/www/html/database
       - ./resources:/var/www/html/resources
       - ./routes:/var/www/html/routes
+      # Mounted as well as baked into the image, so changing upload limits in dev
+      # does not need a rebuild. The image COPY is what covers production.
+      - ./docker/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
 
   web:
     volumes:
