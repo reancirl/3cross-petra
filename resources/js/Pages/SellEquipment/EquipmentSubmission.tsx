@@ -1,7 +1,7 @@
 import { FaqAccordion, faqPageNode } from '../../Components/faq-accordion';
 import { breadcrumbNode, PublicPageMeta, sellEquipmentServiceNode } from '../../Components/public-page-meta';
+import PublicSubmissionForm, { type PublicLocationOption } from '../../Components/public-submission-form';
 import {
-    CardGrid,
     FinalCta,
     NumberedSteps,
     PageHero,
@@ -16,11 +16,28 @@ import content from '../../data/sell-equipment/equipment-submission.json';
 type Props = {
     canonicalUrl: string;
     ogImageUrl: string;
+    categoryOptions: string[];
+    locationOptions: PublicLocationOption[];
+    conditionOptions: Record<string, string>;
+    ownershipOptions: Record<string, string>;
+    intentOptions: Record<string, string>;
+    availabilityOptions: Record<string, string>;
+    valueRangeOptions: Record<string, string>;
 };
 
-const { meta, hero, whatToInclude, afterYouSubmit, faqSection, faqs, needAssistance, finalCta } = content;
+const { meta, hero, whatToInclude, afterYouSubmit, form, faqSection, faqs, needAssistance, finalCta } = content;
 
-export default function EquipmentSubmission({ canonicalUrl, ogImageUrl }: Props) {
+export default function EquipmentSubmission({
+    canonicalUrl,
+    ogImageUrl,
+    categoryOptions,
+    locationOptions,
+    conditionOptions,
+    ownershipOptions,
+    intentOptions,
+    availabilityOptions,
+    valueRangeOptions,
+}: Props) {
     const structuredData = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -84,7 +101,16 @@ export default function EquipmentSubmission({ canonicalUrl, ogImageUrl }: Props)
                     </div>
                 </Section>
 
-                {/* The Equipment Submission form mounts here — see Phase 5. */}
+                <PublicSubmissionForm
+                    categoryOptions={categoryOptions}
+                    locationOptions={locationOptions}
+                    conditionOptions={conditionOptions}
+                    ownershipOptions={ownershipOptions}
+                    intentOptions={intentOptions}
+                    availabilityOptions={availabilityOptions}
+                    valueRangeOptions={valueRangeOptions}
+                    copy={form}
+                />
 
                 <Section background="white">
                     <SectionHeading eyebrow="After Submitting" title={afterYouSubmit.title} />

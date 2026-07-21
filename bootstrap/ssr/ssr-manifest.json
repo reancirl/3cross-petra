@@ -7,6 +7,7 @@
   "resources/js/Components/coverage-map.tsx": [],
   "resources/js/Components/data-table.tsx": [],
   "resources/js/Components/faq-accordion.tsx": [],
+  "resources/js/Components/file-pickers.tsx": [],
   "resources/js/Components/footer.tsx": [],
   "resources/js/Components/home-icons.tsx": [],
   "resources/js/Components/message-composer.tsx": [],
@@ -19,6 +20,7 @@
   "resources/js/Components/portal-sidebar.tsx": [],
   "resources/js/Components/portal-topbar.tsx": [],
   "resources/js/Components/public-page-meta.tsx": [],
+  "resources/js/Components/public-submission-form.tsx": [],
   "resources/js/Components/sell-equipment-ui.tsx": [],
   "resources/js/Components/slide-over.tsx": [],
   "resources/js/Components/status-badge.tsx": [],
@@ -57,6 +59,7 @@
   "resources/js/Pages/SellEquipment/Index.tsx": [],
   "resources/js/Pages/SellEquipment/RequestValuation.tsx": [],
   "resources/js/Pages/SellEquipment/SellerProcess.tsx": [],
+  "resources/js/Pages/SellEquipment/SubmissionThanks.tsx": [],
   "resources/js/Pages/SellEquipment/UploadDocuments.tsx": [],
   "resources/js/Pages/SellEquipment/UploadPhotos.tsx": [],
   "resources/js/Pages/SellEquipment/WhySellWithPetra.tsx": [],
@@ -80,5 +83,6 @@
   "resources/js/messaging.ts": [],
   "resources/js/navigation.ts": [],
   "resources/js/scroll-memory.ts": [],
-  "resources/js/ssr.tsx": []
+  "resources/js/ssr.tsx": [],
+  "resources/js/use-form-draft.ts": []
 }

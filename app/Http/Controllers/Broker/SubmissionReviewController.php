@@ -36,8 +36,11 @@ class SubmissionReviewController extends Controller
                 ->get()
                 ->map(fn (EquipmentSubmission $submission): array => [
                     'id' => $submission->id,
-                    'seller' => $submission->user?->name,
-                    'email' => $submission->user?->email,
+                    // Falls back to the contact_* columns so an unclaimed lead from the public
+                    // form is still reachable — it has no account behind it to read a name off.
+                    'seller' => $submission->contactName(),
+                    'email' => $submission->contactEmail(),
+                    'is_unclaimed_lead' => $submission->isUnclaimedLead(),
                     'title' => $submission->title,
                     'category' => $submission->category,
                     'region' => $submission->region,

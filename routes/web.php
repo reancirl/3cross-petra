@@ -8,6 +8,7 @@ use App\Http\Controllers\EquipmentListingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\MessageAttachmentController;
+use App\Http\Controllers\SellEquipmentController;
 use App\Models\EquipmentSubmission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,8 +42,15 @@ Route::prefix('sell-equipment')->group(function (): void {
         ->name('sell-equipment.why');
     Route::get('/seller-process', $page('SellerProcess', '/sell-equipment/seller-process'))
         ->name('sell-equipment.process');
-    Route::get('/equipment-submission', $page('EquipmentSubmission', '/sell-equipment/equipment-submission'))
+    Route::get('/equipment-submission', [SellEquipmentController::class, 'submissionForm'])
         ->name('sell-equipment.submission');
+    // Throttled: a public endpoint that writes rows and accepts uploads. The form also
+    // carries a honeypot field the request rejects silently.
+    Route::post('/equipment-submission', [SellEquipmentController::class, 'storeSubmission'])
+        ->middleware('throttle:10,1')
+        ->name('sell-equipment.submission.store');
+    Route::get('/equipment-submission/thank-you', $page('SubmissionThanks', '/sell-equipment/equipment-submission/thank-you'))
+        ->name('sell-equipment.submission.thanks');
     Route::get('/upload-photos', $page('UploadPhotos', '/sell-equipment/upload-photos'))
         ->name('sell-equipment.photos');
     Route::get('/upload-documents', $page('UploadDocuments', '/sell-equipment/upload-documents'))

@@ -689,7 +689,7 @@ function Register() {
 						onSubmit: submit,
 						className: "mt-10 grid gap-5 border border-[#dad5cb] bg-[#f8f8f6] p-6 sm:grid-cols-2 sm:p-8",
 						children: [
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Name",
 								error: errors.name,
 								children: /* @__PURE__ */ jsx("input", {
@@ -700,7 +700,7 @@ function Register() {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Email",
 								error: errors.email,
 								children: /* @__PURE__ */ jsx("input", {
@@ -712,7 +712,7 @@ function Register() {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Phone",
 								error: errors.phone,
 								children: /* @__PURE__ */ jsx("input", {
@@ -722,7 +722,7 @@ function Register() {
 									autoComplete: "tel"
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Company",
 								error: errors.company_name,
 								children: /* @__PURE__ */ jsx("input", {
@@ -732,7 +732,7 @@ function Register() {
 									autoComplete: "organization"
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Portal type",
 								error: errors.user_type,
 								children: /* @__PURE__ */ jsxs("select", {
@@ -749,7 +749,7 @@ function Register() {
 								})
 							}),
 							/* @__PURE__ */ jsx("div", {}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Password",
 								error: errors.password,
 								children: /* @__PURE__ */ jsx("input", {
@@ -761,7 +761,7 @@ function Register() {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Confirm password",
 								error: errors.password_confirmation,
 								children: /* @__PURE__ */ jsx("input", {
@@ -800,7 +800,7 @@ function Register() {
 		})
 	})] });
 }
-function Field$5({ label, error, children }) {
+function Field$6({ label, error, children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: "grid gap-2",
 		children: [
@@ -853,7 +853,7 @@ function ResetPassword({ email, token }) {
 								type: "hidden",
 								value: data.token
 							}),
-							/* @__PURE__ */ jsx(Field$4, {
+							/* @__PURE__ */ jsx(Field$5, {
 								label: "Email",
 								error: errors.email,
 								children: /* @__PURE__ */ jsx("input", {
@@ -865,7 +865,7 @@ function ResetPassword({ email, token }) {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$4, {
+							/* @__PURE__ */ jsx(Field$5, {
 								label: "Password",
 								error: errors.password,
 								children: /* @__PURE__ */ jsx("input", {
@@ -877,7 +877,7 @@ function ResetPassword({ email, token }) {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$4, {
+							/* @__PURE__ */ jsx(Field$5, {
 								label: "Confirm password",
 								error: errors.password_confirmation,
 								children: /* @__PURE__ */ jsx("input", {
@@ -902,7 +902,7 @@ function ResetPassword({ email, token }) {
 		})
 	})] });
 }
-function Field$4({ label, error, children }) {
+function Field$5({ label, error, children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: "grid gap-2",
 		children: [
@@ -4769,7 +4769,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 							className: "mt-5 grid gap-4",
 							children: [
 								!isAuthed && /* @__PURE__ */ jsxs(Fragment, { children: [
-									/* @__PURE__ */ jsx(Field$3, {
+									/* @__PURE__ */ jsx(Field$4, {
 										label: "Name",
 										error: form.errors.name,
 										children: /* @__PURE__ */ jsx("input", {
@@ -4779,7 +4779,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 											required: true
 										})
 									}),
-									/* @__PURE__ */ jsx(Field$3, {
+									/* @__PURE__ */ jsx(Field$4, {
 										label: "Email",
 										error: form.errors.email,
 										children: /* @__PURE__ */ jsx("input", {
@@ -4790,7 +4790,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 											required: true
 										})
 									}),
-									/* @__PURE__ */ jsx(Field$3, {
+									/* @__PURE__ */ jsx(Field$4, {
 										label: "Phone",
 										error: form.errors.phone,
 										children: /* @__PURE__ */ jsx("input", {
@@ -4800,7 +4800,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 											autoComplete: "tel"
 										})
 									}),
-									/* @__PURE__ */ jsx(Field$3, {
+									/* @__PURE__ */ jsx(Field$4, {
 										label: "Company",
 										error: form.errors.company_name,
 										children: /* @__PURE__ */ jsx("input", {
@@ -4824,7 +4824,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 										")."
 									]
 								}),
-								/* @__PURE__ */ jsx(Field$3, {
+								/* @__PURE__ */ jsx(Field$4, {
 									label: "Note",
 									error: form.errors.note,
 									children: /* @__PURE__ */ jsx("textarea", {
@@ -4895,7 +4895,7 @@ function DetailCell({ label, value }) {
 		})]
 	});
 }
-function Field$3({ label, error, children }) {
+function Field$4({ label, error, children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: "grid gap-2",
 		children: [
@@ -6578,7 +6578,7 @@ function BuyerRequests({ portal, requests }) {
 						onSubmit: submit,
 						className: "grid gap-5 sm:grid-cols-2",
 						children: [
-							/* @__PURE__ */ jsx(Field$2, {
+							/* @__PURE__ */ jsx(Field$3, {
 								id: "equipment_type",
 								label: "Equipment type",
 								error: form.errors.equipment_type,
@@ -6590,7 +6590,7 @@ function BuyerRequests({ portal, requests }) {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$2, {
+							/* @__PURE__ */ jsx(Field$3, {
 								id: "budget_range",
 								label: "Budget range",
 								error: form.errors.budget_range,
@@ -6605,7 +6605,7 @@ function BuyerRequests({ portal, requests }) {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$2, {
+							/* @__PURE__ */ jsx(Field$3, {
 								id: "location_preference",
 								label: "Location preference",
 								error: form.errors.location_preference,
@@ -6617,7 +6617,7 @@ function BuyerRequests({ portal, requests }) {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$2, {
+							/* @__PURE__ */ jsx(Field$3, {
 								id: "timeline_start",
 								label: "Timeline",
 								error: form.errors.timeline,
@@ -6628,7 +6628,7 @@ function BuyerRequests({ portal, requests }) {
 									onChange: updateTimeline
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$2, {
+							/* @__PURE__ */ jsx(Field$3, {
 								id: "specifications",
 								label: "Specifications optional",
 								error: form.errors.specifications,
@@ -6816,7 +6816,7 @@ function dayButtonClass(day, value) {
 	if (isWithinRange(day, value)) return `${baseClass} border-[#eadfd4] bg-[#f1e7dc] text-neutral-950`;
 	return `${baseClass} border-transparent text-neutral-700 hover:border-[#a56437] hover:bg-[#fbfaf8]`;
 }
-function Field$2({ id, label, error, className = "", children }) {
+function Field$3({ id, label, error, className = "", children }) {
 	return /* @__PURE__ */ jsxs("div", {
 		className: `grid gap-2 ${className}`,
 		children: [
@@ -7252,7 +7252,7 @@ function Profile({ portal }) {
 								children: "Contact Details"
 							})]
 						}),
-						/* @__PURE__ */ jsx(Field$1, {
+						/* @__PURE__ */ jsx(Field$2, {
 							label: "Name",
 							error: profileForm.errors.name,
 							children: /* @__PURE__ */ jsx("input", {
@@ -7263,7 +7263,7 @@ function Profile({ portal }) {
 								required: true
 							})
 						}),
-						/* @__PURE__ */ jsx(Field$1, {
+						/* @__PURE__ */ jsx(Field$2, {
 							label: "Email",
 							error: profileForm.errors.email,
 							children: /* @__PURE__ */ jsx("input", {
@@ -7275,7 +7275,7 @@ function Profile({ portal }) {
 								required: true
 							})
 						}),
-						/* @__PURE__ */ jsx(Field$1, {
+						/* @__PURE__ */ jsx(Field$2, {
 							label: "Phone",
 							error: profileForm.errors.phone,
 							children: /* @__PURE__ */ jsx("input", {
@@ -7285,7 +7285,7 @@ function Profile({ portal }) {
 								autoComplete: "tel"
 							})
 						}),
-						/* @__PURE__ */ jsx(Field$1, {
+						/* @__PURE__ */ jsx(Field$2, {
 							label: "Company",
 							error: profileForm.errors.company_name,
 							children: /* @__PURE__ */ jsx("input", {
@@ -7295,7 +7295,7 @@ function Profile({ portal }) {
 								autoComplete: "organization"
 							})
 						}),
-						/* @__PURE__ */ jsx(Field$1, {
+						/* @__PURE__ */ jsx(Field$2, {
 							label: "Role",
 							children: /* @__PURE__ */ jsx("input", {
 								value: user?.user_type_label ?? portal.roleLabel,
@@ -7328,7 +7328,7 @@ function Profile({ portal }) {
 						/* @__PURE__ */ jsxs("div", {
 							className: "grid gap-5 sm:grid-cols-3",
 							children: [
-								/* @__PURE__ */ jsx(Field$1, {
+								/* @__PURE__ */ jsx(Field$2, {
 									label: "Current password",
 									error: passwordForm.errors.current_password,
 									children: /* @__PURE__ */ jsx("input", {
@@ -7340,7 +7340,7 @@ function Profile({ portal }) {
 										required: true
 									})
 								}),
-								/* @__PURE__ */ jsx(Field$1, {
+								/* @__PURE__ */ jsx(Field$2, {
 									label: "New password",
 									error: passwordForm.errors.password,
 									children: /* @__PURE__ */ jsx("input", {
@@ -7352,7 +7352,7 @@ function Profile({ portal }) {
 										required: true
 									})
 								}),
-								/* @__PURE__ */ jsx(Field$1, {
+								/* @__PURE__ */ jsx(Field$2, {
 									label: "Confirm password",
 									error: passwordForm.errors.password_confirmation,
 									children: /* @__PURE__ */ jsx("input", {
@@ -7378,7 +7378,7 @@ function Profile({ portal }) {
 		})
 	})] });
 }
-function Field$1({ label, error, children }) {
+function Field$2({ label, error, children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: "grid gap-2",
 		children: [
@@ -7712,6 +7712,153 @@ function formatUSD$1(value) {
 	});
 }
 //#endregion
+//#region resources/js/Components/file-pickers.tsx
+function formatFileSize(bytes) {
+	if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+function PhotoPicker({ files, error, onChange, label = "Photos optional", hint = "Choose one or more equipment images. Previews will appear below before submission." }) {
+	const [previews, setPreviews] = useState([]);
+	useEffect(() => {
+		const nextPreviews = files.map((file) => ({
+			file,
+			url: URL.createObjectURL(file)
+		}));
+		setPreviews(nextPreviews);
+		return () => {
+			nextPreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
+		};
+	}, [files]);
+	function removeFile(index) {
+		onChange(files.filter((_, fileIndex) => fileIndex !== index));
+	}
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-3 sm:col-span-2",
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: label
+			}),
+			/* @__PURE__ */ jsxs("label", {
+				className: "button-press focus-within:ring-2 focus-within:ring-[#a56437]/40 grid cursor-pointer gap-3 border border-dashed border-[#cfc7ba] bg-white p-5 transition-colors hover:border-[#a56437] hover:bg-[#fbfaf8]",
+				children: [
+					/* @__PURE__ */ jsx("input", {
+						type: "file",
+						multiple: true,
+						accept: "image/*",
+						onChange: (event) => {
+							onChange(Array.from(event.target.files ?? []));
+							event.currentTarget.value = "";
+						},
+						className: "sr-only"
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-lg font-semibold uppercase tracking-[0.08em] text-neutral-950",
+						children: "Add photos"
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "text-sm leading-6 text-neutral-600",
+						children: hint
+					})
+				]
+			}),
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			}),
+			previews.length > 0 && /* @__PURE__ */ jsx("div", {
+				className: "grid gap-3 sm:grid-cols-2",
+				children: previews.map((preview, index) => /* @__PURE__ */ jsxs("article", {
+					className: "overflow-hidden rounded-lg border border-[#dad5cb] bg-white",
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "aspect-[4/3] bg-[#f3f1ec]",
+						children: /* @__PURE__ */ jsx("img", {
+							src: preview.url,
+							alt: preview.file.name,
+							className: "h-full w-full object-cover"
+						})
+					}), /* @__PURE__ */ jsxs("div", {
+						className: "grid gap-3 p-3",
+						children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("p", {
+							className: "truncate text-sm font-semibold text-neutral-900",
+							children: preview.file.name
+						}), /* @__PURE__ */ jsx("p", {
+							className: "mt-1 text-xs text-neutral-500",
+							children: formatFileSize(preview.file.size)
+						})] }), /* @__PURE__ */ jsx("button", {
+							type: "button",
+							onClick: () => removeFile(index),
+							className: "focus-copper w-fit font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline",
+							children: "Remove"
+						})]
+					})]
+				}, `${preview.file.name}-${preview.file.lastModified}`))
+			})
+		]
+	});
+}
+function DocumentPicker({ files, error, onChange, label = "Documents optional", hint = "Upload optional spec sheets, service records, or other supporting files." }) {
+	function removeFile(index) {
+		onChange(files.filter((_, fileIndex) => fileIndex !== index));
+	}
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-3 sm:col-span-2",
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: label
+			}),
+			/* @__PURE__ */ jsxs("label", {
+				className: "button-press focus-within:ring-2 focus-within:ring-[#a56437]/40 grid cursor-pointer gap-3 border border-dashed border-[#cfc7ba] bg-white p-5 transition-colors hover:border-[#a56437] hover:bg-[#fbfaf8]",
+				children: [
+					/* @__PURE__ */ jsx("input", {
+						type: "file",
+						multiple: true,
+						onChange: (event) => {
+							onChange(Array.from(event.target.files ?? []));
+							event.currentTarget.value = "";
+						},
+						className: "sr-only"
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-lg font-semibold uppercase tracking-[0.08em] text-neutral-950",
+						children: "Add documents"
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "text-sm leading-6 text-neutral-600",
+						children: hint
+					})
+				]
+			}),
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			}),
+			files.length > 0 && /* @__PURE__ */ jsx("div", {
+				className: "grid gap-2",
+				children: files.map((file, index) => /* @__PURE__ */ jsxs("article", {
+					className: "flex items-center justify-between gap-4 rounded-lg border border-[#dad5cb] bg-white p-3",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "min-w-0",
+						children: [/* @__PURE__ */ jsx("p", {
+							className: "truncate text-sm font-semibold text-neutral-900",
+							children: file.name
+						}), /* @__PURE__ */ jsx("p", {
+							className: "mt-1 text-xs text-neutral-500",
+							children: formatFileSize(file.size)
+						})]
+					}), /* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => removeFile(index),
+						className: "focus-copper shrink-0 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline",
+						children: "Remove"
+					})]
+				}, `${file.name}-${file.lastModified}`))
+			})
+		]
+	});
+}
+//#endregion
 //#region resources/js/Pages/Portal/SellerListings.tsx
 var SellerListings_exports = /* @__PURE__ */ __exportAll({ default: () => SellerListings });
 var requiredFields = [
@@ -7732,7 +7879,7 @@ var requiredFields = [
 		message: "Select a condition."
 	}
 ];
-function emptyForm() {
+function emptyForm$1() {
 	return {
 		title: "",
 		category: "",
@@ -7758,7 +7905,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 		region: null,
 		condition: null
 	});
-	const form = useForm(emptyForm());
+	const form = useForm(emptyForm$1());
 	useScrollMemory({
 		key: "seller-listings",
 		detailPrefix: "/seller/listings/"
@@ -7767,7 +7914,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 		form.clearErrors();
 		setClientErrors({});
 		form.setData({
-			...emptyForm(),
+			...emptyForm$1(),
 			...prefill
 		});
 		setIsFormOpen(true);
@@ -7889,7 +8036,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 						noValidate: true,
 						className: "grid gap-5 sm:grid-cols-2",
 						children: [
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "Equipment title",
 								required: true,
 								error: errorFor("title"),
@@ -7905,10 +8052,10 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 									},
 									placeholder: "e.g. Ajax DPC-2803 Compressor",
 									"aria-invalid": Boolean(errorFor("title")),
-									className: inputClass(errorFor("title"))
+									className: inputClass$1(errorFor("title"))
 								})
 							}),
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "Category",
 								required: true,
 								error: errorFor("category"),
@@ -7922,7 +8069,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 										clearError("category");
 									},
 									"aria-invalid": Boolean(errorFor("category")),
-									className: inputClass(errorFor("category")),
+									className: inputClass$1(errorFor("category")),
 									children: [/* @__PURE__ */ jsx("option", {
 										value: "",
 										children: "Select a category"
@@ -7932,7 +8079,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 									}, category))]
 								})
 							}),
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "Region",
 								required: true,
 								error: errorFor("region"),
@@ -7946,7 +8093,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 										clearError("region");
 									},
 									"aria-invalid": Boolean(errorFor("region")),
-									className: inputClass(errorFor("region")),
+									className: inputClass$1(errorFor("region")),
 									children: [/* @__PURE__ */ jsx("option", {
 										value: "",
 										children: "Select a region"
@@ -7956,17 +8103,17 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 									}, region))]
 								})
 							}),
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "City / yard location",
 								error: errorFor("city"),
 								children: /* @__PURE__ */ jsx("input", {
 									value: form.data.city,
 									onChange: (event) => form.setData("city", event.target.value),
 									placeholder: "e.g. Casper",
-									className: inputClass(errorFor("city"))
+									className: inputClass$1(errorFor("city"))
 								})
 							}),
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "Condition",
 								required: true,
 								error: errorFor("condition"),
@@ -7980,7 +8127,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 										clearError("condition");
 									},
 									"aria-invalid": Boolean(errorFor("condition")),
-									className: inputClass(errorFor("condition")),
+									className: inputClass$1(errorFor("condition")),
 									children: [/* @__PURE__ */ jsx("option", {
 										value: "",
 										children: "Select a condition"
@@ -7990,18 +8137,18 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 									}, value))]
 								})
 							}),
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "Condition notes",
 								error: errorFor("condition_notes"),
 								className: "sm:col-span-2",
 								children: /* @__PURE__ */ jsx("textarea", {
 									value: form.data.condition_notes,
 									onChange: (event) => form.setData("condition_notes", event.target.value),
-									className: `${inputClass(errorFor("condition_notes"))} min-h-28 py-3`,
+									className: `${inputClass$1(errorFor("condition_notes"))} min-h-28 py-3`,
 									placeholder: "Tell us what you know — last use, known issues, how it's stored. Rough is fine."
 								})
 							}),
-							/* @__PURE__ */ jsxs(Field, {
+							/* @__PURE__ */ jsxs(Field$1, {
 								label: "Asking price",
 								error: errorFor("asking_price"),
 								className: "sm:col-span-2",
@@ -8015,7 +8162,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 									onChange: (event) => form.setData("asking_price", event.target.value),
 									placeholder: "USD",
 									"aria-invalid": Boolean(errorFor("asking_price")),
-									className: inputClass(errorFor("asking_price"))
+									className: inputClass$1(errorFor("asking_price"))
 								}), /* @__PURE__ */ jsxs("label", {
 									className: "mt-1 flex w-fit cursor-pointer items-center gap-3",
 									children: [/* @__PURE__ */ jsx("input", {
@@ -8314,148 +8461,7 @@ function NoResults({ search, onClear }) {
 		]
 	});
 }
-function PhotoPicker({ files, error, onChange }) {
-	const [previews, setPreviews] = useState([]);
-	useEffect(() => {
-		const nextPreviews = files.map((file) => ({
-			file,
-			url: URL.createObjectURL(file)
-		}));
-		setPreviews(nextPreviews);
-		return () => {
-			nextPreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
-		};
-	}, [files]);
-	function removeFile(index) {
-		onChange(files.filter((_, fileIndex) => fileIndex !== index));
-	}
-	return /* @__PURE__ */ jsxs("div", {
-		className: "grid gap-3 sm:col-span-2",
-		children: [
-			/* @__PURE__ */ jsx("span", {
-				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
-				children: "Photos optional"
-			}),
-			/* @__PURE__ */ jsxs("label", {
-				className: "button-press focus-within:ring-2 focus-within:ring-[#a56437]/40 grid cursor-pointer gap-3 border border-dashed border-[#cfc7ba] bg-white p-5 transition-colors hover:border-[#a56437] hover:bg-[#fbfaf8]",
-				children: [
-					/* @__PURE__ */ jsx("input", {
-						type: "file",
-						multiple: true,
-						accept: "image/*",
-						onChange: (event) => {
-							onChange(Array.from(event.target.files ?? []));
-							event.currentTarget.value = "";
-						},
-						className: "sr-only"
-					}),
-					/* @__PURE__ */ jsx("span", {
-						className: "font-heading text-lg font-semibold uppercase tracking-[0.08em] text-neutral-950",
-						children: "Add photos"
-					}),
-					/* @__PURE__ */ jsx("span", {
-						className: "text-sm leading-6 text-neutral-600",
-						children: "Choose one or more equipment images. Previews will appear below before submission."
-					})
-				]
-			}),
-			error && /* @__PURE__ */ jsx("span", {
-				className: "text-sm text-[#b3261e]",
-				children: error
-			}),
-			previews.length > 0 && /* @__PURE__ */ jsx("div", {
-				className: "grid gap-3 sm:grid-cols-2",
-				children: previews.map((preview, index) => /* @__PURE__ */ jsxs("article", {
-					className: "overflow-hidden rounded-lg border border-[#dad5cb] bg-white",
-					children: [/* @__PURE__ */ jsx("div", {
-						className: "aspect-[4/3] bg-[#f3f1ec]",
-						children: /* @__PURE__ */ jsx("img", {
-							src: preview.url,
-							alt: preview.file.name,
-							className: "h-full w-full object-cover"
-						})
-					}), /* @__PURE__ */ jsxs("div", {
-						className: "grid gap-3 p-3",
-						children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("p", {
-							className: "truncate text-sm font-semibold text-neutral-900",
-							children: preview.file.name
-						}), /* @__PURE__ */ jsx("p", {
-							className: "mt-1 text-xs text-neutral-500",
-							children: formatFileSize(preview.file.size)
-						})] }), /* @__PURE__ */ jsx("button", {
-							type: "button",
-							onClick: () => removeFile(index),
-							className: "focus-copper w-fit font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline",
-							children: "Remove"
-						})]
-					})]
-				}, `${preview.file.name}-${preview.file.lastModified}`))
-			})
-		]
-	});
-}
-function DocumentPicker({ files, error, onChange }) {
-	function removeFile(index) {
-		onChange(files.filter((_, fileIndex) => fileIndex !== index));
-	}
-	return /* @__PURE__ */ jsxs("div", {
-		className: "grid gap-3 sm:col-span-2",
-		children: [
-			/* @__PURE__ */ jsx("span", {
-				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
-				children: "Documents optional"
-			}),
-			/* @__PURE__ */ jsxs("label", {
-				className: "button-press focus-within:ring-2 focus-within:ring-[#a56437]/40 grid cursor-pointer gap-3 border border-dashed border-[#cfc7ba] bg-white p-5 transition-colors hover:border-[#a56437] hover:bg-[#fbfaf8]",
-				children: [
-					/* @__PURE__ */ jsx("input", {
-						type: "file",
-						multiple: true,
-						onChange: (event) => {
-							onChange(Array.from(event.target.files ?? []));
-							event.currentTarget.value = "";
-						},
-						className: "sr-only"
-					}),
-					/* @__PURE__ */ jsx("span", {
-						className: "font-heading text-lg font-semibold uppercase tracking-[0.08em] text-neutral-950",
-						children: "Add documents"
-					}),
-					/* @__PURE__ */ jsx("span", {
-						className: "text-sm leading-6 text-neutral-600",
-						children: "Upload optional spec sheets, service records, or other supporting files."
-					})
-				]
-			}),
-			error && /* @__PURE__ */ jsx("span", {
-				className: "text-sm text-[#b3261e]",
-				children: error
-			}),
-			files.length > 0 && /* @__PURE__ */ jsx("div", {
-				className: "grid gap-2",
-				children: files.map((file, index) => /* @__PURE__ */ jsxs("article", {
-					className: "flex items-center justify-between gap-4 rounded-lg border border-[#dad5cb] bg-white p-3",
-					children: [/* @__PURE__ */ jsxs("div", {
-						className: "min-w-0",
-						children: [/* @__PURE__ */ jsx("p", {
-							className: "truncate text-sm font-semibold text-neutral-900",
-							children: file.name
-						}), /* @__PURE__ */ jsx("p", {
-							className: "mt-1 text-xs text-neutral-500",
-							children: formatFileSize(file.size)
-						})]
-					}), /* @__PURE__ */ jsx("button", {
-						type: "button",
-						onClick: () => removeFile(index),
-						className: "focus-copper shrink-0 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline",
-						children: "Remove"
-					})]
-				}, `${file.name}-${file.lastModified}`))
-			})
-		]
-	});
-}
-function Field({ label, error, required = false, className = "", children }) {
+function Field$1({ label, error, required = false, className = "", children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: `grid gap-2 ${className}`,
 		children: [
@@ -8474,7 +8480,7 @@ function Field({ label, error, required = false, className = "", children }) {
 		]
 	});
 }
-function inputClass(error) {
+function inputClass$1(error) {
 	return `portal-input${error ? " portal-input-error" : ""}`;
 }
 function formatRegion(submission) {
@@ -8490,10 +8496,6 @@ function formatPrice(submission) {
 		currency: "USD",
 		maximumFractionDigits: 0
 	});
-}
-function formatFileSize(bytes) {
-	if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 //#endregion
 //#region resources/js/Pages/Portal/SellerOffers.tsx
@@ -10089,6 +10091,781 @@ function ContactBroker({ canonicalUrl, ogImageUrl }) {
 		]
 	})] });
 }
+//#endregion
+//#region resources/js/use-form-draft.ts
+var WRITE_DELAY_MS = 400;
+function useFormDraft(key, data, setData, { omit = [], enabled = true } = {}) {
+	const hasRestored = useRef(false);
+	const omitted = useRef(omit);
+	omitted.current = omit;
+	function serialisable(values) {
+		const draft = {};
+		Object.entries(values).forEach(([field, value]) => {
+			if (omitted.current.includes(field)) return;
+			if (value instanceof File || Array.isArray(value) && value.some((item) => item instanceof File)) return;
+			draft[field] = value;
+		});
+		return draft;
+	}
+	useEffect(() => {
+		if (!enabled) {
+			hasRestored.current = true;
+			return;
+		}
+		try {
+			const stored = window.localStorage.getItem(key);
+			if (stored) {
+				const parsed = JSON.parse(stored);
+				const restored = {};
+				Object.keys(data).forEach((field) => {
+					if (field in parsed && !omitted.current.includes(field)) restored[field] = parsed[field];
+				});
+				if (Object.keys(restored).length > 0) setData(restored);
+			}
+		} catch {
+			clear();
+		}
+		hasRestored.current = true;
+	}, []);
+	useEffect(() => {
+		if (!enabled || !hasRestored.current) return;
+		const timer = window.setTimeout(() => {
+			try {
+				window.localStorage.setItem(key, JSON.stringify(serialisable(data)));
+			} catch {}
+		}, WRITE_DELAY_MS);
+		return () => window.clearTimeout(timer);
+	}, [
+		key,
+		data,
+		enabled
+	]);
+	function clear() {
+		try {
+			window.localStorage.removeItem(key);
+		} catch {}
+	}
+	return { clear };
+}
+//#endregion
+//#region resources/js/Components/public-submission-form.tsx
+var DRAFT_KEY = "petra:draft:equipment-submission";
+function emptyForm() {
+	return {
+		full_name: "",
+		company: "",
+		email: "",
+		phone: "",
+		category: "",
+		description: "",
+		quantity: "1",
+		location: "",
+		condition: "",
+		is_owner: "",
+		intent: [],
+		availability: "",
+		estimated_value_range: "",
+		additional_info: "",
+		consent_accuracy: false,
+		consent_contact: false,
+		photos: [],
+		documents: [],
+		website: ""
+	};
+}
+function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptions, ownershipOptions, intentOptions, availabilityOptions, valueRangeOptions, copy }) {
+	const { auth } = usePage().props;
+	const isSeller = auth.user?.user_type === "seller";
+	const form = useForm({
+		...emptyForm(),
+		full_name: auth.user && !isSeller ? auth.user.name : "",
+		email: auth.user && !isSeller ? auth.user.email : "",
+		phone: auth.user && !isSeller ? auth.user.phone ?? "" : "",
+		company: auth.user && !isSeller ? auth.user.company_name ?? "" : ""
+	});
+	const [clientErrors, setClientErrors] = useState({});
+	const fieldRefs = useRef({});
+	const draft = useFormDraft(DRAFT_KEY, form.data, form.setData, { omit: [
+		"photos",
+		"documents",
+		"website"
+	] });
+	const requiredFields = [
+		...isSeller ? [] : [
+			{
+				name: "full_name",
+				message: "Enter your full name."
+			},
+			{
+				name: "company",
+				message: "Enter your company name."
+			},
+			{
+				name: "email",
+				message: "Enter your email address."
+			},
+			{
+				name: "phone",
+				message: "Enter your phone number."
+			}
+		],
+		{
+			name: "category",
+			message: "Select an equipment category."
+		},
+		{
+			name: "description",
+			message: "Tell us what you are selling."
+		},
+		{
+			name: "quantity",
+			message: "Enter a quantity."
+		},
+		{
+			name: "location",
+			message: "Select the equipment location."
+		},
+		{
+			name: "condition",
+			message: "Select the general condition."
+		},
+		{
+			name: "is_owner",
+			message: "Let us know if you own the equipment."
+		},
+		{
+			name: "intent",
+			message: "Select at least one option."
+		},
+		{
+			name: "availability",
+			message: "Let us know if the equipment is available."
+		},
+		{
+			name: "consent_accuracy",
+			message: "Please confirm the information is accurate."
+		},
+		{
+			name: "consent_contact",
+			message: "Please authorize Petra to contact you."
+		}
+	];
+	function errorFor(field) {
+		const serverErrors = form.errors;
+		return clientErrors[field] ?? serverErrors[field];
+	}
+	function clearError(field) {
+		setClientErrors((errors) => {
+			if (!errors[field]) return errors;
+			const next = { ...errors };
+			delete next[field];
+			return next;
+		});
+	}
+	function isEmpty(field) {
+		const value = form.data[field];
+		if (typeof value === "boolean") return !value;
+		if (Array.isArray(value)) return value.length === 0;
+		return !String(value ?? "").trim();
+	}
+	function submit(event) {
+		event.preventDefault();
+		const errors = {};
+		requiredFields.forEach((field) => {
+			if (isEmpty(field.name)) errors[field.name] = field.message;
+		});
+		setClientErrors(errors);
+		const firstInvalid = requiredFields.find((field) => errors[field.name]);
+		if (firstInvalid) {
+			fieldRefs.current[firstInvalid.name]?.focus();
+			fieldRefs.current[firstInvalid.name]?.scrollIntoView({
+				block: "center",
+				behavior: "smooth"
+			});
+			return;
+		}
+		form.post("/sell-equipment/equipment-submission", {
+			forceFormData: true,
+			onSuccess: () => draft.clear()
+		});
+	}
+	function toggleIntent(value) {
+		clearError("intent");
+		form.setData("intent", form.data.intent.includes(value) ? form.data.intent.filter((entry) => entry !== value) : [...form.data.intent, value]);
+	}
+	const locationGroups = Array.from(new Set(locationOptions.map((option) => option.group)));
+	return /* @__PURE__ */ jsx("section", {
+		id: "equipment-submission-form",
+		className: "border-b border-[#dad5cb] bg-white py-16 sm:py-20 lg:py-24",
+		children: /* @__PURE__ */ jsxs("div", {
+			className: "mx-auto max-w-[900px] px-5 sm:px-10",
+			children: [
+				/* @__PURE__ */ jsx("h2", {
+					className: "font-heading text-3xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl",
+					children: copy.title
+				}),
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-4 font-heading text-lg font-semibold uppercase tracking-[0.06em] text-[#a56437]",
+					children: copy.subtitle
+				}),
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-4 text-base leading-7 text-neutral-600",
+					children: copy.intro
+				}),
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-2 text-sm leading-6 text-neutral-500",
+					children: copy.requiredNote
+				}),
+				/* @__PURE__ */ jsxs("form", {
+					onSubmit: submit,
+					noValidate: true,
+					className: "mt-10 grid gap-10",
+					children: [
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [/* @__PURE__ */ jsx(Legend, { children: copy.sections.contact }), isSeller ? /* @__PURE__ */ jsxs("p", {
+								className: "border border-[#dad5cb] bg-[#f3f1ec] p-5 text-base leading-7 text-neutral-700",
+								children: [
+									"Submitting as ",
+									/* @__PURE__ */ jsx("strong", {
+										className: "font-semibold",
+										children: auth.user?.name
+									}),
+									" (",
+									auth.user?.email,
+									"). This listing will appear in your portal under My Listings."
+								]
+							}) : /* @__PURE__ */ jsxs("div", {
+								className: "grid gap-5 sm:grid-cols-2",
+								children: [
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.fullName,
+										required: true,
+										error: errorFor("full_name"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.full_name = element;
+											},
+											type: "text",
+											value: form.data.full_name,
+											onChange: (event) => {
+												clearError("full_name");
+												form.setData("full_name", event.target.value);
+											},
+											className: inputClass(errorFor("full_name"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.company,
+										required: true,
+										error: errorFor("company"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.company = element;
+											},
+											type: "text",
+											value: form.data.company,
+											onChange: (event) => {
+												clearError("company");
+												form.setData("company", event.target.value);
+											},
+											className: inputClass(errorFor("company"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.email,
+										required: true,
+										error: errorFor("email"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.email = element;
+											},
+											type: "email",
+											value: form.data.email,
+											onChange: (event) => {
+												clearError("email");
+												form.setData("email", event.target.value);
+											},
+											className: inputClass(errorFor("email"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.phone,
+										required: true,
+										error: errorFor("phone"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.phone = element;
+											},
+											type: "tel",
+											value: form.data.phone,
+											onChange: (event) => {
+												clearError("phone");
+												form.setData("phone", event.target.value);
+											},
+											className: inputClass(errorFor("phone"))
+										})
+									})
+								]
+							})]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [/* @__PURE__ */ jsx(Legend, { children: copy.sections.equipment }), /* @__PURE__ */ jsxs("div", {
+								className: "grid gap-5 sm:grid-cols-2",
+								children: [
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.category,
+										required: true,
+										error: errorFor("category"),
+										children: /* @__PURE__ */ jsxs("select", {
+											ref: (element) => {
+												fieldRefs.current.category = element;
+											},
+											value: form.data.category,
+											onChange: (event) => {
+												clearError("category");
+												form.setData("category", event.target.value);
+											},
+											className: inputClass(errorFor("category")),
+											children: [/* @__PURE__ */ jsx("option", {
+												value: "",
+												children: "Select a category"
+											}), categoryOptions.map((category) => /* @__PURE__ */ jsx("option", {
+												value: category,
+												children: category
+											}, category))]
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.quantity,
+										required: true,
+										error: errorFor("quantity"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.quantity = element;
+											},
+											type: "number",
+											min: 1,
+											step: 1,
+											value: form.data.quantity,
+											onChange: (event) => {
+												clearError("quantity");
+												form.setData("quantity", event.target.value);
+											},
+											className: inputClass(errorFor("quantity"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.description,
+										required: true,
+										error: errorFor("description"),
+										className: "sm:col-span-2",
+										hint: copy.hints.description,
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.description = element;
+											},
+											type: "text",
+											placeholder: copy.hints.descriptionPlaceholder,
+											value: form.data.description,
+											onChange: (event) => {
+												clearError("description");
+												form.setData("description", event.target.value);
+											},
+											className: inputClass(errorFor("description"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.location,
+										required: true,
+										error: errorFor("location"),
+										children: /* @__PURE__ */ jsxs("select", {
+											ref: (element) => {
+												fieldRefs.current.location = element;
+											},
+											value: form.data.location,
+											onChange: (event) => {
+												clearError("location");
+												form.setData("location", event.target.value);
+											},
+											className: inputClass(errorFor("location")),
+											children: [/* @__PURE__ */ jsx("option", {
+												value: "",
+												children: "Select a location"
+											}), locationGroups.map((group) => /* @__PURE__ */ jsx("optgroup", {
+												label: group,
+												children: locationOptions.filter((option) => option.group === group).map((option) => /* @__PURE__ */ jsx("option", {
+													value: option.value,
+													children: option.label
+												}, option.value))
+											}, group))]
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.condition,
+										required: true,
+										error: errorFor("condition"),
+										children: /* @__PURE__ */ jsxs("select", {
+											ref: (element) => {
+												fieldRefs.current.condition = element;
+											},
+											value: form.data.condition,
+											onChange: (event) => {
+												clearError("condition");
+												form.setData("condition", event.target.value);
+											},
+											className: inputClass(errorFor("condition")),
+											children: [/* @__PURE__ */ jsx("option", {
+												value: "",
+												children: "Select a condition"
+											}), Object.entries(conditionOptions).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+												value,
+												children: label
+											}, value))]
+										})
+									})
+								]
+							})]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-6",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: copy.sections.selling }),
+								/* @__PURE__ */ jsx(RadioGroup, {
+									legend: copy.labels.isOwner,
+									required: true,
+									options: ownershipOptions,
+									value: form.data.is_owner,
+									error: errorFor("is_owner"),
+									onChange: (value) => {
+										clearError("is_owner");
+										form.setData("is_owner", value);
+									},
+									firstRef: (element) => {
+										fieldRefs.current.is_owner = element;
+									}
+								}),
+								/* @__PURE__ */ jsxs("div", {
+									className: "grid gap-3",
+									children: [
+										/* @__PURE__ */ jsx("span", {
+											className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+											children: copy.labels.intent
+										}),
+										/* @__PURE__ */ jsx("span", {
+											className: "text-sm leading-6 text-neutral-500",
+											children: copy.hints.intent
+										}),
+										/* @__PURE__ */ jsx("div", {
+											className: "grid gap-2",
+											children: Object.entries(intentOptions).map(([value, label], index) => /* @__PURE__ */ jsxs("label", {
+												className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+												children: [/* @__PURE__ */ jsx("input", {
+													ref: index === 0 ? (element) => {
+														fieldRefs.current.intent = element;
+													} : void 0,
+													type: "checkbox",
+													checked: form.data.intent.includes(value),
+													onChange: () => toggleIntent(value),
+													className: "mt-1.5 h-4 w-4 shrink-0 accent-[#a56437]"
+												}), label]
+											}, value))
+										}),
+										errorFor("intent") && /* @__PURE__ */ jsx("span", {
+											className: "text-sm text-[#b3261e]",
+											children: errorFor("intent")
+										})
+									]
+								}),
+								/* @__PURE__ */ jsx(RadioGroup, {
+									legend: copy.labels.availability,
+									required: true,
+									options: availabilityOptions,
+									value: form.data.availability,
+									error: errorFor("availability"),
+									onChange: (value) => {
+										clearError("availability");
+										form.setData("availability", value);
+									},
+									firstRef: (element) => {
+										fieldRefs.current.availability = element;
+									}
+								}),
+								/* @__PURE__ */ jsx(Field, {
+									label: copy.labels.estimatedValue,
+									error: errorFor("estimated_value_range"),
+									children: /* @__PURE__ */ jsxs("select", {
+										value: form.data.estimated_value_range,
+										onChange: (event) => form.setData("estimated_value_range", event.target.value),
+										className: inputClass(errorFor("estimated_value_range")),
+										children: [/* @__PURE__ */ jsx("option", {
+											value: "",
+											children: "Select a range"
+										}), Object.entries(valueRangeOptions).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+											value,
+											children: label
+										}, value))]
+									})
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: copy.sections.photos }),
+								/* @__PURE__ */ jsx("p", {
+									className: "text-base leading-7 text-neutral-600",
+									children: copy.hints.photos
+								}),
+								/* @__PURE__ */ jsx(HelpfulList, {
+									intro: copy.hints.photosHelpful,
+									items: copy.hints.photoItems
+								}),
+								/* @__PURE__ */ jsx(PhotoPicker, {
+									files: form.data.photos,
+									error: errorFor("photos"),
+									onChange: (files) => form.setData("photos", files),
+									label: copy.sections.photos,
+									hint: copy.hints.photos
+								}),
+								/* @__PURE__ */ jsx(GuidePrompt, {
+									prompt: copy.hints.photoGuidePrompt,
+									link: copy.guideLinks.photos
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: copy.sections.documents }),
+								/* @__PURE__ */ jsx("p", {
+									className: "text-base leading-7 text-neutral-600",
+									children: copy.hints.documents
+								}),
+								/* @__PURE__ */ jsx(HelpfulList, {
+									intro: copy.hints.documentsHelpful,
+									items: copy.hints.documentItems
+								}),
+								/* @__PURE__ */ jsx(DocumentPicker, {
+									files: form.data.documents,
+									error: errorFor("documents"),
+									onChange: (files) => form.setData("documents", files),
+									label: copy.sections.documents,
+									hint: copy.hints.documents
+								}),
+								/* @__PURE__ */ jsx(GuidePrompt, {
+									prompt: copy.hints.documentGuidePrompt,
+									link: copy.guideLinks.documents
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: copy.sections.additional }),
+								/* @__PURE__ */ jsx(HelpfulList, {
+									intro: "Examples:",
+									items: copy.hints.additionalInfoExamples
+								}),
+								/* @__PURE__ */ jsx(Field, {
+									label: copy.labels.additionalInfo,
+									error: errorFor("additional_info"),
+									children: /* @__PURE__ */ jsx("textarea", {
+										rows: 5,
+										value: form.data.additional_info,
+										onChange: (event) => form.setData("additional_info", event.target.value),
+										className: inputClass(errorFor("additional_info"))
+									})
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-4",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: copy.sections.confirmation }),
+								/* @__PURE__ */ jsx(Consent, {
+									label: copy.consent.accuracy,
+									checked: form.data.consent_accuracy,
+									error: errorFor("consent_accuracy"),
+									inputRef: (element) => {
+										fieldRefs.current.consent_accuracy = element;
+									},
+									onChange: (checked) => {
+										clearError("consent_accuracy");
+										form.setData("consent_accuracy", checked);
+									}
+								}),
+								/* @__PURE__ */ jsx(Consent, {
+									label: copy.consent.contact,
+									checked: form.data.consent_contact,
+									error: errorFor("consent_contact"),
+									inputRef: (element) => {
+										fieldRefs.current.consent_contact = element;
+									},
+									onChange: (checked) => {
+										clearError("consent_contact");
+										form.setData("consent_contact", checked);
+									}
+								})
+							]
+						}),
+						/* @__PURE__ */ jsx("div", {
+							"aria-hidden": "true",
+							className: "hidden",
+							children: /* @__PURE__ */ jsxs("label", { children: ["Website", /* @__PURE__ */ jsx("input", {
+								type: "text",
+								tabIndex: -1,
+								autoComplete: "off",
+								value: form.data.website,
+								onChange: (event) => form.setData("website", event.target.value)
+							})] })
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "grid gap-4 border-t border-[#dad5cb] pt-8",
+							children: [/* @__PURE__ */ jsx("button", {
+								type: "submit",
+								disabled: form.processing,
+								className: "button-press inline-flex h-14 w-fit items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+								children: form.processing ? "Submitting…" : copy.submitLabel
+							}), /* @__PURE__ */ jsx("p", {
+								className: "text-sm leading-6 text-neutral-500",
+								children: copy.supportingText
+							})]
+						})
+					]
+				})
+			]
+		})
+	});
+}
+function Legend({ children }) {
+	return /* @__PURE__ */ jsx("legend", {
+		className: "mb-1 font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+		children
+	});
+}
+function Field({ label, error, required = false, className = "", hint, children }) {
+	return /* @__PURE__ */ jsxs("label", {
+		className: `grid gap-2 ${className}`,
+		children: [
+			/* @__PURE__ */ jsxs("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: [label, required ? /* @__PURE__ */ jsx("span", {
+					className: "ml-1 text-[#a56437]",
+					children: "*"
+				}) : /* @__PURE__ */ jsx("span", {
+					className: "ml-2 text-neutral-400",
+					children: "Optional"
+				})]
+			}),
+			hint && /* @__PURE__ */ jsx("span", {
+				className: "text-sm leading-6 text-neutral-500",
+				children: hint
+			}),
+			children,
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			})
+		]
+	});
+}
+function RadioGroup({ legend, options, value, error, required = false, onChange, firstRef }) {
+	return /* @__PURE__ */ jsxs("div", {
+		role: "group",
+		className: "grid gap-3",
+		children: [
+			/* @__PURE__ */ jsxs("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: [legend, required && /* @__PURE__ */ jsx("span", {
+					className: "ml-1 text-[#a56437]",
+					children: "*"
+				})]
+			}),
+			/* @__PURE__ */ jsx("div", {
+				className: "grid gap-2",
+				children: Object.entries(options).map(([optionValue, label], index) => /* @__PURE__ */ jsxs("label", {
+					className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+					children: [/* @__PURE__ */ jsx("input", {
+						ref: index === 0 ? firstRef : void 0,
+						type: "radio",
+						name: legend,
+						checked: value === optionValue,
+						onChange: () => onChange(optionValue),
+						className: "mt-1.5 h-4 w-4 shrink-0 accent-[#a56437]"
+					}), label]
+				}, optionValue))
+			}),
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			})
+		]
+	});
+}
+function Consent({ label, checked, error, onChange, inputRef }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-1",
+		children: [/* @__PURE__ */ jsxs("label", {
+			className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+			children: [/* @__PURE__ */ jsx("input", {
+				ref: inputRef,
+				type: "checkbox",
+				checked,
+				onChange: (event) => onChange(event.target.checked),
+				className: "mt-1.5 h-4 w-4 shrink-0 accent-[#a56437]"
+			}), /* @__PURE__ */ jsxs("span", { children: [label, /* @__PURE__ */ jsx("span", {
+				className: "ml-1 text-[#a56437]",
+				children: "*"
+			})] })]
+		}), error && /* @__PURE__ */ jsx("span", {
+			className: "pl-7 text-sm text-[#b3261e]",
+			children: error
+		})]
+	});
+}
+function HelpfulList({ intro, items }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-2",
+		children: [/* @__PURE__ */ jsx("span", {
+			className: "text-sm font-semibold text-neutral-700",
+			children: intro
+		}), /* @__PURE__ */ jsx("ul", {
+			className: "grid gap-1",
+			children: items.map((item) => /* @__PURE__ */ jsxs("li", {
+				className: "flex items-start gap-3 text-sm leading-6 text-neutral-600",
+				children: [/* @__PURE__ */ jsx("span", {
+					"aria-hidden": "true",
+					className: "mt-2.5 h-1 w-1 shrink-0 bg-[#a56437]"
+				}), item]
+			}, item))
+		})]
+	});
+}
+/**
+* Guide links open in a new tab on purpose: the visitor keeps this form mounted, so the
+* files they already chose are still attached when they come back.
+*/
+function GuidePrompt({ prompt, link }) {
+	return /* @__PURE__ */ jsxs("p", {
+		className: "text-sm leading-6 text-neutral-600",
+		children: [
+			prompt,
+			" ",
+			/* @__PURE__ */ jsx("a", {
+				href: link.href,
+				target: "_blank",
+				rel: "noopener",
+				className: "font-semibold text-[#a56437] underline underline-offset-4 transition-colors hover:text-neutral-950",
+				children: link.label
+			})
+		]
+	});
+}
+function inputClass(error) {
+	return `portal-input${error ? " portal-input-error" : ""}`;
+}
 var equipment_submission_default = {
 	meta: {
 		"title": "Equipment Submission | Submit Oilfield Equipment | Petra",
@@ -10362,8 +11139,8 @@ var equipment_submission_default = {
 //#endregion
 //#region resources/js/Pages/SellEquipment/EquipmentSubmission.tsx
 var EquipmentSubmission_exports = /* @__PURE__ */ __exportAll({ default: () => EquipmentSubmission });
-var { meta: meta$14, hero: hero$14, whatToInclude, afterYouSubmit, faqSection: faqSection$10, faqs: faqs$12, needAssistance, finalCta: finalCta$14 } = equipment_submission_default;
-function EquipmentSubmission({ canonicalUrl, ogImageUrl }) {
+var { meta: meta$14, hero: hero$14, whatToInclude, afterYouSubmit, form, faqSection: faqSection$10, faqs: faqs$12, needAssistance, finalCta: finalCta$14 } = equipment_submission_default;
+function EquipmentSubmission({ canonicalUrl, ogImageUrl, categoryOptions, locationOptions, conditionOptions, ownershipOptions, intentOptions, availabilityOptions, valueRangeOptions }) {
 	const structuredData = {
 		"@context": "https://schema.org",
 		"@graph": [
@@ -10438,6 +11215,16 @@ function EquipmentSubmission({ canonicalUrl, ogImageUrl }) {
 						}, group.title))
 					})
 				]
+			}),
+			/* @__PURE__ */ jsx(PublicSubmissionForm, {
+				categoryOptions,
+				locationOptions,
+				conditionOptions,
+				ownershipOptions,
+				intentOptions,
+				availabilityOptions,
+				valueRangeOptions,
+				copy: form
 			}),
 			/* @__PURE__ */ jsxs(Section, {
 				background: "white",
@@ -11704,6 +12491,74 @@ function SellerProcess({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx(FinalCta, { ...finalCta$6 })
 		]
+	})] });
+}
+//#endregion
+//#region resources/js/Pages/SellEquipment/SubmissionThanks.tsx
+var SubmissionThanks_exports = /* @__PURE__ */ __exportAll({ default: () => SubmissionThanks });
+var { confirmationPage } = equipment_submission_default;
+/**
+* Post-submission confirmation. Noindexed: it is a step in a flow, not a landing page, and
+* it would otherwise compete with the submission page in search results.
+*/
+function SubmissionThanks({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [breadcrumbNode(canonicalUrl, {
+			name: "Thank You",
+			url: canonicalUrl
+		})]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: confirmationPage.meta.title,
+		description: confirmationPage.meta.description,
+		canonicalUrl,
+		ogImageUrl,
+		noindex: true,
+		structuredData
+	}), /* @__PURE__ */ jsx("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: /* @__PURE__ */ jsx("section", {
+			className: "border-b border-[#dad5cb] bg-white",
+			children: /* @__PURE__ */ jsx("div", {
+				className: "mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-28",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "max-w-3xl",
+					children: [
+						/* @__PURE__ */ jsx("span", {
+							className: "mb-6 flex h-14 w-14 items-center justify-center bg-[#a56437] text-white",
+							children: /* @__PURE__ */ jsx("svg", {
+								width: "28",
+								height: "28",
+								viewBox: "0 0 24 24",
+								fill: "none",
+								stroke: "currentColor",
+								strokeWidth: "2.5",
+								children: /* @__PURE__ */ jsx("path", {
+									d: "m5 12.5 4.5 4.5L19 7.5",
+									strokeLinecap: "square"
+								})
+							})
+						}),
+						/* @__PURE__ */ jsx("h1", {
+							className: "font-hero text-[2.4rem] font-bold uppercase leading-[1.04] tracking-[0.08em] text-neutral-950 sm:text-[3.1rem]",
+							children: confirmationPage.title
+						}),
+						/* @__PURE__ */ jsx("div", {
+							className: "mt-6 space-y-4",
+							children: confirmationPage.body.map((paragraph) => /* @__PURE__ */ jsx("p", {
+								className: "text-base font-medium leading-7 text-neutral-600 sm:text-lg",
+								children: paragraph
+							}, paragraph))
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "mt-10 flex flex-col gap-4 sm:flex-row",
+							children: [/* @__PURE__ */ jsx(PrimaryButton, { ...confirmationPage.primaryCta }), /* @__PURE__ */ jsx(SecondaryButton, { ...confirmationPage.secondaryCta })]
+						})
+					]
+				})
+			})
+		})
 	})] });
 }
 var upload_documents_default = {
@@ -13342,6 +14197,7 @@ createServer((page) => createInertiaApp({
 			"./Pages/SellEquipment/Index.tsx": Index_exports,
 			"./Pages/SellEquipment/RequestValuation.tsx": RequestValuation_exports,
 			"./Pages/SellEquipment/SellerProcess.tsx": SellerProcess_exports,
+			"./Pages/SellEquipment/SubmissionThanks.tsx": SubmissionThanks_exports,
 			"./Pages/SellEquipment/UploadDocuments.tsx": UploadDocuments_exports,
 			"./Pages/SellEquipment/UploadPhotos.tsx": UploadPhotos_exports,
 			"./Pages/SellEquipment/WhySellWithPetra.tsx": WhySellWithPetra_exports,
