@@ -25,6 +25,17 @@ Route::middleware(['auth', 'no.back.history', 'user.type:seller'])
         Route::get('/listings/{equipmentSubmission}', [EquipmentSubmissionController::class, 'show'])
             ->whereNumber('equipmentSubmission')
             ->name('listings.show');
+        // Photos after the fact. Until these existed the photo set was fixed at
+        // submission, so a seller who forgot them left the broker with a publish
+        // checklist nothing could satisfy. Ownership is checked in the controller for
+        // the same reason listings.show checks it.
+        Route::post('/listings/{equipmentSubmission}/photos', [EquipmentSubmissionController::class, 'storePhotos'])
+            ->whereNumber('equipmentSubmission')
+            ->name('listings.photos.store');
+        Route::delete('/listings/{equipmentSubmission}/photos/{index}', [EquipmentSubmissionController::class, 'destroyPhoto'])
+            ->whereNumber('equipmentSubmission')
+            ->whereNumber('index')
+            ->name('listings.photos.destroy');
         // Seller Offers: view offers on your listings and respond. Offers are created
         // by brokers, never here. The user.type:seller middleware on this group
         // redirects any buyer/broker who hits /seller/offers directly to their own portal.

@@ -88,8 +88,11 @@ class UpdateEquipmentSubmissionStatusRequest extends FormRequest
                 $missing[] = 'a condition';
             }
 
-            if (count($listing->photos ?? []) === 0) {
-                $missing[] = 'at least one photo';
+            // Actionable now: the Photos tab beside this form uploads to the listing, and
+            // the seller can add photos from their own listing page. Before those existed
+            // the photo set was fixed at submission, so this line was a dead end.
+            if ($listing->photoCount() === 0) {
+                $missing[] = 'at least one photo (add one on the Photos tab)';
             }
 
             if ($missing !== []) {

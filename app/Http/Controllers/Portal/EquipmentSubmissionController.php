@@ -6,6 +6,7 @@ use App\Enums\ListingStatus;
 use App\Enums\ThreadSubjectType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Portal\StoreEquipmentSubmissionRequest;
+use App\Http\Requests\StoreListingPhotosRequest;
 use App\Models\Document;
 use App\Models\EquipmentSubmission;
 use App\Models\Offer;
@@ -91,7 +92,7 @@ class EquipmentSubmissionController extends Controller
             'needs_valuation' => $needsValuation,
             // Photos stay a JSON blob on the public disk: they are the marketplace
             // gallery, they carry no visibility rules, and nothing about them is private.
-            'photos' => UploadStore::storePublicBatch($request->file('photos', []), 'portal/equipment-submissions/photos'),
+            'photos' => UploadStore::storePublicBatch($request->file('photos', []), EquipmentSubmission::PHOTO_FOLDER),
             'status' => ListingStatus::UnderReview,
         ]);
 
@@ -106,6 +107,56 @@ class EquipmentSubmissionController extends Controller
         );
 
         return back()->with('status', 'Equipment submitted.');
+    }
+
+    /**
+     * Add photos to a listing already submitted.
+     *
+     * Photos used to be write-once at submission, which made the broker's publish
+     * checklist ("at least one photo") unsatisfiable for any seller who forgot them —
+     * there was no screen anywhere that could add one. This is the seller's half of the
+     * fix; Broker\SubmissionReviewController has the other, for the photos that arrive
+     * by email instead.
+     */
+    public function storePhotos(StoreListingPhotosRequest $request, EquipmentSubmission $equipmentSubmission): RedirectResponse
+    {
+        $this->authorizePhotoEdit($request, $equipmentSubmission);
+
+        $stored = UploadStore::storePublicBatch($request->file('photos', []), EquipmentSubmission::PHOTO_FOLDER);
+        $equipmentSubmission->addPhotos($stored);
+
+        $count = count($stored);
+
+        return back()->with('status', $count === 1 ? 'Photo added.' : "{$count} photos added.");
+    }
+
+    public function destroyPhoto(Request $request, EquipmentSubmission $equipmentSubmission, int $index): RedirectResponse
+    {
+        $this->authorizePhotoEdit($request, $equipmentSubmission);
+
+        if (! $equipmentSubmission->removePhotoAt($index)) {
+            return back()->with('status', 'That photo is no longer on this listing.');
+        }
+
+        return back()->with('status', 'Photo removed.');
+    }
+
+    /**
+     * Ownership first, then status.
+     *
+     * Route model binding resolves by id alone, so without the ownership check any
+     * seller could post photos onto — or delete photos from — another seller's listing
+     * by editing the id in the URL. Same reason show() checks it explicitly.
+     */
+    private function authorizePhotoEdit(Request $request, EquipmentSubmission $submission): void
+    {
+        if ($submission->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        // Sold and Not Accepted are closed records. Published is not: a live listing with
+        // the wrong photos is precisely what a seller needs to be able to correct.
+        abort_unless($submission->listingStatus()->acceptsPhotoEdits(), 403);
     }
 
     /**
@@ -129,6 +180,11 @@ class EquipmentSubmissionController extends Controller
             && in_array($submission->listingStatus(), ListingStatus::publiclyVisible(), true);
 
         return array_merge($this->serializeSubmission($submission), [
+            // Drives the upload control on the gallery. Sent rather than re-derived in
+            // the browser so the screen and the server agree on when photos are closed —
+            // a UI that offers an upload the controller will 403 is worse than no upload.
+            'photos_editable' => $submission->listingStatus()->acceptsPhotoEdits(),
+            'max_photos' => EquipmentSubmission::MAX_PHOTOS,
             'public_id' => $submission->public_id,
             'public_href' => $isPublic ? "/equipment/{$submission->public_id}" : null,
             'public_description' => $submission->public_description,

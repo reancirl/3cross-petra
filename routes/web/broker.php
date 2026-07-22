@@ -37,6 +37,19 @@ Route::middleware(['auth', 'no.back.history', 'user.type:broker'])
         // place (accept / decline / re-offer) instead of logging a duplicate offer.
         Route::patch('/offers/{offer}', [SubmissionReviewController::class, 'respondToOffer'])
             ->name('offers.respond');
+        // Photos. No {subjectType} segment, unlike documents: a photo only ever belongs
+        // to a listing, so the indirection would buy nothing. Brokers upload here because
+        // photos often arrive by email after the seller has already submitted.
+        Route::post('/seller-submissions/{equipmentSubmission}/photos', [SubmissionReviewController::class, 'storePhotos'])
+            ->whereNumber('equipmentSubmission')
+            ->name('seller-submissions.photos.store');
+        // Delete, not archive — the opposite of the documents rule above. A document a
+        // customer has seen is part of the record of the deal; a photo is presentation,
+        // and a wrong unit on a public card should leave no trace.
+        Route::delete('/seller-submissions/{equipmentSubmission}/photos/{index}', [SubmissionReviewController::class, 'destroyPhoto'])
+            ->whereNumber('equipmentSubmission')
+            ->whereNumber('index')
+            ->name('seller-submissions.photos.destroy');
         Route::patch('/buyer-requests/{equipmentRequest}', [SubmissionReviewController::class, 'updateBuyerRequest'])
             ->name('buyer-requests.update');
         // Documents. The subject is in the path rather than the body so the two queue
