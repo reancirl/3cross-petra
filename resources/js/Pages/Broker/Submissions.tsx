@@ -51,6 +51,10 @@ export default function BrokerSubmissions({
         item.title,
         item.seller,
         item.email,
+        // An unclaimed lead is often remembered by the company or the number on the message,
+        // since there is no account to look it up by.
+        item.company,
+        item.phone,
         item.category,
         item.region,
         item.city,
@@ -111,12 +115,24 @@ export default function BrokerSubmissions({
                 >
                     {active && (
                         <div className="grid gap-6">
+                            {active.is_unclaimed_lead && (
+                                <p className="rounded-lg border border-[#a56437]/30 bg-[#f4ece4] px-4 py-3 text-sm leading-6 text-[#8a5330]">
+                                    <strong className="font-semibold">Unclaimed lead.</strong> This came from the public form
+                                    without a signed-in seller, so there is no account to message. Reach out using the contact
+                                    details below.
+                                </p>
+                            )}
+
                             <dl className="grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2">
-                                <Detail label="Seller" value={active.seller} />
+                                <Detail label={active.is_unclaimed_lead ? 'Contact' : 'Seller'} value={active.seller} />
+                                <Detail label="Company" value={active.company} />
                                 <Detail label="Email" value={active.email} />
+                                <Detail label="Phone" value={active.phone} />
                                 <Detail label="Category" value={active.category} />
                                 <Detail label="Region" value={regionOf(active)} />
                                 <Detail label="Condition" value={active.condition_label} />
+                                {/* Portal submissions are always a single unit and never asked. */}
+                                {active.quantity > 1 && <Detail label="Quantity" value={`${active.quantity} units`} />}
                                 <Detail
                                     label="Asking price"
                                     value={
@@ -129,6 +145,24 @@ export default function BrokerSubmissions({
                                 />
                                 <Detail label="Photos" value={`${active.photo_count} uploaded`} />
                                 <Detail label="Submitted" value={active.created_at} />
+                                <Detail label="Submitted via" value={sourceLabel(active.source)} />
+
+                                {/* The public form's selling-intent block. Absent entirely on portal
+                                    submissions, so each row appears only when it was actually asked. */}
+                                {active.ownership_label && <Detail label="Owns the equipment" value={active.ownership_label} />}
+                                {active.availability_label && <Detail label="Available to sell" value={active.availability_label} />}
+                                {active.value_range_label && (
+                                    <Detail label="Seller's value estimate" value={active.value_range_label} />
+                                )}
+                                {active.intent_labels.length > 0 && (
+                                    <div className="sm:col-span-2">
+                                        <dt className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">
+                                            Looking to
+                                        </dt>
+                                        <dd className="mt-1 text-neutral-700">{active.intent_labels.join(' · ')}</dd>
+                                    </div>
+                                )}
+
                                 {active.condition_notes && (
                                     <div className="sm:col-span-2">
                                         <dt className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">
@@ -153,8 +187,31 @@ export default function BrokerSubmissions({
     );
 }
 
+/**
+ * "Wyoming — Powder River" / "Wyoming — Casper". The portal form collects a city, the public
+ * form collects a Wyoming sub-region instead; a row carries at most one of them.
+ */
 function regionOf(submission: SellerSubmission): string {
-    return submission.city ? `${submission.region} — ${submission.city}` : submission.region;
+    const detail = submission.city ?? submission.wyoming_subregion_label;
+
+    return detail ? `${submission.region} — ${detail}` : submission.region;
+}
+
+/**
+ * Flags a submission with nobody behind it. The broker's whole workflow changes: there is no
+ * account to message and no seller who can answer an offer, so the contact details on the row
+ * are the only way to reach this person.
+ */
+function sourceLabel(source: string): string {
+    return source === 'public' ? 'Public website form' : 'Seller portal';
+}
+
+function UnclaimedLeadChip() {
+    return (
+        <span className="rounded-full bg-[#f4ece4] px-2 py-0.5 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-[#8a5330]">
+            Unclaimed lead
+        </span>
+    );
 }
 
 /**
@@ -187,9 +244,12 @@ const SUBMISSION_COLUMNS: DataTableColumn<SellerSubmission>[] = [
                                     {openOffers === 1 ? 'Offer open' : `${openOffers} offers open`}
                                 </span>
                             )}
+                            {submission.is_unclaimed_lead && <UnclaimedLeadChip />}
                         </>
                     }
-                    secondary={`${submission.category} · ${regionOf(submission)}`}
+                    secondary={`${submission.category} · ${regionOf(submission)}${
+                        submission.quantity > 1 ? ` · ${submission.quantity} units` : ''
+                    }`}
                 />
             );
         },
@@ -417,7 +477,14 @@ function OfferManager({ submission, statusOptions }: { submission: SellerSubmiss
                 <p className="mt-3 text-sm leading-6 text-neutral-500">No offers logged yet.</p>
             )}
 
-            {openOffer ? (
+            {submission.is_unclaimed_lead ? (
+                <p className="mt-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3 text-sm leading-6 text-neutral-600">
+                    Offers cannot be logged against an unclaimed lead. An offer is answered by the seller from their own
+                    Offers page, and this submission has no account behind it — one logged here could never be accepted,
+                    declined, or countered. Negotiate using the contact details above; once this person has a seller
+                    account the submission can be attached to it.
+                </p>
+            ) : openOffer ? (
                 <p className="mt-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3 text-sm leading-6 text-neutral-600">
                     {openOffer.status === 'countered'
                         ? `The seller countered ${formatUSD(openOffer.counter_amount ?? openOffer.amount)}. Accept, decline, or re-offer above — a re-offer replaces this negotiation rather than starting a second one.`

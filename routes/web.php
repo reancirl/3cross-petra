@@ -8,6 +8,7 @@ use App\Http\Controllers\EquipmentListingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\MessageAttachmentController;
+use App\Http\Controllers\SellEquipmentController;
 use App\Models\EquipmentSubmission;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,10 +24,47 @@ Route::post('/equipment/{listing}/inquiries', [EquipmentListingController::class
     ->where('listing', '[A-Za-z0-9-]+')
     ->name('equipment.inquiries.store');
 
-Route::get('/sell-equipment', fn () => Inertia::render('SellEquipment', [
-    'canonicalUrl' => url('/sell-equipment'),
-    'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
-]));
+/**
+ * Sell Equipment is a hub, not a page: an index plus eight sub-pages that cross-link heavily
+ * (see docs/Sell Equipment Pages.pdf). Each renders a component under Pages/SellEquipment/ and
+ * receives the canonical + OG URLs the shared PublicPageMeta head block needs.
+ *
+ * Equipment Inspection Services is deliberately absent — the content doc marks it in progress.
+ */
+Route::prefix('sell-equipment')->group(function (): void {
+    $page = fn (string $component, string $path) => fn () => Inertia::render("SellEquipment/{$component}", [
+        'canonicalUrl' => url($path),
+        'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
+    ]);
+
+    Route::get('/', $page('Index', '/sell-equipment'))->name('sell-equipment');
+    Route::get('/why-sell-with-petra', $page('WhySellWithPetra', '/sell-equipment/why-sell-with-petra'))
+        ->name('sell-equipment.why');
+    Route::get('/seller-process', $page('SellerProcess', '/sell-equipment/seller-process'))
+        ->name('sell-equipment.process');
+    Route::get('/equipment-submission', [SellEquipmentController::class, 'submissionForm'])
+        ->name('sell-equipment.submission');
+    // Throttled: a public endpoint that writes rows and accepts uploads. The form also
+    // carries a honeypot field the request rejects silently.
+    Route::post('/equipment-submission', [SellEquipmentController::class, 'storeSubmission'])
+        ->middleware('throttle:10,1')
+        ->name('sell-equipment.submission.store');
+    Route::get('/equipment-submission/thank-you', $page('SubmissionThanks', '/sell-equipment/equipment-submission/thank-you'))
+        ->name('sell-equipment.submission.thanks');
+    Route::get('/upload-photos', $page('UploadPhotos', '/sell-equipment/upload-photos'))
+        ->name('sell-equipment.photos');
+    Route::get('/upload-documents', $page('UploadDocuments', '/sell-equipment/upload-documents'))
+        ->name('sell-equipment.documents');
+    Route::get('/request-valuation', $page('RequestValuation', '/sell-equipment/request-valuation'))
+        ->name('sell-equipment.valuation');
+    Route::get('/faqs', $page('Faqs', '/sell-equipment/faqs'))->name('sell-equipment.faqs');
+    Route::get('/contact-broker', [SellEquipmentController::class, 'contactBroker'])
+        ->name('sell-equipment.contact-broker');
+    // Throttled and honeypotted for the same reason as the submission POST above.
+    Route::post('/contact-broker', [SellEquipmentController::class, 'storeBrokerInquiry'])
+        ->middleware('throttle:10,1')
+        ->name('sell-equipment.contact-broker.store');
+});
 
 Route::get('/request-equipment', fn () => Inertia::render('RequestEquipment', [
     'canonicalUrl' => url('/request-equipment'),
@@ -135,6 +173,46 @@ Route::get('/sitemap.xml', function () {
             'loc' => url('/sell-equipment'),
             'changefreq' => 'weekly',
             'priority' => '0.8',
+        ],
+        [
+            'loc' => url('/sell-equipment/why-sell-with-petra'),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ],
+        [
+            'loc' => url('/sell-equipment/seller-process'),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ],
+        [
+            'loc' => url('/sell-equipment/equipment-submission'),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ],
+        [
+            'loc' => url('/sell-equipment/upload-photos'),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ],
+        [
+            'loc' => url('/sell-equipment/upload-documents'),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ],
+        [
+            'loc' => url('/sell-equipment/request-valuation'),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ],
+        [
+            'loc' => url('/sell-equipment/faqs'),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ],
+        [
+            'loc' => url('/sell-equipment/contact-broker'),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
         ],
         [
             'loc' => url('/request-equipment'),

@@ -279,6 +279,21 @@
         box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.12);
     }
 
+    /*
+     * Selects wearing .portal-input also need room for the chevron.
+     *
+     * AnimatedPage adds .polished-select to every `main select` at runtime, which draws the
+     * copper arrow across the rightmost 6-18px. .portal-input only reserves 1rem (16px) of
+     * right padding, so long option text runs straight under that arrow — most visibly on the
+     * public form's location dropdown, whose longest option is 50 characters. Everywhere else
+     * in the app .polished-select is hand-paired with pr-8/pr-9; this is that pairing for the
+     * shared input style. Declared after .portal-input so it wins on source order rather than
+     * relying on a utility beating a same-layer class.
+     */
+    .portal-select {
+        padding-right: 2.25rem;
+    }
+
     .interactive-lift {
         transition:
             transform 260ms ease,

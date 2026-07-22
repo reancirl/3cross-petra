@@ -1,0 +1,243 @@
+{
+    "meta": {
+        "title": "Equipment Submission | Submit Oilfield Equipment | Petra",
+        "description": "Submit your used oilfield and industrial equipment to Petra for brokerage review. Provide equipment details, photos, and documents to connect with qualified buyers."
+    },
+    "hero": {
+        "title": "Equipment Submission",
+        "subtitle": "Submit Your Used Oilfield & Industrial Equipment",
+        "body": [
+            "Ready to sell your equipment?",
+            "Provide the information you have, and Petra will review your submission to determine how your equipment fits within the current market.",
+            "You don't need perfect documentation or professional photos to get started. Simply provide the available details, and we'll guide you through the next steps."
+        ],
+        "primaryCta": { "label": "Submit Equipment", "href": "#equipment-submission-form" }
+    },
+    "whatToInclude": {
+        "title": "What Information Should You Include?",
+        "body": [
+            "The more information you can provide, the easier it is for us to evaluate your equipment and identify qualified buyers.",
+            "If some information isn't available, that's okay. Submit what you have, and we'll discuss anything else that's needed."
+        ],
+        "groups": [
+            {
+                "title": "Equipment Information",
+                "intro": ["Help us understand what you're selling.", "Include information such as:"],
+                "items": [
+                    "Equipment type",
+                    "Manufacturer",
+                    "Model",
+                    "Year (if known)",
+                    "Capacity or specifications",
+                    "Serial number (if available)"
+                ],
+                "outro": "This information helps us identify the most relevant buyers."
+            },
+            {
+                "title": "Equipment Location",
+                "intro": ["Tell us where the equipment is currently located.", "Examples include:"],
+                "items": ["Wyoming", "Colorado", "North Dakota", "Utah", "Montana", "Other producing regions"],
+                "outro": "Knowing the equipment location helps us evaluate transportation logistics and regional buyer demand."
+            },
+            {
+                "title": "Equipment Condition",
+                "intro": ["Give us a general overview of its condition.", "Examples include:"],
+                "items": [
+                    "Currently operating",
+                    "Idle equipment",
+                    "Stored in yard",
+                    "Removed from service",
+                    "Requires repair",
+                    "Unknown condition"
+                ],
+                "outro": "You don't need a formal inspection before submitting your equipment."
+            },
+            {
+                "title": "Upload Photos",
+                "intro": ["Photos help us evaluate your equipment and present it accurately to qualified buyers.", "If available, include:"],
+                "items": [
+                    "Overall equipment photos",
+                    "Multiple angles",
+                    "Equipment nameplates",
+                    "Control panels",
+                    "Interior components",
+                    "Any visible wear or damage"
+                ],
+                "outro": "Don't worry about professional photography. Clear photos taken with your phone are usually enough to get started.",
+                "guideLink": { "label": "View the Equipment Photo Guide", "href": "/sell-equipment/upload-photos" }
+            },
+            {
+                "title": "Upload Documents",
+                "intro": ["Supporting documents help us verify equipment details and answer buyer questions more efficiently.", "Helpful documents include:"],
+                "items": [
+                    "Inspection reports",
+                    "Maintenance records",
+                    "Specification sheets",
+                    "Equipment manuals",
+                    "Service history",
+                    "Operating records"
+                ],
+                "outro": "If documentation isn't available, you can still submit your equipment for review.",
+                "guideLink": { "label": "View the Equipment Documentation Guide", "href": "/sell-equipment/upload-documents" }
+            }
+        ]
+    },
+    "afterYouSubmit": {
+        "title": "What Happens After You Submit?",
+        "steps": [
+            "We confirm your submission.",
+            "Our team reviews the equipment information and evaluates current market opportunities.",
+            "If additional information is needed, we'll contact you directly.",
+            "We determine how the equipment may be positioned within our regional buyer network.",
+            "We'll discuss the recommended next steps and answer any questions before moving forward."
+        ],
+        "outro": "Every submission receives an individual review based on equipment type, condition, market demand, and regional buyer interest."
+    },
+    "form": {
+        "title": "Equipment Submission Form",
+        "subtitle": "Tell Us About Your Equipment",
+        "intro": "Provide the information you currently have available. You don't need every specification to get started. Our brokerage team will review your submission and contact you if additional details are needed.",
+        "requiredNote": "Fields marked with * are required.",
+        "sections": {
+            "contact": "Contact Information",
+            "equipment": "Equipment Information",
+            "selling": "Selling Information",
+            "photos": "Upload Photos (Optional)",
+            "documents": "Upload Documents (Optional)",
+            "additional": "Additional Information",
+            "confirmation": "Confirmation"
+        },
+        "uploadLabels": {
+            "photos": "Upload Photos",
+            "documents": "Upload Documents"
+        },
+        "labels": {
+            "fullName": "Full Name",
+            "company": "Company Name",
+            "email": "Email Address",
+            "phone": "Phone Number",
+            "category": "Equipment Category",
+            "description": "Equipment Description",
+            "quantity": "Quantity",
+            "location": "Equipment Location",
+            "condition": "General Condition",
+            "isOwner": "Are You the Equipment Owner?",
+            "intent": "What Are You Looking to Do?",
+            "availability": "Is the Equipment Currently Available?",
+            "estimatedValue": "Estimated Equipment Value",
+            "additionalInfo": "Tell Us Anything Else About Your Equipment"
+        },
+        "hints": {
+            "description": "Tell us what you're selling.",
+            "descriptionPlaceholder": "CAT 3512 Generator, Horizontal Separator, Pump Package, 500 BBL Tank",
+            "estimatedValue": "Optional",
+            "intent": "Select all that apply.",
+            "photos": "Upload photos of the equipment if available.",
+            "photosHelpful": "Helpful photos include:",
+            "photoItems": [
+                "Overall equipment",
+                "Multiple angles",
+                "Equipment nameplate",
+                "Control panels",
+                "Interior components",
+                "Visible wear or damage"
+            ],
+            "photoGuidePrompt": "Need help deciding what to include?",
+            "documents": "Upload any available documentation.",
+            "documentsHelpful": "Helpful documents may include:",
+            "documentItems": [
+                "Maintenance records",
+                "Inspection reports",
+                "Specification sheets",
+                "Equipment manuals",
+                "Service history"
+            ],
+            "documentGuidePrompt": "Not sure which documents are helpful?",
+            "additionalInfoExamples": [
+                "Known issues",
+                "Package details",
+                "Project information",
+                "Desired selling timeline",
+                "Questions for our team"
+            ]
+        },
+        "guideLinks": {
+            "photos": { "label": "View Equipment Photo Guide", "href": "/sell-equipment/upload-photos" },
+            "documents": { "label": "View Equipment Documentation Guide", "href": "/sell-equipment/upload-documents" }
+        },
+        "consent": {
+            "accuracy": "I confirm that the information provided is accurate to the best of my knowledge.",
+            "contact": "I authorize Petra to contact me regarding this equipment submission."
+        },
+        "submitLabel": "Submit Equipment for Review",
+        "supportingText": "Our brokerage team will review your submission and determine whether your equipment is a good fit for our buyer network. If we need additional information, we'll contact you directly."
+    },
+    "faqSection": { "title": "Frequently Asked Questions" },
+    "faqs": [
+        {
+            "question": "Is there a cost to submit equipment?",
+            "answer": "No. Submitting equipment for review is free."
+        },
+        {
+            "question": "Do I need complete information before submitting?",
+            "answer": "No. Submit the information you currently have. Petra will work with you if additional details are needed."
+        },
+        {
+            "question": "What if I don't have photos?",
+            "answer": "Photos are helpful but not required to begin the review process."
+        },
+        {
+            "question": "Can I submit more than one piece of equipment?",
+            "answer": "Yes. We work with individual assets, complete equipment packages, and surplus equipment inventories."
+        },
+        {
+            "question": "How soon will Petra contact me?",
+            "answer": "After reviewing your submission, we'll reach out if additional information is needed or to discuss potential next steps."
+        },
+        {
+            "question": "Am I obligated to sell after submitting?",
+            "answer": "No. Submitting your equipment simply begins the review process. You'll have the opportunity to discuss options before making any decisions."
+        }
+    ],
+    "needAssistance": {
+        "title": "Need Assistance Before Submitting?",
+        "body": [
+            "If you're unsure whether your equipment is a good fit or have questions about the submission process, we're happy to help.",
+            "Talk with a Petra broker before completing your submission."
+        ],
+        "cta": { "label": "Contact a Broker", "href": "/sell-equipment/contact-broker" }
+    },
+    "finalCta": {
+        "title": "Ready to Submit Your Equipment?",
+        "body": [
+            "Whether you're selling a single asset or liquidating surplus equipment, Petra is ready to review your submission and discuss the opportunities available through our regional brokerage network.",
+            "We'll provide straightforward guidance, honest communication, and a professional brokerage process from the very beginning."
+        ],
+        "valuationPrompt": {
+            "before": "Not sure if now is the right time to sell? Start with a ",
+            "link": { "label": "Request a Market-Based Valuation", "href": "/sell-equipment/request-valuation" },
+            "after": " to better understand your equipment's market potential."
+        },
+        "questionsPrompt": {
+            "before": "Still have questions before submitting? Visit our ",
+            "link": { "label": "Sell Equipment FAQs", "href": "/sell-equipment/faqs" },
+            "middle": " or ",
+            "secondLink": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" },
+            "after": " for straightforward guidance before getting started."
+        },
+        "primaryCta": { "label": "Submit Equipment", "href": "#equipment-submission-form" }
+    },
+    "confirmationPage": {
+        "meta": {
+            "title": "Thank You | Equipment Submission | Petra Equipment Brokerage",
+            "description": "Your equipment submission has been received. Petra's brokerage team will review the details and follow up with next steps."
+        },
+        "title": "Thank You!",
+        "body": [
+            "Your equipment submission has been received.",
+            "Our team will review the information you've provided and contact you if additional details are needed or if we'd like to discuss the opportunity further."
+        ],
+        "primaryCta": { "label": "Return to Sell Equipment", "href": "/sell-equipment" },
+        "secondaryCta": { "label": "Contact a Broker", "href": "/sell-equipment/contact-broker" }
+    }
+}

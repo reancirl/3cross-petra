@@ -9,12 +9,26 @@ export type AuthUser = {
     dashboard_url: string;
 };
 
+/**
+ * Petra's public contact details, from config/petra.php. Rendered beside the Talk to a
+ * Broker form. `phone` may still hold the content doc's placeholder ("(307) XXX-XXXX")
+ * until the client supplies a real number — see hasDiallablePhone before linking it.
+ */
+export type SiteContact = {
+    phone: string;
+    email: string;
+    hours_days: string;
+    hours_time: string;
+    service_area: string[];
+};
+
 export type SharedPageProps = {
     appName: string;
     auth: {
         user: AuthUser | null;
     };
     status?: string | null;
+    siteContact: SiteContact;
     /**
      * Conversations (not messages) with something unread for the current user's side.
      * Drives the Messages / Inbox nav badge. Refreshed app-wide every 45s by

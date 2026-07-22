@@ -29,12 +29,27 @@ export type BrokerOffer = {
 
 export type SellerSubmission = {
     id: number;
+    // Account details when there is an account, otherwise what the public form captured.
     seller: string | null;
     email: string | null;
+    phone: string | null;
+    company: string | null;
+    /** No account behind this row — a broker works it from the contact fields above. */
+    is_unclaimed_lead: boolean;
+    /** 'portal' | 'public'. An owned submission can still be public-sourced. */
+    source: string;
     title: string;
     category: string;
+    quantity: number;
     region: string;
     city: string | null;
+    wyoming_subregion_label: string | null;
+    // The public form's selling-intent answers. Null / empty on portal submissions, which
+    // never asked them — render each only when present.
+    ownership_label: string | null;
+    intent_labels: string[];
+    availability_label: string | null;
+    value_range_label: string | null;
     condition_label: string;
     condition_notes: string | null;
     asking_price: string | null;
@@ -69,6 +84,32 @@ export type BuyerRequest = {
     timeline: string;
     status: string;
     status_label: string;
+    created_at: string | null;
+    created_at_timestamp: number | null;
+};
+
+/**
+ * A Talk to a Broker inquiry (App\Models\BrokerInquiry). Unlike the two queues above there
+ * is no record behind it to act on — the contact fields are the whole lead, so they are
+ * always present rather than nullable account lookups.
+ */
+export type BrokerLead = {
+    id: number;
+    full_name: string;
+    company: string | null;
+    email: string;
+    phone: string;
+    topic: string;
+    topic_label: string;
+    equipment_type: string | null;
+    message: string;
+    preferred_contact_label: string;
+    // Set only when the visitor happened to be signed in. Context, not the reply address.
+    account_name: string | null;
+    account_email: string | null;
+    status: string;
+    status_label: string;
+    status_tone: StatusTone;
     created_at: string | null;
     created_at_timestamp: number | null;
 };
@@ -410,9 +451,17 @@ function statusBadgeClass(status: string): string {
             return 'border-indigo-300 bg-indigo-50 text-indigo-800';
         case 'reviewing_options':
             return 'border-emerald-300 bg-emerald-50 text-emerald-800';
-        // Terminal — closing a quote also frees the buyer to request one again.
+        // Terminal — closing a quote also frees the buyer to request one again. Shared with
+        // the broker-lead lifecycle below, which ends the same way and reads the same.
         case 'closed':
             return 'border-neutral-300 bg-neutral-100 text-neutral-500';
+
+        // Broker lead statuses (App\Models\BrokerInquiry). 'new' wears the copper the portal
+        // uses for "this one is waiting on you"; nothing else in the app claims it.
+        case 'new':
+            return 'border-[#a56437]/30 bg-[#f4ece4] text-[#8a5330]';
+        case 'contacted':
+            return 'border-sky-300 bg-sky-50 text-sky-800';
 
         // Offer statuses (App\Enums\OfferStatus). 'pending'/'accepted' overlap with
         // listing wording above; the remaining two are offer-specific.

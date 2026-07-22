@@ -1,6 +1,6 @@
 import { Head, Link, createInertiaApp, router, useForm, usePage, useRemember } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { Toaster, toast } from "sonner";
 import * as Dialog from "@radix-ui/react-dialog";
 import createServer from "@inertiajs/react/server";
@@ -224,8 +224,8 @@ var about_default = {
 //#region resources/js/Pages/About.tsx
 var About_exports = /* @__PURE__ */ __exportAll({ default: () => About });
 var { intro: intro$2, beliefs, region } = about_default;
-var pageTitle$8 = "About | Petra";
-var pageDescription$8 = "Petra was built because equipment markets are fragmented and inefficient. Good equipment often sits idle while buyers struggle to find reliable sources. We bridge that gap.";
+var pageTitle$7 = "About | Petra";
+var pageDescription$7 = "Petra was built because equipment markets are fragmented and inefficient. Good equipment often sits idle while buyers struggle to find reliable sources. We bridge that gap.";
 function About({ canonicalUrl, ogImageUrl }) {
 	const structuredData = {
 		"@context": "https://schema.org",
@@ -234,7 +234,7 @@ function About({ canonicalUrl, ogImageUrl }) {
 			"@id": `${canonicalUrl}#about`,
 			name: "About Petra",
 			url: canonicalUrl,
-			description: pageDescription$8,
+			description: pageDescription$7,
 			isPartOf: {
 				"@type": "WebSite",
 				name: "Petra",
@@ -263,11 +263,11 @@ function About({ canonicalUrl, ogImageUrl }) {
 		}]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$8,
+		title: pageTitle$7,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$8
+				content: pageDescription$7
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -279,11 +279,11 @@ function About({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$8
+				content: pageTitle$7
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$8
+				content: pageDescription$7
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -307,11 +307,11 @@ function About({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$8
+				content: pageTitle$7
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$8
+				content: pageDescription$7
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -689,7 +689,7 @@ function Register() {
 						onSubmit: submit,
 						className: "mt-10 grid gap-5 border border-[#dad5cb] bg-[#f8f8f6] p-6 sm:grid-cols-2 sm:p-8",
 						children: [
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Name",
 								error: errors.name,
 								children: /* @__PURE__ */ jsx("input", {
@@ -700,7 +700,7 @@ function Register() {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Email",
 								error: errors.email,
 								children: /* @__PURE__ */ jsx("input", {
@@ -712,7 +712,7 @@ function Register() {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Phone",
 								error: errors.phone,
 								children: /* @__PURE__ */ jsx("input", {
@@ -722,7 +722,7 @@ function Register() {
 									autoComplete: "tel"
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Company",
 								error: errors.company_name,
 								children: /* @__PURE__ */ jsx("input", {
@@ -732,7 +732,7 @@ function Register() {
 									autoComplete: "organization"
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Portal type",
 								error: errors.user_type,
 								children: /* @__PURE__ */ jsxs("select", {
@@ -749,7 +749,7 @@ function Register() {
 								})
 							}),
 							/* @__PURE__ */ jsx("div", {}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Password",
 								error: errors.password,
 								children: /* @__PURE__ */ jsx("input", {
@@ -761,7 +761,7 @@ function Register() {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$5, {
+							/* @__PURE__ */ jsx(Field$6, {
 								label: "Confirm password",
 								error: errors.password_confirmation,
 								children: /* @__PURE__ */ jsx("input", {
@@ -800,7 +800,7 @@ function Register() {
 		})
 	})] });
 }
-function Field$5({ label, error, children }) {
+function Field$6({ label, error, children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: "grid gap-2",
 		children: [
@@ -853,7 +853,7 @@ function ResetPassword({ email, token }) {
 								type: "hidden",
 								value: data.token
 							}),
-							/* @__PURE__ */ jsx(Field$4, {
+							/* @__PURE__ */ jsx(Field$5, {
 								label: "Email",
 								error: errors.email,
 								children: /* @__PURE__ */ jsx("input", {
@@ -865,7 +865,7 @@ function ResetPassword({ email, token }) {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$4, {
+							/* @__PURE__ */ jsx(Field$5, {
 								label: "Password",
 								error: errors.password,
 								children: /* @__PURE__ */ jsx("input", {
@@ -877,7 +877,7 @@ function ResetPassword({ email, token }) {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$4, {
+							/* @__PURE__ */ jsx(Field$5, {
 								label: "Confirm password",
 								error: errors.password_confirmation,
 								children: /* @__PURE__ */ jsx("input", {
@@ -902,7 +902,7 @@ function ResetPassword({ email, token }) {
 		})
 	})] });
 }
-function Field$4({ label, error, children }) {
+function Field$5({ label, error, children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: "grid gap-2",
 		children: [
@@ -1593,6 +1593,12 @@ var brokerNavGroups = [{
 			icon: "quotes"
 		},
 		{
+			label: "Leads",
+			path: "leads",
+			real: true,
+			icon: "leads"
+		},
+		{
 			label: "Inbox",
 			path: "inbox",
 			real: true,
@@ -1817,6 +1823,15 @@ function PortalNavIcon({ name }) {
 				/* @__PURE__ */ jsx("path", { d: "M20 12l-8 8-8-8 8-8z" }),
 				/* @__PURE__ */ jsx("path", { d: "M12 8v8" }),
 				/* @__PURE__ */ jsx("path", { d: "M8 12h8" })
+			]
+		});
+		case "leads": return /* @__PURE__ */ jsxs("svg", {
+			...common,
+			children: [
+				/* @__PURE__ */ jsx("path", { d: "M10 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" }),
+				/* @__PURE__ */ jsx("path", { d: "M3 20a7 7 0 0 1 11.3-5.5" }),
+				/* @__PURE__ */ jsx("path", { d: "M18 14v6" }),
+				/* @__PURE__ */ jsx("path", { d: "M15 17h6" })
 			]
 		});
 		case "documents": return /* @__PURE__ */ jsxs("svg", {
@@ -2977,6 +2992,8 @@ function statusBadgeClass(status) {
 		case "options_presented": return "border-indigo-300 bg-indigo-50 text-indigo-800";
 		case "reviewing_options": return "border-emerald-300 bg-emerald-50 text-emerald-800";
 		case "closed": return "border-neutral-300 bg-neutral-100 text-neutral-500";
+		case "new": return "border-[#a56437]/30 bg-[#f4ece4] text-[#8a5330]";
+		case "contacted": return "border-sky-300 bg-sky-50 text-sky-800";
 		case "accepted": return "border-emerald-800/25 bg-emerald-50 text-emerald-800";
 		case "declined": return "border-[#b3261e]/25 bg-red-50 text-[#b3261e]";
 		case "countered": return "border-[#dad5cb] bg-[#f3f1ec] text-neutral-700";
@@ -2998,6 +3015,174 @@ function EmptyState$1({ text }) {
 		children: text
 	});
 }
+//#endregion
+//#region resources/js/Pages/Broker/Leads.tsx
+var Leads_exports = /* @__PURE__ */ __exportAll({ default: () => BrokerLeads });
+/**
+* Talk to a Broker inquiries from the public Sell Equipment section. Same shape as the two
+* review queues — rows in the list, detail in a slide-over — but a lead has no record to
+* publish or price, so the panel is contact details, the message, and a status to move.
+*/
+function BrokerLeads({ portal, leads, leadStatusOptions }) {
+	const { status } = usePage().props;
+	const [activeId, setActiveId] = useState(null);
+	const active = leads.find((lead) => lead.id === activeId) ?? null;
+	const queue = useQueue(leads, leadStatusOptions, (item) => [
+		item.full_name,
+		item.company,
+		item.email,
+		item.phone,
+		item.topic_label,
+		item.equipment_type,
+		item.status_label
+	]);
+	useEffect(() => {
+		if (status) toast.success(status);
+	}, [status]);
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: "Leads | Broker Portal" }), /* @__PURE__ */ jsxs(PortalShell, {
+		portal,
+		title: "Leads",
+		eyebrow: `${leads.length} ${leads.length === 1 ? "inquiry" : "inquiries"}`,
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "grid gap-4",
+			children: [/* @__PURE__ */ jsx(QueueToolbar, {
+				search: queue.search,
+				onSearch: queue.onSearch,
+				chips: queue.chips,
+				activeStatus: queue.statusFilter,
+				onStatus: queue.setStatusFilter,
+				sort: queue.sort,
+				onSort: queue.setSort,
+				placeholder: "Search by name, company, email, or topic"
+			}), leads.length === 0 ? /* @__PURE__ */ jsx(EmptyState$1, { text: "No broker inquiries have been submitted yet." }) : queue.visible.length === 0 ? /* @__PURE__ */ jsx(NoResults$1, { onClear: queue.clear }) : /* @__PURE__ */ jsx(DataTable, {
+				columns: LEAD_COLUMNS,
+				rows: queue.visible,
+				rowKey: (lead) => lead.id,
+				onRowClick: (lead) => setActiveId(lead.id),
+				rowLabel: (lead) => `Review inquiry from ${lead.full_name}`,
+				caption: "Talk to a Broker inquiries awaiting a response"
+			})]
+		}), /* @__PURE__ */ jsx(SlideOver, {
+			open: active !== null,
+			onClose: () => setActiveId(null),
+			eyebrow: "Broker inquiry",
+			title: active?.full_name ?? "",
+			children: active && /* @__PURE__ */ jsxs("div", {
+				className: "grid gap-6",
+				children: [/* @__PURE__ */ jsxs("dl", {
+					className: "grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
+					children: [
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Company",
+							value: active.company
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Topic",
+							value: active.topic_label
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Email",
+							value: active.email
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Phone",
+							value: active.phone
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Prefers",
+							value: active.preferred_contact_label
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Equipment type",
+							value: active.equipment_type
+						}),
+						/* @__PURE__ */ jsx(Detail$3, {
+							label: "Submitted",
+							value: active.created_at
+						}),
+						active.account_name && /* @__PURE__ */ jsx(Detail$3, {
+							label: "Signed in as",
+							value: `${active.account_name} (${active.account_email})`
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "sm:col-span-2",
+							children: [/* @__PURE__ */ jsx("dt", {
+								className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+								children: "Message"
+							}), /* @__PURE__ */ jsx("dd", {
+								className: "mt-1 whitespace-pre-line text-neutral-700",
+								children: active.message
+							})]
+						})
+					]
+				}), /* @__PURE__ */ jsxs("div", {
+					className: "border-t border-[#dad5cb] pt-6",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]",
+						children: "Lead status"
+					}), /* @__PURE__ */ jsx("div", {
+						className: "mt-3",
+						children: /* @__PURE__ */ jsx(StatusForm, {
+							value: active.status,
+							options: leadStatusOptions,
+							action: `/broker/leads/${active.id}`
+						}, `${active.id}:${active.status}`)
+					})]
+				})]
+			})
+		})]
+	})] });
+}
+/** Column layout for the lead queue. Mirrors the other two queues' responsive priorities. */
+var LEAD_COLUMNS = [
+	{
+		key: "contact",
+		header: "Contact",
+		cell: (lead) => /* @__PURE__ */ jsx(CellStack, {
+			primary: /* @__PURE__ */ jsx("span", {
+				className: "font-heading text-base font-semibold uppercase tracking-[0.06em] text-neutral-950",
+				children: lead.full_name
+			}),
+			secondary: lead.company ?? void 0
+		})
+	},
+	{
+		key: "topic",
+		header: "Topic",
+		hideBelow: "md",
+		cell: (lead) => /* @__PURE__ */ jsx(CellStack, {
+			primary: lead.topic_label,
+			secondary: lead.equipment_type ?? void 0
+		})
+	},
+	{
+		key: "reach",
+		header: "Reach them",
+		hideBelow: "lg",
+		cell: (lead) => /* @__PURE__ */ jsx(CellStack, {
+			primary: lead.email,
+			secondary: lead.phone
+		})
+	},
+	{
+		key: "prefers",
+		header: "Prefers",
+		hideBelow: "xl",
+		cell: (lead) => /* @__PURE__ */ jsx("span", {
+			className: "whitespace-nowrap",
+			children: lead.preferred_contact_label
+		})
+	},
+	{
+		key: "status",
+		header: "Status",
+		align: "right",
+		cell: (lead) => /* @__PURE__ */ jsx(StatusBadge$4, {
+			status: lead.status,
+			label: lead.status_label
+		})
+	}
+];
 //#endregion
 //#region resources/js/Pages/Broker/Requests.tsx
 var Requests_exports = /* @__PURE__ */ __exportAll({ default: () => BrokerRequests });
@@ -3184,6 +3369,8 @@ function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, off
 		item.title,
 		item.seller,
 		item.email,
+		item.company,
+		item.phone,
 		item.category,
 		item.region,
 		item.city,
@@ -3225,16 +3412,31 @@ function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, off
 			children: active && /* @__PURE__ */ jsxs("div", {
 				className: "grid gap-6",
 				children: [
+					active.is_unclaimed_lead && /* @__PURE__ */ jsxs("p", {
+						className: "rounded-lg border border-[#a56437]/30 bg-[#f4ece4] px-4 py-3 text-sm leading-6 text-[#8a5330]",
+						children: [/* @__PURE__ */ jsx("strong", {
+							className: "font-semibold",
+							children: "Unclaimed lead."
+						}), " This came from the public form without a signed-in seller, so there is no account to message. Reach out using the contact details below."]
+					}),
 					/* @__PURE__ */ jsxs("dl", {
 						className: "grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2",
 						children: [
 							/* @__PURE__ */ jsx(Detail$3, {
-								label: "Seller",
+								label: active.is_unclaimed_lead ? "Contact" : "Seller",
 								value: active.seller
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Company",
+								value: active.company
 							}),
 							/* @__PURE__ */ jsx(Detail$3, {
 								label: "Email",
 								value: active.email
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Phone",
+								value: active.phone
 							}),
 							/* @__PURE__ */ jsx(Detail$3, {
 								label: "Category",
@@ -3248,6 +3450,10 @@ function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, off
 								label: "Condition",
 								value: active.condition_label
 							}),
+							active.quantity > 1 && /* @__PURE__ */ jsx(Detail$3, {
+								label: "Quantity",
+								value: `${active.quantity} units`
+							}),
 							/* @__PURE__ */ jsx(Detail$3, {
 								label: "Asking price",
 								value: active.needs_valuation ? "Valuation requested" : active.asking_price ? formatUSD$2(active.asking_price) : null
@@ -3259,6 +3465,32 @@ function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, off
 							/* @__PURE__ */ jsx(Detail$3, {
 								label: "Submitted",
 								value: active.created_at
+							}),
+							/* @__PURE__ */ jsx(Detail$3, {
+								label: "Submitted via",
+								value: sourceLabel(active.source)
+							}),
+							active.ownership_label && /* @__PURE__ */ jsx(Detail$3, {
+								label: "Owns the equipment",
+								value: active.ownership_label
+							}),
+							active.availability_label && /* @__PURE__ */ jsx(Detail$3, {
+								label: "Available to sell",
+								value: active.availability_label
+							}),
+							active.value_range_label && /* @__PURE__ */ jsx(Detail$3, {
+								label: "Seller's value estimate",
+								value: active.value_range_label
+							}),
+							active.intent_labels.length > 0 && /* @__PURE__ */ jsxs("div", {
+								className: "sm:col-span-2",
+								children: [/* @__PURE__ */ jsx("dt", {
+									className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500",
+									children: "Looking to"
+								}), /* @__PURE__ */ jsx("dd", {
+									className: "mt-1 text-neutral-700",
+									children: active.intent_labels.join(" · ")
+								})]
 							}),
 							active.condition_notes && /* @__PURE__ */ jsxs("div", {
 								className: "sm:col-span-2",
@@ -3285,8 +3517,27 @@ function BrokerSubmissions({ portal, sellerSubmissions, sellerStatusOptions, off
 		})]
 	})] });
 }
+/**
+* "Wyoming — Powder River" / "Wyoming — Casper". The portal form collects a city, the public
+* form collects a Wyoming sub-region instead; a row carries at most one of them.
+*/
 function regionOf(submission) {
-	return submission.city ? `${submission.region} — ${submission.city}` : submission.region;
+	const detail = submission.city ?? submission.wyoming_subregion_label;
+	return detail ? `${submission.region} — ${detail}` : submission.region;
+}
+/**
+* Flags a submission with nobody behind it. The broker's whole workflow changes: there is no
+* account to message and no seller who can answer an offer, so the contact details on the row
+* are the only way to reach this person.
+*/
+function sourceLabel(source) {
+	return source === "public" ? "Public website form" : "Seller portal";
+}
+function UnclaimedLeadChip() {
+	return /* @__PURE__ */ jsx("span", {
+		className: "rounded-full bg-[#f4ece4] px-2 py-0.5 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-[#8a5330]",
+		children: "Unclaimed lead"
+	});
 }
 /**
 * Column layout for the seller queue. Equipment and Status stay at every width; the
@@ -3311,9 +3562,10 @@ var SUBMISSION_COLUMNS = [
 					openOffers > 0 && /* @__PURE__ */ jsx("span", {
 						className: "rounded-full bg-amber-50 px-2 py-0.5 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-amber-800",
 						children: openOffers === 1 ? "Offer open" : `${openOffers} offers open`
-					})
+					}),
+					submission.is_unclaimed_lead && /* @__PURE__ */ jsx(UnclaimedLeadChip, {})
 				] }),
-				secondary: `${submission.category} · ${regionOf(submission)}`
+				secondary: `${submission.category} · ${regionOf(submission)}${submission.quantity > 1 ? ` · ${submission.quantity} units` : ""}`
 			});
 		}
 	},
@@ -3559,7 +3811,10 @@ function OfferManager({ submission, statusOptions }) {
 				className: "mt-3 text-sm leading-6 text-neutral-500",
 				children: "No offers logged yet."
 			}),
-			openOffer ? /* @__PURE__ */ jsx("p", {
+			submission.is_unclaimed_lead ? /* @__PURE__ */ jsx("p", {
+				className: "mt-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3 text-sm leading-6 text-neutral-600",
+				children: "Offers cannot be logged against an unclaimed lead. An offer is answered by the seller from their own Offers page, and this submission has no account behind it — one logged here could never be accepted, declined, or countered. Negotiate using the contact details above; once this person has a seller account the submission can be attached to it."
+			}) : openOffer ? /* @__PURE__ */ jsx("p", {
 				className: "mt-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3 text-sm leading-6 text-neutral-600",
 				children: openOffer.status === "countered" ? `The seller countered ${formatUSD$2(openOffer.counter_amount ?? openOffer.amount)}. Accept, decline, or re-offer above — a re-offer replaces this negotiation rather than starting a second one.` : `${formatUSD$2(openOffer.amount)} is awaiting the seller's response. You can log another offer once the seller accepts, declines, or counters it.`
 			}) : /* @__PURE__ */ jsxs("form", {
@@ -3756,8 +4011,8 @@ function OfferRow({ offer }) {
 //#endregion
 //#region resources/js/Pages/Contact.tsx
 var Contact_exports = /* @__PURE__ */ __exportAll({ default: () => Contact });
-var pageTitle$7 = "Contact Petra | Let's Move Something";
-var pageDescription$7 = "If you've got equipment to sell or you're trying to source something for a job, reach out. Petra will tell you straight up if we can help or not.";
+var pageTitle$6 = "Contact Petra | Let's Move Something";
+var pageDescription$6 = "If you've got equipment to sell or you're trying to source something for a job, reach out. Petra will tell you straight up if we can help or not.";
 var contactOptions = [
 	"Submit equipment",
 	"Request equipment",
@@ -3773,7 +4028,7 @@ function Contact({ canonicalUrl, ogImageUrl, assetContext }) {
 			"@id": `${canonicalUrl}#contact`,
 			name: "Contact Petra",
 			url: canonicalUrl,
-			description: pageDescription$7,
+			description: pageDescription$6,
 			about: [
 				"Used oilfield equipment brokerage",
 				"Equipment sourcing",
@@ -3796,11 +4051,11 @@ function Contact({ canonicalUrl, ogImageUrl, assetContext }) {
 		}]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$7,
+		title: pageTitle$6,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$7
+				content: pageDescription$6
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -3812,11 +4067,11 @@ function Contact({ canonicalUrl, ogImageUrl, assetContext }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$7
+				content: pageTitle$6
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$7
+				content: pageDescription$6
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -3840,11 +4095,11 @@ function Contact({ canonicalUrl, ogImageUrl, assetContext }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$7
+				content: pageTitle$6
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$7
+				content: pageDescription$6
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -4060,8 +4315,8 @@ var emptyFilters = {
 	manufacturer: "",
 	availability: ""
 };
-var pageTitle$6 = "Used Oilfield Equipment Marketplace | Petra";
-var pageDescription$6 = "Browse used oilfield and industrial equipment handled by Petra, including compressors, separators, tank batteries, and pump packages across Wyoming, the Rockies, and the Bakken.";
+var pageTitle$5 = "Used Oilfield Equipment Marketplace | Petra";
+var pageDescription$5 = "Browse used oilfield and industrial equipment handled by Petra, including compressors, separators, tank batteries, and pump packages across Wyoming, the Rockies, and the Bakken.";
 function Equipment({ canonicalUrl, ogImageUrl, listings, filterOptions, categories }) {
 	const [filters, setFilters] = useRemember(emptyFilters, "equipment-filters");
 	useScrollMemory({
@@ -4106,7 +4361,7 @@ function Equipment({ canonicalUrl, ogImageUrl, listings, filterOptions, categori
 				"@id": `${canonicalUrl}#equipment-marketplace`,
 				name: "Used Oilfield Equipment Marketplace",
 				url: canonicalUrl,
-				description: pageDescription$6,
+				description: pageDescription$5,
 				isPartOf: {
 					"@type": "WebSite",
 					name: "Petra",
@@ -4152,11 +4407,11 @@ function Equipment({ canonicalUrl, ogImageUrl, listings, filterOptions, categori
 		]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$6,
+		title: pageTitle$5,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$6
+				content: pageDescription$5
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -4168,11 +4423,11 @@ function Equipment({ canonicalUrl, ogImageUrl, listings, filterOptions, categori
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$6
+				content: pageTitle$5
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$6
+				content: pageDescription$5
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -4196,11 +4451,11 @@ function Equipment({ canonicalUrl, ogImageUrl, listings, filterOptions, categori
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$6
+				content: pageTitle$5
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$6
+				content: pageDescription$5
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -4769,7 +5024,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 							className: "mt-5 grid gap-4",
 							children: [
 								!isAuthed && /* @__PURE__ */ jsxs(Fragment, { children: [
-									/* @__PURE__ */ jsx(Field$3, {
+									/* @__PURE__ */ jsx(Field$4, {
 										label: "Name",
 										error: form.errors.name,
 										children: /* @__PURE__ */ jsx("input", {
@@ -4779,7 +5034,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 											required: true
 										})
 									}),
-									/* @__PURE__ */ jsx(Field$3, {
+									/* @__PURE__ */ jsx(Field$4, {
 										label: "Email",
 										error: form.errors.email,
 										children: /* @__PURE__ */ jsx("input", {
@@ -4790,7 +5045,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 											required: true
 										})
 									}),
-									/* @__PURE__ */ jsx(Field$3, {
+									/* @__PURE__ */ jsx(Field$4, {
 										label: "Phone",
 										error: form.errors.phone,
 										children: /* @__PURE__ */ jsx("input", {
@@ -4800,7 +5055,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 											autoComplete: "tel"
 										})
 									}),
-									/* @__PURE__ */ jsx(Field$3, {
+									/* @__PURE__ */ jsx(Field$4, {
 										label: "Company",
 										error: form.errors.company_name,
 										children: /* @__PURE__ */ jsx("input", {
@@ -4824,7 +5079,7 @@ function EquipmentDetail({ listing, canonicalUrl, ogImageUrl }) {
 										")."
 									]
 								}),
-								/* @__PURE__ */ jsx(Field$3, {
+								/* @__PURE__ */ jsx(Field$4, {
 									label: "Note",
 									error: form.errors.note,
 									children: /* @__PURE__ */ jsx("textarea", {
@@ -4895,7 +5150,7 @@ function DetailCell({ label, value }) {
 		})]
 	});
 }
-function Field$3({ label, error, children }) {
+function Field$4({ label, error, children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: "grid gap-2",
 		children: [
@@ -5159,7 +5414,7 @@ var home_default = {
 //#endregion
 //#region resources/js/Pages/Home.tsx
 var Home_exports = /* @__PURE__ */ __exportAll({ default: () => Home });
-var { heroImage: heroImage$9, stats, featureItems, categories, additionalCategories, processSteps: processSteps$4, whyPeopleWorkWithPetra, states } = home_default;
+var { heroImage: heroImage$7, stats, featureItems, categories, additionalCategories, processSteps: processSteps$2, whyPeopleWorkWithPetra, states } = home_default;
 var badgeStyleFor = (availability) => availability === "Available" ? "primary" : availability === "Pending" ? "outline" : "solid";
 var featuredSpecs = (listing) => [
 	["Year", listing.year],
@@ -5167,8 +5422,8 @@ var featuredSpecs = (listing) => [
 	["Manufacturer", listing.manufacturer],
 	["Condition", listing.condition]
 ].map(([label, value]) => [label, value ?? "—"]).slice(0, 4);
-var pageTitle$5 = "Petra | Used Oilfield & Industrial Equipment Brokerage";
-var pageDescription$5 = "Petra connects real buyers and sellers of used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.";
+var pageTitle$4 = "Petra | Used Oilfield & Industrial Equipment Brokerage";
+var pageDescription$4 = "Petra connects real buyers and sellers of used oilfield and industrial equipment across Wyoming, the Rockies, the Bakken, and surrounding producing regions.";
 function Home({ canonicalUrl, ogImageUrl, featuredListings }) {
 	const structuredData = {
 		"@context": "https://schema.org",
@@ -5201,15 +5456,15 @@ function Home({ canonicalUrl, ogImageUrl, featuredListings }) {
 			name: "Petra",
 			url: canonicalUrl,
 			publisher: { "@id": `${canonicalUrl}#organization` },
-			description: pageDescription$5
+			description: pageDescription$4
 		}]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$5,
+		title: pageTitle$4,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$5
+				content: pageDescription$4
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -5221,11 +5476,11 @@ function Home({ canonicalUrl, ogImageUrl, featuredListings }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$5
+				content: pageTitle$4
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$5
+				content: pageDescription$4
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -5249,11 +5504,11 @@ function Home({ canonicalUrl, ogImageUrl, featuredListings }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$5
+				content: pageTitle$4
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$5
+				content: pageDescription$4
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -5270,7 +5525,7 @@ function Home({ canonicalUrl, ogImageUrl, featuredListings }) {
 			/* @__PURE__ */ jsxs("section", {
 				className: "hero-parallax relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-neutral-950 px-5 py-20 text-center text-white sm:px-10",
 				style: {
-					backgroundImage: `url('${heroImage$9}')`,
+					backgroundImage: `url('${heroImage$7}')`,
 					backgroundSize: "cover"
 				},
 				children: [
@@ -5453,7 +5708,7 @@ function Home({ canonicalUrl, ogImageUrl, featuredListings }) {
 									/* @__PURE__ */ jsx("div", {
 										className: "absolute inset-0 bg-cover grayscale transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0",
 										style: {
-											backgroundImage: `url('${heroImage$9}')`,
+											backgroundImage: `url('${heroImage$7}')`,
 											backgroundPosition: category.imagePosition
 										},
 										"aria-hidden": "true"
@@ -5522,7 +5777,7 @@ function Home({ canonicalUrl, ogImageUrl, featuredListings }) {
 							"aria-hidden": "true"
 						}), /* @__PURE__ */ jsx("div", {
 							className: "relative z-10 grid grid-cols-1 gap-12 text-center md:grid-cols-5",
-							children: processSteps$4.map((step, index) => /* @__PURE__ */ jsxs("div", {
+							children: processSteps$2.map((step, index) => /* @__PURE__ */ jsxs("div", {
 								className: "flex flex-col items-center gap-8",
 								children: [/* @__PURE__ */ jsx("div", {
 									className: `flex h-16 w-16 items-center justify-center font-heading text-2xl font-semibold ${index === 0 ? "bg-[#a56437] text-white" : "border border-[#dad5cb] bg-white text-neutral-950"}`,
@@ -5958,9 +6213,9 @@ var industries_default = {
 //#endregion
 //#region resources/js/Pages/Industries.tsx
 var Industries_exports = /* @__PURE__ */ __exportAll({ default: () => Industries });
-var { heroImage: heroImage$7, industries, signals, regions: regions$4, faqs: faqs$6 } = industries_default;
-var pageTitle$4 = "Industries | Petra";
-var pageDescription$4 = "Petra works across producing and industrial regions including Wyoming, the Bakken, Colorado energy corridors, Utah, New Mexico, Montana, and regional surplus equipment yards.";
+var { heroImage: heroImage$5, industries, signals, regions: regions$4, faqs: faqs$18 } = industries_default;
+var pageTitle$3 = "Industries | Petra";
+var pageDescription$3 = "Petra works across producing and industrial regions including Wyoming, the Bakken, Colorado energy corridors, Utah, New Mexico, Montana, and regional surplus equipment yards.";
 var docIndustries = [
 	"Oil & Gas Production",
 	"Midstream Operations",
@@ -5978,7 +6233,7 @@ function Industries({ canonicalUrl, ogImageUrl }) {
 			"@id": `${canonicalUrl}#industries`,
 			name: "Industries",
 			url: canonicalUrl,
-			description: pageDescription$4,
+			description: pageDescription$3,
 			about: [
 				"Wyoming oilfields",
 				"North Dakota Bakken",
@@ -6009,11 +6264,11 @@ function Industries({ canonicalUrl, ogImageUrl }) {
 		}]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$4,
+		title: pageTitle$3,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$4
+				content: pageDescription$3
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -6025,11 +6280,11 @@ function Industries({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$4
+				content: pageTitle$3
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$4
+				content: pageDescription$3
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -6053,11 +6308,11 @@ function Industries({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$4
+				content: pageTitle$3
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$4
+				content: pageDescription$3
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -6578,7 +6833,7 @@ function BuyerRequests({ portal, requests }) {
 						onSubmit: submit,
 						className: "grid gap-5 sm:grid-cols-2",
 						children: [
-							/* @__PURE__ */ jsx(Field$2, {
+							/* @__PURE__ */ jsx(Field$3, {
 								id: "equipment_type",
 								label: "Equipment type",
 								error: form.errors.equipment_type,
@@ -6590,7 +6845,7 @@ function BuyerRequests({ portal, requests }) {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$2, {
+							/* @__PURE__ */ jsx(Field$3, {
 								id: "budget_range",
 								label: "Budget range",
 								error: form.errors.budget_range,
@@ -6605,7 +6860,7 @@ function BuyerRequests({ portal, requests }) {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$2, {
+							/* @__PURE__ */ jsx(Field$3, {
 								id: "location_preference",
 								label: "Location preference",
 								error: form.errors.location_preference,
@@ -6617,7 +6872,7 @@ function BuyerRequests({ portal, requests }) {
 									required: true
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$2, {
+							/* @__PURE__ */ jsx(Field$3, {
 								id: "timeline_start",
 								label: "Timeline",
 								error: form.errors.timeline,
@@ -6628,7 +6883,7 @@ function BuyerRequests({ portal, requests }) {
 									onChange: updateTimeline
 								})
 							}),
-							/* @__PURE__ */ jsx(Field$2, {
+							/* @__PURE__ */ jsx(Field$3, {
 								id: "specifications",
 								label: "Specifications optional",
 								error: form.errors.specifications,
@@ -6816,7 +7071,7 @@ function dayButtonClass(day, value) {
 	if (isWithinRange(day, value)) return `${baseClass} border-[#eadfd4] bg-[#f1e7dc] text-neutral-950`;
 	return `${baseClass} border-transparent text-neutral-700 hover:border-[#a56437] hover:bg-[#fbfaf8]`;
 }
-function Field$2({ id, label, error, className = "", children }) {
+function Field$3({ id, label, error, className = "", children }) {
 	return /* @__PURE__ */ jsxs("div", {
 		className: `grid gap-2 ${className}`,
 		children: [
@@ -7252,7 +7507,7 @@ function Profile({ portal }) {
 								children: "Contact Details"
 							})]
 						}),
-						/* @__PURE__ */ jsx(Field$1, {
+						/* @__PURE__ */ jsx(Field$2, {
 							label: "Name",
 							error: profileForm.errors.name,
 							children: /* @__PURE__ */ jsx("input", {
@@ -7263,7 +7518,7 @@ function Profile({ portal }) {
 								required: true
 							})
 						}),
-						/* @__PURE__ */ jsx(Field$1, {
+						/* @__PURE__ */ jsx(Field$2, {
 							label: "Email",
 							error: profileForm.errors.email,
 							children: /* @__PURE__ */ jsx("input", {
@@ -7275,7 +7530,7 @@ function Profile({ portal }) {
 								required: true
 							})
 						}),
-						/* @__PURE__ */ jsx(Field$1, {
+						/* @__PURE__ */ jsx(Field$2, {
 							label: "Phone",
 							error: profileForm.errors.phone,
 							children: /* @__PURE__ */ jsx("input", {
@@ -7285,7 +7540,7 @@ function Profile({ portal }) {
 								autoComplete: "tel"
 							})
 						}),
-						/* @__PURE__ */ jsx(Field$1, {
+						/* @__PURE__ */ jsx(Field$2, {
 							label: "Company",
 							error: profileForm.errors.company_name,
 							children: /* @__PURE__ */ jsx("input", {
@@ -7295,7 +7550,7 @@ function Profile({ portal }) {
 								autoComplete: "organization"
 							})
 						}),
-						/* @__PURE__ */ jsx(Field$1, {
+						/* @__PURE__ */ jsx(Field$2, {
 							label: "Role",
 							children: /* @__PURE__ */ jsx("input", {
 								value: user?.user_type_label ?? portal.roleLabel,
@@ -7328,7 +7583,7 @@ function Profile({ portal }) {
 						/* @__PURE__ */ jsxs("div", {
 							className: "grid gap-5 sm:grid-cols-3",
 							children: [
-								/* @__PURE__ */ jsx(Field$1, {
+								/* @__PURE__ */ jsx(Field$2, {
 									label: "Current password",
 									error: passwordForm.errors.current_password,
 									children: /* @__PURE__ */ jsx("input", {
@@ -7340,7 +7595,7 @@ function Profile({ portal }) {
 										required: true
 									})
 								}),
-								/* @__PURE__ */ jsx(Field$1, {
+								/* @__PURE__ */ jsx(Field$2, {
 									label: "New password",
 									error: passwordForm.errors.password,
 									children: /* @__PURE__ */ jsx("input", {
@@ -7352,7 +7607,7 @@ function Profile({ portal }) {
 										required: true
 									})
 								}),
-								/* @__PURE__ */ jsx(Field$1, {
+								/* @__PURE__ */ jsx(Field$2, {
 									label: "Confirm password",
 									error: passwordForm.errors.password_confirmation,
 									children: /* @__PURE__ */ jsx("input", {
@@ -7378,7 +7633,7 @@ function Profile({ portal }) {
 		})
 	})] });
 }
-function Field$1({ label, error, children }) {
+function Field$2({ label, error, children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: "grid gap-2",
 		children: [
@@ -7712,6 +7967,153 @@ function formatUSD$1(value) {
 	});
 }
 //#endregion
+//#region resources/js/Components/file-pickers.tsx
+function formatFileSize(bytes) {
+	if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+function PhotoPicker({ files, error, onChange, label = "Photos optional", hint = "Choose one or more equipment images. Previews will appear below before submission." }) {
+	const [previews, setPreviews] = useState([]);
+	useEffect(() => {
+		const nextPreviews = files.map((file) => ({
+			file,
+			url: URL.createObjectURL(file)
+		}));
+		setPreviews(nextPreviews);
+		return () => {
+			nextPreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
+		};
+	}, [files]);
+	function removeFile(index) {
+		onChange(files.filter((_, fileIndex) => fileIndex !== index));
+	}
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-3 sm:col-span-2",
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: label
+			}),
+			/* @__PURE__ */ jsxs("label", {
+				className: "button-press focus-within:ring-2 focus-within:ring-[#a56437]/40 grid cursor-pointer gap-3 border border-dashed border-[#cfc7ba] bg-white p-5 transition-colors hover:border-[#a56437] hover:bg-[#fbfaf8]",
+				children: [
+					/* @__PURE__ */ jsx("input", {
+						type: "file",
+						multiple: true,
+						accept: "image/*",
+						onChange: (event) => {
+							onChange(Array.from(event.target.files ?? []));
+							event.currentTarget.value = "";
+						},
+						className: "sr-only"
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-lg font-semibold uppercase tracking-[0.08em] text-neutral-950",
+						children: "Add photos"
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "text-sm leading-6 text-neutral-600",
+						children: hint
+					})
+				]
+			}),
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			}),
+			previews.length > 0 && /* @__PURE__ */ jsx("div", {
+				className: "grid gap-3 sm:grid-cols-2",
+				children: previews.map((preview, index) => /* @__PURE__ */ jsxs("article", {
+					className: "overflow-hidden rounded-lg border border-[#dad5cb] bg-white",
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "aspect-[4/3] bg-[#f3f1ec]",
+						children: /* @__PURE__ */ jsx("img", {
+							src: preview.url,
+							alt: preview.file.name,
+							className: "h-full w-full object-cover"
+						})
+					}), /* @__PURE__ */ jsxs("div", {
+						className: "grid gap-3 p-3",
+						children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("p", {
+							className: "truncate text-sm font-semibold text-neutral-900",
+							children: preview.file.name
+						}), /* @__PURE__ */ jsx("p", {
+							className: "mt-1 text-xs text-neutral-500",
+							children: formatFileSize(preview.file.size)
+						})] }), /* @__PURE__ */ jsx("button", {
+							type: "button",
+							onClick: () => removeFile(index),
+							className: "focus-copper w-fit font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline",
+							children: "Remove"
+						})]
+					})]
+				}, `${preview.file.name}-${preview.file.lastModified}`))
+			})
+		]
+	});
+}
+function DocumentPicker({ files, error, onChange, label = "Documents optional", hint = "Upload optional spec sheets, service records, or other supporting files." }) {
+	function removeFile(index) {
+		onChange(files.filter((_, fileIndex) => fileIndex !== index));
+	}
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-3 sm:col-span-2",
+		children: [
+			/* @__PURE__ */ jsx("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: label
+			}),
+			/* @__PURE__ */ jsxs("label", {
+				className: "button-press focus-within:ring-2 focus-within:ring-[#a56437]/40 grid cursor-pointer gap-3 border border-dashed border-[#cfc7ba] bg-white p-5 transition-colors hover:border-[#a56437] hover:bg-[#fbfaf8]",
+				children: [
+					/* @__PURE__ */ jsx("input", {
+						type: "file",
+						multiple: true,
+						onChange: (event) => {
+							onChange(Array.from(event.target.files ?? []));
+							event.currentTarget.value = "";
+						},
+						className: "sr-only"
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-lg font-semibold uppercase tracking-[0.08em] text-neutral-950",
+						children: "Add documents"
+					}),
+					/* @__PURE__ */ jsx("span", {
+						className: "text-sm leading-6 text-neutral-600",
+						children: hint
+					})
+				]
+			}),
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			}),
+			files.length > 0 && /* @__PURE__ */ jsx("div", {
+				className: "grid gap-2",
+				children: files.map((file, index) => /* @__PURE__ */ jsxs("article", {
+					className: "flex items-center justify-between gap-4 rounded-lg border border-[#dad5cb] bg-white p-3",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "min-w-0",
+						children: [/* @__PURE__ */ jsx("p", {
+							className: "truncate text-sm font-semibold text-neutral-900",
+							children: file.name
+						}), /* @__PURE__ */ jsx("p", {
+							className: "mt-1 text-xs text-neutral-500",
+							children: formatFileSize(file.size)
+						})]
+					}), /* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => removeFile(index),
+						className: "focus-copper shrink-0 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline",
+						children: "Remove"
+					})]
+				}, `${file.name}-${file.lastModified}`))
+			})
+		]
+	});
+}
+//#endregion
 //#region resources/js/Pages/Portal/SellerListings.tsx
 var SellerListings_exports = /* @__PURE__ */ __exportAll({ default: () => SellerListings });
 var requiredFields = [
@@ -7732,7 +8134,7 @@ var requiredFields = [
 		message: "Select a condition."
 	}
 ];
-function emptyForm() {
+function emptyForm$1() {
 	return {
 		title: "",
 		category: "",
@@ -7758,7 +8160,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 		region: null,
 		condition: null
 	});
-	const form = useForm(emptyForm());
+	const form = useForm(emptyForm$1());
 	useScrollMemory({
 		key: "seller-listings",
 		detailPrefix: "/seller/listings/"
@@ -7767,7 +8169,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 		form.clearErrors();
 		setClientErrors({});
 		form.setData({
-			...emptyForm(),
+			...emptyForm$1(),
 			...prefill
 		});
 		setIsFormOpen(true);
@@ -7889,7 +8291,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 						noValidate: true,
 						className: "grid gap-5 sm:grid-cols-2",
 						children: [
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "Equipment title",
 								required: true,
 								error: errorFor("title"),
@@ -7905,10 +8307,10 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 									},
 									placeholder: "e.g. Ajax DPC-2803 Compressor",
 									"aria-invalid": Boolean(errorFor("title")),
-									className: inputClass(errorFor("title"))
+									className: inputClass$1(errorFor("title"))
 								})
 							}),
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "Category",
 								required: true,
 								error: errorFor("category"),
@@ -7922,7 +8324,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 										clearError("category");
 									},
 									"aria-invalid": Boolean(errorFor("category")),
-									className: inputClass(errorFor("category")),
+									className: inputClass$1(errorFor("category")),
 									children: [/* @__PURE__ */ jsx("option", {
 										value: "",
 										children: "Select a category"
@@ -7932,7 +8334,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 									}, category))]
 								})
 							}),
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "Region",
 								required: true,
 								error: errorFor("region"),
@@ -7946,7 +8348,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 										clearError("region");
 									},
 									"aria-invalid": Boolean(errorFor("region")),
-									className: inputClass(errorFor("region")),
+									className: inputClass$1(errorFor("region")),
 									children: [/* @__PURE__ */ jsx("option", {
 										value: "",
 										children: "Select a region"
@@ -7956,17 +8358,17 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 									}, region))]
 								})
 							}),
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "City / yard location",
 								error: errorFor("city"),
 								children: /* @__PURE__ */ jsx("input", {
 									value: form.data.city,
 									onChange: (event) => form.setData("city", event.target.value),
 									placeholder: "e.g. Casper",
-									className: inputClass(errorFor("city"))
+									className: inputClass$1(errorFor("city"))
 								})
 							}),
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "Condition",
 								required: true,
 								error: errorFor("condition"),
@@ -7980,7 +8382,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 										clearError("condition");
 									},
 									"aria-invalid": Boolean(errorFor("condition")),
-									className: inputClass(errorFor("condition")),
+									className: inputClass$1(errorFor("condition")),
 									children: [/* @__PURE__ */ jsx("option", {
 										value: "",
 										children: "Select a condition"
@@ -7990,18 +8392,18 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 									}, value))]
 								})
 							}),
-							/* @__PURE__ */ jsx(Field, {
+							/* @__PURE__ */ jsx(Field$1, {
 								label: "Condition notes",
 								error: errorFor("condition_notes"),
 								className: "sm:col-span-2",
 								children: /* @__PURE__ */ jsx("textarea", {
 									value: form.data.condition_notes,
 									onChange: (event) => form.setData("condition_notes", event.target.value),
-									className: `${inputClass(errorFor("condition_notes"))} min-h-28 py-3`,
+									className: `${inputClass$1(errorFor("condition_notes"))} min-h-28 py-3`,
 									placeholder: "Tell us what you know — last use, known issues, how it's stored. Rough is fine."
 								})
 							}),
-							/* @__PURE__ */ jsxs(Field, {
+							/* @__PURE__ */ jsxs(Field$1, {
 								label: "Asking price",
 								error: errorFor("asking_price"),
 								className: "sm:col-span-2",
@@ -8015,7 +8417,7 @@ function SellerListings({ portal, submissions, categoryOptions, regionOptions, c
 									onChange: (event) => form.setData("asking_price", event.target.value),
 									placeholder: "USD",
 									"aria-invalid": Boolean(errorFor("asking_price")),
-									className: inputClass(errorFor("asking_price"))
+									className: inputClass$1(errorFor("asking_price"))
 								}), /* @__PURE__ */ jsxs("label", {
 									className: "mt-1 flex w-fit cursor-pointer items-center gap-3",
 									children: [/* @__PURE__ */ jsx("input", {
@@ -8314,148 +8716,7 @@ function NoResults({ search, onClear }) {
 		]
 	});
 }
-function PhotoPicker({ files, error, onChange }) {
-	const [previews, setPreviews] = useState([]);
-	useEffect(() => {
-		const nextPreviews = files.map((file) => ({
-			file,
-			url: URL.createObjectURL(file)
-		}));
-		setPreviews(nextPreviews);
-		return () => {
-			nextPreviews.forEach((preview) => URL.revokeObjectURL(preview.url));
-		};
-	}, [files]);
-	function removeFile(index) {
-		onChange(files.filter((_, fileIndex) => fileIndex !== index));
-	}
-	return /* @__PURE__ */ jsxs("div", {
-		className: "grid gap-3 sm:col-span-2",
-		children: [
-			/* @__PURE__ */ jsx("span", {
-				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
-				children: "Photos optional"
-			}),
-			/* @__PURE__ */ jsxs("label", {
-				className: "button-press focus-within:ring-2 focus-within:ring-[#a56437]/40 grid cursor-pointer gap-3 border border-dashed border-[#cfc7ba] bg-white p-5 transition-colors hover:border-[#a56437] hover:bg-[#fbfaf8]",
-				children: [
-					/* @__PURE__ */ jsx("input", {
-						type: "file",
-						multiple: true,
-						accept: "image/*",
-						onChange: (event) => {
-							onChange(Array.from(event.target.files ?? []));
-							event.currentTarget.value = "";
-						},
-						className: "sr-only"
-					}),
-					/* @__PURE__ */ jsx("span", {
-						className: "font-heading text-lg font-semibold uppercase tracking-[0.08em] text-neutral-950",
-						children: "Add photos"
-					}),
-					/* @__PURE__ */ jsx("span", {
-						className: "text-sm leading-6 text-neutral-600",
-						children: "Choose one or more equipment images. Previews will appear below before submission."
-					})
-				]
-			}),
-			error && /* @__PURE__ */ jsx("span", {
-				className: "text-sm text-[#b3261e]",
-				children: error
-			}),
-			previews.length > 0 && /* @__PURE__ */ jsx("div", {
-				className: "grid gap-3 sm:grid-cols-2",
-				children: previews.map((preview, index) => /* @__PURE__ */ jsxs("article", {
-					className: "overflow-hidden rounded-lg border border-[#dad5cb] bg-white",
-					children: [/* @__PURE__ */ jsx("div", {
-						className: "aspect-[4/3] bg-[#f3f1ec]",
-						children: /* @__PURE__ */ jsx("img", {
-							src: preview.url,
-							alt: preview.file.name,
-							className: "h-full w-full object-cover"
-						})
-					}), /* @__PURE__ */ jsxs("div", {
-						className: "grid gap-3 p-3",
-						children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("p", {
-							className: "truncate text-sm font-semibold text-neutral-900",
-							children: preview.file.name
-						}), /* @__PURE__ */ jsx("p", {
-							className: "mt-1 text-xs text-neutral-500",
-							children: formatFileSize(preview.file.size)
-						})] }), /* @__PURE__ */ jsx("button", {
-							type: "button",
-							onClick: () => removeFile(index),
-							className: "focus-copper w-fit font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline",
-							children: "Remove"
-						})]
-					})]
-				}, `${preview.file.name}-${preview.file.lastModified}`))
-			})
-		]
-	});
-}
-function DocumentPicker({ files, error, onChange }) {
-	function removeFile(index) {
-		onChange(files.filter((_, fileIndex) => fileIndex !== index));
-	}
-	return /* @__PURE__ */ jsxs("div", {
-		className: "grid gap-3 sm:col-span-2",
-		children: [
-			/* @__PURE__ */ jsx("span", {
-				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
-				children: "Documents optional"
-			}),
-			/* @__PURE__ */ jsxs("label", {
-				className: "button-press focus-within:ring-2 focus-within:ring-[#a56437]/40 grid cursor-pointer gap-3 border border-dashed border-[#cfc7ba] bg-white p-5 transition-colors hover:border-[#a56437] hover:bg-[#fbfaf8]",
-				children: [
-					/* @__PURE__ */ jsx("input", {
-						type: "file",
-						multiple: true,
-						onChange: (event) => {
-							onChange(Array.from(event.target.files ?? []));
-							event.currentTarget.value = "";
-						},
-						className: "sr-only"
-					}),
-					/* @__PURE__ */ jsx("span", {
-						className: "font-heading text-lg font-semibold uppercase tracking-[0.08em] text-neutral-950",
-						children: "Add documents"
-					}),
-					/* @__PURE__ */ jsx("span", {
-						className: "text-sm leading-6 text-neutral-600",
-						children: "Upload optional spec sheets, service records, or other supporting files."
-					})
-				]
-			}),
-			error && /* @__PURE__ */ jsx("span", {
-				className: "text-sm text-[#b3261e]",
-				children: error
-			}),
-			files.length > 0 && /* @__PURE__ */ jsx("div", {
-				className: "grid gap-2",
-				children: files.map((file, index) => /* @__PURE__ */ jsxs("article", {
-					className: "flex items-center justify-between gap-4 rounded-lg border border-[#dad5cb] bg-white p-3",
-					children: [/* @__PURE__ */ jsxs("div", {
-						className: "min-w-0",
-						children: [/* @__PURE__ */ jsx("p", {
-							className: "truncate text-sm font-semibold text-neutral-900",
-							children: file.name
-						}), /* @__PURE__ */ jsx("p", {
-							className: "mt-1 text-xs text-neutral-500",
-							children: formatFileSize(file.size)
-						})]
-					}), /* @__PURE__ */ jsx("button", {
-						type: "button",
-						onClick: () => removeFile(index),
-						className: "focus-copper shrink-0 font-heading text-sm font-semibold uppercase tracking-[0.1em] text-[#a56437] underline-offset-4 hover:underline",
-						children: "Remove"
-					})]
-				}, `${file.name}-${file.lastModified}`))
-			})
-		]
-	});
-}
-function Field({ label, error, required = false, className = "", children }) {
+function Field$1({ label, error, required = false, className = "", children }) {
 	return /* @__PURE__ */ jsxs("label", {
 		className: `grid gap-2 ${className}`,
 		children: [
@@ -8474,7 +8735,7 @@ function Field({ label, error, required = false, className = "", children }) {
 		]
 	});
 }
-function inputClass(error) {
+function inputClass$1(error) {
 	return `portal-input${error ? " portal-input-error" : ""}`;
 }
 function formatRegion(submission) {
@@ -8490,10 +8751,6 @@ function formatPrice(submission) {
 		currency: "USD",
 		maximumFractionDigits: 0
 	});
-}
-function formatFileSize(bytes) {
-	if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 //#endregion
 //#region resources/js/Pages/Portal/SellerOffers.tsx
@@ -8868,9 +9125,9 @@ var request_equipment_default = {
 //#endregion
 //#region resources/js/Pages/RequestEquipment.tsx
 var RequestEquipment_exports = /* @__PURE__ */ __exportAll({ default: () => RequestEquipment });
-var { heroImage: heroImage$5, requestedAssets, processSteps: processSteps$2, requirements: requirements$2, buyerBenefits, regions: regions$2, faqs: faqs$4 } = request_equipment_default;
-var pageTitle$3 = "Request Equipment | Petra Equipment Sourcing";
-var pageDescription$3 = "Most buyers do not need more listings. Petra helps source the right size, spec, condition, and equipment fit through people who know where to find it.";
+var { heroImage: heroImage$3, requestedAssets, processSteps, requirements, buyerBenefits, regions: regions$2, faqs: faqs$16 } = request_equipment_default;
+var pageTitle$2 = "Request Equipment | Petra Equipment Sourcing";
+var pageDescription$2 = "Most buyers do not need more listings. Petra helps source the right size, spec, condition, and equipment fit through people who know where to find it.";
 function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 	const structuredData = {
 		"@context": "https://schema.org",
@@ -8879,7 +9136,7 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 			"@id": `${canonicalUrl}#equipment-sourcing-service`,
 			name: "Used oilfield equipment sourcing for buyers",
 			url: canonicalUrl,
-			description: pageDescription$3,
+			description: pageDescription$2,
 			provider: {
 				"@type": "Organization",
 				name: "Petra",
@@ -8904,11 +9161,11 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 		}]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$3,
+		title: pageTitle$2,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$3
+				content: pageDescription$2
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -8920,11 +9177,11 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$3
+				content: pageTitle$2
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$3
+				content: pageDescription$2
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -8948,11 +9205,11 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$3
+				content: pageTitle$2
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$3
+				content: pageDescription$2
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -9034,7 +9291,7 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 						})]
 					}), /* @__PURE__ */ jsx("div", {
 						className: "grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-2 lg:grid-cols-5",
-						children: processSteps$2.map((step) => /* @__PURE__ */ jsxs("article", {
+						children: processSteps.map((step) => /* @__PURE__ */ jsxs("article", {
 							className: "bg-white p-7",
 							children: [
 								/* @__PURE__ */ jsx("span", {
@@ -9081,7 +9338,7 @@ function RequestEquipment({ canonicalUrl, ogImageUrl }) {
 							className: "border border-[#dad5cb] bg-white p-6 sm:p-8",
 							children: [/* @__PURE__ */ jsx("div", {
 								className: "grid grid-cols-1 gap-px bg-[#dad5cb] sm:grid-cols-2",
-								children: requirements$2.map((requirement) => /* @__PURE__ */ jsxs("article", {
+								children: requirements.map((requirement) => /* @__PURE__ */ jsxs("article", {
 									className: "flex min-h-24 items-start gap-4 bg-white p-5",
 									children: [/* @__PURE__ */ jsx(FeatureIcon, {
 										type: "check",
@@ -9118,8 +9375,8 @@ var resources_default = {
 //#region resources/js/Pages/Resources.tsx
 var Resources_exports = /* @__PURE__ */ __exportAll({ default: () => Resources });
 var { intro, topics, note } = resources_default;
-var pageTitle$2 = "Resources | Petra";
-var pageDescription$2 = "Market insights and guides for buyers and sellers working in real equipment markets. Content is written for operators, not marketers.";
+var pageTitle$1 = "Resources | Petra";
+var pageDescription$1 = "Market insights and guides for buyers and sellers working in real equipment markets. Content is written for operators, not marketers.";
 function Resources({ canonicalUrl, ogImageUrl }) {
 	const structuredData = {
 		"@context": "https://schema.org",
@@ -9128,7 +9385,7 @@ function Resources({ canonicalUrl, ogImageUrl }) {
 			"@id": `${canonicalUrl}#resources`,
 			name: "Market Insights & Guides",
 			url: canonicalUrl,
-			description: pageDescription$2,
+			description: pageDescription$1,
 			isPartOf: {
 				"@type": "WebSite",
 				name: "Petra",
@@ -9152,11 +9409,11 @@ function Resources({ canonicalUrl, ogImageUrl }) {
 		}]
 	};
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$2,
+		title: pageTitle$1,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$2
+				content: pageDescription$1
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -9168,11 +9425,11 @@ function Resources({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$2
+				content: pageTitle$1
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$2
+				content: pageDescription$1
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -9196,11 +9453,11 @@ function Resources({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$2
+				content: pageTitle$1
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$2
+				content: pageDescription$1
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
@@ -9289,134 +9546,678 @@ function Resources({ canonicalUrl, ogImageUrl }) {
 		]
 	})] });
 }
-var sell_equipment_default = {
-	heroImage: "/images/petra-equipment-yard-hero.png",
-	assetTypes: [
-		"Compressors",
-		"Separators",
-		"Tanks",
-		"Pump packages",
-		"Generators",
-		"Flowback equipment",
-		"Yard surplus inventory",
-		"Full packages or single assets"
-	],
-	processSteps: [
-		{
-			"number": "01",
-			"title": "Submit equipment",
-			"description": "Share what you have: equipment details, location, condition, photos, and any available documents."
-		},
-		{
-			"number": "02",
-			"title": "We review and assess market fit",
-			"description": "Petra reviews the equipment, where it fits in the current market, and whether pricing aligns with real demand."
-		},
-		{
-			"number": "03",
-			"title": "We identify real buyers",
-			"description": "We work regional sellers, operator relationships, and yard networks to find buyers who are actually in the market."
-		},
-		{
-			"number": "04",
-			"title": "We handle outreach and negotiation",
-			"description": "Petra carries the buyer conversations, answers practical questions, and keeps the deal moving."
-		},
-		{
-			"number": "05",
-			"title": "You receive actual offers",
-			"description": "When there is a real fit, you get offers from buyers who are actually in the market."
-		}
-	],
-	requirements: [
-		"Equipment details",
-		"Location",
-		"Condition (rough is fine)",
-		"Photos (if available)",
-		"Any documents (optional)"
-	],
-	sellerBenefits: [
-		{
-			"title": "No Auction Guesswork",
-			"description": "Petra focuses on direct buyer conversations, practical valuation, and controlled exposure."
-		},
-		{
-			"title": "Field-Aware Positioning",
-			"description": "Listings are framed around how operators evaluate equipment: condition, fit, documents, and logistics."
-		},
-		{
-			"title": "Regional Buyer Network",
-			"description": "We work across Wyoming, the Rockies, the Bakken, North Dakota, Colorado, Utah, New Mexico, and Montana."
-		}
-	],
-	faqs: [
-		{
-			"question": "What equipment can Petra help sell?",
-			"answer": "Petra focuses on used oilfield and industrial assets such as compressors, separators, tank batteries, pump packages, production equipment, and regional surplus."
-		},
-		{
-			"question": "Do I need perfect documentation before reaching out?",
-			"answer": "No. Photos, core specs, location, and condition notes are enough to start a review. Strong documentation helps position the asset more accurately."
-		},
-		{
-			"question": "Is this a public auction process?",
-			"answer": "No. Petra is built around brokerage, direct buyer conversations, equipment positioning, and practical deal support."
-		}
-	]
-};
 //#endregion
-//#region resources/js/Pages/SellEquipment.tsx
-var SellEquipment_exports = /* @__PURE__ */ __exportAll({ default: () => SellEquipment });
-var { heroImage: heroImage$2, assetTypes, processSteps, requirements, sellerBenefits, faqs: faqs$2 } = sell_equipment_default;
-var pageTitle$1 = "Sell Your Equipment | Petra Equipment Brokerage";
-var pageDescription$1 = "Got equipment sitting in a yard or out in the field? Petra helps you turn unused oilfield and industrial equipment into real buyers.";
-function SellEquipment({ canonicalUrl, ogImageUrl }) {
-	const structuredData = {
-		"@context": "https://schema.org",
-		"@graph": [{
-			"@type": "Service",
-			"@id": `${canonicalUrl}#sell-equipment-service`,
-			name: "Used oilfield equipment brokerage for sellers",
-			url: canonicalUrl,
-			description: pageDescription$1,
-			provider: {
-				"@type": "Organization",
-				name: "Petra",
-				url: canonicalUrl.replace(/\/sell-equipment$/, "")
-			},
-			areaServed: [
-				"Wyoming",
-				"Rockies",
-				"Bakken",
-				"North Dakota",
-				"Colorado",
-				"Utah",
-				"New Mexico",
-				"Montana"
-			],
-			serviceType: "Used oilfield and industrial equipment brokerage"
-		}, {
-			"@type": "BreadcrumbList",
-			"@id": `${canonicalUrl}#breadcrumbs`,
-			itemListElement: [{
-				"@type": "ListItem",
-				position: 1,
-				name: "Home",
-				item: canonicalUrl.replace(/\/sell-equipment$/, "")
-			}, {
-				"@type": "ListItem",
-				position: 2,
-				name: "Sell Equipment",
-				item: canonicalUrl
-			}]
-		}]
+//#region resources/js/Components/public-form-fields.tsx
+/**
+* Field primitives shared by the two public Sell Equipment forms — the Equipment Submission
+* form and Talk to a Broker. Extracted from public-submission-form.tsx when the second form
+* landed, the same way file-pickers.tsx was lifted out of the seller portal.
+*
+* These are the public-site counterparts to the portal's form styling: same `portal-input`
+* classes and copper error treatment, but laid out for a wide marketing page rather than a
+* slide-over.
+*/
+function Legend({ children }) {
+	return /* @__PURE__ */ jsx("legend", {
+		className: "mb-1 font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+		children
+	});
+}
+function Field({ label, error, required = false, className = "", hint, children }) {
+	return /* @__PURE__ */ jsxs("label", {
+		className: `grid gap-2 ${className}`,
+		children: [
+			/* @__PURE__ */ jsxs("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: [label, required ? /* @__PURE__ */ jsx("span", {
+					className: "ml-1 text-[#a56437]",
+					children: "*"
+				}) : /* @__PURE__ */ jsx("span", {
+					className: "ml-2 text-neutral-400",
+					children: "Optional"
+				})]
+			}),
+			hint && /* @__PURE__ */ jsx("span", {
+				className: "text-sm leading-6 text-neutral-500",
+				children: hint
+			}),
+			children,
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			})
+		]
+	});
+}
+function RadioGroup({ legend, options, value, error, required = false, onChange, firstRef }) {
+	return /* @__PURE__ */ jsxs("div", {
+		role: "group",
+		className: "grid gap-3",
+		children: [
+			/* @__PURE__ */ jsxs("span", {
+				className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+				children: [legend, required && /* @__PURE__ */ jsx("span", {
+					className: "ml-1 text-[#a56437]",
+					children: "*"
+				})]
+			}),
+			/* @__PURE__ */ jsx("div", {
+				className: "grid gap-2",
+				children: Object.entries(options).map(([optionValue, label], index) => /* @__PURE__ */ jsxs("label", {
+					className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+					children: [/* @__PURE__ */ jsx("input", {
+						ref: index === 0 ? firstRef : void 0,
+						type: "radio",
+						name: legend,
+						checked: value === optionValue,
+						onChange: () => onChange(optionValue),
+						className: "mt-1.5 h-4 w-4 shrink-0 accent-[#a56437]"
+					}), label]
+				}, optionValue))
+			}),
+			error && /* @__PURE__ */ jsx("span", {
+				className: "text-sm text-[#b3261e]",
+				children: error
+			})
+		]
+	});
+}
+function Consent({ label, checked, error, onChange, inputRef }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-1",
+		children: [/* @__PURE__ */ jsxs("label", {
+			className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+			children: [/* @__PURE__ */ jsx("input", {
+				ref: inputRef,
+				type: "checkbox",
+				checked,
+				onChange: (event) => onChange(event.target.checked),
+				className: "mt-1.5 h-4 w-4 shrink-0 accent-[#a56437]"
+			}), /* @__PURE__ */ jsxs("span", { children: [label, /* @__PURE__ */ jsx("span", {
+				className: "ml-1 text-[#a56437]",
+				children: "*"
+			})] })]
+		}), error && /* @__PURE__ */ jsx("span", {
+			className: "pl-7 text-sm text-[#b3261e]",
+			children: error
+		})]
+	});
+}
+/**
+* Hidden from people and from screen readers, tempting to bots. The controllers treat a
+* filled `website` as spam and answer exactly as they would a real submission.
+*/
+function Honeypot({ value, onChange }) {
+	return /* @__PURE__ */ jsx("div", {
+		"aria-hidden": "true",
+		className: "hidden",
+		children: /* @__PURE__ */ jsxs("label", { children: ["Website", /* @__PURE__ */ jsx("input", {
+			type: "text",
+			tabIndex: -1,
+			autoComplete: "off",
+			value,
+			onChange: (event) => onChange(event.target.value)
+		})] })
+	});
+}
+function inputClass(error) {
+	return `portal-input${error ? " portal-input-error" : ""}`;
+}
+/**
+* Use for every `<select>`. Adds the right padding the chevron needs — see .portal-select in
+* app.css. A select styled with plain inputClass() renders its longest option under the arrow.
+*/
+function selectClass(error) {
+	return `${inputClass(error)} portal-select`;
+}
+//#endregion
+//#region resources/js/use-form-draft.ts
+var WRITE_DELAY_MS = 400;
+function useFormDraft(key, data, setData, { omit = [], enabled = true } = {}) {
+	const hasRestored = useRef(false);
+	const omitted = useRef(omit);
+	omitted.current = omit;
+	function serialisable(values) {
+		const draft = {};
+		Object.entries(values).forEach(([field, value]) => {
+			if (omitted.current.includes(field)) return;
+			if (value instanceof File || Array.isArray(value) && value.some((item) => item instanceof File)) return;
+			draft[field] = value;
+		});
+		return draft;
+	}
+	useEffect(() => {
+		if (!enabled) {
+			hasRestored.current = true;
+			return;
+		}
+		try {
+			const stored = window.localStorage.getItem(key);
+			if (stored) {
+				const parsed = JSON.parse(stored);
+				const restored = {};
+				Object.keys(data).forEach((field) => {
+					if (field in parsed && !omitted.current.includes(field)) restored[field] = parsed[field];
+				});
+				if (Object.keys(restored).length > 0) setData((current) => ({
+					...current,
+					...restored
+				}));
+			}
+		} catch {
+			clear();
+		}
+		hasRestored.current = true;
+	}, []);
+	useEffect(() => {
+		if (!enabled || !hasRestored.current) return;
+		const timer = window.setTimeout(() => {
+			try {
+				window.localStorage.setItem(key, JSON.stringify(serialisable(data)));
+			} catch {}
+		}, WRITE_DELAY_MS);
+		return () => window.clearTimeout(timer);
+	}, [
+		key,
+		data,
+		enabled
+	]);
+	function clear() {
+		try {
+			window.localStorage.removeItem(key);
+		} catch {}
+	}
+	return { clear };
+}
+//#endregion
+//#region resources/js/Components/broker-contact-form.tsx
+var DRAFT_KEY$1 = "petra:draft:contact-broker";
+var REQUIRED_FIELDS = [
+	{
+		name: "full_name",
+		message: "Enter your full name."
+	},
+	{
+		name: "email",
+		message: "Enter your email address."
+	},
+	{
+		name: "phone",
+		message: "Enter your phone number."
+	},
+	{
+		name: "topic",
+		message: "Let us know how we can help."
+	},
+	{
+		name: "message",
+		message: "Tell us a little about your equipment or question."
+	},
+	{
+		name: "preferred_contact",
+		message: "Choose how you would like us to reach you."
+	},
+	{
+		name: "consent",
+		message: "Please authorize Petra to contact you."
+	}
+];
+function BrokerContactForm({ topicOptions, preferredContactOptions, inquirySent, copy, sidebar }) {
+	const { auth } = usePage().props;
+	const form = useForm({
+		full_name: auth.user?.name ?? "",
+		company: auth.user?.company_name ?? "",
+		email: auth.user?.email ?? "",
+		phone: auth.user?.phone ?? "",
+		topic: "",
+		equipment_type: "",
+		message: "",
+		preferred_contact: "",
+		consent: false,
+		website: ""
+	});
+	const [clientErrors, setClientErrors] = useState({});
+	const fieldRefs = useRef({});
+	const draft = useFormDraft(DRAFT_KEY$1, form.data, form.setData, {
+		omit: ["website"],
+		enabled: !inquirySent
+	});
+	function errorFor(field) {
+		const serverErrors = form.errors;
+		return clientErrors[field] ?? serverErrors[field];
+	}
+	function clearError(field) {
+		setClientErrors((errors) => {
+			if (!errors[field]) return errors;
+			const next = { ...errors };
+			delete next[field];
+			return next;
+		});
+	}
+	function isEmpty(field) {
+		const value = form.data[field];
+		return typeof value === "boolean" ? !value : !String(value ?? "").trim();
+	}
+	function submit(event) {
+		event.preventDefault();
+		const errors = {};
+		REQUIRED_FIELDS.forEach((field) => {
+			if (isEmpty(field.name)) errors[field.name] = field.message;
+		});
+		setClientErrors(errors);
+		const firstInvalid = REQUIRED_FIELDS.find((field) => errors[field.name]);
+		if (firstInvalid) {
+			fieldRefs.current[firstInvalid.name]?.focus();
+			fieldRefs.current[firstInvalid.name]?.scrollIntoView({
+				block: "center",
+				behavior: "smooth"
+			});
+			return;
+		}
+		form.post("/sell-equipment/contact-broker", { onSuccess: () => draft.clear() });
+	}
+	return /* @__PURE__ */ jsx("section", {
+		id: "talk-to-a-broker-form",
+		className: "border-b border-[#dad5cb] bg-white py-16 sm:py-20 lg:py-24",
+		children: /* @__PURE__ */ jsxs("div", {
+			className: "mx-auto grid max-w-[1280px] gap-12 px-5 sm:px-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16",
+			children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h2", {
+				className: "font-heading text-3xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl",
+				children: copy.title
+			}), inquirySent ? /* @__PURE__ */ jsx(SuccessPanel, {
+				title: copy.successTitle,
+				body: copy.successBody
+			}) : /* @__PURE__ */ jsxs(Fragment, { children: [
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-4 text-base leading-7 text-neutral-600",
+					children: copy.intro
+				}),
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-2 text-sm leading-6 text-neutral-500",
+					children: copy.requiredNote
+				}),
+				/* @__PURE__ */ jsxs("form", {
+					onSubmit: submit,
+					noValidate: true,
+					className: "mt-10 grid gap-10",
+					children: [
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [/* @__PURE__ */ jsx(Legend, { children: "Your Details" }), /* @__PURE__ */ jsxs("div", {
+								className: "grid gap-5 sm:grid-cols-2",
+								children: [
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.fullName,
+										required: true,
+										error: errorFor("full_name"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.full_name = element;
+											},
+											type: "text",
+											value: form.data.full_name,
+											onChange: (event) => {
+												clearError("full_name");
+												form.setData("full_name", event.target.value);
+											},
+											className: inputClass(errorFor("full_name"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.company,
+										error: errorFor("company"),
+										children: /* @__PURE__ */ jsx("input", {
+											type: "text",
+											value: form.data.company,
+											onChange: (event) => form.setData("company", event.target.value),
+											className: inputClass(errorFor("company"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.email,
+										required: true,
+										error: errorFor("email"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.email = element;
+											},
+											type: "email",
+											value: form.data.email,
+											onChange: (event) => {
+												clearError("email");
+												form.setData("email", event.target.value);
+											},
+											className: inputClass(errorFor("email"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.phone,
+										required: true,
+										error: errorFor("phone"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.phone = element;
+											},
+											type: "tel",
+											value: form.data.phone,
+											onChange: (event) => {
+												clearError("phone");
+												form.setData("phone", event.target.value);
+											},
+											className: inputClass(errorFor("phone"))
+										})
+									})
+								]
+							})]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: "How We Can Help" }),
+								/* @__PURE__ */ jsx(Field, {
+									label: copy.labels.topic,
+									required: true,
+									error: errorFor("topic"),
+									children: /* @__PURE__ */ jsxs("select", {
+										ref: (element) => {
+											fieldRefs.current.topic = element;
+										},
+										value: form.data.topic,
+										onChange: (event) => {
+											clearError("topic");
+											form.setData("topic", event.target.value);
+										},
+										className: selectClass(errorFor("topic")),
+										children: [/* @__PURE__ */ jsx("option", {
+											value: "",
+											children: "Select an option"
+										}), Object.entries(topicOptions).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+											value,
+											children: label
+										}, value))]
+									})
+								}),
+								/* @__PURE__ */ jsx(Field, {
+									label: copy.labels.equipmentType,
+									error: errorFor("equipment_type"),
+									children: /* @__PURE__ */ jsx("input", {
+										type: "text",
+										placeholder: copy.placeholders.equipmentType,
+										value: form.data.equipment_type,
+										onChange: (event) => form.setData("equipment_type", event.target.value),
+										className: inputClass(errorFor("equipment_type"))
+									})
+								}),
+								/* @__PURE__ */ jsx(Field, {
+									label: copy.labels.message,
+									required: true,
+									error: errorFor("message"),
+									children: /* @__PURE__ */ jsx("textarea", {
+										ref: (element) => {
+											fieldRefs.current.message = element;
+										},
+										rows: 6,
+										placeholder: copy.placeholders.message,
+										value: form.data.message,
+										onChange: (event) => {
+											clearError("message");
+											form.setData("message", event.target.value);
+										},
+										className: inputClass(errorFor("message"))
+									})
+								}),
+								/* @__PURE__ */ jsx(RadioGroup, {
+									legend: copy.labels.preferredContact,
+									required: true,
+									options: preferredContactOptions,
+									value: form.data.preferred_contact,
+									error: errorFor("preferred_contact"),
+									onChange: (value) => {
+										clearError("preferred_contact");
+										form.setData("preferred_contact", value);
+									},
+									firstRef: (element) => {
+										fieldRefs.current.preferred_contact = element;
+									}
+								})
+							]
+						}),
+						/* @__PURE__ */ jsx(Consent, {
+							label: copy.consent,
+							checked: form.data.consent,
+							error: errorFor("consent"),
+							inputRef: (element) => {
+								fieldRefs.current.consent = element;
+							},
+							onChange: (checked) => {
+								clearError("consent");
+								form.setData("consent", checked);
+							}
+						}),
+						/* @__PURE__ */ jsx(Honeypot, {
+							value: form.data.website,
+							onChange: (value) => form.setData("website", value)
+						}),
+						/* @__PURE__ */ jsx("div", {
+							className: "border-t border-[#dad5cb] pt-8",
+							children: /* @__PURE__ */ jsx("button", {
+								type: "submit",
+								disabled: form.processing,
+								className: "button-press inline-flex h-14 w-fit items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+								children: form.processing ? "Sending…" : copy.submitLabel
+							})
+						})
+					]
+				})
+			] })] }), /* @__PURE__ */ jsx(ContactSidebar, { copy: sidebar })]
+		})
+	});
+}
+function SuccessPanel({ title, body }) {
+	return /* @__PURE__ */ jsxs("div", {
+		role: "status",
+		className: "mt-8 border-l-4 border-[#a56437] bg-[#f3f1ec] p-8",
+		children: [/* @__PURE__ */ jsx("h3", {
+			className: "font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+			children: title
+		}), /* @__PURE__ */ jsx("div", {
+			className: "mt-4 space-y-3",
+			children: body.map((paragraph) => /* @__PURE__ */ jsx("p", {
+				className: "text-base leading-7 text-neutral-600",
+				children: paragraph
+			}, paragraph))
+		})]
+	});
+}
+/**
+* The contact block beside the form. Every value comes from the shared `siteContact` prop
+* (config/petra.php), so the phone number and address live in one place and can be corrected
+* by an env var rather than a code change.
+*/
+function ContactSidebar({ copy }) {
+	const { siteContact } = usePage().props;
+	return /* @__PURE__ */ jsxs("aside", {
+		className: "h-fit border border-[#dad5cb] bg-[#f3f1ec] p-8 lg:sticky lg:top-8",
+		children: [
+			/* @__PURE__ */ jsx("h3", {
+				className: "font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+				children: copy.title
+			}),
+			/* @__PURE__ */ jsx("p", {
+				className: "mt-4 text-base leading-7 text-neutral-600",
+				children: copy.intro
+			}),
+			/* @__PURE__ */ jsx("h4", {
+				className: "mt-8 font-heading text-sm font-semibold uppercase tracking-[0.16em] text-[#a56437]",
+				children: copy.contactHeading
+			}),
+			/* @__PURE__ */ jsxs("dl", {
+				className: "mt-4 grid gap-4",
+				children: [
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: copy.phoneLabel
+					}), /* @__PURE__ */ jsx("dd", {
+						className: "mt-1 text-base leading-7 text-neutral-700",
+						children: isDiallable(siteContact.phone) ? /* @__PURE__ */ jsx("a", {
+							href: `tel:${telHref(siteContact.phone)}`,
+							className: contactLinkClass,
+							children: siteContact.phone
+						}) : siteContact.phone
+					})] }),
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: copy.emailLabel
+					}), /* @__PURE__ */ jsx("dd", {
+						className: "mt-1 break-words text-base leading-7 text-neutral-700",
+						children: /* @__PURE__ */ jsx("a", {
+							href: `mailto:${siteContact.email}`,
+							className: contactLinkClass,
+							children: siteContact.email
+						})
+					})] }),
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: copy.hoursLabel
+					}), /* @__PURE__ */ jsxs("dd", {
+						className: "mt-1 text-base leading-7 text-neutral-700",
+						children: [
+							siteContact.hours_days,
+							/* @__PURE__ */ jsx("br", {}),
+							siteContact.hours_time
+						]
+					})] }),
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("dt", {
+						className: "font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-500",
+						children: copy.serviceAreaLabel
+					}), /* @__PURE__ */ jsx("dd", {
+						className: "mt-2",
+						children: /* @__PURE__ */ jsx("ul", {
+							className: "grid gap-2",
+							children: siteContact.service_area.map((area) => /* @__PURE__ */ jsxs("li", {
+								className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+								children: [/* @__PURE__ */ jsx("span", {
+									"aria-hidden": "true",
+									className: "mt-3 h-1 w-1 shrink-0 bg-[#a56437]"
+								}), area]
+							}, area))
+						})
+					})] })
+				]
+			}),
+			/* @__PURE__ */ jsx("p", {
+				className: "mt-8 border-t border-[#dad5cb] pt-6 text-base leading-7 text-neutral-600",
+				children: copy.closing
+			})
+		]
+	});
+}
+var contactLinkClass = "font-semibold text-[#a56437] underline underline-offset-4 transition-colors hover:text-neutral-950";
+/**
+* config/petra.php still defaults to the content doc's placeholder, "(307) XXX-XXXX". A
+* tel: link to that is a dead affordance — worse than plain text, because it looks callable.
+* Anything holding an X is treated as not yet supplied.
+*/
+function isDiallable(phone) {
+	return phone.trim().length > 0 && !/x/i.test(phone);
+}
+function telHref(phone) {
+	return phone.replace(/[^\d+]/g, "");
+}
+//#endregion
+//#region resources/js/Components/faq-accordion.tsx
+/**
+* FAQPage structured data for a set of question/answer pairs.
+*
+* Answers are always present in the rendered DOM (the accordion hides collapsed panels with
+* the `hidden` attribute rather than unmounting them), so this node describes markup that
+* genuinely exists on the page.
+*/
+function faqPageNode(canonicalUrl, faqs) {
+	return {
+		"@type": "FAQPage",
+		"@id": `${canonicalUrl}#faq`,
+		mainEntity: faqs.map((faq) => ({
+			"@type": "Question",
+			name: faq.question,
+			acceptedAnswer: {
+				"@type": "Answer",
+				text: faq.answer
+			}
+		}))
 	};
-	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs(Head, {
-		title: pageTitle$1,
+}
+/**
+* Accessible disclosure list. Each question is an aria-expanded button controlling its own
+* panel, and any number can be open at once — readers comparing two answers should not have
+* one close as they open the other.
+*/
+function FaqAccordion({ faqs }) {
+	const [openQuestions, setOpenQuestions] = useState([]);
+	const baseId = useId();
+	const toggle = (question) => setOpenQuestions((current) => current.includes(question) ? current.filter((item) => item !== question) : [...current, question]);
+	return /* @__PURE__ */ jsx("div", {
+		className: "border-t border-[#dad5cb]",
+		children: faqs.map((faq, index) => {
+			const isOpen = openQuestions.includes(faq.question);
+			const buttonId = `${baseId}-q-${index}`;
+			const panelId = `${baseId}-a-${index}`;
+			return /* @__PURE__ */ jsxs("div", {
+				className: "border-b border-[#dad5cb]",
+				children: [/* @__PURE__ */ jsx("h3", { children: /* @__PURE__ */ jsxs("button", {
+					type: "button",
+					id: buttonId,
+					"aria-expanded": isOpen,
+					"aria-controls": panelId,
+					onClick: () => toggle(faq.question),
+					className: "flex w-full items-start justify-between gap-6 bg-transparent py-6 text-left transition-colors hover:text-[#a56437]",
+					children: [/* @__PURE__ */ jsx("span", {
+						className: "font-heading text-lg font-semibold uppercase tracking-[0.06em] text-neutral-950 sm:text-xl",
+						children: faq.question
+					}), /* @__PURE__ */ jsx("span", {
+						"aria-hidden": "true",
+						className: `mt-1 shrink-0 text-[#a56437] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`,
+						children: /* @__PURE__ */ jsx("svg", {
+							width: "20",
+							height: "20",
+							viewBox: "0 0 20 20",
+							fill: "none",
+							stroke: "currentColor",
+							strokeWidth: "2",
+							children: /* @__PURE__ */ jsx("path", {
+								d: "M5 7.5 10 12.5 15 7.5",
+								strokeLinecap: "square"
+							})
+						})
+					})]
+				}) }), /* @__PURE__ */ jsx("div", {
+					id: panelId,
+					role: "region",
+					"aria-labelledby": buttonId,
+					hidden: !isOpen,
+					children: /* @__PURE__ */ jsx("p", {
+						className: "pb-6 pr-10 text-base leading-7 text-neutral-600",
+						children: faq.answer
+					})
+				})]
+			}, faq.question);
+		})
+	});
+}
+//#endregion
+//#region resources/js/Components/public-page-meta.tsx
+/**
+* The head block every public page repeats: title, description, canonical, Open Graph,
+* Twitter card, and a JSON-LD graph. Extracted while building the Sell Equipment section,
+* where ten pages would otherwise carry ten copies of the same twelve tags.
+*/
+function PublicPageMeta({ title, description, canonicalUrl, ogImageUrl, ogImageAlt = "Oilfield equipment yard represented by Petra equipment brokerage.", noindex = false, structuredData }) {
+	return /* @__PURE__ */ jsxs(Head, {
+		title,
 		children: [
 			/* @__PURE__ */ jsx("meta", {
 				name: "description",
-				content: pageDescription$1
+				content: description
 			}),
 			/* @__PURE__ */ jsx("link", {
 				rel: "canonical",
@@ -9424,15 +10225,15 @@ function SellEquipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "robots",
-				content: "index, follow"
+				content: noindex ? "noindex, nofollow" : "index, follow"
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:title",
-				content: pageTitle$1
+				content: title
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:description",
-				content: pageDescription$1
+				content: description
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:type",
@@ -9448,7 +10249,7 @@ function SellEquipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				property: "og:image:alt",
-				content: "Oilfield equipment yard represented by Petra for used equipment sellers."
+				content: ogImageAlt
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:card",
@@ -9456,203 +10257,3886 @@ function SellEquipment({ canonicalUrl, ogImageUrl }) {
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:title",
-				content: pageTitle$1
+				content: title
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:description",
-				content: pageDescription$1
+				content: description
 			}),
 			/* @__PURE__ */ jsx("meta", {
 				name: "twitter:image",
 				content: ogImageUrl
 			}),
-			/* @__PURE__ */ jsx("script", {
+			structuredData ? /* @__PURE__ */ jsx("script", {
 				type: "application/ld+json",
 				children: JSON.stringify(structuredData)
-			})
+			}) : null
 		]
+	});
+}
+/**
+* Origin of an absolute canonical URL. Sell Equipment nests two levels deep, so the
+* older `canonicalUrl.replace(/\/sell-equipment$/, '')` trick no longer gets back to the
+* site root.
+*/
+function siteOrigin(canonicalUrl) {
+	try {
+		return new URL(canonicalUrl).origin;
+	} catch {
+		return "";
+	}
+}
+/**
+* BreadcrumbList for a page under /sell-equipment. Pass the leaf's name and URL; Home and
+* Sell Equipment are always the first two rungs. Omit the leaf for the section index.
+*/
+function breadcrumbNode(canonicalUrl, leaf) {
+	const origin = siteOrigin(canonicalUrl);
+	const trail = [
+		{
+			name: "Home",
+			item: origin
+		},
+		{
+			name: "Sell Equipment",
+			item: `${origin}/sell-equipment`
+		},
+		...leaf ? [{
+			name: leaf.name,
+			item: leaf.url
+		}] : []
+	];
+	return {
+		"@type": "BreadcrumbList",
+		"@id": `${canonicalUrl}#breadcrumbs`,
+		itemListElement: trail.map((rung, index) => ({
+			"@type": "ListItem",
+			position: index + 1,
+			name: rung.name,
+			item: rung.item
+		}))
+	};
+}
+/**
+* The Organization/Service node shared by the Sell Equipment pages.
+*/
+function sellEquipmentServiceNode(canonicalUrl, description) {
+	return {
+		"@type": "Service",
+		"@id": `${canonicalUrl}#service`,
+		name: "Used oilfield and industrial equipment brokerage for sellers",
+		url: canonicalUrl,
+		description,
+		provider: {
+			"@type": "Organization",
+			name: "Petra",
+			url: siteOrigin(canonicalUrl)
+		},
+		areaServed: [
+			"Wyoming",
+			"Rockies",
+			"Bakken",
+			"North Dakota",
+			"Colorado",
+			"Utah",
+			"New Mexico",
+			"Montana"
+		],
+		serviceType: "Used oilfield and industrial equipment brokerage"
+	};
+}
+//#endregion
+//#region resources/js/Components/sell-equipment-ui.tsx
+function InlineLink({ label, href }) {
+	return /* @__PURE__ */ jsx("a", {
+		href,
+		className: "font-semibold text-[#a56437] underline underline-offset-4 transition-colors hover:text-neutral-950",
+		children: label
+	});
+}
+function RichText({ value, className }) {
+	if (typeof value === "string") return /* @__PURE__ */ jsx("p", {
+		className,
+		children: value
+	});
+	return /* @__PURE__ */ jsxs("p", {
+		className,
+		children: [
+			value.before,
+			value.link ? /* @__PURE__ */ jsx(InlineLink, { ...value.link }) : null,
+			value.middle,
+			value.secondLink ? /* @__PURE__ */ jsx(InlineLink, { ...value.secondLink }) : null,
+			value.after
+		]
+	});
+}
+function RichTextList({ items, className }) {
+	return /* @__PURE__ */ jsx(Fragment, { children: items.map((item, index) => /* @__PURE__ */ jsx(RichText, {
+		value: item,
+		className
+	}, index)) });
+}
+/** Copper eyebrow + heading, the section opener used across the public site. */
+function SectionHeading({ eyebrow, title, children, tone = "light" }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "max-w-3xl",
+		children: [
+			eyebrow ? /* @__PURE__ */ jsx("span", {
+				className: `mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] ${tone === "dark" ? "text-[#b06b3d]" : "text-[#a56437]"}`,
+				children: eyebrow
+			}) : null,
+			/* @__PURE__ */ jsx("h2", {
+				className: `font-heading text-3xl font-bold uppercase tracking-[0.08em] sm:text-4xl ${tone === "dark" ? "text-white" : "text-neutral-950"}`,
+				children: title
+			}),
+			children
+		]
+	});
+}
+function Section({ children, background = "cream", id }) {
+	return /* @__PURE__ */ jsx("section", {
+		id,
+		className: `${{
+			cream: "border-b border-[#dad5cb] bg-[#f3f1ec]",
+			white: "border-b border-[#dad5cb] bg-white",
+			dark: "border-b border-[#dad5cb] bg-[#1c1a16] text-white"
+		}[background]} py-16 sm:py-20 lg:py-24`,
+		children: /* @__PURE__ */ jsx("div", {
+			className: "mx-auto max-w-[1280px] px-5 sm:px-10",
+			children
+		})
+	});
+}
+function PageHero({ title, subtitle, body, primaryCta, secondaryCta }) {
+	return /* @__PURE__ */ jsx("section", {
+		className: "border-b border-[#dad5cb] bg-white",
+		children: /* @__PURE__ */ jsxs("div", {
+			className: "mx-auto max-w-[1280px] px-5 py-16 sm:px-10 sm:py-20 lg:py-24",
+			children: [
+				/* @__PURE__ */ jsx("h1", {
+					className: "max-w-4xl font-hero text-[2.4rem] font-bold uppercase leading-[1.04] tracking-[0.08em] text-neutral-950 sm:text-[3.1rem] lg:text-[3.8rem]",
+					children: title
+				}),
+				subtitle ? /* @__PURE__ */ jsx("p", {
+					className: "mt-6 max-w-3xl font-heading text-xl font-semibold uppercase tracking-[0.06em] text-[#a56437] sm:text-2xl",
+					children: subtitle
+				}) : null,
+				/* @__PURE__ */ jsx("div", {
+					className: "mt-6 max-w-3xl space-y-4",
+					children: /* @__PURE__ */ jsx(RichTextList, {
+						items: body,
+						className: "text-base font-medium leading-7 text-neutral-600 sm:text-lg"
+					})
+				}),
+				primaryCta || secondaryCta ? /* @__PURE__ */ jsxs("div", {
+					className: "mt-10 flex flex-col gap-4 sm:flex-row",
+					children: [primaryCta ? /* @__PURE__ */ jsx(PrimaryButton, { ...primaryCta }) : null, secondaryCta ? /* @__PURE__ */ jsx(SecondaryButton, { ...secondaryCta }) : null]
+				}) : null
+			]
+		})
+	});
+}
+function PrimaryButton({ label, href }) {
+	return /* @__PURE__ */ jsx("a", {
+		href,
+		className: "inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
+		children: label
+	});
+}
+function SecondaryButton({ label, href, tone = "light" }) {
+	return /* @__PURE__ */ jsx("a", {
+		href,
+		className: tone === "dark" ? "inline-flex h-14 items-center justify-center border border-white/40 px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-white hover:text-neutral-950" : "inline-flex h-14 items-center justify-center border border-neutral-500 px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
+		children: label
+	});
+}
+/** Bulleted list rendered as check-marked rows. */
+function CheckList({ items, columns = 2 }) {
+	return /* @__PURE__ */ jsx("ul", {
+		className: `mt-8 grid gap-px bg-[#dad5cb] ${{
+			1: "grid-cols-1",
+			2: "grid-cols-1 md:grid-cols-2",
+			3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+		}[columns]}`,
+		children: items.map((item) => /* @__PURE__ */ jsxs("li", {
+			className: "flex items-start gap-4 bg-white p-5",
+			children: [/* @__PURE__ */ jsx(FeatureIcon, {
+				type: "check",
+				className: "mt-0.5 h-5 w-5 shrink-0"
+			}), /* @__PURE__ */ jsx("span", {
+				className: "text-base leading-7 text-neutral-700",
+				children: item
+			})]
+		}, item))
+	});
+}
+/** Numbered process steps. Handles the 5-step and 7-step layouts from the doc. */
+function NumberedSteps({ steps }) {
+	return /* @__PURE__ */ jsx("ol", {
+		className: "mt-10 grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-2 lg:grid-cols-3",
+		children: steps.map((step, index) => /* @__PURE__ */ jsxs("li", {
+			className: "bg-white p-7",
+			children: [
+				/* @__PURE__ */ jsx("span", {
+					className: "font-heading text-3xl font-semibold uppercase tracking-[0.05em] text-[#a56437]",
+					children: String(index + 1).padStart(2, "0")
+				}),
+				step.title ? /* @__PURE__ */ jsx("h3", {
+					className: "mt-6 font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+					children: step.title
+				}) : null,
+				step.text ? /* @__PURE__ */ jsx("p", {
+					className: "mt-4 text-base leading-7 text-neutral-600",
+					children: step.text
+				}) : null,
+				step.body ? /* @__PURE__ */ jsx("div", {
+					className: "mt-4 space-y-3",
+					children: /* @__PURE__ */ jsx(RichTextList, {
+						items: step.body,
+						className: "text-base leading-7 text-neutral-600"
+					})
+				}) : null,
+				step.items ? /* @__PURE__ */ jsx("ul", {
+					className: "mt-4 space-y-2",
+					children: step.items.map((item) => /* @__PURE__ */ jsxs("li", {
+						className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+						children: [/* @__PURE__ */ jsx("span", {
+							"aria-hidden": "true",
+							className: "mt-3 h-1 w-1 shrink-0 bg-[#a56437]"
+						}), item]
+					}, item))
+				}) : null,
+				step.outro ? /* @__PURE__ */ jsx(RichText, {
+					value: step.outro,
+					className: "mt-4 text-base leading-7 text-neutral-600"
+				}) : null
+			]
+		}, step.title ?? index))
+	});
+}
+/** Titled cards with paragraphs and optional bullets — "What Makes Petra Different?" and friends. */
+function CardGrid({ items, columns = 3 }) {
+	return /* @__PURE__ */ jsx("div", {
+		className: `mt-10 grid grid-cols-1 gap-px bg-[#dad5cb] ${columns === 2 ? "md:grid-cols-2" : "md:grid-cols-2 lg:grid-cols-3"}`,
+		children: items.map((item) => /* @__PURE__ */ jsxs("article", {
+			className: "bg-white p-7",
+			children: [
+				/* @__PURE__ */ jsx("h3", {
+					className: "font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+					children: item.title
+				}),
+				item.body ? /* @__PURE__ */ jsx("div", {
+					className: "mt-4 space-y-3",
+					children: /* @__PURE__ */ jsx(RichTextList, {
+						items: item.body,
+						className: "text-base leading-7 text-neutral-600"
+					})
+				}) : null,
+				item.items ? /* @__PURE__ */ jsx("ul", {
+					className: "mt-4 space-y-2",
+					children: item.items.map((entry) => /* @__PURE__ */ jsxs("li", {
+						className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+						children: [/* @__PURE__ */ jsx("span", {
+							"aria-hidden": "true",
+							className: "mt-3 h-1 w-1 shrink-0 bg-[#a56437]"
+						}), entry]
+					}, entry))
+				}) : null,
+				item.outro ? /* @__PURE__ */ jsx(RichText, {
+					value: item.outro,
+					className: "mt-4 text-base leading-7 text-neutral-600"
+				}) : null
+			]
+		}, item.title))
+	});
+}
+/** Closing call-to-action band. */
+function FinalCta({ title, body, primaryCta, secondaryCta, children }) {
+	return /* @__PURE__ */ jsx("section", {
+		className: "bg-[#1c1a16] py-16 text-white sm:py-20 lg:py-24",
+		children: /* @__PURE__ */ jsxs("div", {
+			className: "mx-auto max-w-[1280px] px-5 sm:px-10",
+			children: [
+				/* @__PURE__ */ jsx("h2", {
+					className: "max-w-3xl font-heading text-3xl font-bold uppercase tracking-[0.08em] text-white sm:text-4xl",
+					children: title
+				}),
+				/* @__PURE__ */ jsx("div", {
+					className: "mt-6 max-w-3xl space-y-4",
+					children: /* @__PURE__ */ jsx(RichTextList, {
+						items: body,
+						className: "text-base leading-7 text-white/70 sm:text-lg"
+					})
+				}),
+				children,
+				primaryCta || secondaryCta ? /* @__PURE__ */ jsxs("div", {
+					className: "mt-10 flex flex-col gap-4 sm:flex-row",
+					children: [primaryCta ? /* @__PURE__ */ jsx(PrimaryButton, { ...primaryCta }) : null, secondaryCta ? /* @__PURE__ */ jsx(SecondaryButton, {
+						...secondaryCta,
+						tone: "dark"
+					}) : null]
+				}) : null
+			]
+		})
+	});
+}
+var contact_broker_default = {
+	meta: {
+		"title": "Talk to an Equipment Broker | Used Oilfield Equipment | Petra",
+		"description": "Talk with a Petra equipment broker about selling used oilfield or industrial equipment, requesting a valuation, or finding qualified buyers across Wyoming and the Rockies."
+	},
+	hero: {
+		"title": "Contact a Broker",
+		"subtitle": "Let's Talk About Your Equipment",
+		"body": [
+			"Whether you're thinking about selling used oilfield equipment, wondering what your equipment may be worth, or simply looking for straightforward advice, Petra is here to help.",
+			"You don't need to have every detail figured out before reaching out. Sometimes the best first step is simply having a conversation with someone who understands the equipment market.",
+			"Our brokers work with equipment owners, operators, contractors, and buyers throughout Wyoming, the Rockies, and surrounding producing regions to provide honest guidance based on your equipment, your goals, and current market conditions."
+		],
+		"primaryCta": {
+			"label": "Talk to a Broker",
+			"href": "#talk-to-a-broker-form"
+		}
+	},
+	whenToTalk: {
+		"title": "When Should You Talk to a Broker?",
+		"intro": ["You don't have to be ready to sell before contacting Petra.", "Many conversations begin with questions, not commitments."],
+		"items": [
+			{
+				"title": "You're Thinking About Selling",
+				"body": ["Not sure if now is the right time?", "We'll help you understand your options and discuss current market conditions."],
+				"outro": {
+					"before": "If you're already ready to begin, you can ",
+					"link": {
+						"label": "Submit Your Equipment",
+						"href": "/sell-equipment/equipment-submission"
+					},
+					"after": " for review at any time."
+				}
+			},
+			{
+				"title": "You're Unsure What Your Equipment May Be Worth",
+				"body": ["If you're evaluating whether to sell, we'll explain the factors that influence market value and help you determine the best next step."],
+				"outro": {
+					"before": "If you're still evaluating your options, start with a ",
+					"link": {
+						"label": "Request a Market-Based Valuation",
+						"href": "/sell-equipment/request-valuation"
+					},
+					"after": " before deciding how you'd like to proceed."
+				}
+			},
+			{
+				"title": "You're Looking for the Right Buyer",
+				"body": ["Finding qualified buyers takes more than posting a listing.", "We'll explain how Petra markets equipment and connects sellers with buyers across our regional network."]
+			},
+			{
+				"title": "You Need Market Insight",
+				"body": ["Equipment values and buyer demand change over time.", "We'll provide practical guidance based on today's market—not guesswork."]
+			},
+			{
+				"title": "You Have Questions About the Brokerage Process",
+				"body": ["If you're unsure how the process works, we'll walk you through it and explain what to expect before you make any decisions."],
+				"outro": {
+					"before": "We'll answer your questions and explain what to expect throughout the brokerage process. If you'd like to review the process beforehand, explore our ",
+					"link": {
+						"label": "Seller Process",
+						"href": "/sell-equipment/seller-process"
+					},
+					"after": "."
+				}
+			},
+			{
+				"title": "You're Looking for Specific Equipment",
+				"body": ["If you're searching for a compressor, separator, generator, production package, or other industrial equipment, we can help you source equipment through our brokerage network."]
+			}
+		]
+	},
+	duringConversation: {
+		"title": "What Happens During the Conversation?",
+		"intro": [
+			"Our goal isn't to pressure you into making a decision.",
+			"It's to help you better understand your options.",
+			"During your conversation with Petra, we'll:"
+		],
+		"items": [
+			"Learn about your equipment or project",
+			"Answer your questions",
+			"Discuss current market conditions",
+			"Explain how the brokerage process works",
+			"Recommend practical next steps based on your goals"
+		],
+		"outro": ["If you're ready to move forward, we'll guide you through the appropriate process.", "If you're still evaluating your options, that's perfectly fine too."]
+	},
+	whatToHaveReady: {
+		"title": "What Should You Have Ready?",
+		"intro": ["You don't need every detail before reaching out.", "Helpful information may include:"],
+		"items": [
+			"Equipment type",
+			"Manufacturer and model",
+			"General location",
+			"Equipment condition",
+			"Photos (if available)",
+			"Supporting documents (if available)",
+			"Any questions you'd like to discuss"
+		],
+		"outro": "Even if you only have basic information, we're happy to start the conversation."
+	},
+	whyOwnersChoose: {
+		"title": "Why Equipment Owners Choose to Talk With Petra",
+		"items": [
+			{
+				"title": "Honest Guidance",
+				"body": ["We'll provide straightforward recommendations based on your equipment and today's market."]
+			},
+			{
+				"title": "Regional Market Knowledge",
+				"body": ["We understand the equipment markets across Wyoming, the Rockies, and surrounding producing regions."]
+			},
+			{
+				"title": "Practical Brokerage Experience",
+				"body": ["Our team understands the challenges of buying and selling used oilfield and industrial equipment."]
+			},
+			{
+				"title": "Qualified Buyer Network",
+				"body": ["We focus on connecting sellers with serious buyers rather than relying solely on public listings."]
+			},
+			{
+				"title": "No Pressure",
+				"body": ["A conversation with Petra doesn't obligate you to sell your equipment.", "Sometimes the right decision is simply having more information before moving forward."]
+			}
+		]
+	},
+	faqSection: {
+		"title": "Frequently Asked Questions",
+		"outro": {
+			"before": "Looking for additional answers before reaching out? Visit our ",
+			"link": {
+				"label": "Sell Equipment FAQs",
+				"href": "/sell-equipment/faqs"
+			},
+			"after": "."
+		}
+	},
+	faqs: [
+		{
+			"question": "Do I need to submit equipment before talking to a broker?",
+			"answer": "No. You're welcome to contact Petra at any point, whether you're gathering information or ready to begin the brokerage process."
+		},
+		{
+			"question": "Is there a cost to speak with a broker?",
+			"answer": "No. Initial conversations are simply an opportunity to discuss your equipment, answer questions, and understand your goals."
+		},
+		{
+			"question": "What if I'm not ready to sell yet?",
+			"answer": "That's completely fine. Many equipment owners contact Petra early in the decision-making process to better understand their options before making any commitments."
+		},
+		{
+			"question": "Can buyers also contact Petra?",
+			"answer": "Yes. Petra works with both buyers and sellers throughout the equipment brokerage process."
+		},
+		{
+			"question": "What happens after our conversation?",
+			"answer": "If moving forward makes sense, we'll recommend the appropriate next step, whether that's requesting a valuation, submitting equipment, sourcing equipment, or continuing the discussion as your plans develop."
+		}
+	],
+	startConversation: {
+		"title": "Let's Start the Conversation",
+		"body": [
+			"Every equipment owner has different goals, and every transaction begins with a conversation.",
+			"Whether you're selling one asset, managing surplus equipment, searching for equipment, or simply looking for honest advice, Petra is here to help.",
+			"Let's talk about your equipment, answer your questions, and help you determine the best path forward."
+		],
+		"primaryCta": {
+			"label": "Talk to a Broker",
+			"href": "#talk-to-a-broker-form"
+		},
+		"secondaryCta": {
+			"label": "Submit Equipment",
+			"href": "/sell-equipment/equipment-submission"
+		}
+	},
+	form: {
+		"title": "Talk to a Broker",
+		"intro": "You don't need to know exactly what your equipment is worth or whether you're ready to sell. Start with a conversation, and we'll help you determine the most appropriate next step based on your goals.",
+		"requiredNote": "Fields marked with * are required.",
+		"labels": {
+			"fullName": "Full Name",
+			"company": "Company Name",
+			"email": "Email Address",
+			"phone": "Phone Number",
+			"topic": "How Can We Help You?",
+			"equipmentType": "Equipment Type (if applicable)",
+			"message": "Message",
+			"preferredContact": "Preferred Contact Method"
+		},
+		"placeholders": {
+			"equipmentType": "Example: CAT Generator, Separator, Pump Package",
+			"message": "Tell us about your equipment or let us know how we can help."
+		},
+		"consent": "I authorize Petra to contact me regarding my inquiry.",
+		"submitLabel": "Talk to a Broker",
+		"successTitle": "Thank You!",
+		"successBody": ["Your inquiry has been received.", "A Petra broker will review your message and follow up using your preferred contact method."]
+	},
+	sidebar: {
+		"title": "Let's Talk About Your Equipment",
+		"intro": "Whether you're thinking about selling equipment, looking for a specific asset, or simply have questions about the brokerage process, our team is here to help.",
+		"contactHeading": "Contact Information",
+		"phoneLabel": "Phone",
+		"emailLabel": "Email",
+		"hoursLabel": "Business Hours",
+		"serviceAreaLabel": "Service Area",
+		"closing": "Not sure where to start? That's okay."
+	}
+};
+//#endregion
+//#region resources/js/Pages/SellEquipment/ContactBroker.tsx
+var ContactBroker_exports = /* @__PURE__ */ __exportAll({ default: () => ContactBroker });
+var { meta: meta$16, hero: hero$16, whenToTalk, duringConversation, whatToHaveReady, whyOwnersChoose, form: form$2, sidebar, faqSection: faqSection$12, faqs: faqs$14, startConversation } = contact_broker_default;
+function ContactBroker({ canonicalUrl, ogImageUrl, topicOptions, preferredContactOptions, inquirySent }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [
+			{
+				"@type": "ContactPage",
+				"@id": `${canonicalUrl}#contact`,
+				name: meta$16.title,
+				url: canonicalUrl,
+				description: meta$16.description,
+				isPartOf: {
+					"@type": "WebSite",
+					url: siteOrigin(canonicalUrl)
+				}
+			},
+			breadcrumbNode(canonicalUrl, {
+				name: "Contact a Broker",
+				url: canonicalUrl
+			}),
+			faqPageNode(canonicalUrl, faqs$14)
+		]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: meta$16.title,
+		description: meta$16.description,
+		canonicalUrl,
+		ogImageUrl,
+		structuredData
 	}), /* @__PURE__ */ jsxs("main", {
 		className: "w-full bg-[#f3f1ec]",
 		children: [
-			/* @__PURE__ */ jsx("section", {
-				className: "border-b border-[#dad5cb] bg-white",
-				children: /* @__PURE__ */ jsx("div", {
-					className: "mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-24",
-					children: /* @__PURE__ */ jsxs("div", { children: [
-						/* @__PURE__ */ jsx("h1", {
-							className: "max-w-4xl font-hero text-[2.6rem] font-bold uppercase leading-[1.02] tracking-[0.08em] text-neutral-950 sm:text-[3.35rem] lg:text-[4.1rem]",
-							children: "Sell Your Equipment"
-						}),
-						/* @__PURE__ */ jsx("p", {
-							className: "mt-6 max-w-3xl text-base font-medium leading-7 text-neutral-600 sm:text-lg",
-							children: "Got equipment sitting in a yard or out in the field? We help you turn unused oilfield and industrial equipment into real buyers."
-						}),
-						/* @__PURE__ */ jsxs("div", {
-							className: "mt-10 flex flex-col gap-4 sm:flex-row",
-							children: [/* @__PURE__ */ jsx("a", {
-								href: "#seller-intake",
-								className: "inline-flex h-14 items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90",
-								children: "Submit Equipment"
-							}), /* @__PURE__ */ jsx("a", {
-								href: "/equipment",
-								className: "inline-flex h-14 items-center justify-center border border-neutral-500 px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-neutral-950 transition-colors hover:bg-neutral-950 hover:text-white",
-								children: "View Equipment"
-							})]
+			/* @__PURE__ */ jsx(PageHero, { ...hero$16 }),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Good Reasons",
+						title: whenToTalk.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: whenToTalk.intro,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
 						})
-					] })
-				})
+					}),
+					/* @__PURE__ */ jsx(CardGrid, {
+						items: whenToTalk.items,
+						columns: 3
+					})
+				]
 			}),
-			/* @__PURE__ */ jsx("section", {
-				className: "border-b border-[#dad5cb] bg-[#f3f1ec] py-20 sm:py-24 lg:py-28",
-				children: /* @__PURE__ */ jsxs("div", {
-					className: "mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-5 sm:px-10 lg:grid-cols-12 lg:items-start lg:gap-14",
-					children: [/* @__PURE__ */ jsxs("div", {
-						className: "max-w-4xl lg:col-span-5",
-						children: [
-							/* @__PURE__ */ jsx("span", {
-								className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-								children: "Reality Check"
-							}),
-							/* @__PURE__ */ jsx("h2", {
-								className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
-								children: "Most equipment doesn't fail to sell because it's bad."
-							}),
-							/* @__PURE__ */ jsx("p", {
-								className: "mt-6 text-lg leading-8 text-neutral-600",
-								children: "It fails because:"
-							})
-						]
-					}), /* @__PURE__ */ jsx("div", {
-						className: "lg:col-span-7",
-						children: /* @__PURE__ */ jsxs("div", {
-							className: "border border-[#dad5cb] bg-white p-6 sm:p-8",
-							children: [/* @__PURE__ */ jsx("div", {
-								className: "grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-3",
-								children: [
-									"nobody is actively marketing it",
-									"it's stuck in a small network",
-									"or pricing isn't aligned with the market"
-								].map((item) => /* @__PURE__ */ jsxs("article", {
-									className: "flex min-h-24 items-start gap-4 bg-white p-5",
-									children: [/* @__PURE__ */ jsx(FeatureIcon, {
-										type: "check",
-										className: "mt-1 h-5 w-5 shrink-0"
-									}), /* @__PURE__ */ jsx("p", {
-										className: "text-base leading-7 text-neutral-700",
-										children: item
-									})]
-								}, item))
-							}), /* @__PURE__ */ jsx("p", {
-								className: "mt-6 border-t border-[#dad5cb] pt-6 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-								children: "We fix that."
-							})]
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "No Pressure",
+						title: duringConversation.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: duringConversation.intro,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
 						})
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: duringConversation.items,
+						columns: 2
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-8 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: duringConversation.outro,
+							className: "text-base leading-7 text-neutral-600"
+						})
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Preparation",
+						title: whatToHaveReady.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: whatToHaveReady.intro,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: whatToHaveReady.items,
+						columns: 3
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600",
+						children: whatToHaveReady.outro
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Why Petra",
+					title: whyOwnersChoose.title
+				}), /* @__PURE__ */ jsx(CardGrid, {
+					items: whyOwnersChoose.items,
+					columns: 3
+				})]
+			}),
+			/* @__PURE__ */ jsx(BrokerContactForm, {
+				topicOptions,
+				preferredContactOptions,
+				inquirySent,
+				copy: form$2,
+				sidebar
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Questions",
+					title: faqSection$12.title
+				}), /* @__PURE__ */ jsxs("div", {
+					className: "mt-10 max-w-4xl",
+					children: [/* @__PURE__ */ jsx(FaqAccordion, { faqs: faqs$14 }), /* @__PURE__ */ jsx(RichText, {
+						value: faqSection$12.outro,
+						className: "mt-8 text-base leading-7 text-neutral-600"
 					})]
-				})
+				})]
 			}),
-			/* @__PURE__ */ jsx("section", {
-				className: "border-b border-[#dad5cb] bg-[#1c1a16] text-white",
-				children: /* @__PURE__ */ jsxs("div", {
-					className: "mx-auto max-w-[1280px] px-5 py-12 sm:px-10",
+			/* @__PURE__ */ jsx(FinalCta, { ...startConversation })
+		]
+	})] });
+}
+//#endregion
+//#region resources/js/Components/public-submission-form.tsx
+var DRAFT_KEY = "petra:draft:equipment-submission";
+function emptyForm() {
+	return {
+		full_name: "",
+		company: "",
+		email: "",
+		phone: "",
+		category: "",
+		description: "",
+		quantity: "1",
+		location: "",
+		condition: "",
+		is_owner: "",
+		intent: [],
+		availability: "",
+		estimated_value_range: "",
+		additional_info: "",
+		consent_accuracy: false,
+		consent_contact: false,
+		photos: [],
+		documents: [],
+		website: ""
+	};
+}
+function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptions, ownershipOptions, intentOptions, availabilityOptions, valueRangeOptions, copy }) {
+	const { auth } = usePage().props;
+	const isSeller = auth.user?.user_type === "seller";
+	const form = useForm({
+		...emptyForm(),
+		full_name: auth.user && !isSeller ? auth.user.name : "",
+		email: auth.user && !isSeller ? auth.user.email : "",
+		phone: auth.user && !isSeller ? auth.user.phone ?? "" : "",
+		company: auth.user && !isSeller ? auth.user.company_name ?? "" : ""
+	});
+	const [clientErrors, setClientErrors] = useState({});
+	const fieldRefs = useRef({});
+	const draft = useFormDraft(DRAFT_KEY, form.data, form.setData, { omit: [
+		"photos",
+		"documents",
+		"website"
+	] });
+	const requiredFields = [
+		...isSeller ? [] : [
+			{
+				name: "full_name",
+				message: "Enter your full name."
+			},
+			{
+				name: "company",
+				message: "Enter your company name."
+			},
+			{
+				name: "email",
+				message: "Enter your email address."
+			},
+			{
+				name: "phone",
+				message: "Enter your phone number."
+			}
+		],
+		{
+			name: "category",
+			message: "Select an equipment category."
+		},
+		{
+			name: "description",
+			message: "Tell us what you are selling."
+		},
+		{
+			name: "quantity",
+			message: "Enter a quantity."
+		},
+		{
+			name: "location",
+			message: "Select the equipment location."
+		},
+		{
+			name: "condition",
+			message: "Select the general condition."
+		},
+		{
+			name: "is_owner",
+			message: "Let us know if you own the equipment."
+		},
+		{
+			name: "intent",
+			message: "Select at least one option."
+		},
+		{
+			name: "availability",
+			message: "Let us know if the equipment is available."
+		},
+		{
+			name: "consent_accuracy",
+			message: "Please confirm the information is accurate."
+		},
+		{
+			name: "consent_contact",
+			message: "Please authorize Petra to contact you."
+		}
+	];
+	function errorFor(field) {
+		const serverErrors = form.errors;
+		return clientErrors[field] ?? serverErrors[field];
+	}
+	function clearError(field) {
+		setClientErrors((errors) => {
+			if (!errors[field]) return errors;
+			const next = { ...errors };
+			delete next[field];
+			return next;
+		});
+	}
+	function isEmpty(field) {
+		const value = form.data[field];
+		if (typeof value === "boolean") return !value;
+		if (Array.isArray(value)) return value.length === 0;
+		return !String(value ?? "").trim();
+	}
+	function submit(event) {
+		event.preventDefault();
+		const errors = {};
+		requiredFields.forEach((field) => {
+			if (isEmpty(field.name)) errors[field.name] = field.message;
+		});
+		setClientErrors(errors);
+		const firstInvalid = requiredFields.find((field) => errors[field.name]);
+		if (firstInvalid) {
+			fieldRefs.current[firstInvalid.name]?.focus();
+			fieldRefs.current[firstInvalid.name]?.scrollIntoView({
+				block: "center",
+				behavior: "smooth"
+			});
+			return;
+		}
+		form.post("/sell-equipment/equipment-submission", {
+			forceFormData: true,
+			onSuccess: () => draft.clear()
+		});
+	}
+	function toggleIntent(value) {
+		clearError("intent");
+		form.setData("intent", form.data.intent.includes(value) ? form.data.intent.filter((entry) => entry !== value) : [...form.data.intent, value]);
+	}
+	const locationGroups = Array.from(new Set(locationOptions.map((option) => option.group)));
+	return /* @__PURE__ */ jsx("section", {
+		id: "equipment-submission-form",
+		className: "border-b border-[#dad5cb] bg-white py-16 sm:py-20 lg:py-24",
+		children: /* @__PURE__ */ jsxs("div", {
+			className: "mx-auto max-w-[900px] px-5 sm:px-10",
+			children: [
+				/* @__PURE__ */ jsx("h2", {
+					className: "font-heading text-3xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-4xl",
+					children: copy.title
+				}),
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-4 font-heading text-lg font-semibold uppercase tracking-[0.06em] text-[#a56437]",
+					children: copy.subtitle
+				}),
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-4 text-base leading-7 text-neutral-600",
+					children: copy.intro
+				}),
+				/* @__PURE__ */ jsx("p", {
+					className: "mt-2 text-sm leading-6 text-neutral-500",
+					children: copy.requiredNote
+				}),
+				/* @__PURE__ */ jsxs("form", {
+					onSubmit: submit,
+					noValidate: true,
+					className: "mt-10 grid gap-10",
 					children: [
-						/* @__PURE__ */ jsxs("div", {
-							className: "mx-auto mb-9 max-w-3xl text-center",
-							children: [/* @__PURE__ */ jsx("span", {
-								className: "font-heading text-sm font-semibold uppercase tracking-[0.24em] text-[#b06b3d]",
-								children: "What You Can Send"
-							}), /* @__PURE__ */ jsx("h2", {
-								className: "mt-3 font-heading text-3xl font-semibold uppercase tracking-[0.08em] text-white sm:text-4xl",
-								children: "What You Can Send"
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [/* @__PURE__ */ jsx(Legend, { children: copy.sections.contact }), isSeller ? /* @__PURE__ */ jsxs("p", {
+								className: "border border-[#dad5cb] bg-[#f3f1ec] p-5 text-base leading-7 text-neutral-700",
+								children: [
+									"Submitting as ",
+									/* @__PURE__ */ jsx("strong", {
+										className: "font-semibold",
+										children: auth.user?.name
+									}),
+									" (",
+									auth.user?.email,
+									"). This listing will appear in your portal under My Listings."
+								]
+							}) : /* @__PURE__ */ jsxs("div", {
+								className: "grid gap-5 sm:grid-cols-2",
+								children: [
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.fullName,
+										required: true,
+										error: errorFor("full_name"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.full_name = element;
+											},
+											type: "text",
+											value: form.data.full_name,
+											onChange: (event) => {
+												clearError("full_name");
+												form.setData("full_name", event.target.value);
+											},
+											className: inputClass(errorFor("full_name"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.company,
+										required: true,
+										error: errorFor("company"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.company = element;
+											},
+											type: "text",
+											value: form.data.company,
+											onChange: (event) => {
+												clearError("company");
+												form.setData("company", event.target.value);
+											},
+											className: inputClass(errorFor("company"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.email,
+										required: true,
+										error: errorFor("email"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.email = element;
+											},
+											type: "email",
+											value: form.data.email,
+											onChange: (event) => {
+												clearError("email");
+												form.setData("email", event.target.value);
+											},
+											className: inputClass(errorFor("email"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.phone,
+										required: true,
+										error: errorFor("phone"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.phone = element;
+											},
+											type: "tel",
+											value: form.data.phone,
+											onChange: (event) => {
+												clearError("phone");
+												form.setData("phone", event.target.value);
+											},
+											className: inputClass(errorFor("phone"))
+										})
+									})
+								]
 							})]
 						}),
-						/* @__PURE__ */ jsx("div", {
-							className: "grid grid-cols-2 gap-px bg-white/15 md:grid-cols-4",
-							children: assetTypes.map((assetType) => /* @__PURE__ */ jsxs("div", {
-								className: "bg-[#1c1a16] p-5 text-center transition-colors hover:bg-[#24211c]",
-								children: [/* @__PURE__ */ jsx("div", { className: "mx-auto mb-4 h-1.5 w-1.5 bg-[#a56437]" }), /* @__PURE__ */ jsx("h3", {
-									className: "font-heading text-lg font-semibold uppercase tracking-[0.08em] text-white",
-									children: assetType
-								})]
-							}, assetType))
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [/* @__PURE__ */ jsx(Legend, { children: copy.sections.equipment }), /* @__PURE__ */ jsxs("div", {
+								className: "grid gap-5 sm:grid-cols-2",
+								children: [
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.category,
+										required: true,
+										error: errorFor("category"),
+										children: /* @__PURE__ */ jsxs("select", {
+											ref: (element) => {
+												fieldRefs.current.category = element;
+											},
+											value: form.data.category,
+											onChange: (event) => {
+												clearError("category");
+												form.setData("category", event.target.value);
+											},
+											className: selectClass(errorFor("category")),
+											children: [/* @__PURE__ */ jsx("option", {
+												value: "",
+												children: "Select a category"
+											}), Object.entries(categoryOptions).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+												value,
+												children: label
+											}, value))]
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.quantity,
+										required: true,
+										error: errorFor("quantity"),
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.quantity = element;
+											},
+											type: "number",
+											min: 1,
+											step: 1,
+											value: form.data.quantity,
+											onChange: (event) => {
+												clearError("quantity");
+												form.setData("quantity", event.target.value);
+											},
+											className: inputClass(errorFor("quantity"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.description,
+										required: true,
+										error: errorFor("description"),
+										className: "sm:col-span-2",
+										hint: copy.hints.description,
+										children: /* @__PURE__ */ jsx("input", {
+											ref: (element) => {
+												fieldRefs.current.description = element;
+											},
+											type: "text",
+											placeholder: copy.hints.descriptionPlaceholder,
+											value: form.data.description,
+											onChange: (event) => {
+												clearError("description");
+												form.setData("description", event.target.value);
+											},
+											className: inputClass(errorFor("description"))
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.location,
+										required: true,
+										error: errorFor("location"),
+										children: /* @__PURE__ */ jsxs("select", {
+											ref: (element) => {
+												fieldRefs.current.location = element;
+											},
+											value: form.data.location,
+											onChange: (event) => {
+												clearError("location");
+												form.setData("location", event.target.value);
+											},
+											className: selectClass(errorFor("location")),
+											children: [/* @__PURE__ */ jsx("option", {
+												value: "",
+												children: "Select a location"
+											}), locationGroups.map((group) => /* @__PURE__ */ jsx("optgroup", {
+												label: group,
+												children: locationOptions.filter((option) => option.group === group).map((option) => /* @__PURE__ */ jsx("option", {
+													value: option.value,
+													children: option.label
+												}, option.value))
+											}, group))]
+										})
+									}),
+									/* @__PURE__ */ jsx(Field, {
+										label: copy.labels.condition,
+										required: true,
+										error: errorFor("condition"),
+										children: /* @__PURE__ */ jsxs("select", {
+											ref: (element) => {
+												fieldRefs.current.condition = element;
+											},
+											value: form.data.condition,
+											onChange: (event) => {
+												clearError("condition");
+												form.setData("condition", event.target.value);
+											},
+											className: selectClass(errorFor("condition")),
+											children: [/* @__PURE__ */ jsx("option", {
+												value: "",
+												children: "Select a condition"
+											}), Object.entries(conditionOptions).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+												value,
+												children: label
+											}, value))]
+										})
+									})
+								]
+							})]
 						}),
-						/* @__PURE__ */ jsx("p", {
-							className: "mx-auto mt-9 max-w-3xl text-center text-lg leading-8 text-white/70",
-							children: "If you're not sure it's sellable—send it anyway."
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-6",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: copy.sections.selling }),
+								/* @__PURE__ */ jsx(RadioGroup, {
+									legend: copy.labels.isOwner,
+									required: true,
+									options: ownershipOptions,
+									value: form.data.is_owner,
+									error: errorFor("is_owner"),
+									onChange: (value) => {
+										clearError("is_owner");
+										form.setData("is_owner", value);
+									},
+									firstRef: (element) => {
+										fieldRefs.current.is_owner = element;
+									}
+								}),
+								/* @__PURE__ */ jsxs("div", {
+									className: "grid gap-3",
+									children: [
+										/* @__PURE__ */ jsx("span", {
+											className: "font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-700",
+											children: copy.labels.intent
+										}),
+										/* @__PURE__ */ jsx("span", {
+											className: "text-sm leading-6 text-neutral-500",
+											children: copy.hints.intent
+										}),
+										/* @__PURE__ */ jsx("div", {
+											className: "grid gap-2",
+											children: Object.entries(intentOptions).map(([value, label], index) => /* @__PURE__ */ jsxs("label", {
+												className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+												children: [/* @__PURE__ */ jsx("input", {
+													ref: index === 0 ? (element) => {
+														fieldRefs.current.intent = element;
+													} : void 0,
+													type: "checkbox",
+													checked: form.data.intent.includes(value),
+													onChange: () => toggleIntent(value),
+													className: "mt-1.5 h-4 w-4 shrink-0 accent-[#a56437]"
+												}), label]
+											}, value))
+										}),
+										errorFor("intent") && /* @__PURE__ */ jsx("span", {
+											className: "text-sm text-[#b3261e]",
+											children: errorFor("intent")
+										})
+									]
+								}),
+								/* @__PURE__ */ jsx(RadioGroup, {
+									legend: copy.labels.availability,
+									required: true,
+									options: availabilityOptions,
+									value: form.data.availability,
+									error: errorFor("availability"),
+									onChange: (value) => {
+										clearError("availability");
+										form.setData("availability", value);
+									},
+									firstRef: (element) => {
+										fieldRefs.current.availability = element;
+									}
+								}),
+								/* @__PURE__ */ jsx(Field, {
+									label: copy.labels.estimatedValue,
+									error: errorFor("estimated_value_range"),
+									children: /* @__PURE__ */ jsxs("select", {
+										value: form.data.estimated_value_range,
+										onChange: (event) => form.setData("estimated_value_range", event.target.value),
+										className: selectClass(errorFor("estimated_value_range")),
+										children: [/* @__PURE__ */ jsx("option", {
+											value: "",
+											children: "Select a range"
+										}), Object.entries(valueRangeOptions).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+											value,
+											children: label
+										}, value))]
+									})
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: copy.sections.photos }),
+								/* @__PURE__ */ jsx("p", {
+									className: "text-base leading-7 text-neutral-600",
+									children: copy.hints.photos
+								}),
+								/* @__PURE__ */ jsx(HelpfulList, {
+									intro: copy.hints.photosHelpful,
+									items: copy.hints.photoItems
+								}),
+								/* @__PURE__ */ jsx(PhotoPicker, {
+									files: form.data.photos,
+									error: errorFor("photos"),
+									onChange: (files) => form.setData("photos", files),
+									label: copy.uploadLabels.photos,
+									hint: copy.hints.photos
+								}),
+								/* @__PURE__ */ jsx(GuidePrompt, {
+									prompt: copy.hints.photoGuidePrompt,
+									link: copy.guideLinks.photos
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: copy.sections.documents }),
+								/* @__PURE__ */ jsx("p", {
+									className: "text-base leading-7 text-neutral-600",
+									children: copy.hints.documents
+								}),
+								/* @__PURE__ */ jsx(HelpfulList, {
+									intro: copy.hints.documentsHelpful,
+									items: copy.hints.documentItems
+								}),
+								/* @__PURE__ */ jsx(DocumentPicker, {
+									files: form.data.documents,
+									error: errorFor("documents"),
+									onChange: (files) => form.setData("documents", files),
+									label: copy.uploadLabels.documents,
+									hint: copy.hints.documents
+								}),
+								/* @__PURE__ */ jsx(GuidePrompt, {
+									prompt: copy.hints.documentGuidePrompt,
+									link: copy.guideLinks.documents
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-5",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: copy.sections.additional }),
+								/* @__PURE__ */ jsx(HelpfulList, {
+									intro: "Examples:",
+									items: copy.hints.additionalInfoExamples
+								}),
+								/* @__PURE__ */ jsx(Field, {
+									label: copy.labels.additionalInfo,
+									error: errorFor("additional_info"),
+									children: /* @__PURE__ */ jsx("textarea", {
+										rows: 5,
+										value: form.data.additional_info,
+										onChange: (event) => form.setData("additional_info", event.target.value),
+										className: inputClass(errorFor("additional_info"))
+									})
+								})
+							]
+						}),
+						/* @__PURE__ */ jsxs("fieldset", {
+							className: "grid gap-4",
+							children: [
+								/* @__PURE__ */ jsx(Legend, { children: copy.sections.confirmation }),
+								/* @__PURE__ */ jsx(Consent, {
+									label: copy.consent.accuracy,
+									checked: form.data.consent_accuracy,
+									error: errorFor("consent_accuracy"),
+									inputRef: (element) => {
+										fieldRefs.current.consent_accuracy = element;
+									},
+									onChange: (checked) => {
+										clearError("consent_accuracy");
+										form.setData("consent_accuracy", checked);
+									}
+								}),
+								/* @__PURE__ */ jsx(Consent, {
+									label: copy.consent.contact,
+									checked: form.data.consent_contact,
+									error: errorFor("consent_contact"),
+									inputRef: (element) => {
+										fieldRefs.current.consent_contact = element;
+									},
+									onChange: (checked) => {
+										clearError("consent_contact");
+										form.setData("consent_contact", checked);
+									}
+								})
+							]
+						}),
+						/* @__PURE__ */ jsx(Honeypot, {
+							value: form.data.website,
+							onChange: (value) => form.setData("website", value)
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "grid gap-4 border-t border-[#dad5cb] pt-8",
+							children: [/* @__PURE__ */ jsx("button", {
+								type: "submit",
+								disabled: form.processing,
+								className: "button-press inline-flex h-14 w-fit items-center justify-center bg-[#a56437] px-10 font-heading text-base font-semibold uppercase tracking-[0.1em] text-white transition-opacity hover:opacity-90 disabled:opacity-60",
+								children: form.processing ? "Submitting…" : copy.submitLabel
+							}), /* @__PURE__ */ jsx("p", {
+								className: "text-sm leading-6 text-neutral-500",
+								children: copy.supportingText
+							})]
 						})
 					]
 				})
+			]
+		})
+	});
+}
+function HelpfulList({ intro, items }) {
+	return /* @__PURE__ */ jsxs("div", {
+		className: "grid gap-2",
+		children: [/* @__PURE__ */ jsx("span", {
+			className: "text-sm font-semibold text-neutral-700",
+			children: intro
+		}), /* @__PURE__ */ jsx("ul", {
+			className: "grid gap-1",
+			children: items.map((item) => /* @__PURE__ */ jsxs("li", {
+				className: "flex items-start gap-3 text-sm leading-6 text-neutral-600",
+				children: [/* @__PURE__ */ jsx("span", {
+					"aria-hidden": "true",
+					className: "mt-2.5 h-1 w-1 shrink-0 bg-[#a56437]"
+				}), item]
+			}, item))
+		})]
+	});
+}
+/**
+* Guide links open in a new tab on purpose: the visitor keeps this form mounted, so the
+* files they already chose are still attached when they come back.
+*/
+function GuidePrompt({ prompt, link }) {
+	return /* @__PURE__ */ jsxs("p", {
+		className: "text-sm leading-6 text-neutral-600",
+		children: [
+			prompt,
+			" ",
+			/* @__PURE__ */ jsx("a", {
+				href: link.href,
+				target: "_blank",
+				rel: "noopener",
+				className: "font-semibold text-[#a56437] underline underline-offset-4 transition-colors hover:text-neutral-950",
+				children: link.label
+			})
+		]
+	});
+}
+var equipment_submission_default = {
+	meta: {
+		"title": "Equipment Submission | Submit Oilfield Equipment | Petra",
+		"description": "Submit your used oilfield and industrial equipment to Petra for brokerage review. Provide equipment details, photos, and documents to connect with qualified buyers."
+	},
+	hero: {
+		"title": "Equipment Submission",
+		"subtitle": "Submit Your Used Oilfield & Industrial Equipment",
+		"body": [
+			"Ready to sell your equipment?",
+			"Provide the information you have, and Petra will review your submission to determine how your equipment fits within the current market.",
+			"You don't need perfect documentation or professional photos to get started. Simply provide the available details, and we'll guide you through the next steps."
+		],
+		"primaryCta": {
+			"label": "Submit Equipment",
+			"href": "#equipment-submission-form"
+		}
+	},
+	whatToInclude: {
+		"title": "What Information Should You Include?",
+		"body": ["The more information you can provide, the easier it is for us to evaluate your equipment and identify qualified buyers.", "If some information isn't available, that's okay. Submit what you have, and we'll discuss anything else that's needed."],
+		"groups": [
+			{
+				"title": "Equipment Information",
+				"intro": ["Help us understand what you're selling.", "Include information such as:"],
+				"items": [
+					"Equipment type",
+					"Manufacturer",
+					"Model",
+					"Year (if known)",
+					"Capacity or specifications",
+					"Serial number (if available)"
+				],
+				"outro": "This information helps us identify the most relevant buyers."
+			},
+			{
+				"title": "Equipment Location",
+				"intro": ["Tell us where the equipment is currently located.", "Examples include:"],
+				"items": [
+					"Wyoming",
+					"Colorado",
+					"North Dakota",
+					"Utah",
+					"Montana",
+					"Other producing regions"
+				],
+				"outro": "Knowing the equipment location helps us evaluate transportation logistics and regional buyer demand."
+			},
+			{
+				"title": "Equipment Condition",
+				"intro": ["Give us a general overview of its condition.", "Examples include:"],
+				"items": [
+					"Currently operating",
+					"Idle equipment",
+					"Stored in yard",
+					"Removed from service",
+					"Requires repair",
+					"Unknown condition"
+				],
+				"outro": "You don't need a formal inspection before submitting your equipment."
+			},
+			{
+				"title": "Upload Photos",
+				"intro": ["Photos help us evaluate your equipment and present it accurately to qualified buyers.", "If available, include:"],
+				"items": [
+					"Overall equipment photos",
+					"Multiple angles",
+					"Equipment nameplates",
+					"Control panels",
+					"Interior components",
+					"Any visible wear or damage"
+				],
+				"outro": "Don't worry about professional photography. Clear photos taken with your phone are usually enough to get started.",
+				"guideLink": {
+					"label": "View the Equipment Photo Guide",
+					"href": "/sell-equipment/upload-photos"
+				}
+			},
+			{
+				"title": "Upload Documents",
+				"intro": ["Supporting documents help us verify equipment details and answer buyer questions more efficiently.", "Helpful documents include:"],
+				"items": [
+					"Inspection reports",
+					"Maintenance records",
+					"Specification sheets",
+					"Equipment manuals",
+					"Service history",
+					"Operating records"
+				],
+				"outro": "If documentation isn't available, you can still submit your equipment for review.",
+				"guideLink": {
+					"label": "View the Equipment Documentation Guide",
+					"href": "/sell-equipment/upload-documents"
+				}
+			}
+		]
+	},
+	afterYouSubmit: {
+		"title": "What Happens After You Submit?",
+		"steps": [
+			"We confirm your submission.",
+			"Our team reviews the equipment information and evaluates current market opportunities.",
+			"If additional information is needed, we'll contact you directly.",
+			"We determine how the equipment may be positioned within our regional buyer network.",
+			"We'll discuss the recommended next steps and answer any questions before moving forward."
+		],
+		"outro": "Every submission receives an individual review based on equipment type, condition, market demand, and regional buyer interest."
+	},
+	form: {
+		"title": "Equipment Submission Form",
+		"subtitle": "Tell Us About Your Equipment",
+		"intro": "Provide the information you currently have available. You don't need every specification to get started. Our brokerage team will review your submission and contact you if additional details are needed.",
+		"requiredNote": "Fields marked with * are required.",
+		"sections": {
+			"contact": "Contact Information",
+			"equipment": "Equipment Information",
+			"selling": "Selling Information",
+			"photos": "Upload Photos (Optional)",
+			"documents": "Upload Documents (Optional)",
+			"additional": "Additional Information",
+			"confirmation": "Confirmation"
+		},
+		"uploadLabels": {
+			"photos": "Upload Photos",
+			"documents": "Upload Documents"
+		},
+		"labels": {
+			"fullName": "Full Name",
+			"company": "Company Name",
+			"email": "Email Address",
+			"phone": "Phone Number",
+			"category": "Equipment Category",
+			"description": "Equipment Description",
+			"quantity": "Quantity",
+			"location": "Equipment Location",
+			"condition": "General Condition",
+			"isOwner": "Are You the Equipment Owner?",
+			"intent": "What Are You Looking to Do?",
+			"availability": "Is the Equipment Currently Available?",
+			"estimatedValue": "Estimated Equipment Value",
+			"additionalInfo": "Tell Us Anything Else About Your Equipment"
+		},
+		"hints": {
+			"description": "Tell us what you're selling.",
+			"descriptionPlaceholder": "CAT 3512 Generator, Horizontal Separator, Pump Package, 500 BBL Tank",
+			"estimatedValue": "Optional",
+			"intent": "Select all that apply.",
+			"photos": "Upload photos of the equipment if available.",
+			"photosHelpful": "Helpful photos include:",
+			"photoItems": [
+				"Overall equipment",
+				"Multiple angles",
+				"Equipment nameplate",
+				"Control panels",
+				"Interior components",
+				"Visible wear or damage"
+			],
+			"photoGuidePrompt": "Need help deciding what to include?",
+			"documents": "Upload any available documentation.",
+			"documentsHelpful": "Helpful documents may include:",
+			"documentItems": [
+				"Maintenance records",
+				"Inspection reports",
+				"Specification sheets",
+				"Equipment manuals",
+				"Service history"
+			],
+			"documentGuidePrompt": "Not sure which documents are helpful?",
+			"additionalInfoExamples": [
+				"Known issues",
+				"Package details",
+				"Project information",
+				"Desired selling timeline",
+				"Questions for our team"
+			]
+		},
+		"guideLinks": {
+			"photos": {
+				"label": "View Equipment Photo Guide",
+				"href": "/sell-equipment/upload-photos"
+			},
+			"documents": {
+				"label": "View Equipment Documentation Guide",
+				"href": "/sell-equipment/upload-documents"
+			}
+		},
+		"consent": {
+			"accuracy": "I confirm that the information provided is accurate to the best of my knowledge.",
+			"contact": "I authorize Petra to contact me regarding this equipment submission."
+		},
+		"submitLabel": "Submit Equipment for Review",
+		"supportingText": "Our brokerage team will review your submission and determine whether your equipment is a good fit for our buyer network. If we need additional information, we'll contact you directly."
+	},
+	faqSection: { "title": "Frequently Asked Questions" },
+	faqs: [
+		{
+			"question": "Is there a cost to submit equipment?",
+			"answer": "No. Submitting equipment for review is free."
+		},
+		{
+			"question": "Do I need complete information before submitting?",
+			"answer": "No. Submit the information you currently have. Petra will work with you if additional details are needed."
+		},
+		{
+			"question": "What if I don't have photos?",
+			"answer": "Photos are helpful but not required to begin the review process."
+		},
+		{
+			"question": "Can I submit more than one piece of equipment?",
+			"answer": "Yes. We work with individual assets, complete equipment packages, and surplus equipment inventories."
+		},
+		{
+			"question": "How soon will Petra contact me?",
+			"answer": "After reviewing your submission, we'll reach out if additional information is needed or to discuss potential next steps."
+		},
+		{
+			"question": "Am I obligated to sell after submitting?",
+			"answer": "No. Submitting your equipment simply begins the review process. You'll have the opportunity to discuss options before making any decisions."
+		}
+	],
+	needAssistance: {
+		"title": "Need Assistance Before Submitting?",
+		"body": ["If you're unsure whether your equipment is a good fit or have questions about the submission process, we're happy to help.", "Talk with a Petra broker before completing your submission."],
+		"cta": {
+			"label": "Contact a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	},
+	finalCta: {
+		"title": "Ready to Submit Your Equipment?",
+		"body": ["Whether you're selling a single asset or liquidating surplus equipment, Petra is ready to review your submission and discuss the opportunities available through our regional brokerage network.", "We'll provide straightforward guidance, honest communication, and a professional brokerage process from the very beginning."],
+		"valuationPrompt": {
+			"before": "Not sure if now is the right time to sell? Start with a ",
+			"link": {
+				"label": "Request a Market-Based Valuation",
+				"href": "/sell-equipment/request-valuation"
+			},
+			"after": " to better understand your equipment's market potential."
+		},
+		"questionsPrompt": {
+			"before": "Still have questions before submitting? Visit our ",
+			"link": {
+				"label": "Sell Equipment FAQs",
+				"href": "/sell-equipment/faqs"
+			},
+			"middle": " or ",
+			"secondLink": {
+				"label": "Talk to a Broker",
+				"href": "/sell-equipment/contact-broker"
+			},
+			"after": " for straightforward guidance before getting started."
+		},
+		"primaryCta": {
+			"label": "Submit Equipment",
+			"href": "#equipment-submission-form"
+		}
+	},
+	confirmationPage: {
+		"meta": {
+			"title": "Thank You | Equipment Submission | Petra Equipment Brokerage",
+			"description": "Your equipment submission has been received. Petra's brokerage team will review the details and follow up with next steps."
+		},
+		"title": "Thank You!",
+		"body": ["Your equipment submission has been received.", "Our team will review the information you've provided and contact you if additional details are needed or if we'd like to discuss the opportunity further."],
+		"primaryCta": {
+			"label": "Return to Sell Equipment",
+			"href": "/sell-equipment"
+		},
+		"secondaryCta": {
+			"label": "Contact a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	}
+};
+//#endregion
+//#region resources/js/Pages/SellEquipment/EquipmentSubmission.tsx
+var EquipmentSubmission_exports = /* @__PURE__ */ __exportAll({ default: () => EquipmentSubmission });
+var { meta: meta$14, hero: hero$14, whatToInclude, afterYouSubmit, form, faqSection: faqSection$10, faqs: faqs$12, needAssistance, finalCta: finalCta$14 } = equipment_submission_default;
+function EquipmentSubmission({ canonicalUrl, ogImageUrl, categoryOptions, locationOptions, conditionOptions, ownershipOptions, intentOptions, availabilityOptions, valueRangeOptions }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [
+			sellEquipmentServiceNode(canonicalUrl, meta$14.description),
+			breadcrumbNode(canonicalUrl, {
+				name: "Equipment Submission",
+				url: canonicalUrl
 			}),
-			/* @__PURE__ */ jsx("section", {
-				className: "border-b border-[#dad5cb] bg-white py-20 sm:py-24 lg:py-28",
-				children: /* @__PURE__ */ jsxs("div", {
-					className: "mx-auto max-w-[1280px] px-5 sm:px-10",
-					children: [/* @__PURE__ */ jsxs("div", {
-						className: "mb-12 max-w-3xl",
-						children: [/* @__PURE__ */ jsx("span", {
-							className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-							children: "Seller Process"
-						}), /* @__PURE__ */ jsx("h2", {
-							className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
-							children: "How Petra Handles a Sale"
-						})]
-					}), /* @__PURE__ */ jsx("div", {
-						className: "grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-2 lg:grid-cols-5",
-						children: processSteps.map((step) => /* @__PURE__ */ jsxs("article", {
+			faqPageNode(canonicalUrl, faqs$12)
+		]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: meta$14.title,
+		description: meta$14.description,
+		canonicalUrl,
+		ogImageUrl,
+		structuredData
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [
+			/* @__PURE__ */ jsx(PageHero, { ...hero$14 }),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Before You Start",
+						title: whatToInclude.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: whatToInclude.body,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-10 grid grid-cols-1 gap-px bg-[#dad5cb] md:grid-cols-2 lg:grid-cols-3",
+						children: whatToInclude.groups.map((group) => /* @__PURE__ */ jsxs("article", {
 							className: "bg-white p-7",
 							children: [
-								/* @__PURE__ */ jsx("span", {
-									className: "font-heading text-3xl font-semibold uppercase tracking-[0.05em] text-[#a56437]",
-									children: step.number
-								}),
 								/* @__PURE__ */ jsx("h3", {
-									className: "mt-8 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-									children: step.title
+									className: "font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
+									children: group.title
+								}),
+								/* @__PURE__ */ jsx("div", {
+									className: "mt-4 space-y-3",
+									children: /* @__PURE__ */ jsx(RichTextList, {
+										items: group.intro,
+										className: "text-base leading-7 text-neutral-600"
+									})
+								}),
+								/* @__PURE__ */ jsx("ul", {
+									className: "mt-4 space-y-2",
+									children: group.items.map((item) => /* @__PURE__ */ jsxs("li", {
+										className: "flex items-start gap-3 text-base leading-7 text-neutral-700",
+										children: [/* @__PURE__ */ jsx("span", {
+											"aria-hidden": "true",
+											className: "mt-3 h-1 w-1 shrink-0 bg-[#a56437]"
+										}), item]
+									}, item))
 								}),
 								/* @__PURE__ */ jsx("p", {
 									className: "mt-4 text-base leading-7 text-neutral-600",
-									children: step.description
-								})
+									children: group.outro
+								}),
+								"guideLink" in group && group.guideLink ? /* @__PURE__ */ jsx("a", {
+									href: group.guideLink.href,
+									className: "mt-4 inline-block font-semibold text-[#a56437] underline underline-offset-4 transition-colors hover:text-neutral-950",
+									children: group.guideLink.label
+								}) : null
 							]
-						}, step.number))
+						}, group.title))
+					})
+				]
+			}),
+			/* @__PURE__ */ jsx(PublicSubmissionForm, {
+				categoryOptions,
+				locationOptions,
+				conditionOptions,
+				ownershipOptions,
+				intentOptions,
+				availabilityOptions,
+				valueRangeOptions,
+				copy: form
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "After Submitting",
+						title: afterYouSubmit.title
+					}),
+					/* @__PURE__ */ jsx(NumberedSteps, { steps: afterYouSubmit.steps.map((step) => ({ text: step })) }),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600",
+						children: afterYouSubmit.outro
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Questions",
+					title: faqSection$10.title
+				}), /* @__PURE__ */ jsx("div", {
+					className: "mt-10 max-w-4xl",
+					children: /* @__PURE__ */ jsx(FaqAccordion, { faqs: faqs$12 })
+				})]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Talk First",
+						title: needAssistance.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: needAssistance.body,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-8",
+						children: /* @__PURE__ */ jsx(SecondaryButton, { ...needAssistance.cta })
+					})
+				]
+			}),
+			/* @__PURE__ */ jsx(FinalCta, {
+				title: finalCta$14.title,
+				body: finalCta$14.body,
+				primaryCta: finalCta$14.primaryCta,
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "mt-6 max-w-3xl space-y-4",
+					children: [/* @__PURE__ */ jsx(RichText, {
+						value: finalCta$14.valuationPrompt,
+						className: "text-base leading-7 text-white/70"
+					}), /* @__PURE__ */ jsx(RichText, {
+						value: finalCta$14.questionsPrompt,
+						className: "text-base leading-7 text-white/70"
 					})]
 				})
+			})
+		]
+	})] });
+}
+var faqs_default = {
+	meta: {
+		"title": "Sell Equipment FAQs | Oilfield Equipment Brokerage | Petra",
+		"description": "Find answers to common questions about selling used oilfield and industrial equipment. Learn about valuations, brokerage, submissions, pricing, and the selling process with Petra."
+	},
+	hero: {
+		"title": "Sell Equipment FAQs",
+		"subtitle": "Common Questions About Selling Used Oilfield & Industrial Equipment",
+		"body": [
+			"Selling equipment is an important business decision, and it's natural to have questions before getting started.",
+			"Below are answers to some of the most common questions we receive from equipment owners, operators, and businesses throughout Wyoming, the Rockies, and surrounding producing regions.",
+			"If you don't see your question here, our team is always available to help."
+		],
+		"primaryCta": {
+			"label": "Talk to a Broker",
+			"href": "/sell-equipment/contact-broker"
+		},
+		"secondaryCta": {
+			"label": "Submit Equipment",
+			"href": "/sell-equipment/equipment-submission"
+		}
+	},
+	groups: [
+		{
+			"title": "Before You Sell",
+			"faqs": [
+				{
+					"question": "Is now a good time to sell used oilfield equipment?",
+					"answer": "Market conditions change throughout the year based on industry activity, buyer demand, and equipment availability. If you're considering selling, understanding your equipment's current market potential is often the best first step."
+				},
+				{
+					"question": "Can I sell equipment that has been sitting unused?",
+					"answer": "Yes. Idle equipment often still has value, especially if it has been properly stored or maintained. Even if equipment has been out of service for some time, it may still be attractive to qualified buyers."
+				},
+				{
+					"question": "Does equipment need to be operating before I can sell it?",
+					"answer": "Not necessarily. Both operating and non-operating equipment may have market value depending on the equipment type, condition, and buyer demand."
+				},
+				{
+					"question": "Can I sell older equipment?",
+					"answer": "Yes. Age is only one factor buyers consider. Equipment condition, maintenance history, specifications, and market demand often play a much larger role."
+				}
+			],
+			"outro": {
+				"before": "Not sure whether your equipment is a good fit for today's market? A ",
+				"link": {
+					"label": "Request a Market-Based Valuation",
+					"href": "/sell-equipment/request-valuation"
+				},
+				"after": " can help you better understand its market potential before making a decision."
+			}
+		},
+		{
+			"title": "Preparing Your Equipment",
+			"intro": {
+				"before": "Preparing your equipment before submission can help buyers better understand its condition. Visit our ",
+				"link": {
+					"label": "Equipment Photo Guide",
+					"href": "/sell-equipment/upload-photos"
+				},
+				"middle": " and ",
+				"secondLink": {
+					"label": "Equipment Documentation Guide",
+					"href": "/sell-equipment/upload-documents"
+				},
+				"after": " for practical recommendations."
+			},
+			"faqs": [
+				{
+					"question": "Should I clean equipment before taking photos?",
+					"answer": "A clean piece of equipment helps buyers better understand its condition, but professional detailing isn't necessary. Removing excessive dirt or debris can improve photo quality and provide a clearer representation of the equipment."
+				},
+				{
+					"question": "What if I don't have maintenance records?",
+					"answer": "That's okay. Maintenance records are helpful but not required. Submit the information you have, and Petra will review your equipment based on the available details."
+				},
+				{
+					"question": "Is cosmetic damage a problem?",
+					"answer": "Normal wear is expected on used equipment. Being transparent about cosmetic damage helps buyers understand the equipment and often leads to smoother conversations later in the brokerage process."
+				},
+				{
+					"question": "Can I sell equipment that's missing parts?",
+					"answer": "In many cases, yes. Some buyers specifically look for equipment to repair, rebuild, or use for parts. Missing components don't automatically eliminate market potential."
+				}
+			]
+		},
+		{
+			"title": "Equipment Value",
+			"faqs": [
+				{
+					"question": "What factors affect the value of used equipment?",
+					"answer": "Several factors influence equipment value, including condition, age, specifications, maintenance history, regional buyer demand, and current market activity."
+				},
+				{
+					"question": "Will repairing equipment increase its value?",
+					"answer": "It depends. Some repairs may improve buyer interest, while others may not significantly affect market value. Petra can help you determine whether repairs are likely to provide a worthwhile return."
+				},
+				{
+					"question": "Can I suggest an asking price?",
+					"answer": "Yes. Seller expectations are an important part of the conversation. Petra works with sellers to evaluate current market conditions and develop realistic pricing guidance."
+				},
+				{
+					"question": "Why do similar pieces of equipment sell for different prices?",
+					"answer": "Even similar equipment can vary in value based on operating condition, maintenance history, configuration, documentation, location, and buyer demand."
+				}
+			],
+			"outro": {
+				"before": "Every piece of equipment is different. If you'd like guidance based on your specific equipment, ",
+				"link": {
+					"label": "Request a Market-Based Valuation",
+					"href": "/sell-equipment/request-valuation"
+				},
+				"after": "."
+			}
+		},
+		{
+			"title": "Working With Petra",
+			"faqs": [
+				{
+					"question": "Why should I use an equipment broker instead of selling equipment myself?",
+					"answer": "Selling equipment often involves marketing, answering technical questions, negotiating with buyers, and coordinating documentation. Petra helps simplify that process by connecting sellers with qualified buyers while managing communication throughout the transaction."
+				},
+				{
+					"question": "Does Petra purchase equipment directly?",
+					"answer": "Petra primarily operates as an equipment brokerage, helping connect buyers and sellers rather than purchasing equipment directly."
+				},
+				{
+					"question": "How does Petra earn its fee?",
+					"answer": "Petra's brokerage fees are discussed as part of the selling process, allowing sellers to understand how the brokerage relationship works before moving forward."
+				},
+				{
+					"question": "What happens if my equipment doesn't sell?",
+					"answer": "Market conditions vary, and not every asset sells immediately. If equipment remains available, Petra may discuss adjustments to pricing, marketing strategy, or buyer outreach based on current market activity."
+				}
+			],
+			"outro": {
+				"before": "Learn more about ",
+				"link": {
+					"label": "Why Sell With Petra",
+					"href": "/sell-equipment/why-sell-with-petra"
+				},
+				"after": " and how our brokerage approach helps equipment owners make informed selling decisions."
+			}
+		},
+		{
+			"title": "Buyers & Transactions",
+			"faqs": [
+				{
+					"question": "Who typically buys equipment through Petra?",
+					"answer": "Buyers may include oil and gas operators, production companies, industrial businesses, contractors, equipment dealers, and other organizations looking for quality used equipment."
+				},
+				{
+					"question": "Can buyers request additional information?",
+					"answer": "Yes. Buyers may request additional photos, documentation, or clarification before making purchasing decisions."
+				},
+				{
+					"question": "Can I decline an offer?",
+					"answer": "Absolutely. You remain in control throughout the brokerage process and decide whether to accept, reject, or negotiate any offer."
+				},
+				{
+					"question": "What happens after I accept an offer?",
+					"answer": "Petra continues supporting the transaction by helping coordinate communication, documentation, and the next steps toward completing the sale."
+				}
+			],
+			"outro": {
+				"before": "Curious about what happens after you decide to sell? Explore the ",
+				"link": {
+					"label": "Seller Process",
+					"href": "/sell-equipment/seller-process"
+				},
+				"after": " for a step-by-step overview."
+			}
+		},
+		{
+			"title": "Wyoming & Regional Service",
+			"faqs": [
+				{
+					"question": "Does Petra only work in Wyoming?",
+					"answer": "No. While Petra focuses on Wyoming and the surrounding Rockies, we work with buyers and sellers across other producing and industrial regions when opportunities align."
+				},
+				{
+					"question": "Can Petra help sell equipment located outside Wyoming?",
+					"answer": "Yes. Equipment located outside Wyoming may still be eligible for brokerage depending on its location, market demand, and buyer interest."
+				},
+				{
+					"question": "Does equipment location affect market value?",
+					"answer": "Yes. Transportation costs, regional demand, and local market conditions can all influence buyer interest and overall market value."
+				}
+			]
+		}
+	],
+	finalCta: {
+		"title": "Ready to Take the Next Step?",
+		"body": [
+			"Every equipment sale is different, and every seller's situation is unique.",
+			"Whether you're ready to submit equipment, would like to better understand its market potential, or simply want to discuss your options, Petra is here to help.",
+			"We'll provide honest guidance, practical recommendations, and straightforward answers based on your equipment and today's market."
+		],
+		"primaryCta": {
+			"label": "Submit Equipment",
+			"href": "/sell-equipment/equipment-submission"
+		},
+		"secondaryCta": {
+			"label": "Talk to a Broker",
+			"href": "/sell-equipment/contact-broker"
+		},
+		"smallLink": {
+			"label": "Request a Market-Based Valuation",
+			"href": "/sell-equipment/request-valuation"
+		}
+	}
+};
+//#endregion
+//#region resources/js/Pages/SellEquipment/Faqs.tsx
+var Faqs_exports = /* @__PURE__ */ __exportAll({ default: () => SellEquipmentFaqs });
+var { meta: meta$12, hero: hero$12, groups, finalCta: finalCta$12 } = faqs_default;
+/** Every group's questions, flattened — the FAQPage node describes the whole page. */
+var allFaqs = groups.flatMap((group) => group.faqs);
+function SellEquipmentFaqs({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [
+			sellEquipmentServiceNode(canonicalUrl, meta$12.description),
+			breadcrumbNode(canonicalUrl, {
+				name: "Sell Equipment FAQs",
+				url: canonicalUrl
 			}),
-			/* @__PURE__ */ jsx("section", {
-				id: "seller-intake",
-				className: "bg-[#f3f1ec] py-20 sm:py-24 lg:py-28",
-				children: /* @__PURE__ */ jsxs("div", {
-					className: "mx-auto max-w-[1280px] px-5 sm:px-10",
-					children: [
-						/* @__PURE__ */ jsxs("div", {
-							className: "mb-12 max-w-3xl",
-							children: [/* @__PURE__ */ jsx("span", {
-								className: "mb-4 block font-heading text-sm font-semibold uppercase tracking-[0.2em] text-[#a56437]",
-								children: "Submit Equipment"
-							}), /* @__PURE__ */ jsx("h2", {
-								className: "font-heading text-4xl font-bold uppercase tracking-[0.08em] text-neutral-950 sm:text-5xl",
-								children: "What We Need"
+			faqPageNode(canonicalUrl, allFaqs)
+		]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: meta$12.title,
+		description: meta$12.description,
+		canonicalUrl,
+		ogImageUrl,
+		structuredData
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [
+			/* @__PURE__ */ jsx(PageHero, { ...hero$12 }),
+			groups.map((group, index) => /* @__PURE__ */ jsxs(Section, {
+				background: index % 2 === 0 ? "cream" : "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, { title: group.title }),
+					"intro" in group && group.intro ? /* @__PURE__ */ jsx(RichText, {
+						value: group.intro,
+						className: "mt-6 max-w-3xl text-base leading-7 text-neutral-600"
+					}) : null,
+					/* @__PURE__ */ jsxs("div", {
+						className: "mt-10 max-w-4xl",
+						children: [/* @__PURE__ */ jsx(FaqAccordion, { faqs: group.faqs }), "outro" in group && group.outro ? /* @__PURE__ */ jsx(RichText, {
+							value: group.outro,
+							className: "mt-8 text-base leading-7 text-neutral-600"
+						}) : null]
+					})
+				]
+			}, group.title)),
+			/* @__PURE__ */ jsx(FinalCta, {
+				title: finalCta$12.title,
+				body: finalCta$12.body,
+				primaryCta: finalCta$12.primaryCta,
+				secondaryCta: finalCta$12.secondaryCta,
+				children: /* @__PURE__ */ jsx("p", {
+					className: "mt-6 text-base leading-7 text-white/70",
+					children: /* @__PURE__ */ jsx("a", {
+						href: finalCta$12.smallLink.href,
+						className: "font-semibold text-[#d69a6c] underline underline-offset-4 transition-colors hover:text-white",
+						children: finalCta$12.smallLink.label
+					})
+				})
+			})
+		]
+	})] });
+}
+var sell_equipment_default = {
+	meta: {
+		"title": "Sell Used Oilfield Equipment | Petra Equipment Brokerage",
+		"description": "Sell used oilfield and industrial equipment with Petra. We connect qualified buyers with compressors, separators, tanks, generators, and surplus equipment."
+	},
+	hero: {
+		"title": "Sell Used Oilfield & Industrial Equipment",
+		"body": ["Got equipment sitting idle in a yard or out in the field?", "Petra helps companies turn unused oilfield and industrial equipment into working capital by connecting sellers with qualified buyers across Wyoming, the Rockies, and surrounding producing regions."],
+		"primaryCta": {
+			"label": "Submit Equipment",
+			"href": "/sell-equipment/equipment-submission"
+		},
+		"secondaryCta": {
+			"label": "Talk to a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	},
+	workingCapital: {
+		"title": "Turn Idle Equipment Into Working Capital",
+		"body": ["Unused equipment does not have to sit and lose value.", "Whether you are clearing surplus inventory, replacing production equipment, or liquidating idle assets, Petra helps move equipment through a regional brokerage network built around real buyers and real market demand."],
+		"cta": {
+			"label": "Submit Equipment",
+			"href": "/sell-equipment/equipment-submission"
+		}
+	},
+	whyEquipmentDoesNotSell: {
+		"title": "Why Equipment Does Not Sell",
+		"intro": ["Most equipment does not fail to sell because it is bad.", "It usually sits because:"],
+		"reasons": [
+			"It is not reaching the right buyers",
+			"Pricing is not aligned with the market",
+			"It is only shown to a small local network",
+			"Internal teams do not have time to manage calls, questions, and negotiation"
+		],
+		"outro": "Petra helps sellers avoid the runaround by handling the brokerage process from positioning your equipment through buyer communication and negotiations."
+	},
+	equipmentYouCanSell: {
+		"title": "What Equipment Can You Sell?",
+		"intro": "Petra brokers a wide range of used oilfield and industrial equipment, including:",
+		"items": [
+			"Compressors",
+			"Separators",
+			"Production equipment packages",
+			"Heater treaters",
+			"Pump packages",
+			"Storage tanks and tank batteries",
+			"Generators and power units",
+			"Flowback equipment",
+			"Pipe and tubular",
+			"Valves and control systems",
+			"Surplus yard inventory",
+			"Single assets or full packages"
+		],
+		"outro": {
+			"before": "Not sure whether your equipment has value in today's market? ",
+			"link": {
+				"label": "Request a market-based valuation",
+				"href": "/sell-equipment/request-valuation"
+			},
+			"after": " and we'll review your equipment before you decide to sell."
+		}
+	},
+	whatWeNeed: {
+		"title": "What We Need From You",
+		"intro": "To review your equipment, Petra typically needs:",
+		"items": [
+			"Equipment description",
+			"Current location",
+			"General condition",
+			"Photos, if available",
+			"Documents or maintenance records, if available"
+		],
+		"outro": {
+			"before": "If you're ready, you can ",
+			"link": {
+				"label": "submit your equipment",
+				"href": "/sell-equipment/equipment-submission"
+			},
+			"after": " with whatever information you have today. Additional photos or documentation can always be added later."
+		}
+	},
+	process: {
+		"title": "How Our Equipment Brokerage Process Works",
+		"steps": [
+			{
+				"title": "Submit Your Equipment",
+				"body": "Send the basic details, location, condition, and available photos."
+			},
+			{
+				"title": "We Review the Equipment",
+				"body": "Petra evaluates market fit, demand, condition, and buyer potential."
+			},
+			{
+				"title": "We Connect With Qualified Buyers",
+				"body": "We present the equipment to buyers who are actually looking for assets like yours."
+			},
+			{
+				"title": "We Manage the Back-and-Forth",
+				"body": "Petra handles questions, buyer communication, negotiation, and coordination."
+			},
+			{
+				"title": "The Deal Moves Forward",
+				"body": "Once terms are agreed on, we help move the transaction toward completion."
+			}
+		],
+		"cta": {
+			"label": "Talk to a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	},
+	valuation: {
+		"title": "Equipment Valuation",
+		"body": ["Not sure what your equipment is worth?", "Petra helps position equipment based on current market conditions, demand, condition, location, and comparable sales — not guesswork."],
+		"outro": {
+			"before": "Learn more about our ",
+			"link": {
+				"label": "Equipment Valuation",
+				"href": "/sell-equipment/request-valuation"
+			},
+			"after": " process."
+		}
+	},
+	faqSection: {
+		"title": "Frequently Asked Questions",
+		"outro": {
+			"before": "Looking for more answers? Visit our ",
+			"link": {
+				"label": "Sell Equipment FAQs",
+				"href": "/sell-equipment/faqs"
+			},
+			"after": "."
+		}
+	},
+	faqs: [
+		{
+			"question": "What types of equipment can I sell?",
+			"answer": "Petra brokers used oilfield and industrial equipment, including compressors, separators, tanks, generators, pump packages, production equipment, and surplus inventory."
+		},
+		{
+			"question": "Do you purchase equipment directly?",
+			"answer": "Petra primarily operates as a brokerage, connecting sellers with qualified buyers through our regional network."
+		},
+		{
+			"question": "How is my equipment valued?",
+			"answer": "Valuation is based on market demand, equipment type, condition, location, documentation, and comparable sales."
+		},
+		{
+			"question": "Can I submit equipment outside Wyoming?",
+			"answer": "Yes. Petra focuses on Wyoming and surrounding producing regions, but also works across the Rockies and other energy-producing markets."
+		},
+		{
+			"question": "Do I need inspection reports or maintenance records?",
+			"answer": "No. They are helpful, but not required to begin the review process."
+		},
+		{
+			"question": "Can I speak with a broker before submitting?",
+			"answer": "Yes. You can contact a broker before submitting equipment if you have questions about value, fit, or the selling process."
+		}
+	],
+	finalCta: {
+		"title": "Ready to Sell Your Equipment?",
+		"body": ["If your equipment is sitting idle, Petra can help determine whether there is a real market for it.", "We will tell you straight whether we can help."],
+		"primaryCta": {
+			"label": "Submit Equipment",
+			"href": "/sell-equipment/equipment-submission"
+		},
+		"secondaryCta": {
+			"label": "Contact a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	}
+};
+//#endregion
+//#region resources/js/Pages/SellEquipment/Index.tsx
+var Index_exports = /* @__PURE__ */ __exportAll({ default: () => SellEquipmentIndex });
+var { meta: meta$10, hero: hero$10, workingCapital, whyEquipmentDoesNotSell, equipmentYouCanSell, whatWeNeed, process: process$2, valuation, faqSection: faqSection$8, faqs: faqs$10, finalCta: finalCta$10 } = sell_equipment_default;
+function SellEquipmentIndex({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [
+			sellEquipmentServiceNode(canonicalUrl, meta$10.description),
+			breadcrumbNode(canonicalUrl),
+			faqPageNode(canonicalUrl, faqs$10)
+		]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: meta$10.title,
+		description: meta$10.description,
+		canonicalUrl,
+		ogImageUrl,
+		structuredData
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [
+			/* @__PURE__ */ jsx(PageHero, { ...hero$10 }),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Working Capital",
+						title: workingCapital.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: workingCapital.body,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-8",
+						children: /* @__PURE__ */ jsx(PrimaryButton, { ...workingCapital.cta })
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Reality Check",
+						title: whyEquipmentDoesNotSell.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: whyEquipmentDoesNotSell.intro,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: whyEquipmentDoesNotSell.reasons,
+						columns: 2
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-8 max-w-3xl font-heading text-xl font-semibold uppercase tracking-[0.06em] text-neutral-950",
+						children: whyEquipmentDoesNotSell.outro
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "dark",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "What You Can Sell",
+						title: equipmentYouCanSell.title,
+						tone: "dark"
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base leading-7 text-white/70 sm:text-lg",
+						children: equipmentYouCanSell.intro
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-10 grid grid-cols-2 gap-px bg-white/15 md:grid-cols-3 lg:grid-cols-4",
+						children: equipmentYouCanSell.items.map((item) => /* @__PURE__ */ jsxs("div", {
+							className: "bg-[#1c1a16] p-5 transition-colors hover:bg-[#24211c]",
+							children: [/* @__PURE__ */ jsx("div", { className: "mb-4 h-1.5 w-1.5 bg-[#a56437]" }), /* @__PURE__ */ jsx("h3", {
+								className: "font-heading text-base font-semibold uppercase tracking-[0.06em] text-white",
+								children: item
 							})]
+						}, item))
+					}),
+					/* @__PURE__ */ jsx(RichText, {
+						value: equipmentYouCanSell.outro,
+						className: "mt-10 max-w-3xl text-base leading-7 text-white/70"
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Submit Equipment",
+						title: whatWeNeed.title
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base leading-7 text-neutral-600 sm:text-lg",
+						children: whatWeNeed.intro
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: whatWeNeed.items,
+						columns: 3
+					}),
+					/* @__PURE__ */ jsx(RichText, {
+						value: whatWeNeed.outro,
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600"
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Seller Process",
+						title: process$2.title
+					}),
+					/* @__PURE__ */ jsx(NumberedSteps, { steps: process$2.steps.map((step) => ({
+						title: step.title,
+						text: step.body
+					})) }),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-10",
+						children: /* @__PURE__ */ jsx(PrimaryButton, { ...process$2.cta })
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Valuation",
+						title: valuation.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: valuation.body,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx(RichText, {
+						value: valuation.outro,
+						className: "mt-6 max-w-3xl text-base leading-7 text-neutral-600"
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Questions",
+					title: faqSection$8.title
+				}), /* @__PURE__ */ jsxs("div", {
+					className: "mt-10 max-w-4xl",
+					children: [/* @__PURE__ */ jsx(FaqAccordion, { faqs: faqs$10 }), /* @__PURE__ */ jsx(RichText, {
+						value: faqSection$8.outro,
+						className: "mt-8 text-base leading-7 text-neutral-600"
+					})]
+				})]
+			}),
+			/* @__PURE__ */ jsx(FinalCta, { ...finalCta$10 })
+		]
+	})] });
+}
+var request_valuation_default = {
+	meta: {
+		"title": "Oilfield Equipment Valuation | Petra Equipment Brokerage",
+		"description": "Request a market-based valuation for your used oilfield and industrial equipment. Petra reviews buyer demand, equipment condition, and regional market activity."
+	},
+	hero: {
+		"title": "Request Equipment Valuation",
+		"subtitle": "Understand What Your Equipment May Be Worth",
+		"body": [
+			"Before deciding to sell, it's helpful to understand how your equipment fits within today's market.",
+			"Petra provides market-based equipment valuations using regional market knowledge, current buyer demand, equipment condition, and brokerage experience across Wyoming, the Rockies, and surrounding producing regions.",
+			"Whether you're selling a single asset or evaluating surplus equipment, we'll provide straightforward guidance to help you make informed decisions."
+		],
+		"primaryCta": {
+			"label": "Request a Market-Based Valuation",
+			"href": "/sell-equipment/equipment-submission"
+		}
+	},
+	whyRequest: {
+		"title": "Why Request a Market-Based Valuation?",
+		"intro": ["Knowing your equipment's potential market value helps you make better decisions before selling.", "A valuation can help you:"],
+		"items": [
+			"Understand current market demand",
+			"Set realistic pricing expectations",
+			"Evaluate whether now is the right time to sell",
+			"Identify factors that may influence buyer interest",
+			"Prepare your equipment for the brokerage process"
+		],
+		"outro": {
+			"before": "If you're still deciding whether Petra is the right brokerage partner, learn ",
+			"link": {
+				"label": "Why Sell With Petra",
+				"href": "/sell-equipment/why-sell-with-petra"
+			},
+			"after": " and see how we help equipment owners make informed selling decisions."
+		}
+	},
+	whatWeConsider: {
+		"title": "What We Consider During Our Review",
+		"items": [
+			{
+				"title": "Current Market Demand",
+				"body": ["Equipment values change based on buyer demand and market activity.", "We consider what buyers are actively looking for across Wyoming, the Rockies, and surrounding producing regions."]
+			},
+			{
+				"title": "Equipment Condition",
+				"body": ["Condition plays an important role in valuation.", "We'll review information such as:"],
+				"items": [
+					"Operating condition",
+					"Visible wear",
+					"Maintenance history",
+					"Overall equipment readiness"
+				]
+			},
+			{
+				"title": "Equipment Type & Specifications",
+				"body": ["The type of equipment you're selling helps determine market interest.", "Information such as manufacturer, model, age, capacity, and specifications provides valuable context during our review."]
+			},
+			{
+				"title": "Regional Market Activity",
+				"body": ["Equipment demand varies by region.", "Petra focuses on Wyoming and the surrounding energy-producing markets, allowing us to consider regional buyer activity when reviewing your equipment."]
+			},
+			{
+				"title": "Supporting Information",
+				"body": ["Photos, maintenance records, inspection reports, and other supporting documents help us better understand your equipment and provide more informed guidance.", "Don't worry if you don't have everything—submit what you have."]
+			},
+			{
+				"title": "Comparable Market Opportunities",
+				"body": ["We also consider current brokerage activity and comparable equipment opportunities to better understand how your equipment may fit within today's market."]
+			}
+		],
+		"outro": {
+			"before": "Once you're ready, you can ",
+			"link": {
+				"label": "submit your equipment",
+				"href": "/sell-equipment/equipment-submission"
+			},
+			"after": " for a full review by our brokerage team."
+		}
+	},
+	whatYoullNeed: {
+		"title": "What You'll Need",
+		"intro": "To request a valuation, it's helpful to provide:",
+		"items": [
+			"Equipment type",
+			"Manufacturer and model",
+			"Equipment location",
+			"General condition",
+			"Photos (if available)",
+			"Supporting documents (if available)"
+		],
+		"outro": "The more information you provide, the more accurately we can review your equipment."
+	},
+	afterYouRequest: {
+		"title": "What Happens After You Request a Valuation?",
+		"steps": [
+			"Submit your equipment information.",
+			"Petra reviews the available details and supporting information.",
+			"We evaluate current market conditions, regional demand, and comparable opportunities.",
+			"If additional information is needed, we'll contact you directly.",
+			"We'll discuss our observations, answer your questions, and explain the recommended next steps."
+		],
+		"outro": "There is no obligation to move forward with the brokerage process after receiving a valuation.",
+		"processLink": {
+			"before": "After reviewing your equipment, we'll discuss our recommendations and, if appropriate, guide you through the ",
+			"link": {
+				"label": "Seller Process",
+				"href": "/sell-equipment/seller-process"
+			},
+			"after": "."
+		}
+	},
+	whyDifferent: {
+		"title": "Why Petra's Approach Is Different",
+		"body": [
+			"Petra doesn't rely on automated pricing tools or generic estimates.",
+			"Every valuation is reviewed using current market activity, regional buyer demand, equipment condition, and brokerage experience.",
+			"Our goal is to provide practical guidance—not unrealistic expectations.",
+			"If we believe your equipment has strong market potential, we'll explain why.",
+			"If market conditions are challenging, we'll tell you that, too.",
+			"Honest communication is part of our brokerage process."
+		]
+	},
+	faqSection: {
+		"title": "Frequently Asked Questions",
+		"outro": {
+			"before": "Have questions about valuations, pricing, or the brokerage process? Visit our ",
+			"link": {
+				"label": "Sell Equipment FAQs",
+				"href": "/sell-equipment/faqs"
+			},
+			"after": " for additional answers."
+		}
+	},
+	faqs: [
+		{
+			"question": "Is requesting a valuation free?",
+			"answer": "Yes. Petra provides an initial market-based valuation review at no cost."
+		},
+		{
+			"question": "Is this a certified equipment appraisal?",
+			"answer": "No. Our valuation is a brokerage opinion based on market conditions, buyer demand, equipment information, and regional industry experience. It is not a certified appraisal."
+		},
+		{
+			"question": "Am I required to sell after receiving a valuation?",
+			"answer": "No. Requesting a valuation does not obligate you to sell your equipment."
+		},
+		{
+			"question": "How long does the review take?",
+			"answer": "Review times vary depending on the equipment and the information provided. If additional details are needed, Petra will contact you directly."
+		},
+		{
+			"question": "Can I request valuations for multiple pieces of equipment?",
+			"answer": "Yes. We regularly review individual assets, complete equipment packages, and surplus equipment inventories."
+		}
+	],
+	finalCta: {
+		"title": "Ready to Understand Your Equipment's Market Potential?",
+		"body": [
+			"If you're considering selling used oilfield or industrial equipment, understanding its market potential is the best place to start.",
+			"Petra provides straightforward, market-based guidance using the information you provide, regional market activity, buyer demand, and brokerage experience—helping you make informed decisions before moving forward.",
+			"Every piece of equipment is different. Some assets may be a strong fit for our buyer network, while others may require a different sales strategy. A market-based valuation helps you better understand your equipment's potential and the options available before deciding to sell."
+		],
+		"primaryCta": {
+			"label": "Request a Market-Based Valuation",
+			"href": "/sell-equipment/equipment-submission"
+		},
+		"secondaryCta": {
+			"label": "Talk to a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	},
+	valuationNotice: {
+		"title": "Brokerage Valuation Notice",
+		"body": "Petra provides market-based brokerage valuations to help equipment owners understand potential market opportunities. These valuations are intended for brokerage guidance only and should not be considered certified equipment appraisals."
+	}
+};
+//#endregion
+//#region resources/js/Pages/SellEquipment/RequestValuation.tsx
+var RequestValuation_exports = /* @__PURE__ */ __exportAll({ default: () => RequestValuation });
+var { meta: meta$8, hero: hero$8, whyRequest, whatWeConsider, whatYoullNeed, afterYouRequest, whyDifferent, faqSection: faqSection$6, faqs: faqs$8, finalCta: finalCta$8, valuationNotice } = request_valuation_default;
+function RequestValuation({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [
+			sellEquipmentServiceNode(canonicalUrl, meta$8.description),
+			breadcrumbNode(canonicalUrl, {
+				name: "Request Equipment Valuation",
+				url: canonicalUrl
+			}),
+			faqPageNode(canonicalUrl, faqs$8)
+		]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: meta$8.title,
+		description: meta$8.description,
+		canonicalUrl,
+		ogImageUrl,
+		structuredData
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [
+			/* @__PURE__ */ jsx(PageHero, { ...hero$8 }),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Why Ask",
+						title: whyRequest.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: whyRequest.intro,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: whyRequest.items,
+						columns: 2
+					}),
+					/* @__PURE__ */ jsx(RichText, {
+						value: whyRequest.outro,
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600"
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Our Review",
+						title: whatWeConsider.title
+					}),
+					/* @__PURE__ */ jsx(CardGrid, {
+						items: whatWeConsider.items,
+						columns: 3
+					}),
+					/* @__PURE__ */ jsx(RichText, {
+						value: whatWeConsider.outro,
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600"
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Preparation",
+						title: whatYoullNeed.title
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base leading-7 text-neutral-600 sm:text-lg",
+						children: whatYoullNeed.intro
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: whatYoullNeed.items,
+						columns: 3
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600",
+						children: whatYoullNeed.outro
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "What Happens Next",
+						title: afterYouRequest.title
+					}),
+					/* @__PURE__ */ jsx(NumberedSteps, { steps: afterYouRequest.steps.map((step) => ({ text: step })) }),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600",
+						children: afterYouRequest.outro
+					}),
+					/* @__PURE__ */ jsx(RichText, {
+						value: afterYouRequest.processLink,
+						className: "mt-4 max-w-3xl text-base leading-7 text-neutral-600"
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "dark",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Our Approach",
+					title: whyDifferent.title,
+					tone: "dark"
+				}), /* @__PURE__ */ jsx("div", {
+					className: "mt-6 max-w-3xl space-y-4",
+					children: /* @__PURE__ */ jsx(RichTextList, {
+						items: whyDifferent.body,
+						className: "text-base leading-7 text-white/70 sm:text-lg"
+					})
+				})]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Questions",
+					title: faqSection$6.title
+				}), /* @__PURE__ */ jsxs("div", {
+					className: "mt-10 max-w-4xl",
+					children: [/* @__PURE__ */ jsx(FaqAccordion, { faqs: faqs$8 }), /* @__PURE__ */ jsx(RichText, {
+						value: faqSection$6.outro,
+						className: "mt-8 text-base leading-7 text-neutral-600"
+					})]
+				})]
+			}),
+			/* @__PURE__ */ jsx(FinalCta, { ...finalCta$8 }),
+			/* @__PURE__ */ jsx("aside", {
+				className: "border-t border-[#dad5cb] bg-[#f3f1ec]",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "mx-auto max-w-[1280px] px-5 py-10 sm:px-10",
+					children: [/* @__PURE__ */ jsx("h2", {
+						className: "font-heading text-sm font-semibold uppercase tracking-[0.16em] text-neutral-500",
+						children: valuationNotice.title
+					}), /* @__PURE__ */ jsx("p", {
+						className: "mt-3 max-w-4xl text-sm leading-6 text-neutral-500",
+						children: valuationNotice.body
+					})]
+				})
+			})
+		]
+	})] });
+}
+var seller_process_default = {
+	meta: {
+		"title": "Seller Process | Oilfield Equipment Brokerage | Petra",
+		"description": "Learn how Petra's equipment brokerage process helps companies sell used oilfield and industrial equipment through qualified buyers, market guidance, and transaction support."
+	},
+	hero: {
+		"title": "Seller Process",
+		"subtitle": "A Straightforward Process for Selling Used Oilfield & Industrial Equipment",
+		"body": [
+			"Selling equipment shouldn't be complicated.",
+			"Petra guides you through each stage of the brokerage process—from your initial submission to connecting with qualified buyers and supporting the transaction through completion. Our goal is to make selling equipment as clear, efficient, and professional as possible.",
+			"Whether you're selling a single asset or liquidating surplus equipment, you'll always know what comes next."
+		],
+		"primaryCta": {
+			"label": "Submit Equipment",
+			"href": "/sell-equipment/equipment-submission"
+		},
+		"secondaryCta": {
+			"label": "Talk to a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	},
+	process: {
+		"title": "How the Seller Process Works",
+		"intro": "Our brokerage process is designed to help sellers reach qualified buyers while reducing the time and effort required to manage the sale.",
+		"introLink": {
+			"before": "Not sure whether you're ready to begin? A ",
+			"link": {
+				"label": "market-based valuation",
+				"href": "/sell-equipment/request-valuation"
+			},
+			"after": " can help you understand your equipment's potential before entering the brokerage process."
+		},
+		"steps": [
+			{
+				"title": "Submit Your Equipment",
+				"body": ["Everything starts with the basics.", "Provide the available information about your equipment, including:"],
+				"items": [
+					"Equipment type",
+					"Location",
+					"General condition",
+					"Photos (if available)",
+					"Documentation (if available)"
+				],
+				"outro": {
+					"before": "Complete your ",
+					"link": {
+						"label": "Equipment Submission",
+						"href": "/sell-equipment/equipment-submission"
+					},
+					"after": " with the information you have available. Additional details can be provided later if needed."
+				}
+			},
+			{
+				"title": "Equipment Review & Market Assessment",
+				"body": ["Once we receive your submission, our team reviews the equipment to understand its market potential.", "We consider factors such as:"],
+				"items": [
+					"Equipment type",
+					"Current condition",
+					"Regional demand",
+					"Market activity",
+					"Available documentation"
+				],
+				"outro": "This review helps us determine how the equipment should be positioned within the market."
+			},
+			{
+				"title": "Market Positioning",
+				"body": [
+					"Selling equipment isn't just about listing it.",
+					"Proper positioning helps attract the right buyers.",
+					"Petra evaluates current market conditions and presents your equipment with accurate descriptions, supporting information, and practical pricing guidance to improve visibility among qualified buyers."
+				]
+			},
+			{
+				"title": "Buyer Outreach",
+				"body": ["Once your equipment is ready for market, we begin connecting with buyers through our regional brokerage network.", "Rather than relying solely on public listings, Petra works to present equipment to buyers actively searching for assets that match your equipment's specifications and condition."]
+			},
+			{
+				"title": "Buyer Communication & Negotiation",
+				"body": ["As buyer interest develops, Petra manages the communication process on your behalf.", "We help coordinate:"],
+				"items": [
+					"Buyer inquiries",
+					"Equipment questions",
+					"Pricing discussions",
+					"Negotiations",
+					"Inspection requests",
+					"Documentation requests"
+				],
+				"outro": "Our goal is to keep the process organized while allowing your team to stay focused on day-to-day operations."
+			},
+			{
+				"title": "Offer Review",
+				"body": ["When offers are received, Petra works with you to review the details.", "We help explain:"],
+				"items": [
+					"Offer terms",
+					"Market considerations",
+					"Buyer expectations",
+					"Next steps"
+				],
+				"outro": "Every decision remains yours. Petra provides guidance so you can make informed decisions with confidence."
+			},
+			{
+				"title": "Transaction Support",
+				"body": [
+					"Once an agreement is reached, Petra continues supporting the transaction through completion.",
+					"Depending on the equipment and buyer requirements, Petra may help coordinate equipment inspections, documentation, and communication between all parties to keep the transaction moving efficiently.",
+					"Our involvement doesn't end when a buyer is found—we continue working to help move the process toward a successful conclusion."
+				]
+			}
+		]
+	},
+	whyStructured: {
+		"title": "Why a Structured Brokerage Process Matters",
+		"intro": ["Many equipment sales slow down because communication becomes inconsistent, pricing isn't aligned with the market, or qualified buyers never see the opportunity.", "Petra's structured brokerage process helps reduce these challenges by providing:"],
+		"items": [
+			"Clear communication",
+			"Market-based guidance",
+			"Regional buyer connections",
+			"Professional transaction coordination",
+			"A straightforward process from beginning to end"
+		],
+		"outro": "Our objective is simple: help qualified buyers and sellers connect through a professional brokerage experience built on trust and industry knowledge."
+	},
+	faqSection: {
+		"title": "Frequently Asked Questions",
+		"intro": "Every equipment sale is different, and questions often come up along the way.",
+		"outro": {
+			"before": "Visit our ",
+			"link": {
+				"label": "Sell Equipment FAQs",
+				"href": "/sell-equipment/faqs"
+			},
+			"after": " for additional information about valuations, documentation, equipment preparation, and the brokerage process."
+		}
+	},
+	faqs: [
+		{
+			"question": "How long does the selling process take?",
+			"answer": "Every transaction is different. Timing depends on equipment type, market demand, condition, pricing, and buyer activity."
+		},
+		{
+			"question": "Do I need photos before submitting my equipment?",
+			"answer": "Photos are helpful, but they aren't required. The more information you can provide, the better we can evaluate your equipment."
+		},
+		{
+			"question": "Will Petra inspect my equipment?",
+			"answer": "Some transactions may require additional information or inspections. If needed, we'll discuss those requirements during the brokerage process."
+		},
+		{
+			"question": "Who communicates with potential buyers?",
+			"answer": "Petra manages buyer communication throughout the brokerage process, including inquiries, negotiations, and coordination."
+		},
+		{
+			"question": "Can I sell more than one piece of equipment?",
+			"answer": "Yes. Petra works with individual assets, complete equipment packages, and surplus equipment inventories."
+		}
+	],
+	finalCta: {
+		"title": "Ready to Get Started?",
+		"body": ["If you're ready to sell used oilfield or industrial equipment, Petra is ready to help.", "We'll review your equipment, explain the next steps, and tell you honestly whether we believe there's a market for your asset."],
+		"primaryCta": {
+			"label": "Submit Equipment",
+			"href": "/sell-equipment/equipment-submission"
+		},
+		"secondaryCta": {
+			"label": "Contact a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	}
+};
+//#endregion
+//#region resources/js/Pages/SellEquipment/SellerProcess.tsx
+var SellerProcess_exports = /* @__PURE__ */ __exportAll({ default: () => SellerProcess });
+var { meta: meta$6, hero: hero$6, process, whyStructured, faqSection: faqSection$4, faqs: faqs$6, finalCta: finalCta$6 } = seller_process_default;
+function SellerProcess({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [
+			sellEquipmentServiceNode(canonicalUrl, meta$6.description),
+			breadcrumbNode(canonicalUrl, {
+				name: "Seller Process",
+				url: canonicalUrl
+			}),
+			faqPageNode(canonicalUrl, faqs$6)
+		]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: meta$6.title,
+		description: meta$6.description,
+		canonicalUrl,
+		ogImageUrl,
+		structuredData
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [
+			/* @__PURE__ */ jsx(PageHero, { ...hero$6 }),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Step by Step",
+						title: process.title
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base leading-7 text-neutral-600 sm:text-lg",
+						children: process.intro
+					}),
+					/* @__PURE__ */ jsx(RichText, {
+						value: process.introLink,
+						className: "mt-4 max-w-3xl text-base leading-7 text-neutral-600"
+					}),
+					/* @__PURE__ */ jsx(NumberedSteps, { steps: process.steps })
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Why It Matters",
+						title: whyStructured.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: whyStructured.intro,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: whyStructured.items,
+						columns: 2
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600",
+						children: whyStructured.outro
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Questions",
+						title: faqSection$4.title
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base leading-7 text-neutral-600 sm:text-lg",
+						children: faqSection$4.intro
+					}),
+					/* @__PURE__ */ jsxs("div", {
+						className: "mt-10 max-w-4xl",
+						children: [/* @__PURE__ */ jsx(FaqAccordion, { faqs: faqs$6 }), /* @__PURE__ */ jsx(RichText, {
+							value: faqSection$4.outro,
+							className: "mt-8 text-base leading-7 text-neutral-600"
+						})]
+					})
+				]
+			}),
+			/* @__PURE__ */ jsx(FinalCta, { ...finalCta$6 })
+		]
+	})] });
+}
+//#endregion
+//#region resources/js/Pages/SellEquipment/SubmissionThanks.tsx
+var SubmissionThanks_exports = /* @__PURE__ */ __exportAll({ default: () => SubmissionThanks });
+var { confirmationPage } = equipment_submission_default;
+/**
+* Post-submission confirmation. Noindexed: it is a step in a flow, not a landing page, and
+* it would otherwise compete with the submission page in search results.
+*/
+function SubmissionThanks({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [breadcrumbNode(canonicalUrl, {
+			name: "Thank You",
+			url: canonicalUrl
+		})]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: confirmationPage.meta.title,
+		description: confirmationPage.meta.description,
+		canonicalUrl,
+		ogImageUrl,
+		noindex: true,
+		structuredData
+	}), /* @__PURE__ */ jsx("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: /* @__PURE__ */ jsx("section", {
+			className: "border-b border-[#dad5cb] bg-white",
+			children: /* @__PURE__ */ jsx("div", {
+				className: "mx-auto max-w-[1280px] px-5 py-20 sm:px-10 lg:py-28",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "max-w-3xl",
+					children: [
+						/* @__PURE__ */ jsx("span", {
+							className: "mb-6 flex h-14 w-14 items-center justify-center bg-[#a56437] text-white",
+							children: /* @__PURE__ */ jsx("svg", {
+								width: "28",
+								height: "28",
+								viewBox: "0 0 24 24",
+								fill: "none",
+								stroke: "currentColor",
+								strokeWidth: "2.5",
+								children: /* @__PURE__ */ jsx("path", {
+									d: "m5 12.5 4.5 4.5L19 7.5",
+									strokeLinecap: "square"
+								})
+							})
+						}),
+						/* @__PURE__ */ jsx("h1", {
+							className: "font-hero text-[2.4rem] font-bold uppercase leading-[1.04] tracking-[0.08em] text-neutral-950 sm:text-[3.1rem]",
+							children: confirmationPage.title
 						}),
 						/* @__PURE__ */ jsx("div", {
-							className: "grid grid-cols-1 gap-px bg-[#dad5cb] sm:grid-cols-2 lg:grid-cols-5",
-							children: requirements.map((requirement) => /* @__PURE__ */ jsxs("article", {
-								className: "bg-white p-7",
-								children: [/* @__PURE__ */ jsx(FeatureIcon, {
-									type: "check",
-									className: "mb-6 h-5 w-5"
-								}), /* @__PURE__ */ jsx("h3", {
-									className: "font-heading text-xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-									children: requirement
-								})]
-							}, requirement))
+							className: "mt-6 space-y-4",
+							children: confirmationPage.body.map((paragraph) => /* @__PURE__ */ jsx("p", {
+								className: "text-base font-medium leading-7 text-neutral-600 sm:text-lg",
+								children: paragraph
+							}, paragraph))
 						}),
-						/* @__PURE__ */ jsx("p", {
-							className: "mt-10 font-heading text-2xl font-semibold uppercase tracking-[0.08em] text-neutral-950",
-							children: "We don't let equipment sit. If it can move, we move it."
+						/* @__PURE__ */ jsxs("div", {
+							className: "mt-10 flex flex-col gap-4 sm:flex-row",
+							children: [/* @__PURE__ */ jsx(PrimaryButton, { ...confirmationPage.primaryCta }), /* @__PURE__ */ jsx(SecondaryButton, { ...confirmationPage.secondaryCta })]
 						})
 					]
 				})
 			})
+		})
+	})] });
+}
+var upload_documents_default = {
+	meta: {
+		"title": "Equipment Documentation Guide | Petra Equipment Brokerage",
+		"description": "Upload equipment documents to help Petra review, evaluate, and market your used oilfield and industrial equipment. Maintenance records and manuals are helpful but not required."
+	},
+	hero: {
+		"title": "Upload Equipment Documents",
+		"subtitle": "Help Us Better Understand Your Equipment",
+		"body": [
+			"Supporting documents help Petra evaluate your equipment more accurately, answer buyer questions, and prepare your equipment for the brokerage process.",
+			"Don't worry if you don't have every document.",
+			"Simply upload what you have, and we'll let you know if anything else would be helpful during the review process."
+		],
+		"primaryCta": {
+			"label": "Continue to Equipment Submission",
+			"href": "/sell-equipment/equipment-submission"
+		},
+		"secondaryCta": {
+			"label": "Talk to a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	},
+	whyDocumentationMatters: {
+		"title": "Why Equipment Documentation Matters",
+		"intro": "The right documentation helps Petra:",
+		"items": [
+			"Evaluate equipment more efficiently",
+			"Verify specifications and equipment details",
+			"Answer buyer questions with greater confidence",
+			"Reduce unnecessary follow-up requests",
+			"Prepare equipment for qualified buyers"
+		],
+		"outro": "Documentation helps create a smoother brokerage process for everyone involved."
+	},
+	recommendedDocuments: {
+		"title": "Recommended Documents",
+		"items": [
+			{
+				"title": "Specification Sheets",
+				"body": ["Technical specifications help buyers understand exactly what equipment they're reviewing.", "Helpful documents include:"],
+				"items": [
+					"Manufacturer specifications",
+					"Model information",
+					"Capacity ratings",
+					"Technical data sheets"
+				]
+			},
+			{
+				"title": "Maintenance Records",
+				"body": ["Maintenance history provides valuable insight into how the equipment has been cared for.", "Examples include:"],
+				"items": [
+					"Routine maintenance logs",
+					"Repair records",
+					"Service history",
+					"Parts replacement records"
+				]
+			},
+			{
+				"title": "Inspection Reports",
+				"body": ["Previous inspections can help buyers better understand the equipment's condition.", "If available, upload:"],
+				"items": [
+					"Equipment inspections",
+					"Condition reports",
+					"Third-party evaluations",
+					"Operational assessments"
+				]
+			},
+			{
+				"title": "Equipment Manuals",
+				"body": ["Equipment manuals help verify operating information and technical details.", "Examples include:"],
+				"items": [
+					"Operator manuals",
+					"Service manuals",
+					"Parts manuals",
+					"Technical documentation"
+				]
+			},
+			{
+				"title": "Ownership & Asset Information",
+				"body": ["Any records that help identify the equipment are useful.", "Examples include:"],
+				"items": [
+					"Asset identification numbers",
+					"Inventory records",
+					"Purchase information",
+					"Equipment registration",
+					"Internal asset tracking documents"
+				]
+			},
+			{
+				"title": "Other Supporting Documents",
+				"body": [
+					"Every piece of equipment is different.",
+					"If you have additional documentation that may help buyers better understand your equipment, feel free to include it.",
+					"Examples include:"
+				],
+				"items": [
+					"Equipment history",
+					"Upgrade records",
+					"Installation documentation",
+					"Operational notes"
+				]
+			}
+		]
+	},
+	tips: {
+		"title": "Tips Before Uploading Documents",
+		"intro": ["A few simple tips can help speed up the review process."],
+		"items": [
+			"PDF files are preferred.",
+			"Ensure documents are clear and readable.",
+			"Include the most recent records whenever possible.",
+			"Upload only documents related to the equipment being submitted.",
+			"Don't worry if you don't have every document."
+		],
+		"outro": "Helpful documentation is always appreciated, but complete records are not required."
+	},
+	notEveryDocument: {
+		"title": "Don't Have Every Document?",
+		"body": [
+			"That's completely okay.",
+			"Many equipment submissions begin with limited documentation.",
+			"Submit what you have today.",
+			"If additional information would help during the review process, Petra will contact you directly and explain what's needed."
+		]
+	},
+	faqSection: { "title": "Frequently Asked Questions" },
+	faqs: [
+		{
+			"question": "Are documents required before I submit equipment?",
+			"answer": "No. Documentation is helpful but not required to begin the brokerage review process."
+		},
+		{
+			"question": "What documents are most helpful?",
+			"answer": "Specification sheets, maintenance records, inspection reports, and equipment manuals generally provide the most value during equipment evaluation."
+		},
+		{
+			"question": "Can I upload documents later?",
+			"answer": "Yes. If additional documentation becomes available after your initial submission, it can be provided during the brokerage process."
+		},
+		{
+			"question": "What if I don't have maintenance records?",
+			"answer": "That's not a problem. Submit the information you have, and Petra will review your equipment based on the available details."
+		},
+		{
+			"question": "Are scanned copies acceptable?",
+			"answer": "Yes. Clear scanned documents or readable digital copies are perfectly acceptable."
+		},
+		{
+			"question": "What file types can I upload?",
+			"answer": "PDF files are preferred, but common image formats and standard document files are also acceptable when they're clear and easy to read."
+		}
+	],
+	finalCta: {
+		"title": "Ready to Upload Your Documents?",
+		"body": ["Supporting documentation helps Petra better understand your equipment, verify important details, and provide qualified buyers with accurate information.", "We'll review everything you submit and let you know if additional documentation would be helpful."],
+		"primaryCta": {
+			"label": "Continue to Equipment Submission",
+			"href": "/sell-equipment/equipment-submission"
+		},
+		"secondaryCta": {
+			"label": "Contact a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	}
+};
+//#endregion
+//#region resources/js/Pages/SellEquipment/UploadDocuments.tsx
+var UploadDocuments_exports = /* @__PURE__ */ __exportAll({ default: () => UploadDocuments });
+var { meta: meta$4, hero: hero$4, whyDocumentationMatters, recommendedDocuments, tips: tips$2, notEveryDocument, faqSection: faqSection$2, faqs: faqs$4, finalCta: finalCta$4 } = upload_documents_default;
+function UploadDocuments({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [
+			sellEquipmentServiceNode(canonicalUrl, meta$4.description),
+			breadcrumbNode(canonicalUrl, {
+				name: "Equipment Documentation Guide",
+				url: canonicalUrl
+			}),
+			faqPageNode(canonicalUrl, faqs$4)
+		]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: meta$4.title,
+		description: meta$4.description,
+		canonicalUrl,
+		ogImageUrl,
+		structuredData
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [
+			/* @__PURE__ */ jsx(PageHero, { ...hero$4 }),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Why It Helps",
+						title: whyDocumentationMatters.title
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base leading-7 text-neutral-600 sm:text-lg",
+						children: whyDocumentationMatters.intro
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: whyDocumentationMatters.items,
+						columns: 2
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600",
+						children: whyDocumentationMatters.outro
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Document Checklist",
+					title: recommendedDocuments.title
+				}), /* @__PURE__ */ jsx(CardGrid, {
+					items: recommendedDocuments.items,
+					columns: 3
+				})]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "dark",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Practical Tips",
+						title: tips$2.title,
+						tone: "dark"
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: tips$2.intro,
+							className: "text-base leading-7 text-white/70 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx("ul", {
+						className: "mt-10 grid grid-cols-1 gap-px bg-white/15 md:grid-cols-2 lg:grid-cols-3",
+						children: tips$2.items.map((tip) => /* @__PURE__ */ jsxs("li", {
+							className: "flex items-start gap-4 bg-[#1c1a16] p-5",
+							children: [/* @__PURE__ */ jsx("span", {
+								"aria-hidden": "true",
+								className: "mt-2.5 h-1.5 w-1.5 shrink-0 bg-[#a56437]"
+							}), /* @__PURE__ */ jsx("span", {
+								className: "text-base leading-7 text-white/80",
+								children: tip
+							})]
+						}, tip))
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-8 max-w-3xl text-base leading-7 text-white/70",
+						children: tips$2.outro
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "No Pressure",
+					title: notEveryDocument.title
+				}), /* @__PURE__ */ jsx("div", {
+					className: "mt-6 max-w-3xl space-y-4",
+					children: /* @__PURE__ */ jsx(RichTextList, {
+						items: notEveryDocument.body,
+						className: "text-base leading-7 text-neutral-600 sm:text-lg"
+					})
+				})]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Questions",
+					title: faqSection$2.title
+				}), /* @__PURE__ */ jsx("div", {
+					className: "mt-10 max-w-4xl",
+					children: /* @__PURE__ */ jsx(FaqAccordion, { faqs: faqs$4 })
+				})]
+			}),
+			/* @__PURE__ */ jsx(FinalCta, { ...finalCta$4 })
+		]
+	})] });
+}
+var upload_photos_default = {
+	meta: {
+		"title": "Equipment Photo Guide | Petra Equipment Brokerage",
+		"description": "Upload clear photos of your used oilfield and industrial equipment for brokerage review. Learn which images help Petra evaluate and market your equipment."
+	},
+	hero: {
+		"title": "Upload Equipment Photos",
+		"subtitle": "Help Us Represent Your Equipment Accurately",
+		"body": [
+			"Good photos help us understand your equipment, evaluate its condition, and present it accurately to qualified buyers.",
+			"Professional photography isn't required.",
+			"Clear photos taken with your phone are usually enough to begin the review process.",
+			"If you only have a few photos, submit what you have. Additional images can always be provided later if needed."
+		],
+		"primaryCta": {
+			"label": "Continue to Equipment Submission",
+			"href": "/sell-equipment/equipment-submission"
+		},
+		"secondaryCta": {
+			"label": "Talk to a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	},
+	whyPhotosMatter: {
+		"title": "Why Equipment Photos Matter",
+		"intro": "Photos allow Petra to:",
+		"items": [
+			"Faster Equipment Review",
+			"Better Buyer Interest",
+			"More Accurate Representation",
+			"Less Back-and-Forth"
+		],
+		"outro": "The better we understand your equipment, the better we can represent it."
+	},
+	recommendedPhotos: {
+		"title": "Recommended Equipment Photos",
+		"items": [
+			{
+				"title": "Overall Equipment",
+				"body": ["Show the complete piece of equipment.", "Take a photo from far enough away so the entire asset is visible."]
+			},
+			{
+				"title": "Multiple Angles",
+				"body": ["Capture the equipment from:"],
+				"items": [
+					"Front",
+					"Rear",
+					"Both sides"
+				],
+				"outro": "This helps buyers understand the overall condition and layout."
+			},
+			{
+				"title": "Equipment Nameplate",
+				"body": ["Include a clear photo of the manufacturer plate if available.", "Examples:"],
+				"items": [
+					"Manufacturer",
+					"Model",
+					"Serial Number",
+					"Capacity"
+				],
+				"outro": "This information helps verify specifications during the brokerage process."
+			},
+			{
+				"title": "Controls & Operating Components",
+				"body": ["Photograph important operating areas such as:"],
+				"items": [
+					"Control panels",
+					"Gauges",
+					"Displays",
+					"Engines",
+					"Pumps",
+					"Compressors"
+				],
+				"outro": "These images help buyers better understand the equipment configuration."
+			},
+			{
+				"title": "Interior Components (If Accessible)",
+				"body": ["If safe and practical, include photos of:"],
+				"items": [
+					"Internal compartments",
+					"Mechanical components",
+					"Accessible systems"
+				],
+				"outro": "This provides additional information without requiring an on-site inspection."
+			},
+			{
+				"title": "Current Condition",
+				"body": ["Don't worry about hiding wear.", "Photos showing:"],
+				"items": [
+					"Normal wear",
+					"Surface rust",
+					"Cosmetic damage",
+					"Missing components",
+					"Repairs"
+				],
+				"outro": "help us represent the equipment honestly and reduce surprises later in the process."
+			}
+		]
+	},
+	tips: {
+		"title": "Tips for Better Equipment Photos",
+		"intro": ["Getting useful photos doesn't have to be complicated.", "A few simple tips can make a big difference."],
+		"items": [
+			"Daylight is best.",
+			"Keep the equipment fully visible.",
+			"Avoid blurry images.",
+			"Include several angles.",
+			"Photograph the nameplate.",
+			"Show any visible wear honestly.",
+			"Phone photos are acceptable"
+		]
+	},
+	notEveryPhoto: {
+		"title": "Don't Have Every Photo?",
+		"body": [
+			"That's okay.",
+			"Many sellers begin with only a few available images.",
+			"Submit what you have today.",
+			"If additional photos would help during the review process, Petra will let you know exactly what is needed."
+		]
+	},
+	faqSection: { "title": "Frequently Asked Questions" },
+	faqs: [
+		{
+			"question": "Do I need professional photographs?",
+			"answer": "No. Clear photos taken with your phone are usually sufficient."
+		},
+		{
+			"question": "How many photos should I upload?",
+			"answer": "There isn't a required number, but multiple photos from different angles help us better evaluate your equipment."
+		},
+		{
+			"question": "Should I photograph damaged areas?",
+			"answer": "Yes. Showing wear or damage helps buyers understand the equipment and builds trust throughout the brokerage process."
+		},
+		{
+			"question": "What if my equipment is still operating in the field?",
+			"answer": "That's perfectly fine. Field photos often provide valuable context and are commonly used during the initial review."
+		},
+		{
+			"question": "Can I upload additional photos later?",
+			"answer": "Yes. If additional photos are needed, Petra will contact you during the review process."
+		}
+	],
+	finalCta: {
+		"title": "Ready to Upload Your Equipment Photos?",
+		"body": [
+			"Every submission begins with understanding the equipment.",
+			"Clear photos help Petra evaluate your equipment, answer buyer questions, and present it professionally within our regional brokerage network.",
+			"We'll review what you submit and let you know if anything else is needed."
+		],
+		"primaryCta": {
+			"label": "Continue to Equipment Submission",
+			"href": "/sell-equipment/equipment-submission"
+		},
+		"secondaryCta": {
+			"label": "Contact a Broker",
+			"href": "/sell-equipment/contact-broker"
+		}
+	}
+};
+//#endregion
+//#region resources/js/Pages/SellEquipment/UploadPhotos.tsx
+var UploadPhotos_exports = /* @__PURE__ */ __exportAll({ default: () => UploadPhotos });
+var { meta: meta$2, hero: hero$2, whyPhotosMatter, recommendedPhotos, tips, notEveryPhoto, faqSection, faqs: faqs$2, finalCta: finalCta$2 } = upload_photos_default;
+function UploadPhotos({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [
+			sellEquipmentServiceNode(canonicalUrl, meta$2.description),
+			breadcrumbNode(canonicalUrl, {
+				name: "Equipment Photo Guide",
+				url: canonicalUrl
+			}),
+			faqPageNode(canonicalUrl, faqs$2)
+		]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: meta$2.title,
+		description: meta$2.description,
+		canonicalUrl,
+		ogImageUrl,
+		structuredData
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [
+			/* @__PURE__ */ jsx(PageHero, { ...hero$2 }),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Why It Helps",
+						title: whyPhotosMatter.title
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base leading-7 text-neutral-600 sm:text-lg",
+						children: whyPhotosMatter.intro
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: whyPhotosMatter.items,
+						columns: 2
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600",
+						children: whyPhotosMatter.outro
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Photo Checklist",
+					title: recommendedPhotos.title
+				}), /* @__PURE__ */ jsx(CardGrid, {
+					items: recommendedPhotos.items,
+					columns: 3
+				})]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "dark",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Practical Tips",
+						title: tips.title,
+						tone: "dark"
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: tips.intro,
+							className: "text-base leading-7 text-white/70 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx("ul", {
+						className: "mt-10 grid grid-cols-1 gap-px bg-white/15 md:grid-cols-2 lg:grid-cols-3",
+						children: tips.items.map((tip) => /* @__PURE__ */ jsxs("li", {
+							className: "flex items-start gap-4 bg-[#1c1a16] p-5",
+							children: [/* @__PURE__ */ jsx("span", {
+								"aria-hidden": "true",
+								className: "mt-2.5 h-1.5 w-1.5 shrink-0 bg-[#a56437]"
+							}), /* @__PURE__ */ jsx("span", {
+								className: "text-base leading-7 text-white/80",
+								children: tip
+							})]
+						}, tip))
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "No Pressure",
+					title: notEveryPhoto.title
+				}), /* @__PURE__ */ jsx("div", {
+					className: "mt-6 max-w-3xl space-y-4",
+					children: /* @__PURE__ */ jsx(RichTextList, {
+						items: notEveryPhoto.body,
+						className: "text-base leading-7 text-neutral-600 sm:text-lg"
+					})
+				})]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Questions",
+					title: faqSection.title
+				}), /* @__PURE__ */ jsx("div", {
+					className: "mt-10 max-w-4xl",
+					children: /* @__PURE__ */ jsx(FaqAccordion, { faqs: faqs$2 })
+				})]
+			}),
+			/* @__PURE__ */ jsx(FinalCta, { ...finalCta$2 })
+		]
+	})] });
+}
+var why_sell_with_petra_default = {
+	meta: {
+		"title": "Why Sell With Petra | Oilfield Equipment Brokerage",
+		"description": "Learn why companies trust Petra to broker used oilfield and industrial equipment. Connect with qualified buyers through our Wyoming and Rockies brokerage network."
+	},
+	hero: {
+		"title": "Why Sell With Petra",
+		"subtitle": "Selling Equipment Is Easy. Selling It Well Takes the Right Partner.",
+		"body": [
+			"Finding a buyer isn't the hardest part of selling used oilfield or industrial equipment.",
+			"Finding the right buyer, understanding today's market, pricing equipment realistically, and keeping the transaction moving—that's where experience matters.",
+			"Petra helps equipment owners across Wyoming, the Rockies, and surrounding producing regions navigate the selling process with practical brokerage guidance, regional market knowledge, and a network of qualified buyers.",
+			"Whether you're selling a single asset or managing surplus equipment across multiple locations, we're here to help you make informed decisions with confidence."
+		],
+		"primaryCta": {
+			"label": "Talk to a Broker",
+			"href": "/sell-equipment/contact-broker"
+		},
+		"secondaryCta": {
+			"label": "Request a Market-Based Valuation",
+			"href": "/sell-equipment/request-valuation"
+		}
+	},
+	moreThanPosting: {
+		"title": "Selling Equipment Is More Than Posting a Listing",
+		"intro": ["Many equipment owners begin by listing equipment online and waiting for inquiries.", "Unfortunately, that often leads to:"],
+		"items": [
+			"Limited exposure to qualified buyers",
+			"Uncertainty about market pricing",
+			"Time spent answering repetitive questions",
+			"Negotiations that go nowhere",
+			"Equipment sitting idle for months"
+		],
+		"outro": {
+			"before": "If you're still evaluating whether now is the right time to sell, ",
+			"link": {
+				"label": "request a market-based valuation",
+				"href": "/sell-equipment/request-valuation"
+			},
+			"after": " to better understand your equipment's potential before making a decision."
+		}
+	},
+	whatMakesDifferent: {
+		"title": "What Makes Petra Different?",
+		"items": [
+			{
+				"title": "Regional Market Knowledge",
+				"body": [
+					"Petra understands the equipment markets across Wyoming, the Rockies, and surrounding producing regions.",
+					"Regional demand, industry activity, and buyer expectations all influence how equipment moves through the market.",
+					"Our recommendations are based on real market conditions—not assumptions."
+				]
+			},
+			{
+				"title": "Qualified Buyer Network",
+				"body": [
+					"Successful brokerage isn't about generating the most inquiries.",
+					"It's about connecting equipment with buyers who are actively looking for the right equipment.",
+					"Petra focuses on building relationships with qualified buyers to help create meaningful opportunities for sellers."
+				]
+			},
+			{
+				"title": "Market-Based Guidance",
+				"body": [
+					"Pricing equipment too high can delay a sale.",
+					"Pricing it too low can leave money on the table.",
+					"Petra helps sellers understand current market conditions so they can make informed pricing decisions supported by brokerage experience and buyer activity."
+				]
+			},
+			{
+				"title": "Straightforward Communication",
+				"body": [
+					"You'll always know where things stand.",
+					"We believe honest communication builds stronger relationships and better transactions.",
+					"Whether market conditions are favorable or challenging, we'll provide practical recommendations based on your equipment and your goals."
+				]
+			},
+			{
+				"title": "Support Throughout the Brokerage Process",
+				"body": ["Selling equipment often involves more than finding a buyer.", "From initial conversations through negotiations and transaction support, Petra works alongside sellers to help keep the process organized and moving forward."]
+			},
+			{
+				"title": "Built on Relationships",
+				"body": ["Equipment brokerage is ultimately a people business.", "Long-term relationships with equipment owners, buyers, and industry professionals allow Petra to create opportunities that go beyond public equipment listings."]
+			}
+		],
+		"outro": {
+			"before": "Curious about how we put this approach into practice? Explore our ",
+			"link": {
+				"label": "Seller Process",
+				"href": "/sell-equipment/seller-process"
+			},
+			"after": " to see how Petra supports equipment owners from the initial review through buyer negotiations."
+		}
+	},
+	builtForWyoming: {
+		"title": "Built for Wyoming's Energy Industry",
+		"body": [
+			"The equipment market in Wyoming and the surrounding Rockies is different from many other regions.",
+			"Equipment demand shifts with energy activity, transportation logistics, seasonal conditions, and regional projects.",
+			"Petra understands these market dynamics and works within the industries and communities we serve every day.",
+			"That regional perspective helps sellers make more informed decisions throughout the brokerage process."
+		]
+	},
+	supportingOwners: {
+		"title": "Supporting Equipment Owners Across the Energy Industry",
+		"intro": ["Petra works with businesses throughout Wyoming, the Rockies, and surrounding producing regions, supporting equipment transactions across a wide range of energy and industrial operations.", "We regularly work with:"],
+		"items": [
+			"Oil & gas operators",
+			"Production companies",
+			"Midstream operations",
+			"Energy service companies",
+			"Industrial facilities",
+			"General contractors",
+			"Equipment managers",
+			"Asset management teams"
+		],
+		"outro": "Whether you're selling a single piece of equipment, managing surplus assets, or preparing a larger equipment liquidation, Petra helps connect equipment owners with qualified buyers through a trusted regional brokerage network."
+	},
+	rightFit: {
+		"title": "Is Petra the Right Fit?",
+		"intro": "Petra may be a good fit if you:",
+		"items": [
+			"Have surplus or idle equipment you'd like to sell",
+			"Want to better understand your equipment's market potential",
+			"Don't have time to manage buyer inquiries and negotiations",
+			"Prefer working with experienced equipment brokers",
+			"Want honest guidance before making a decision",
+			"Value long-term relationships over one-time transactions"
+		],
+		"outro": {
+			"before": "If you're ready to take the next step, you can ",
+			"link": {
+				"label": "submit your equipment",
+				"href": "/sell-equipment/equipment-submission"
+			},
+			"middle": " for review, or ",
+			"secondLink": {
+				"label": "talk to a broker",
+				"href": "/sell-equipment/contact-broker"
+			},
+			"after": " if you'd like to discuss your situation first."
+		}
+	},
+	ourApproach: {
+		"title": "Our Approach",
+		"intro": "Everything we do is guided by a few simple principles.",
+		"items": [
+			{
+				"title": "Trust First",
+				"body": "Honest communication and realistic expectations always come first."
+			},
+			{
+				"title": "Field Realism",
+				"body": "We understand equipment because we understand how it's used in the field."
+			},
+			{
+				"title": "Practical Guidance",
+				"body": "Our recommendations are based on market knowledge, industry experience, and your specific situation—not generic advice."
+			},
+			{
+				"title": "Long-Term Relationships",
+				"body": "We're committed to building relationships that continue long after a transaction is complete."
+			}
+		]
+	},
+	finalCta: {
+		"title": "Let's Talk About Your Equipment",
+		"body": [
+			"Every equipment owner has different goals, and every selling decision deserves thoughtful guidance.",
+			"Whether you're ready to sell today or simply exploring your options, Petra is here to provide practical recommendations, honest answers, and market insight that helps you move forward with confidence.",
+			"Let's start with a conversation."
+		],
+		"primaryCta": {
+			"label": "Talk to a Broker",
+			"href": "/sell-equipment/contact-broker"
+		},
+		"secondaryCta": {
+			"label": "Request a Valuation",
+			"href": "/sell-equipment/request-valuation"
+		}
+	}
+};
+//#endregion
+//#region resources/js/Pages/SellEquipment/WhySellWithPetra.tsx
+var WhySellWithPetra_exports = /* @__PURE__ */ __exportAll({ default: () => WhySellWithPetra });
+var { meta, hero, moreThanPosting, whatMakesDifferent, builtForWyoming, supportingOwners, rightFit, ourApproach, finalCta } = why_sell_with_petra_default;
+function WhySellWithPetra({ canonicalUrl, ogImageUrl }) {
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@graph": [sellEquipmentServiceNode(canonicalUrl, meta.description), breadcrumbNode(canonicalUrl, {
+			name: "Why Sell With Petra",
+			url: canonicalUrl
+		})]
+	};
+	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(PublicPageMeta, {
+		title: meta.title,
+		description: meta.description,
+		canonicalUrl,
+		ogImageUrl,
+		structuredData
+	}), /* @__PURE__ */ jsxs("main", {
+		className: "w-full bg-[#f3f1ec]",
+		children: [
+			/* @__PURE__ */ jsx(PageHero, { ...hero }),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "The Problem",
+						title: moreThanPosting.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: moreThanPosting.intro,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: moreThanPosting.items,
+						columns: 2
+					}),
+					/* @__PURE__ */ jsx(RichText, {
+						value: moreThanPosting.outro,
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600"
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Our Difference",
+						title: whatMakesDifferent.title
+					}),
+					/* @__PURE__ */ jsx(CardGrid, {
+						items: whatMakesDifferent.items,
+						columns: 3
+					}),
+					/* @__PURE__ */ jsx(RichText, {
+						value: whatMakesDifferent.outro,
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600"
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "dark",
+				children: [/* @__PURE__ */ jsx(SectionHeading, {
+					eyebrow: "Regional Focus",
+					title: builtForWyoming.title,
+					tone: "dark"
+				}), /* @__PURE__ */ jsx("div", {
+					className: "mt-6 max-w-3xl space-y-4",
+					children: /* @__PURE__ */ jsx(RichTextList, {
+						items: builtForWyoming.body,
+						className: "text-base leading-7 text-white/70 sm:text-lg"
+					})
+				})]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Who We Serve",
+						title: supportingOwners.title
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "mt-6 max-w-3xl space-y-4",
+						children: /* @__PURE__ */ jsx(RichTextList, {
+							items: supportingOwners.intro,
+							className: "text-base leading-7 text-neutral-600 sm:text-lg"
+						})
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: supportingOwners.items,
+						columns: 3
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600",
+						children: supportingOwners.outro
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "cream",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Fit Check",
+						title: rightFit.title
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base leading-7 text-neutral-600 sm:text-lg",
+						children: rightFit.intro
+					}),
+					/* @__PURE__ */ jsx(CheckList, {
+						items: rightFit.items,
+						columns: 2
+					}),
+					/* @__PURE__ */ jsx(RichText, {
+						value: rightFit.outro,
+						className: "mt-8 max-w-3xl text-base leading-7 text-neutral-600"
+					})
+				]
+			}),
+			/* @__PURE__ */ jsxs(Section, {
+				background: "white",
+				children: [
+					/* @__PURE__ */ jsx(SectionHeading, {
+						eyebrow: "Principles",
+						title: ourApproach.title
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-6 max-w-3xl text-base leading-7 text-neutral-600 sm:text-lg",
+						children: ourApproach.intro
+					}),
+					/* @__PURE__ */ jsx(CardGrid, {
+						items: ourApproach.items.map((item) => ({
+							title: item.title,
+							body: [item.body]
+						})),
+						columns: 2
+					})
+				]
+			}),
+			/* @__PURE__ */ jsx(FinalCta, { ...finalCta })
 		]
 	})] });
 }
@@ -10379,6 +14863,7 @@ createServer((page) => createInertiaApp({
 			"./Pages/Auth/Register.tsx": Register_exports,
 			"./Pages/Auth/ResetPassword.tsx": ResetPassword_exports,
 			"./Pages/Broker/Inbox.tsx": Inbox_exports,
+			"./Pages/Broker/Leads.tsx": Leads_exports,
 			"./Pages/Broker/Requests.tsx": Requests_exports,
 			"./Pages/Broker/Submissions.tsx": Submissions_exports,
 			"./Pages/Contact.tsx": Contact_exports,
@@ -10399,7 +14884,16 @@ createServer((page) => createInertiaApp({
 			"./Pages/Portal/SellerOffers.tsx": SellerOffers_exports,
 			"./Pages/RequestEquipment.tsx": RequestEquipment_exports,
 			"./Pages/Resources.tsx": Resources_exports,
-			"./Pages/SellEquipment.tsx": SellEquipment_exports,
+			"./Pages/SellEquipment/ContactBroker.tsx": ContactBroker_exports,
+			"./Pages/SellEquipment/EquipmentSubmission.tsx": EquipmentSubmission_exports,
+			"./Pages/SellEquipment/Faqs.tsx": Faqs_exports,
+			"./Pages/SellEquipment/Index.tsx": Index_exports,
+			"./Pages/SellEquipment/RequestValuation.tsx": RequestValuation_exports,
+			"./Pages/SellEquipment/SellerProcess.tsx": SellerProcess_exports,
+			"./Pages/SellEquipment/SubmissionThanks.tsx": SubmissionThanks_exports,
+			"./Pages/SellEquipment/UploadDocuments.tsx": UploadDocuments_exports,
+			"./Pages/SellEquipment/UploadPhotos.tsx": UploadPhotos_exports,
+			"./Pages/SellEquipment/WhySellWithPetra.tsx": WhySellWithPetra_exports,
 			"./Pages/Services.tsx": Services_exports
 		}))[`./Pages/${name}.tsx`];
 		resolvedPage.default.layout ??= (pageContent) => {

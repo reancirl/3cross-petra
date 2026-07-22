@@ -1,0 +1,141 @@
+{
+    "meta": {
+        "title": "Seller Process | Oilfield Equipment Brokerage | Petra",
+        "description": "Learn how Petra's equipment brokerage process helps companies sell used oilfield and industrial equipment through qualified buyers, market guidance, and transaction support."
+    },
+    "hero": {
+        "title": "Seller Process",
+        "subtitle": "A Straightforward Process for Selling Used Oilfield & Industrial Equipment",
+        "body": [
+            "Selling equipment shouldn't be complicated.",
+            "Petra guides you through each stage of the brokerage process—from your initial submission to connecting with qualified buyers and supporting the transaction through completion. Our goal is to make selling equipment as clear, efficient, and professional as possible.",
+            "Whether you're selling a single asset or liquidating surplus equipment, you'll always know what comes next."
+        ],
+        "primaryCta": { "label": "Submit Equipment", "href": "/sell-equipment/equipment-submission" },
+        "secondaryCta": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" }
+    },
+    "process": {
+        "title": "How the Seller Process Works",
+        "intro": "Our brokerage process is designed to help sellers reach qualified buyers while reducing the time and effort required to manage the sale.",
+        "introLink": {
+            "before": "Not sure whether you're ready to begin? A ",
+            "link": { "label": "market-based valuation", "href": "/sell-equipment/request-valuation" },
+            "after": " can help you understand your equipment's potential before entering the brokerage process."
+        },
+        "steps": [
+            {
+                "title": "Submit Your Equipment",
+                "body": ["Everything starts with the basics.", "Provide the available information about your equipment, including:"],
+                "items": ["Equipment type", "Location", "General condition", "Photos (if available)", "Documentation (if available)"],
+                "outro": {
+                    "before": "Complete your ",
+                    "link": { "label": "Equipment Submission", "href": "/sell-equipment/equipment-submission" },
+                    "after": " with the information you have available. Additional details can be provided later if needed."
+                }
+            },
+            {
+                "title": "Equipment Review & Market Assessment",
+                "body": ["Once we receive your submission, our team reviews the equipment to understand its market potential.", "We consider factors such as:"],
+                "items": ["Equipment type", "Current condition", "Regional demand", "Market activity", "Available documentation"],
+                "outro": "This review helps us determine how the equipment should be positioned within the market."
+            },
+            {
+                "title": "Market Positioning",
+                "body": [
+                    "Selling equipment isn't just about listing it.",
+                    "Proper positioning helps attract the right buyers.",
+                    "Petra evaluates current market conditions and presents your equipment with accurate descriptions, supporting information, and practical pricing guidance to improve visibility among qualified buyers."
+                ]
+            },
+            {
+                "title": "Buyer Outreach",
+                "body": [
+                    "Once your equipment is ready for market, we begin connecting with buyers through our regional brokerage network.",
+                    "Rather than relying solely on public listings, Petra works to present equipment to buyers actively searching for assets that match your equipment's specifications and condition."
+                ]
+            },
+            {
+                "title": "Buyer Communication & Negotiation",
+                "body": ["As buyer interest develops, Petra manages the communication process on your behalf.", "We help coordinate:"],
+                "items": [
+                    "Buyer inquiries",
+                    "Equipment questions",
+                    "Pricing discussions",
+                    "Negotiations",
+                    "Inspection requests",
+                    "Documentation requests"
+                ],
+                "outro": "Our goal is to keep the process organized while allowing your team to stay focused on day-to-day operations."
+            },
+            {
+                "title": "Offer Review",
+                "body": ["When offers are received, Petra works with you to review the details.", "We help explain:"],
+                "items": ["Offer terms", "Market considerations", "Buyer expectations", "Next steps"],
+                "outro": "Every decision remains yours. Petra provides guidance so you can make informed decisions with confidence."
+            },
+            {
+                "title": "Transaction Support",
+                "body": [
+                    "Once an agreement is reached, Petra continues supporting the transaction through completion.",
+                    "Depending on the equipment and buyer requirements, Petra may help coordinate equipment inspections, documentation, and communication between all parties to keep the transaction moving efficiently.",
+                    "Our involvement doesn't end when a buyer is found—we continue working to help move the process toward a successful conclusion."
+                ]
+            }
+        ]
+    },
+    "whyStructured": {
+        "title": "Why a Structured Brokerage Process Matters",
+        "intro": [
+            "Many equipment sales slow down because communication becomes inconsistent, pricing isn't aligned with the market, or qualified buyers never see the opportunity.",
+            "Petra's structured brokerage process helps reduce these challenges by providing:"
+        ],
+        "items": [
+            "Clear communication",
+            "Market-based guidance",
+            "Regional buyer connections",
+            "Professional transaction coordination",
+            "A straightforward process from beginning to end"
+        ],
+        "outro": "Our objective is simple: help qualified buyers and sellers connect through a professional brokerage experience built on trust and industry knowledge."
+    },
+    "faqSection": {
+        "title": "Frequently Asked Questions",
+        "intro": "Every equipment sale is different, and questions often come up along the way.",
+        "outro": {
+            "before": "Visit our ",
+            "link": { "label": "Sell Equipment FAQs", "href": "/sell-equipment/faqs" },
+            "after": " for additional information about valuations, documentation, equipment preparation, and the brokerage process."
+        }
+    },
+    "faqs": [
+        {
+            "question": "How long does the selling process take?",
+            "answer": "Every transaction is different. Timing depends on equipment type, market demand, condition, pricing, and buyer activity."
+        },
+        {
+            "question": "Do I need photos before submitting my equipment?",
+            "answer": "Photos are helpful, but they aren't required. The more information you can provide, the better we can evaluate your equipment."
+        },
+        {
+            "question": "Will Petra inspect my equipment?",
+            "answer": "Some transactions may require additional information or inspections. If needed, we'll discuss those requirements during the brokerage process."
+        },
+        {
+            "question": "Who communicates with potential buyers?",
+            "answer": "Petra manages buyer communication throughout the brokerage process, including inquiries, negotiations, and coordination."
+        },
+        {
+            "question": "Can I sell more than one piece of equipment?",
+            "answer": "Yes. Petra works with individual assets, complete equipment packages, and surplus equipment inventories."
+        }
+    ],
+    "finalCta": {
+        "title": "Ready to Get Started?",
+        "body": [
+            "If you're ready to sell used oilfield or industrial equipment, Petra is ready to help.",
+            "We'll review your equipment, explain the next steps, and tell you honestly whether we believe there's a market for your asset."
+        ],
+        "primaryCta": { "label": "Submit Equipment", "href": "/sell-equipment/equipment-submission" },
+        "secondaryCta": { "label": "Contact a Broker", "href": "/sell-equipment/contact-broker" }
+    }
+}

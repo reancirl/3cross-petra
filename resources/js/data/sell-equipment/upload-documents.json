@@ -1,0 +1,131 @@
+{
+    "meta": {
+        "title": "Equipment Documentation Guide | Petra Equipment Brokerage",
+        "description": "Upload equipment documents to help Petra review, evaluate, and market your used oilfield and industrial equipment. Maintenance records and manuals are helpful but not required."
+    },
+    "hero": {
+        "title": "Upload Equipment Documents",
+        "subtitle": "Help Us Better Understand Your Equipment",
+        "body": [
+            "Supporting documents help Petra evaluate your equipment more accurately, answer buyer questions, and prepare your equipment for the brokerage process.",
+            "Don't worry if you don't have every document.",
+            "Simply upload what you have, and we'll let you know if anything else would be helpful during the review process."
+        ],
+        "primaryCta": { "label": "Continue to Equipment Submission", "href": "/sell-equipment/equipment-submission" },
+        "secondaryCta": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" }
+    },
+    "whyDocumentationMatters": {
+        "title": "Why Equipment Documentation Matters",
+        "intro": "The right documentation helps Petra:",
+        "items": [
+            "Evaluate equipment more efficiently",
+            "Verify specifications and equipment details",
+            "Answer buyer questions with greater confidence",
+            "Reduce unnecessary follow-up requests",
+            "Prepare equipment for qualified buyers"
+        ],
+        "outro": "Documentation helps create a smoother brokerage process for everyone involved."
+    },
+    "recommendedDocuments": {
+        "title": "Recommended Documents",
+        "items": [
+            {
+                "title": "Specification Sheets",
+                "body": ["Technical specifications help buyers understand exactly what equipment they're reviewing.", "Helpful documents include:"],
+                "items": ["Manufacturer specifications", "Model information", "Capacity ratings", "Technical data sheets"]
+            },
+            {
+                "title": "Maintenance Records",
+                "body": ["Maintenance history provides valuable insight into how the equipment has been cared for.", "Examples include:"],
+                "items": ["Routine maintenance logs", "Repair records", "Service history", "Parts replacement records"]
+            },
+            {
+                "title": "Inspection Reports",
+                "body": ["Previous inspections can help buyers better understand the equipment's condition.", "If available, upload:"],
+                "items": ["Equipment inspections", "Condition reports", "Third-party evaluations", "Operational assessments"]
+            },
+            {
+                "title": "Equipment Manuals",
+                "body": ["Equipment manuals help verify operating information and technical details.", "Examples include:"],
+                "items": ["Operator manuals", "Service manuals", "Parts manuals", "Technical documentation"]
+            },
+            {
+                "title": "Ownership & Asset Information",
+                "body": ["Any records that help identify the equipment are useful.", "Examples include:"],
+                "items": [
+                    "Asset identification numbers",
+                    "Inventory records",
+                    "Purchase information",
+                    "Equipment registration",
+                    "Internal asset tracking documents"
+                ]
+            },
+            {
+                "title": "Other Supporting Documents",
+                "body": [
+                    "Every piece of equipment is different.",
+                    "If you have additional documentation that may help buyers better understand your equipment, feel free to include it.",
+                    "Examples include:"
+                ],
+                "items": ["Equipment history", "Upgrade records", "Installation documentation", "Operational notes"]
+            }
+        ]
+    },
+    "tips": {
+        "title": "Tips Before Uploading Documents",
+        "intro": ["A few simple tips can help speed up the review process."],
+        "items": [
+            "PDF files are preferred.",
+            "Ensure documents are clear and readable.",
+            "Include the most recent records whenever possible.",
+            "Upload only documents related to the equipment being submitted.",
+            "Don't worry if you don't have every document."
+        ],
+        "outro": "Helpful documentation is always appreciated, but complete records are not required."
+    },
+    "notEveryDocument": {
+        "title": "Don't Have Every Document?",
+        "body": [
+            "That's completely okay.",
+            "Many equipment submissions begin with limited documentation.",
+            "Submit what you have today.",
+            "If additional information would help during the review process, Petra will contact you directly and explain what's needed."
+        ]
+    },
+    "faqSection": { "title": "Frequently Asked Questions" },
+    "faqs": [
+        {
+            "question": "Are documents required before I submit equipment?",
+            "answer": "No. Documentation is helpful but not required to begin the brokerage review process."
+        },
+        {
+            "question": "What documents are most helpful?",
+            "answer": "Specification sheets, maintenance records, inspection reports, and equipment manuals generally provide the most value during equipment evaluation."
+        },
+        {
+            "question": "Can I upload documents later?",
+            "answer": "Yes. If additional documentation becomes available after your initial submission, it can be provided during the brokerage process."
+        },
+        {
+            "question": "What if I don't have maintenance records?",
+            "answer": "That's not a problem. Submit the information you have, and Petra will review your equipment based on the available details."
+        },
+        {
+            "question": "Are scanned copies acceptable?",
+            "answer": "Yes. Clear scanned documents or readable digital copies are perfectly acceptable."
+        },
+        {
+            "question": "What file types can I upload?",
+            "answer": "PDF files are preferred, but common image formats and standard document files are also acceptable when they're clear and easy to read."
+        }
+    ],
+    "finalCta": {
+        "title": "Ready to Upload Your Documents?",
+        "body": [
+            "Supporting documentation helps Petra better understand your equipment, verify important details, and provide qualified buyers with accurate information.",
+            "We'll review everything you submit and let you know if additional documentation would be helpful."
+        ],
+        "primaryCta": { "label": "Continue to Equipment Submission", "href": "/sell-equipment/equipment-submission" },
+        "secondaryCta": { "label": "Contact a Broker", "href": "/sell-equipment/contact-broker" }
+    }
+}

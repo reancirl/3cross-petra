@@ -21,7 +21,7 @@ class MarketplaceTest extends TestCase
             'category' => 'Separators',
             'region' => 'Wyoming',
             'city' => 'Casper',
-            'condition' => 'sitting_idle',
+            'condition' => 'operational_but_idle',
             'condition_notes' => 'SECRET seller notes',
             'asking_price' => 42500,
             'manufacturer' => 'Ariel',
@@ -142,7 +142,7 @@ class MarketplaceTest extends TestCase
         $seller = User::factory()->seller()->create();
         $submission = $seller->equipmentSubmissions()->create([
             'title' => 'Bare Unit',
-            'category' => 'Tanks',
+            'category' => 'Tanks & Tank Batteries',
             'region' => 'Montana',
             'condition' => 'unknown',
         ]);

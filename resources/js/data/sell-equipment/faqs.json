@@ -1,0 +1,179 @@
+{
+    "meta": {
+        "title": "Sell Equipment FAQs | Oilfield Equipment Brokerage | Petra",
+        "description": "Find answers to common questions about selling used oilfield and industrial equipment. Learn about valuations, brokerage, submissions, pricing, and the selling process with Petra."
+    },
+    "hero": {
+        "title": "Sell Equipment FAQs",
+        "subtitle": "Common Questions About Selling Used Oilfield & Industrial Equipment",
+        "body": [
+            "Selling equipment is an important business decision, and it's natural to have questions before getting started.",
+            "Below are answers to some of the most common questions we receive from equipment owners, operators, and businesses throughout Wyoming, the Rockies, and surrounding producing regions.",
+            "If you don't see your question here, our team is always available to help."
+        ],
+        "primaryCta": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" },
+        "secondaryCta": { "label": "Submit Equipment", "href": "/sell-equipment/equipment-submission" }
+    },
+    "groups": [
+        {
+            "title": "Before You Sell",
+            "faqs": [
+                {
+                    "question": "Is now a good time to sell used oilfield equipment?",
+                    "answer": "Market conditions change throughout the year based on industry activity, buyer demand, and equipment availability. If you're considering selling, understanding your equipment's current market potential is often the best first step."
+                },
+                {
+                    "question": "Can I sell equipment that has been sitting unused?",
+                    "answer": "Yes. Idle equipment often still has value, especially if it has been properly stored or maintained. Even if equipment has been out of service for some time, it may still be attractive to qualified buyers."
+                },
+                {
+                    "question": "Does equipment need to be operating before I can sell it?",
+                    "answer": "Not necessarily. Both operating and non-operating equipment may have market value depending on the equipment type, condition, and buyer demand."
+                },
+                {
+                    "question": "Can I sell older equipment?",
+                    "answer": "Yes. Age is only one factor buyers consider. Equipment condition, maintenance history, specifications, and market demand often play a much larger role."
+                }
+            ],
+            "outro": {
+                "before": "Not sure whether your equipment is a good fit for today's market? A ",
+                "link": { "label": "Request a Market-Based Valuation", "href": "/sell-equipment/request-valuation" },
+                "after": " can help you better understand its market potential before making a decision."
+            }
+        },
+        {
+            "title": "Preparing Your Equipment",
+            "intro": {
+                "before": "Preparing your equipment before submission can help buyers better understand its condition. Visit our ",
+                "link": { "label": "Equipment Photo Guide", "href": "/sell-equipment/upload-photos" },
+                "middle": " and ",
+                "secondLink": { "label": "Equipment Documentation Guide", "href": "/sell-equipment/upload-documents" },
+                "after": " for practical recommendations."
+            },
+            "faqs": [
+                {
+                    "question": "Should I clean equipment before taking photos?",
+                    "answer": "A clean piece of equipment helps buyers better understand its condition, but professional detailing isn't necessary. Removing excessive dirt or debris can improve photo quality and provide a clearer representation of the equipment."
+                },
+                {
+                    "question": "What if I don't have maintenance records?",
+                    "answer": "That's okay. Maintenance records are helpful but not required. Submit the information you have, and Petra will review your equipment based on the available details."
+                },
+                {
+                    "question": "Is cosmetic damage a problem?",
+                    "answer": "Normal wear is expected on used equipment. Being transparent about cosmetic damage helps buyers understand the equipment and often leads to smoother conversations later in the brokerage process."
+                },
+                {
+                    "question": "Can I sell equipment that's missing parts?",
+                    "answer": "In many cases, yes. Some buyers specifically look for equipment to repair, rebuild, or use for parts. Missing components don't automatically eliminate market potential."
+                }
+            ]
+        },
+        {
+            "title": "Equipment Value",
+            "faqs": [
+                {
+                    "question": "What factors affect the value of used equipment?",
+                    "answer": "Several factors influence equipment value, including condition, age, specifications, maintenance history, regional buyer demand, and current market activity."
+                },
+                {
+                    "question": "Will repairing equipment increase its value?",
+                    "answer": "It depends. Some repairs may improve buyer interest, while others may not significantly affect market value. Petra can help you determine whether repairs are likely to provide a worthwhile return."
+                },
+                {
+                    "question": "Can I suggest an asking price?",
+                    "answer": "Yes. Seller expectations are an important part of the conversation. Petra works with sellers to evaluate current market conditions and develop realistic pricing guidance."
+                },
+                {
+                    "question": "Why do similar pieces of equipment sell for different prices?",
+                    "answer": "Even similar equipment can vary in value based on operating condition, maintenance history, configuration, documentation, location, and buyer demand."
+                }
+            ],
+            "outro": {
+                "before": "Every piece of equipment is different. If you'd like guidance based on your specific equipment, ",
+                "link": { "label": "Request a Market-Based Valuation", "href": "/sell-equipment/request-valuation" },
+                "after": "."
+            }
+        },
+        {
+            "title": "Working With Petra",
+            "faqs": [
+                {
+                    "question": "Why should I use an equipment broker instead of selling equipment myself?",
+                    "answer": "Selling equipment often involves marketing, answering technical questions, negotiating with buyers, and coordinating documentation. Petra helps simplify that process by connecting sellers with qualified buyers while managing communication throughout the transaction."
+                },
+                {
+                    "question": "Does Petra purchase equipment directly?",
+                    "answer": "Petra primarily operates as an equipment brokerage, helping connect buyers and sellers rather than purchasing equipment directly."
+                },
+                {
+                    "question": "How does Petra earn its fee?",
+                    "answer": "Petra's brokerage fees are discussed as part of the selling process, allowing sellers to understand how the brokerage relationship works before moving forward."
+                },
+                {
+                    "question": "What happens if my equipment doesn't sell?",
+                    "answer": "Market conditions vary, and not every asset sells immediately. If equipment remains available, Petra may discuss adjustments to pricing, marketing strategy, or buyer outreach based on current market activity."
+                }
+            ],
+            "outro": {
+                "before": "Learn more about ",
+                "link": { "label": "Why Sell With Petra", "href": "/sell-equipment/why-sell-with-petra" },
+                "after": " and how our brokerage approach helps equipment owners make informed selling decisions."
+            }
+        },
+        {
+            "title": "Buyers & Transactions",
+            "faqs": [
+                {
+                    "question": "Who typically buys equipment through Petra?",
+                    "answer": "Buyers may include oil and gas operators, production companies, industrial businesses, contractors, equipment dealers, and other organizations looking for quality used equipment."
+                },
+                {
+                    "question": "Can buyers request additional information?",
+                    "answer": "Yes. Buyers may request additional photos, documentation, or clarification before making purchasing decisions."
+                },
+                {
+                    "question": "Can I decline an offer?",
+                    "answer": "Absolutely. You remain in control throughout the brokerage process and decide whether to accept, reject, or negotiate any offer."
+                },
+                {
+                    "question": "What happens after I accept an offer?",
+                    "answer": "Petra continues supporting the transaction by helping coordinate communication, documentation, and the next steps toward completing the sale."
+                }
+            ],
+            "outro": {
+                "before": "Curious about what happens after you decide to sell? Explore the ",
+                "link": { "label": "Seller Process", "href": "/sell-equipment/seller-process" },
+                "after": " for a step-by-step overview."
+            }
+        },
+        {
+            "title": "Wyoming & Regional Service",
+            "faqs": [
+                {
+                    "question": "Does Petra only work in Wyoming?",
+                    "answer": "No. While Petra focuses on Wyoming and the surrounding Rockies, we work with buyers and sellers across other producing and industrial regions when opportunities align."
+                },
+                {
+                    "question": "Can Petra help sell equipment located outside Wyoming?",
+                    "answer": "Yes. Equipment located outside Wyoming may still be eligible for brokerage depending on its location, market demand, and buyer interest."
+                },
+                {
+                    "question": "Does equipment location affect market value?",
+                    "answer": "Yes. Transportation costs, regional demand, and local market conditions can all influence buyer interest and overall market value."
+                }
+            ]
+        }
+    ],
+    "finalCta": {
+        "title": "Ready to Take the Next Step?",
+        "body": [
+            "Every equipment sale is different, and every seller's situation is unique.",
+            "Whether you're ready to submit equipment, would like to better understand its market potential, or simply want to discuss your options, Petra is here to help.",
+            "We'll provide honest guidance, practical recommendations, and straightforward answers based on your equipment and today's market."
+        ],
+        "primaryCta": { "label": "Submit Equipment", "href": "/sell-equipment/equipment-submission" },
+        "secondaryCta": { "label": "Talk to a Broker", "href": "/sell-equipment/contact-broker" },
+        "smallLink": { "label": "Request a Market-Based Valuation", "href": "/sell-equipment/request-valuation" }
+    }
+}
