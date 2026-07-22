@@ -41,9 +41,10 @@ class UpdateEquipmentSubmissionStatusRequest extends FormRequest
             'year' => ['nullable', 'integer', 'min:1900', 'max:'.(date('Y') + 1)],
             'capacity' => ['nullable', 'string', 'max:255'],
             'featured' => ['boolean'],
-            // Per-document public/private toggles, aligned to the document array index.
-            'documents_public' => ['nullable', 'array'],
-            'documents_public.*' => ['boolean'],
+            // Documents are no longer edited here. They were a JSON array on this row
+            // with per-index public toggles; they are now their own table with a
+            // visibility chosen at upload time (App\Enums\DocumentVisibility), managed
+            // from the Documents tab beside this form.
         ];
     }
 

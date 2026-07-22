@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Broker\DocumentController;
 use App\Http\Controllers\Broker\InboxController;
 use App\Http\Controllers\Broker\LeadController;
 use App\Http\Controllers\Broker\SubmissionReviewController;
@@ -38,6 +39,17 @@ Route::middleware(['auth', 'no.back.history', 'user.type:broker'])
             ->name('offers.respond');
         Route::patch('/buyer-requests/{equipmentRequest}', [SubmissionReviewController::class, 'updateBuyerRequest'])
             ->name('buyer-requests.update');
+        // Documents. The subject is in the path rather than the body so the two queue
+        // pages post to a URL that names what they are adding to, and a mistyped
+        // subject 404s instead of silently filing the upload somewhere else.
+        Route::post('/documents/{subjectType}/{subjectId}', [DocumentController::class, 'store'])
+            ->whereIn('subjectType', ['listing', 'buyer_request'])
+            ->whereNumber('subjectId')
+            ->name('documents.store');
+        // Archive, not delete: a document a customer has seen stays in the record.
+        Route::patch('/documents/{document}/archive', [DocumentController::class, 'archive'])
+            ->whereNumber('document')
+            ->name('documents.archive');
         // Inbox: every thread from every buyer and seller. Brokers are staff, so unlike
         // the customer side there is no ownership filter — user.type:broker on this
         // group is the whole authorization story, matching the queues above.

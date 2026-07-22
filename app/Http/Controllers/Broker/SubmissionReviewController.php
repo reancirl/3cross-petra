@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Broker;
 
 use App\Enums\ListingStatus;
 use App\Enums\OfferStatus;
+use App\Enums\ThreadSubjectType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Broker\RespondToOfferRequest;
 use App\Http\Requests\Broker\StoreOfferRequest;
@@ -13,6 +14,7 @@ use App\Models\EquipmentRequest;
 use App\Models\EquipmentSubmission;
 use App\Models\Offer;
 use App\Models\User;
+use App\Support\DocumentPresenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -29,11 +31,18 @@ class SubmissionReviewController extends Controller
      */
     public function index(Request $request): Response
     {
+        $submissions = EquipmentSubmission::with(['user', 'offers' => fn ($query) => $query->latest()])
+            ->latest()
+            ->get();
+
+        // Two extra queries for the whole page rather than two per row: the unified
+        // document view has to reach into message attachments, and resolving that per
+        // submission would be a textbook N+1 on the broker's landing page.
+        $documentsBySubject = DocumentPresenter::forBrokerSubjects($submissions, ThreadSubjectType::Listing);
+
         return Inertia::render('Broker/Submissions', [
             'portal' => $this->portalData($request),
-            'sellerSubmissions' => EquipmentSubmission::with(['user', 'offers' => fn ($query) => $query->latest()])
-                ->latest()
-                ->get()
+            'sellerSubmissions' => $submissions
                 ->map(fn (EquipmentSubmission $submission): array => [
                     'id' => $submission->id,
                     // Falls back to the contact_* columns so an unclaimed lead from the public
@@ -70,10 +79,10 @@ class SubmissionReviewController extends Controller
                     'capacity' => $submission->capacity,
                     'featured' => $submission->featured,
                     'photo_count' => count($submission->photos ?? []),
-                    'documents' => collect($submission->documents ?? [])->map(fn (array $document): array => [
-                        'name' => $document['name'] ?? 'Document',
-                        'public' => (bool) ($document['public'] ?? false),
-                    ])->values(),
+                    // Every file on this listing from every source — the seller's
+                    // submission uploads, anything attached to a message in the thread,
+                    // and the broker's own uploads — in one list with source labels.
+                    'documents' => $documentsBySubject[$submission->id] ?? [],
                     'status' => $submission->listingStatus()->value,
                     'status_label' => $submission->statusLabel(),
                     'status_tone' => $submission->listingStatus()->tone(),
@@ -105,11 +114,12 @@ class SubmissionReviewController extends Controller
      */
     public function requests(Request $request): Response
     {
+        $requests = EquipmentRequest::with('user')->latest()->get();
+        $documentsBySubject = DocumentPresenter::forBrokerSubjects($requests, ThreadSubjectType::BuyerRequest);
+
         return Inertia::render('Broker/Requests', [
             'portal' => $this->portalData($request),
-            'buyerRequests' => EquipmentRequest::with('user')
-                ->latest()
-                ->get()
+            'buyerRequests' => $requests
                 ->map(fn (EquipmentRequest $equipmentRequest): array => [
                     'id' => $equipmentRequest->id,
                     'buyer' => $equipmentRequest->user?->name,
@@ -125,6 +135,7 @@ class SubmissionReviewController extends Controller
                     'status_label' => $equipmentRequest->statusLabel(),
                     'created_at' => $equipmentRequest->created_at?->toFormattedDateString(),
                     'created_at_timestamp' => $equipmentRequest->created_at?->getTimestamp(),
+                    'documents' => $documentsBySubject[$equipmentRequest->id] ?? [],
                 ])
                 ->values(),
             'buyerStatusOptions' => EquipmentRequest::STATUSES,
@@ -255,10 +266,6 @@ class SubmissionReviewController extends Controller
             'year' => $request->validated('year'),
             'capacity' => $request->validated('capacity'),
             'featured' => $request->boolean('featured'),
-            'documents' => $this->applyDocumentVisibility(
-                $equipmentSubmission->documents ?? [],
-                $request->validated('documents_public', []),
-            ),
         ];
 
         // Stamp a public id + publish time the first time a listing goes public.
@@ -279,24 +286,6 @@ class SubmissionReviewController extends Controller
             : 'Seller submission updated.';
 
         return back()->with('status', $message);
-    }
-
-    /**
-     * Merge broker per-document public/private choices back into the stored documents.
-     *
-     * @param  array<int, array<string, mixed>>  $documents
-     * @param  array<int, bool>  $visibility
-     * @return array<int, array<string, mixed>>
-     */
-    private function applyDocumentVisibility(array $documents, array $visibility): array
-    {
-        return collect($documents)
-            ->map(function (array $document, int $index) use ($visibility): array {
-                $document['public'] = (bool) ($visibility[$index] ?? ($document['public'] ?? false));
-
-                return $document;
-            })
-            ->all();
     }
 
     public function updateBuyerRequest(

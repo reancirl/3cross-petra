@@ -11,12 +11,14 @@ import {
     EmptyState,
     NoResults,
     QueueToolbar,
+    SlideOverTabs,
     StatusBadge,
     formatUSD,
     summaryPrice,
     todayIso,
     useQueue,
 } from '../../Components/broker-queue';
+import BrokerDocumentsPanel from '../../Components/broker-documents-panel';
 import type { BrokerOffer, SellerSubmission } from '../../Components/broker-queue';
 import type { PortalData, SharedPageProps } from '../../types';
 
@@ -46,6 +48,10 @@ export default function BrokerSubmissions({
     // replaced, and a held object would keep rendering pre-save data in the panel.
     const [activeId, setActiveId] = useState<number | null>(null);
     const active = sellerSubmissions.find((submission) => submission.id === activeId) ?? null;
+    // Reset with the panel, not with the row: reopening a submission should start on
+    // Review, and a broker who left the last one on Documents would otherwise land
+    // straight on the upload form for a different listing.
+    const [tab, setTab] = useState<'review' | 'documents'>('review');
 
     const queue = useQueue(sellerSubmissions, sellerStatusOptions, (item) => [
         item.title,
@@ -109,12 +115,35 @@ export default function BrokerSubmissions({
 
                 <SlideOver
                     open={active !== null}
-                    onClose={() => setActiveId(null)}
+                    onClose={() => {
+                        setActiveId(null);
+                        setTab('review');
+                    }}
                     eyebrow={active?.public_id ?? 'Review submission'}
                     title={active?.title ?? ''}
                 >
                     {active && (
                         <div className="grid gap-6">
+                            <SlideOverTabs
+                                tabs={[
+                                    { key: 'review', label: 'Review' },
+                                    { key: 'documents', label: 'Documents', count: active.documents.length },
+                                ]}
+                                active={tab}
+                                onSelect={setTab}
+                            />
+
+                            {tab === 'documents' ? (
+                                <BrokerDocumentsPanel
+                                    documents={active.documents}
+                                    subjectType="listing"
+                                    subjectId={active.id}
+                                    // An unclaimed lead has no account, so there is
+                                    // nobody the "share" option could address.
+                                    recipientName={active.is_unclaimed_lead ? null : active.seller}
+                                />
+                            ) : (
+                            <>
                             {active.is_unclaimed_lead && (
                                 <p className="rounded-lg border border-[#a56437]/30 bg-[#f4ece4] px-4 py-3 text-sm leading-6 text-[#8a5330]">
                                     <strong className="font-semibold">Unclaimed lead.</strong> This came from the public form
@@ -179,6 +208,8 @@ export default function BrokerSubmissions({
                             <SellerReviewForm key={`${active.id}:${active.status}`} submission={active} options={sellerStatusOptions} />
 
                             <OfferManager submission={active} statusOptions={offerStatusOptions} />
+                            </>
+                            )}
                         </div>
                     )}
                 </SlideOver>
@@ -290,7 +321,6 @@ function SellerReviewForm({ submission, options }: { submission: SellerSubmissio
         year: submission.year != null ? String(submission.year) : '',
         capacity: submission.capacity ?? '',
         featured: submission.featured,
-        documents_public: submission.documents.map((document) => document.public),
     });
 
     const errors = form.errors as Record<string, string>;
@@ -352,37 +382,10 @@ function SellerReviewForm({ submission, options }: { submission: SellerSubmissio
                 </EnrichField>
             </div>
 
-            {submission.documents.length > 0 && (
-                <div className="mt-5">
-                    <span className="font-heading text-sm font-semibold uppercase tracking-[0.12em] text-neutral-500">
-                        Documents — mark public
-                    </span>
-                    <div className="mt-2 grid gap-2">
-                        {submission.documents.map((document, index) => (
-                            <label
-                                key={`${document.name}-${index}`}
-                                className="flex items-center gap-3 rounded-lg border border-[#dad5cb] bg-white p-3"
-                            >
-                                <input
-                                    type="checkbox"
-                                    checked={form.data.documents_public[index] ?? false}
-                                    onChange={(event) =>
-                                        form.setData(
-                                            'documents_public',
-                                            form.data.documents_public.map((value, i) => (i === index ? event.target.checked : value)),
-                                        )
-                                    }
-                                    className="h-4 w-4 shrink-0 accent-[#a56437]"
-                                />
-                                <span className="min-w-0 truncate text-sm font-semibold text-neutral-900">{document.name}</span>
-                                <span className="ml-auto font-heading text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400">
-                                    {(form.data.documents_public[index] ?? false) ? 'Public' : 'Private'}
-                                </span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
-            )}
+            {/* Document visibility used to be a row of checkboxes here, aligned to an
+                index in a JSON array. It moved to the Documents tab, where visibility is
+                chosen per file at upload time and a public document is one of three
+                states rather than a boolean. */}
 
             <label className="mt-5 flex w-fit cursor-pointer items-center gap-3">
                 <input
