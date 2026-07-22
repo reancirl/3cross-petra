@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Enums\ListingStatus;
 use App\Enums\OfferStatus;
+use App\Enums\ThreadSubjectType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -41,7 +43,6 @@ use Illuminate\Support\Str;
     'consented_at',
     'source',
     'photos',
-    'documents',
     'status',
     'published_at',
     'sold_at',
@@ -353,16 +354,30 @@ class EquipmentSubmission extends Model
     }
 
     /**
+     * Every document filed against this listing, whatever its visibility.
+     *
+     * These used to be a JSON blob on this row (the `documents` column, dropped by the
+     * 2026_07_22 migrations that moved them out). They are
+     * a real table now because a JSON array cannot express "this file is for the seller
+     * and not the buyer", and because the files themselves were world-readable on the
+     * public disk while they lived there.
+     *
+     * @return HasMany<Document, $this>
+     */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class, 'subject_id')
+            ->where('subject_type', ThreadSubjectType::Listing->value);
+    }
+
+    /**
      * Documents a broker has explicitly marked public. Seller uploads default to private.
      *
-     * @return array<int, array<string, mixed>>
+     * @return Collection<int, Document>
      */
-    public function publicDocuments(): array
+    public function publicDocuments(): Collection
     {
-        return array_values(array_filter(
-            $this->documents ?? [],
-            fn (array $document): bool => (bool) ($document['public'] ?? false),
-        ));
+        return Document::query()->publicOnListing($this->id)->orderBy('id')->get();
     }
 
     public function isSoldVisible(): bool
@@ -393,7 +408,6 @@ class EquipmentSubmission extends Model
     {
         return [
             'photos' => 'array',
-            'documents' => 'array',
             'intent' => 'array',
             'asking_price' => 'decimal:2',
             'needs_valuation' => 'boolean',

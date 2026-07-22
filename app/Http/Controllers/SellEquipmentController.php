@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ListingStatus;
+use App\Enums\ThreadSubjectType;
 use App\Http\Requests\StoreBrokerInquiryRequest;
 use App\Http\Requests\StorePublicEquipmentSubmissionRequest;
 use App\Models\BrokerInquiry;
 use App\Models\EquipmentSubmission;
 use App\Models\User;
+use App\Support\DocumentStore;
 use App\Support\PublicLocationOptions;
 use App\Support\UploadStore;
 use Illuminate\Http\RedirectResponse;
@@ -65,7 +67,7 @@ class SellEquipmentController extends Controller
         $user = $request->user();
         $isSeller = $user?->user_type === User::TYPE_SELLER;
 
-        EquipmentSubmission::create([
+        $submission = EquipmentSubmission::create([
             'user_id' => $isSeller ? $user->id : null,
             'title' => $validated['description'],
             'quantity' => $validated['quantity'],
@@ -89,10 +91,20 @@ class SellEquipmentController extends Controller
             'contact_phone' => $isSeller ? null : $validated['phone'],
             'consented_at' => now(),
             'source' => EquipmentSubmission::SOURCE_PUBLIC,
-            'photos' => $this->storeUploads($request->file('photos', []), 'photos'),
-            'documents' => $this->storeUploads($request->file('documents', []), 'documents'),
+            'photos' => $this->storePhotos($request->file('photos', [])),
             'status' => ListingStatus::UnderReview,
         ]);
+
+        // Documents go to the private disk as rows, not into a JSON blob on the public
+        // one — the same path the portal form now takes. A submission with no seller
+        // account behind it has no uploader to credit and nobody to share back to, so
+        // its documents stay broker-only until the listing is claimed.
+        DocumentStore::storeCustomerUploads(
+            $request->file('documents', []),
+            ThreadSubjectType::Listing,
+            $submission->id,
+            $isSeller ? $user->id : null,
+        );
 
         return redirect('/sell-equipment/equipment-submission/thank-you');
     }
@@ -151,10 +163,11 @@ class SellEquipmentController extends Controller
      * @param  array<int, UploadedFile>  $files
      * @return array<int, array<string, mixed>>
      */
-    private function storeUploads(array $files, string $folder): array
+    private function storePhotos(array $files): array
     {
-        // Same folders as the portal: a broker reviewing a listing should not care which
-        // form it arrived through.
-        return UploadStore::storePublicBatch($files, "portal/equipment-submissions/{$folder}");
+        // Same folder as the portal: a broker reviewing a listing should not care which
+        // form it arrived through. Photos only — documents are rows now, see
+        // App\Support\DocumentStore.
+        return UploadStore::storePublicBatch($files, 'portal/equipment-submissions/photos');
     }
 }

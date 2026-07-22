@@ -32,7 +32,6 @@ class EquipmentListingSeeder extends Seeder
                     'asking_price' => $data['asking_price'],
                     'needs_valuation' => false,
                     'photos' => [$photo],
-                    'documents' => [],
                     'status' => ListingStatus::UnderReview,
                 ],
             );
