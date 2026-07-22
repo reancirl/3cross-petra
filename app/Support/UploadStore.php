@@ -63,4 +63,20 @@ class UploadStore
             ->values()
             ->all();
     }
+
+    /**
+     * Remove a file previously written by storePublicBatch.
+     *
+     * Tolerates a null or missing path: rows written before a `path` key existed, and
+     * files already gone from the disk, both mean the same thing to the caller — there
+     * is nothing left to unlink — and neither is worth failing a request over.
+     */
+    public static function deletePublic(?string $path): void
+    {
+        if (blank($path)) {
+            return;
+        }
+
+        Storage::disk('public')->delete($path);
+    }
 }

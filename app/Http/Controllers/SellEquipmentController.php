@@ -168,6 +168,6 @@ class SellEquipmentController extends Controller
         // Same folder as the portal: a broker reviewing a listing should not care which
         // form it arrived through. Photos only — documents are rows now, see
         // App\Support\DocumentStore.
-        return UploadStore::storePublicBatch($files, 'portal/equipment-submissions/photos');
+        return UploadStore::storePublicBatch($files, EquipmentSubmission::PHOTO_FOLDER);
     }
 }
