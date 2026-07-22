@@ -79,6 +79,25 @@ class EquipmentSubmission extends Model
 
     public const CATEGORY_FALLBACK = 'Other Equipment';
 
+    /**
+     * Categories as value => label, for the public submission form's dropdown.
+     *
+     * Every label equals its stored value except the catch-all: the content doc's dropdown
+     * ends with plain "Other", while the stored vocabulary keeps "Other Equipment" — renaming
+     * the stored value would touch existing listings, the marketplace filter and the seeder
+     * for a wording change. The option value is still the stored string, so validation
+     * (Rule::in on CATEGORIES) and persistence are unaffected.
+     *
+     * @return array<string, string>
+     */
+    public static function categoryOptions(): array
+    {
+        return array_combine(self::CATEGORIES, array_map(
+            fn (string $category): string => $category === self::CATEGORY_FALLBACK ? 'Other' : $category,
+            self::CATEGORIES,
+        ));
+    }
+
     public const REGIONS = [
         'Wyoming',
         'North Dakota',

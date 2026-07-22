@@ -102,10 +102,14 @@
             "contact": "Contact Information",
             "equipment": "Equipment Information",
             "selling": "Selling Information",
-            "photos": "Upload Photos",
-            "documents": "Upload Documents",
+            "photos": "Upload Photos (Optional)",
+            "documents": "Upload Documents (Optional)",
             "additional": "Additional Information",
             "confirmation": "Confirmation"
+        },
+        "uploadLabels": {
+            "photos": "Upload Photos",
+            "documents": "Upload Documents"
         },
         "labels": {
             "fullName": "Full Name",

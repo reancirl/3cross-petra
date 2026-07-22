@@ -16,7 +16,7 @@ import content from '../../data/sell-equipment/equipment-submission.json';
 type Props = {
     canonicalUrl: string;
     ogImageUrl: string;
-    categoryOptions: string[];
+    categoryOptions: Record<string, string>;
     locationOptions: PublicLocationOption[];
     conditionOptions: Record<string, string>;
     ownershipOptions: Record<string, string>;

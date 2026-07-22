@@ -13,7 +13,8 @@ export type PublicLocationOption = {
 };
 
 type Props = {
-    categoryOptions: string[];
+    /** value => label. Value is the stored category; the label follows the content doc. */
+    categoryOptions: Record<string, string>;
     locationOptions: PublicLocationOption[];
     conditionOptions: Record<string, string>;
     ownershipOptions: Record<string, string>;
@@ -26,6 +27,7 @@ type Props = {
         intro: string;
         requiredNote: string;
         sections: Record<string, string>;
+        uploadLabels: Record<string, string>;
         labels: Record<string, string>;
         hints: Record<string, string | string[]>;
         guideLinks: Record<string, { label: string; href: string }>;
@@ -335,9 +337,9 @@ export default function PublicSubmissionForm({
                                     className={inputClass(errorFor('category'))}
                                 >
                                     <option value="">Select a category</option>
-                                    {categoryOptions.map((category) => (
-                                        <option key={category} value={category}>
-                                            {category}
+                                    {Object.entries(categoryOptions).map(([value, label]) => (
+                                        <option key={value} value={value}>
+                                            {label}
                                         </option>
                                     ))}
                                 </select>
@@ -515,7 +517,9 @@ export default function PublicSubmissionForm({
                             files={form.data.photos}
                             error={errorFor('photos')}
                             onChange={(files) => form.setData('photos', files)}
-                            label={copy.sections.photos}
+                            // The doc carries two strings here: the section heading above
+                            // ("Upload Photos (Optional)") and the upload control's own label.
+                            label={copy.uploadLabels.photos}
                             hint={copy.hints.photos as string}
                         />
                         <GuidePrompt prompt={copy.hints.photoGuidePrompt as string} link={copy.guideLinks.photos} />
@@ -529,7 +533,7 @@ export default function PublicSubmissionForm({
                             files={form.data.documents}
                             error={errorFor('documents')}
                             onChange={(files) => form.setData('documents', files)}
-                            label={copy.sections.documents}
+                            label={copy.uploadLabels.documents}
                             hint={copy.hints.documents as string}
                         />
                         <GuidePrompt prompt={copy.hints.documentGuidePrompt as string} link={copy.guideLinks.documents} />

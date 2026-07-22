@@ -11205,10 +11205,10 @@ function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptio
 											children: [/* @__PURE__ */ jsx("option", {
 												value: "",
 												children: "Select a category"
-											}), categoryOptions.map((category) => /* @__PURE__ */ jsx("option", {
-												value: category,
-												children: category
-											}, category))]
+											}), Object.entries(categoryOptions).map(([value, label]) => /* @__PURE__ */ jsx("option", {
+												value,
+												children: label
+											}, value))]
 										})
 									}),
 									/* @__PURE__ */ jsx(Field, {
@@ -11400,7 +11400,7 @@ function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptio
 									files: form.data.photos,
 									error: errorFor("photos"),
 									onChange: (files) => form.setData("photos", files),
-									label: copy.sections.photos,
+									label: copy.uploadLabels.photos,
 									hint: copy.hints.photos
 								}),
 								/* @__PURE__ */ jsx(GuidePrompt, {
@@ -11425,7 +11425,7 @@ function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptio
 									files: form.data.documents,
 									error: errorFor("documents"),
 									onChange: (files) => form.setData("documents", files),
-									label: copy.sections.documents,
+									label: copy.uploadLabels.documents,
 									hint: copy.hints.documents
 								}),
 								/* @__PURE__ */ jsx(GuidePrompt, {
@@ -11661,10 +11661,14 @@ var equipment_submission_default = {
 			"contact": "Contact Information",
 			"equipment": "Equipment Information",
 			"selling": "Selling Information",
-			"photos": "Upload Photos",
-			"documents": "Upload Documents",
+			"photos": "Upload Photos (Optional)",
+			"documents": "Upload Documents (Optional)",
 			"additional": "Additional Information",
 			"confirmation": "Confirmation"
+		},
+		"uploadLabels": {
+			"photos": "Upload Photos",
+			"documents": "Upload Documents"
 		},
 		"labels": {
 			"fullName": "Full Name",

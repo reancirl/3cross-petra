@@ -28,7 +28,9 @@ class SellEquipmentController extends Controller
             'ogImageUrl' => asset('images/petra-equipment-yard-hero.png'),
             // Every option list comes from the model / support class rather than the copy
             // JSON, so the dropdowns and the validation rules can never disagree.
-            'categoryOptions' => EquipmentSubmission::CATEGORIES,
+            // value => label: the doc's dropdown ends with "Other" while the stored value
+            // stays "Other Equipment" (see EquipmentSubmission::categoryOptions).
+            'categoryOptions' => EquipmentSubmission::categoryOptions(),
             'locationOptions' => PublicLocationOptions::all(),
             'conditionOptions' => EquipmentSubmission::CONDITIONS,
             'ownershipOptions' => EquipmentSubmission::OWNERSHIP_OPTIONS,

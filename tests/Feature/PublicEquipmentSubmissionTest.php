@@ -314,4 +314,19 @@ class PublicEquipmentSubmissionTest extends TestCase
         $this->get('/sell-equipment/equipment-submission')->assertOk();
         $this->get('/sell-equipment/equipment-submission/thank-you')->assertOk();
     }
+
+    public function test_the_category_dropdown_shows_the_docs_other_label_but_stores_other_equipment(): void
+    {
+        // The content doc's dropdown ends with "Other"; the stored vocabulary keeps
+        // "Other Equipment" so existing listings and the marketplace filter are untouched.
+        $this->get('/sell-equipment/equipment-submission')
+            ->assertOk()
+            ->assertSee('"Other Equipment":"Other"', false);
+
+        $this->post('/sell-equipment/equipment-submission', $this->payload([
+            'category' => EquipmentSubmission::CATEGORY_FALLBACK,
+        ]))->assertRedirect('/sell-equipment/equipment-submission/thank-you');
+
+        $this->assertSame(EquipmentSubmission::CATEGORY_FALLBACK, EquipmentSubmission::sole()->category);
+    }
 }
