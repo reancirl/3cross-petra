@@ -9663,6 +9663,13 @@ function Honeypot({ value, onChange }) {
 function inputClass(error) {
 	return `portal-input${error ? " portal-input-error" : ""}`;
 }
+/**
+* Use for every `<select>`. Adds the right padding the chevron needs — see .portal-select in
+* app.css. A select styled with plain inputClass() renders its longest option under the arrow.
+*/
+function selectClass(error) {
+	return `${inputClass(error)} portal-select`;
+}
 //#endregion
 //#region resources/js/use-form-draft.ts
 var WRITE_DELAY_MS = 400;
@@ -9692,7 +9699,10 @@ function useFormDraft(key, data, setData, { omit = [], enabled = true } = {}) {
 				Object.keys(data).forEach((field) => {
 					if (field in parsed && !omitted.current.includes(field)) restored[field] = parsed[field];
 				});
-				if (Object.keys(restored).length > 0) setData(restored);
+				if (Object.keys(restored).length > 0) setData((current) => ({
+					...current,
+					...restored
+				}));
 			}
 		} catch {
 			clear();
@@ -9917,7 +9927,7 @@ function BrokerContactForm({ topicOptions, preferredContactOptions, inquirySent,
 											clearError("topic");
 											form.setData("topic", event.target.value);
 										},
-										className: inputClass(errorFor("topic")),
+										className: selectClass(errorFor("topic")),
 										children: [/* @__PURE__ */ jsx("option", {
 											value: "",
 											children: "Select an option"
@@ -11201,7 +11211,7 @@ function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptio
 												clearError("category");
 												form.setData("category", event.target.value);
 											},
-											className: inputClass(errorFor("category")),
+											className: selectClass(errorFor("category")),
 											children: [/* @__PURE__ */ jsx("option", {
 												value: "",
 												children: "Select a category"
@@ -11263,7 +11273,7 @@ function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptio
 												clearError("location");
 												form.setData("location", event.target.value);
 											},
-											className: inputClass(errorFor("location")),
+											className: selectClass(errorFor("location")),
 											children: [/* @__PURE__ */ jsx("option", {
 												value: "",
 												children: "Select a location"
@@ -11289,7 +11299,7 @@ function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptio
 												clearError("condition");
 												form.setData("condition", event.target.value);
 											},
-											className: inputClass(errorFor("condition")),
+											className: selectClass(errorFor("condition")),
 											children: [/* @__PURE__ */ jsx("option", {
 												value: "",
 												children: "Select a condition"
@@ -11372,7 +11382,7 @@ function PublicSubmissionForm({ categoryOptions, locationOptions, conditionOptio
 									children: /* @__PURE__ */ jsxs("select", {
 										value: form.data.estimated_value_range,
 										onChange: (event) => form.setData("estimated_value_range", event.target.value),
-										className: inputClass(errorFor("estimated_value_range")),
+										className: selectClass(errorFor("estimated_value_range")),
 										children: [/* @__PURE__ */ jsx("option", {
 											value: "",
 											children: "Select a range"

@@ -2,7 +2,7 @@ import { useForm, usePage } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { DocumentPicker, PhotoPicker } from './file-pickers';
-import { Consent, Field, Honeypot, inputClass, Legend, RadioGroup } from './public-form-fields';
+import { Consent, Field, Honeypot, inputClass, Legend, RadioGroup, selectClass } from './public-form-fields';
 import { useFormDraft } from '../use-form-draft';
 import type { SharedPageProps } from '../types';
 
@@ -334,7 +334,7 @@ export default function PublicSubmissionForm({
                                         clearError('category');
                                         form.setData('category', event.target.value);
                                     }}
-                                    className={inputClass(errorFor('category'))}
+                                    className={selectClass(errorFor('category'))}
                                 >
                                     <option value="">Select a category</option>
                                     {Object.entries(categoryOptions).map(([value, label]) => (
@@ -394,7 +394,7 @@ export default function PublicSubmissionForm({
                                         clearError('location');
                                         form.setData('location', event.target.value);
                                     }}
-                                    className={inputClass(errorFor('location'))}
+                                    className={selectClass(errorFor('location'))}
                                 >
                                     <option value="">Select a location</option>
                                     {locationGroups.map((group) => (
@@ -421,7 +421,7 @@ export default function PublicSubmissionForm({
                                         clearError('condition');
                                         form.setData('condition', event.target.value);
                                     }}
-                                    className={inputClass(errorFor('condition'))}
+                                    className={selectClass(errorFor('condition'))}
                                 >
                                     <option value="">Select a condition</option>
                                     {Object.entries(conditionOptions).map(([value, label]) => (
@@ -496,7 +496,7 @@ export default function PublicSubmissionForm({
                             <select
                                 value={form.data.estimated_value_range}
                                 onChange={(event) => form.setData('estimated_value_range', event.target.value)}
-                                className={inputClass(errorFor('estimated_value_range'))}
+                                className={selectClass(errorFor('estimated_value_range'))}
                             >
                                 <option value="">Select a range</option>
                                 {Object.entries(valueRangeOptions).map(([value, label]) => (

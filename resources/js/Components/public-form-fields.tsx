@@ -146,3 +146,11 @@ export function Honeypot({ value, onChange }: { value: string; onChange: (value:
 export function inputClass(error?: string) {
     return `portal-input${error ? ' portal-input-error' : ''}`;
 }
+
+/**
+ * Use for every `<select>`. Adds the right padding the chevron needs — see .portal-select in
+ * app.css. A select styled with plain inputClass() renders its longest option under the arrow.
+ */
+export function selectClass(error?: string) {
+    return `${inputClass(error)} portal-select`;
+}

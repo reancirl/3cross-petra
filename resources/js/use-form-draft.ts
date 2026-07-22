@@ -27,7 +27,11 @@ const WRITE_DELAY_MS = 400;
 export function useFormDraft<T extends Record<string, unknown>>(
     key: string,
     data: T,
-    setData: (values: Partial<T>) => void,
+    /**
+     * Inertia's `form.setData`, and it MUST be called with the updater overload — see the
+     * restore effect. Typed as updater-only so the object overload cannot be used here.
+     */
+    setData: (updater: (current: T) => T) => void,
     { omit = [], enabled = true }: UseFormDraftOptions<T> = {},
 ) {
     // The restore pass writes to form state, which re-triggers the save effect. Without this
@@ -79,7 +83,12 @@ export function useFormDraft<T extends Record<string, unknown>>(
                 });
 
                 if (Object.keys(restored).length > 0) {
-                    setData(restored as Partial<T>);
+                    // MERGE, never replace. Inertia's setData(object) overload swaps the whole
+                    // data object out (it calls commitData(keyOrData) verbatim), so passing the
+                    // restored subset would set every omitted field to undefined — File[] fields
+                    // included, which then crashes the pickers on `files.length`. The updater
+                    // overload is the only safe one here.
+                    setData((current) => ({ ...current, ...restored }) as T);
                 }
             }
         } catch {

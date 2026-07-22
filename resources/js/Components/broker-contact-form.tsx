@@ -1,7 +1,7 @@
 import { useForm, usePage } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
-import { Consent, Field, Honeypot, inputClass, Legend, RadioGroup } from './public-form-fields';
+import { Consent, Field, Honeypot, inputClass, Legend, RadioGroup, selectClass } from './public-form-fields';
 import { useFormDraft } from '../use-form-draft';
 import type { SharedPageProps, SiteContact } from '../types';
 
@@ -234,7 +234,7 @@ export default function BrokerContactForm({ topicOptions, preferredContactOption
                                                 clearError('topic');
                                                 form.setData('topic', event.target.value);
                                             }}
-                                            className={inputClass(errorFor('topic'))}
+                                            className={selectClass(errorFor('topic'))}
                                         >
                                             <option value="">Select an option</option>
                                             {Object.entries(topicOptions).map(([value, label]) => (
