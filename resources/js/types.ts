@@ -267,6 +267,13 @@ export type EquipmentSubmission = {
  * state and the offers logged against it.
  */
 export type EquipmentSubmissionDetail = EquipmentSubmission & {
+    /**
+     * Whether the photo set may still be changed — false once a listing is Sold or Not
+     * Accepted. Sent by the server rather than derived from the status string here, so
+     * the screen cannot offer an upload the controller would 403.
+     */
+    photos_editable: boolean;
+    max_photos: number;
     public_id: string | null;
     /** Set only when the listing is actually reachable on the public marketplace. */
     public_href: string | null;

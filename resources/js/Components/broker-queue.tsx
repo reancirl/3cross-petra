@@ -1,7 +1,7 @@
 import { useForm } from '@inertiajs/react';
 import { useMemo, useRef, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
-import type { PortalDocument, StatusTone } from '../types';
+import type { PortalDocument, StatusTone, UploadFileMeta } from '../types';
 
 /**
  * Shared plumbing for the two broker review queues (Pages/Broker/Submissions and
@@ -58,6 +58,10 @@ export type SellerSubmission = {
     capacity: string | null;
     featured: boolean;
     photo_count: number;
+    /** The set itself, for the Photos tab. photos[0] is the marketplace card image. */
+    photos: UploadFileMeta[];
+    /** False once the listing is Sold or Not Accepted — the server closes the set there. */
+    photos_editable: boolean;
     /**
      * Every file on this listing from every source — submission uploads, message
      * attachments, broker uploads — already unioned server-side by DocumentPresenter.

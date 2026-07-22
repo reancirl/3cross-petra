@@ -19,6 +19,7 @@ import {
     useQueue,
 } from '../../Components/broker-queue';
 import BrokerDocumentsPanel from '../../Components/broker-documents-panel';
+import BrokerPhotosPanel from '../../Components/broker-photos-panel';
 import type { BrokerOffer, SellerSubmission } from '../../Components/broker-queue';
 import type { PortalData, SharedPageProps } from '../../types';
 
@@ -51,7 +52,7 @@ export default function BrokerSubmissions({
     // Reset with the panel, not with the row: reopening a submission should start on
     // Review, and a broker who left the last one on Documents would otherwise land
     // straight on the upload form for a different listing.
-    const [tab, setTab] = useState<'review' | 'documents'>('review');
+    const [tab, setTab] = useState<'review' | 'photos' | 'documents'>('review');
 
     const queue = useQueue(sellerSubmissions, sellerStatusOptions, (item) => [
         item.title,
@@ -127,13 +128,20 @@ export default function BrokerSubmissions({
                             <SlideOverTabs
                                 tabs={[
                                     { key: 'review', label: 'Review' },
+                                    { key: 'photos', label: 'Photos', count: active.photo_count },
                                     { key: 'documents', label: 'Documents', count: active.documents.length },
                                 ]}
                                 active={tab}
                                 onSelect={setTab}
                             />
 
-                            {tab === 'documents' ? (
+                            {tab === 'photos' ? (
+                                <BrokerPhotosPanel
+                                    photos={active.photos}
+                                    listingId={active.id}
+                                    editable={active.photos_editable}
+                                />
+                            ) : tab === 'documents' ? (
                                 <BrokerDocumentsPanel
                                     documents={active.documents}
                                     subjectType="listing"
@@ -172,7 +180,17 @@ export default function BrokerSubmissions({
                                               : null
                                     }
                                 />
-                                <Detail label="Photos" value={`${active.photo_count} uploaded`} />
+                                {/* Kept even though the Photos tab carries a count badge:
+                                    the badge is hidden at zero, which is exactly the case
+                                    a broker needs told about while filling in this form. */}
+                                <Detail
+                                    label="Photos"
+                                    value={
+                                        active.photo_count === 0
+                                            ? 'None — add one on the Photos tab to publish'
+                                            : `${active.photo_count} uploaded`
+                                    }
+                                />
                                 <Detail label="Submitted" value={active.created_at} />
                                 <Detail label="Submitted via" value={sourceLabel(active.source)} />
 
