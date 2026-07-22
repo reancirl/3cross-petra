@@ -43,6 +43,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Document Share Notification Batching
+    |--------------------------------------------------------------------------
+    |
+    | Minutes to suppress further "Petra added a document" emails to the same
+    | customer. Keyed per recipient rather than per subject, unlike the message
+    | window above: a broker attaching an inspection report, a title and a bill of
+    | sale in one sitting should cost the seller one email even when the files land
+    | on different listings. Tracked on users.documents_notified_at.
+    |
+    | Defaults to the message window so an environment that tunes one gets a
+    | consistent feel from both without having to know this key exists.
+    |
+    */
+
+    'document_notification_batch_minutes' => (int) env(
+        'DOCUMENT_NOTIFICATION_BATCH_MINUTES',
+        env('MESSAGE_NOTIFICATION_BATCH_MINUTES', 10),
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
     | Public Contact Details
     |--------------------------------------------------------------------------
     |
