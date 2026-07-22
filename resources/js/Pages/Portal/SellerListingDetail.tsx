@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import PortalShell from '../../Components/portal-shell';
 import PortalPageHeader, { portalHeaderActionClass } from '../../Components/portal-page-header';
 import BackLink from '../../Components/back-link';
+import { DocumentRow, DocumentRows } from '../../Components/document-list';
 import type { EquipmentSubmissionDetail, PortalData, SharedPageProps, StatusTone } from '../../types';
 
 type SellerListingDetailProps = {
@@ -191,28 +192,27 @@ export default function SellerListingDetail({ portal, listing }: SellerListingDe
                                 {listing.documents.length === 0 ? (
                                     <p className="text-base leading-7 text-neutral-600">No documents uploaded.</p>
                                 ) : (
-                                    <ul className="grid gap-2">
-                                        {listing.documents.map((document) => (
-                                            <li
-                                                key={document.path}
-                                                className="flex items-center justify-between gap-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3"
-                                            >
-                                                <a
-                                                    href={document.url}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="focus-copper min-w-0 truncate text-sm font-semibold text-[#a56437] underline-offset-4 hover:underline"
-                                                >
-                                                    {document.name}
-                                                </a>
-                                                {/* Documents are private until a broker marks them public,
-                                                    so the seller can see which of theirs buyers can read. */}
-                                                <Pill tone={document.public ? 'success' : 'muted'}>
-                                                    {document.public ? 'Public' : 'Private'}
-                                                </Pill>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <div className="-mx-1 overflow-hidden rounded-lg border border-[#dad5cb]">
+                                        {/* The same row the Documents hub renders, so a file looks
+                                            and behaves identically wherever the seller meets it —
+                                            including going through the authorizing download route
+                                            rather than a static path. */}
+                                        <DocumentRows>
+                                            {listing.documents.map((document) => (
+                                                <DocumentRow
+                                                    key={document.key}
+                                                    document={document}
+                                                    meta={
+                                                        // Private until a broker publishes it, so the
+                                                        // seller can see which of theirs buyers read.
+                                                        <Pill tone={document.isPublic ? 'success' : 'muted'}>
+                                                            {document.isPublic ? 'Public' : 'Private'}
+                                                        </Pill>
+                                                    }
+                                                />
+                                            ))}
+                                        </DocumentRows>
+                                    </div>
                                 )}
                             </Panel>
                         </div>

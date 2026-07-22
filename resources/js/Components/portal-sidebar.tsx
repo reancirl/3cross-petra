@@ -17,10 +17,10 @@ type PortalNavItem = {
     path: string;
     real: boolean;
     icon: PortalNavIconName;
-    // Which shared counter to render as a badge, if any. Only 'unread' exists today;
-    // the field is a name rather than a boolean so a second counter (notifications,
-    // say) does not need another flag.
-    badge?: 'unread';
+    // Which shared counter to render as a badge, if any. A name rather than a boolean
+    // precisely so a second counter could be added without a second flag — which is
+    // what 'documents' is.
+    badge?: 'unread' | 'documents';
 };
 
 type PortalNavGroup = {
@@ -30,7 +30,9 @@ type PortalNavGroup = {
 
 // Notifications remain deferred for sellers. Messages is live in all three portals —
 // it was previously absent here entirely, so a seller had no way to reach their broker
-// about their own submission.
+// about their own submission. Documents is live for both customer portals; brokers
+// reach documents through the per-subject tab on their queues instead, so they have no
+// hub entry of their own.
 const sellerNavGroups: PortalNavGroup[] = [
     {
         label: 'Main Menu',
@@ -44,7 +46,7 @@ const sellerNavGroups: PortalNavGroup[] = [
     {
         label: 'Other',
         items: [
-            { label: 'Documents', path: 'documents', real: false, icon: 'documents' },
+            { label: 'Documents', path: 'documents', real: true, icon: 'documents', badge: 'documents' },
             { label: 'Messages', path: 'messages', real: true, icon: 'messages', badge: 'unread' },
         ],
     },
@@ -67,7 +69,7 @@ const buyerNavGroups: PortalNavGroup[] = [
     {
         label: 'Other',
         items: [
-            { label: 'Documents', path: 'documents', real: false, icon: 'documents' },
+            { label: 'Documents', path: 'documents', real: true, icon: 'documents', badge: 'documents' },
             { label: 'Messages', path: 'messages', real: true, icon: 'messages', badge: 'unread' },
             { label: 'Notifications', path: 'notifications', real: false, icon: 'notifications' },
         ],
@@ -137,8 +139,9 @@ function navGroupsFor(portal: PortalData): PortalNavGroup[] {
 export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, onLogout }: PortalSidebarProps) {
     const page = usePage<SharedPageProps>();
     const { auth } = page.props;
-    // Shared prop, refreshed app-wide by the 45s poll in PortalShell.
+    // Shared props, refreshed app-wide by the 45s poll in PortalShell.
     const unreadThreads = page.props.unreadMessageThreads ?? 0;
+    const unseenDocuments = page.props.unseenDocuments ?? 0;
     const currentPath = page.url.split('?')[0];
     const userName = auth.user?.name ?? portal.profileName;
     const userInitial = (userName ?? portal.roleLabel).charAt(0).toUpperCase();
@@ -202,7 +205,11 @@ export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, on
                                 // an open thread at /buyer/messages/12 is still Messages.
                                 // The trailing slash keeps the boundary on a path segment.
                                 const active = currentPath === href || currentPath.startsWith(`${href}/`);
-                                const badgeCount = item.badge === 'unread' ? unreadThreads : 0;
+                                const badgeCount = item.badge === 'unread'
+                                    ? unreadThreads
+                                    : item.badge === 'documents'
+                                        ? unseenDocuments
+                                        : 0;
 
                                 return (
                                     <Link
@@ -238,7 +245,11 @@ export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, on
                                                 // Stays visible while collapsed — the count is the
                                                 // reason to look at a collapsed sidebar at all.
                                                 className="ml-auto flex min-w-5 shrink-0 items-center justify-center rounded-full bg-[#a56437] px-1.5 py-0.5 text-[0.65rem] font-semibold leading-none text-white lg:ml-0"
-                                                aria-label={`${badgeCount} unread ${badgeCount === 1 ? 'conversation' : 'conversations'}`}
+                                                aria-label={
+                                                    item.badge === 'documents'
+                                                        ? `${badgeCount} new ${badgeCount === 1 ? 'document' : 'documents'}`
+                                                        : `${badgeCount} unread ${badgeCount === 1 ? 'conversation' : 'conversations'}`
+                                                }
                                             >
                                                 {badgeCount > 99 ? '99+' : badgeCount}
                                             </span>

@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Portal;
 
 use App\Enums\ListingStatus;
+use App\Enums\ThreadSubjectType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Portal\StoreEquipmentSubmissionRequest;
+use App\Models\Document;
 use App\Models\EquipmentSubmission;
 use App\Models\Offer;
 use App\Models\User;
+use App\Support\DocumentPresenter;
+use App\Support\DocumentStore;
 use App\Support\UploadStore;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -28,6 +31,10 @@ class EquipmentSubmissionController extends Controller
             ],
             'submissions' => $request->user()
                 ->equipmentSubmissions()
+                // Constrained at load time, not filtered afterwards: the relation
+                // returns every document on the listing including broker-private ones,
+                // and a seller must never receive those. Same scope the hub uses.
+                ->with(['documents' => fn ($query) => $query->visibleTo($request->user())->with('uploader')])
                 ->latest()
                 ->get()
                 ->map(fn (EquipmentSubmission $submission): array => $this->serializeSubmission($submission))
@@ -52,7 +59,10 @@ class EquipmentSubmissionController extends Controller
             abort(403);
         }
 
-        $equipmentSubmission->load(['offers' => fn ($query) => $query->latest()]);
+        $equipmentSubmission->load([
+            'offers' => fn ($query) => $query->latest(),
+            'documents' => fn ($query) => $query->visibleTo($request->user())->with('uploader'),
+        ]);
 
         return Inertia::render('Portal/SellerListingDetail', [
             'portal' => [
@@ -70,7 +80,7 @@ class EquipmentSubmissionController extends Controller
         $validated = $request->validated();
         $needsValuation = (bool) ($validated['needs_valuation'] ?? false);
 
-        $request->user()->equipmentSubmissions()->create([
+        $submission = $request->user()->equipmentSubmissions()->create([
             'title' => $validated['title'],
             'category' => $validated['category'],
             'region' => $validated['region'],
@@ -79,21 +89,23 @@ class EquipmentSubmissionController extends Controller
             'condition_notes' => $validated['condition_notes'] ?? null,
             'asking_price' => $needsValuation ? null : ($validated['asking_price'] ?? null),
             'needs_valuation' => $needsValuation,
-            'photos' => $this->storeUploads($request->file('photos', []), 'photos'),
-            'documents' => $this->storeUploads($request->file('documents', []), 'documents'),
+            // Photos stay a JSON blob on the public disk: they are the marketplace
+            // gallery, they carry no visibility rules, and nothing about them is private.
+            'photos' => UploadStore::storePublicBatch($request->file('photos', []), 'portal/equipment-submissions/photos'),
             'status' => ListingStatus::UnderReview,
         ]);
 
-        return back()->with('status', 'Equipment submitted.');
-    }
+        // Documents are rows on the private disk, not a JSON blob beside the photos.
+        // A seller's service records and title paperwork used to be world-readable at a
+        // static URL; they are now reachable only through the authorizing download route.
+        DocumentStore::storeCustomerUploads(
+            $request->file('documents', []),
+            ThreadSubjectType::Listing,
+            $submission->id,
+            $request->user()->id,
+        );
 
-    /**
-     * @param  array<int, UploadedFile>  $files
-     * @return array<int, array<string, mixed>>
-     */
-    private function storeUploads(array $files, string $folder): array
-    {
-        return UploadStore::storePublicBatch($files, "portal/equipment-submissions/{$folder}");
+        return back()->with('status', 'Equipment submitted.');
     }
 
     /**
@@ -160,7 +172,11 @@ class EquipmentSubmissionController extends Controller
             'asking_price' => $submission->asking_price,
             'needs_valuation' => $submission->needs_valuation,
             'photos' => $submission->photos ?? [],
-            'documents' => $submission->documents ?? [],
+            // Serialized through the presenter so the seller's own listing screens
+            // credit and link documents exactly as the Documents hub does.
+            'documents' => $submission->documents
+                ->map(fn (Document $document): array => DocumentPresenter::item($document))
+                ->values(),
             'status' => $status->value,
             'status_label' => $status->label(),
             'status_tone' => $status->tone(),
