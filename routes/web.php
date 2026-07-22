@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\DocumentDownloadController;
 use App\Http\Controllers\EquipmentListingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
@@ -152,6 +153,20 @@ Route::get('/messages/attachments/{attachment}', [MessageAttachmentController::c
     ->middleware(['auth'])
     ->whereNumber('attachment')
     ->name('messages.attachments.show');
+
+// Documents live on the private disk and are served only by these two endpoints — the
+// authenticated one asks Document::visibleTo, the public one proves the document is
+// published with a listing the marketplace is already showing. Registered outside the
+// portal groups for the same reason attachments are: all three roles hit the same URL
+// and the access question does not vary by portal.
+Route::get('/documents/{document}/download', [DocumentDownloadController::class, 'download'])
+    ->middleware(['auth'])
+    ->whereNumber('document')
+    ->name('documents.download');
+
+Route::get('/documents/{document}/public', [DocumentDownloadController::class, 'publicShow'])
+    ->whereNumber('document')
+    ->name('documents.public');
 
 require __DIR__.'/web/seller.php';
 require __DIR__.'/web/buyer.php';
