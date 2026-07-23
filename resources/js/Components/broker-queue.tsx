@@ -1,7 +1,7 @@
 import { useForm } from '@inertiajs/react';
 import { useMemo, useRef, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
-import type { StatusTone } from '../types';
+import type { PortalDocument, StatusTone, UploadFileMeta } from '../types';
 
 /**
  * Shared plumbing for the two broker review queues (Pages/Broker/Submissions and
@@ -10,10 +10,6 @@ import type { StatusTone } from '../types';
  * common, so it lives here rather than being duplicated per page.
  */
 
-export type SellerSubmissionDocument = {
-    name: string;
-    public: boolean;
-};
 
 export type BrokerOffer = {
     id: number;
@@ -62,7 +58,16 @@ export type SellerSubmission = {
     capacity: string | null;
     featured: boolean;
     photo_count: number;
-    documents: SellerSubmissionDocument[];
+    /** The set itself, for the Photos tab. photos[0] is the marketplace card image. */
+    photos: UploadFileMeta[];
+    /** False once the listing is Sold or Not Accepted — the server closes the set there. */
+    photos_editable: boolean;
+    /**
+     * Every file on this listing from every source — submission uploads, message
+     * attachments, broker uploads — already unioned server-side by DocumentPresenter.
+     * Rendered by BrokerDocumentsPanel, not by the review form.
+     */
+    documents: PortalDocument[];
     status: string;
     status_label: string;
     status_tone: StatusTone;
@@ -86,6 +91,7 @@ export type BuyerRequest = {
     status_label: string;
     created_at: string | null;
     created_at_timestamp: number | null;
+    documents: PortalDocument[];
 };
 
 /**
@@ -487,4 +493,59 @@ export function Detail({ label, value }: { label: string; value: string | null }
 
 export function EmptyState({ text }: { text: string }) {
     return <p className="rounded-xl border border-[#dad5cb] bg-[#f8f8f6] p-5 text-base leading-7 text-neutral-600">{text}</p>;
+}
+
+/**
+ * Tab strip at the top of a review slide-over.
+ *
+ * The panel used to be a single scroll: contact details, enrichment form, offers, and
+ * now documents as well. Documents are a different job from reviewing a submission —
+ * a broker opens the panel either to move a listing along or to file paperwork — so
+ * they get their own tab rather than another section to scroll past.
+ *
+ * A count on the tab, because "does this listing have anything attached" is worth
+ * knowing without opening it.
+ */
+export function SlideOverTabs<T extends string>({
+    tabs,
+    active,
+    onSelect,
+}: {
+    tabs: { key: T; label: string; count?: number }[];
+    active: T;
+    onSelect: (key: T) => void;
+}) {
+    return (
+        <div role="tablist" className="flex gap-1 border-b border-[#dad5cb]">
+            {tabs.map((tab) => {
+                const selected = tab.key === active;
+
+                return (
+                    <button
+                        key={tab.key}
+                        type="button"
+                        role="tab"
+                        aria-selected={selected}
+                        onClick={() => onSelect(tab.key)}
+                        className={`focus-copper -mb-px flex items-center gap-2 border-b-2 px-4 py-2.5 font-heading text-sm font-semibold uppercase tracking-[0.1em] transition-colors ${
+                            selected
+                                ? 'border-[#a56437] text-[#8a5330]'
+                                : 'border-transparent text-neutral-500 hover:text-neutral-900'
+                        }`}
+                    >
+                        {tab.label}
+                        {typeof tab.count === 'number' && tab.count > 0 && (
+                            <span
+                                className={`rounded-full px-1.5 py-0.5 text-[0.65rem] leading-none ${
+                                    selected ? 'bg-[#a56437]/15 text-[#8a5330]' : 'bg-neutral-100 text-neutral-500'
+                                }`}
+                            >
+                                {tab.count}
+                            </span>
+                        )}
+                    </button>
+                );
+            })}
+        </div>
+    );
 }

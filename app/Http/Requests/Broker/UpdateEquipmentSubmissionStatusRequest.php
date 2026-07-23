@@ -41,9 +41,10 @@ class UpdateEquipmentSubmissionStatusRequest extends FormRequest
             'year' => ['nullable', 'integer', 'min:1900', 'max:'.(date('Y') + 1)],
             'capacity' => ['nullable', 'string', 'max:255'],
             'featured' => ['boolean'],
-            // Per-document public/private toggles, aligned to the document array index.
-            'documents_public' => ['nullable', 'array'],
-            'documents_public.*' => ['boolean'],
+            // Documents are no longer edited here. They were a JSON array on this row
+            // with per-index public toggles; they are now their own table with a
+            // visibility chosen at upload time (App\Enums\DocumentVisibility), managed
+            // from the Documents tab beside this form.
         ];
     }
 
@@ -87,8 +88,11 @@ class UpdateEquipmentSubmissionStatusRequest extends FormRequest
                 $missing[] = 'a condition';
             }
 
-            if (count($listing->photos ?? []) === 0) {
-                $missing[] = 'at least one photo';
+            // Actionable now: the Photos tab beside this form uploads to the listing, and
+            // the seller can add photos from their own listing page. Before those existed
+            // the photo set was fixed at submission, so this line was a dead end.
+            if ($listing->photoCount() === 0) {
+                $missing[] = 'at least one photo (add one on the Photos tab)';
             }
 
             if ($missing !== []) {

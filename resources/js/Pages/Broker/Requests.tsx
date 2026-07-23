@@ -5,7 +5,17 @@ import PortalShell from '../../Components/portal-shell';
 import SlideOver from '../../Components/slide-over';
 import DataTable, { CellStack } from '../../Components/data-table';
 import type { DataTableColumn } from '../../Components/data-table';
-import { Detail, EmptyState, NoResults, QueueToolbar, StatusBadge, StatusForm, useQueue } from '../../Components/broker-queue';
+import {
+    Detail,
+    EmptyState,
+    NoResults,
+    QueueToolbar,
+    SlideOverTabs,
+    StatusBadge,
+    StatusForm,
+    useQueue,
+} from '../../Components/broker-queue';
+import BrokerDocumentsPanel from '../../Components/broker-documents-panel';
 import type { BuyerRequest } from '../../Components/broker-queue';
 import type { PortalData, SharedPageProps } from '../../types';
 
@@ -25,6 +35,8 @@ export default function BrokerRequests({ portal, buyerRequests, buyerStatusOptio
     // By id, not by object: props are replaced after a status save (see Submissions).
     const [activeId, setActiveId] = useState<number | null>(null);
     const active = buyerRequests.find((request) => request.id === activeId) ?? null;
+    // Reset with the panel — see the note on the same state in Broker/Submissions.
+    const [tab, setTab] = useState<'review' | 'documents'>('review');
 
     const queue = useQueue(buyerRequests, buyerStatusOptions, (item) => [
         item.equipment_type,
@@ -79,12 +91,33 @@ export default function BrokerRequests({ portal, buyerRequests, buyerStatusOptio
 
                 <SlideOver
                     open={active !== null}
-                    onClose={() => setActiveId(null)}
+                    onClose={() => {
+                        setActiveId(null);
+                        setTab('review');
+                    }}
                     eyebrow="Buyer request"
                     title={active?.equipment_type ?? ''}
                 >
                     {active && (
                         <div className="grid gap-6">
+                            <SlideOverTabs
+                                tabs={[
+                                    { key: 'review', label: 'Review' },
+                                    { key: 'documents', label: 'Documents', count: active.documents.length },
+                                ]}
+                                active={tab}
+                                onSelect={setTab}
+                            />
+
+                            {tab === 'documents' ? (
+                                <BrokerDocumentsPanel
+                                    documents={active.documents}
+                                    subjectType="buyer_request"
+                                    subjectId={active.id}
+                                    recipientName={active.buyer}
+                                />
+                            ) : (
+                            <>
                             <dl className="grid gap-4 text-base leading-7 text-neutral-600 sm:grid-cols-2">
                                 <Detail label="Buyer" value={active.buyer} />
                                 <Detail label="Email" value={active.email} />
@@ -117,6 +150,8 @@ export default function BrokerRequests({ portal, buyerRequests, buyerStatusOptio
                                     />
                                 </div>
                             </div>
+                            </>
+                            )}
                         </div>
                     )}
                 </SlideOver>

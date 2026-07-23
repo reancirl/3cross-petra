@@ -1,16 +1,17 @@
 <?php
 
 use App\Http\Controllers\Portal\DashboardController;
+use App\Http\Controllers\Portal\DocumentController;
 use App\Http\Controllers\Portal\EquipmentSubmissionController;
 use App\Http\Controllers\Portal\MessageThreadController;
 use App\Http\Controllers\Portal\OfferController;
 use App\Http\Controllers\Portal\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Notifications stay deferred. Quotes/documents stay as "Soon" placeholders.
-// 'offers' and 'messages' are now real seller pages (see the dedicated routes below),
-// so they are no longer served by the generic "Soon" placeholder.
-$portalSections = ['quotes', 'documents'];
+// Notifications stay deferred. Quotes stays as a "Soon" placeholder.
+// 'offers', 'messages' and 'documents' are now real seller pages (see the dedicated
+// routes below), so they are no longer served by the generic "Soon" placeholder.
+$portalSections = ['quotes'];
 
 Route::middleware(['auth', 'no.back.history', 'user.type:seller'])
     ->prefix('seller')
@@ -24,6 +25,17 @@ Route::middleware(['auth', 'no.back.history', 'user.type:seller'])
         Route::get('/listings/{equipmentSubmission}', [EquipmentSubmissionController::class, 'show'])
             ->whereNumber('equipmentSubmission')
             ->name('listings.show');
+        // Photos after the fact. Until these existed the photo set was fixed at
+        // submission, so a seller who forgot them left the broker with a publish
+        // checklist nothing could satisfy. Ownership is checked in the controller for
+        // the same reason listings.show checks it.
+        Route::post('/listings/{equipmentSubmission}/photos', [EquipmentSubmissionController::class, 'storePhotos'])
+            ->whereNumber('equipmentSubmission')
+            ->name('listings.photos.store');
+        Route::delete('/listings/{equipmentSubmission}/photos/{index}', [EquipmentSubmissionController::class, 'destroyPhoto'])
+            ->whereNumber('equipmentSubmission')
+            ->whereNumber('index')
+            ->name('listings.photos.destroy');
         // Seller Offers: view offers on your listings and respond. Offers are created
         // by brokers, never here. The user.type:seller middleware on this group
         // redirects any buyer/broker who hits /seller/offers directly to their own portal.
@@ -36,6 +48,10 @@ Route::middleware(['auth', 'no.back.history', 'user.type:seller'])
         Route::get('/messages/{thread}', [MessageThreadController::class, 'show'])->whereNumber('thread')->name('messages.show');
         Route::post('/messages/{thread}/messages', [MessageThreadController::class, 'store'])->whereNumber('thread')->name('messages.store');
         Route::post('/messages/{thread}/read', [MessageThreadController::class, 'markRead'])->whereNumber('thread')->name('messages.read');
+        // The Documents hub. Read-only: everything a seller can see here arrives from
+        // their own submission or from a broker sharing it. The same controller serves
+        // the buyer portal — the access rule is Document::visibleTo either way.
+        Route::get('/documents', [DocumentController::class, 'index'])->defaults('userType', 'seller')->name('documents');
         Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'seller')->name('profile');
         Route::patch('/profile', [ProfileController::class, 'update'])->defaults('userType', 'seller')->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->defaults('userType', 'seller')->name('profile.password');

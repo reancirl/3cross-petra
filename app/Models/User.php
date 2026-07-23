@@ -101,6 +101,64 @@ class User extends Authenticatable
         return $this->hasMany(Thread::class);
     }
 
+    /**
+     * Documents a broker shared with this user by name. Does not cover everything the
+     * user can see — their own uploads and public listing documents reach them through
+     * Document::scopeVisibleTo, which is the authoritative rule. This relationship
+     * exists for the notification path, which only ever deals with direct shares.
+     *
+     * @return HasMany<Document, $this>
+     */
+    public function sharedDocuments(): HasMany
+    {
+        return $this->hasMany(Document::class, 'shared_with_user_id');
+    }
+
+    /**
+     * Documents added since this user last opened the Documents page — the nav badge.
+     *
+     * Counted against a single high-water mark rather than a per-document seen table:
+     * the page shows everything at once, so "anything new since you last looked" is
+     * exactly as precise as the question the badge asks. A user who has never visited
+     * sees everything as new, which is correct.
+     */
+    public static function unseenDocumentCountFor(User $user): int
+    {
+        if ($user->isBroker()) {
+            // Brokers upload and share; they are not the audience for a "new for you"
+            // badge on their own work, and their view is the per-subject panel anyway.
+            return 0;
+        }
+
+        return Document::query()
+            ->visibleTo($user)
+            ->when(
+                $user->documents_last_viewed_at !== null,
+                fn ($query) => $query->where('documents.created_at', '>', $user->documents_last_viewed_at),
+            )
+            ->count();
+    }
+
+    public function markDocumentsViewed(): void
+    {
+        $this->forceFill(['documents_last_viewed_at' => now()])->save();
+    }
+
+    /**
+     * Whether a document-share email may go out now, or whether one went inside the
+     * batching window and this one should be suppressed. Mirrors Thread::shouldNotify.
+     */
+    public function shouldNotifyAboutDocuments(int $withinMinutes): bool
+    {
+        return $this->documents_notified_at === null
+            || $this->documents_notified_at->lt(now()->subMinutes($withinMinutes));
+    }
+
+    public function markDocumentsNotified(): void
+    {
+        $this->forceFill(['documents_notified_at' => now()])->save();
+    }
+
     public function isBroker(): bool
     {
         return $this->user_type === self::TYPE_BROKER;
@@ -116,6 +174,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'documents_last_viewed_at' => 'datetime',
+            'documents_notified_at' => 'datetime',
         ];
     }
 }

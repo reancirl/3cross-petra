@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\Document;
 use App\Models\EquipmentSubmission;
 
 /**
@@ -55,10 +56,18 @@ class PublicListingPresenter
                 'url' => $photo['url'] ?? EquipmentSubmission::CARD_IMAGE_PLACEHOLDER,
                 'alt' => $photo['name'] ?? $listing->title,
             ], $listing->photos ?? []),
-            'documents' => array_map(fn (array $document): array => [
-                'name' => $document['name'] ?? 'Document',
-                'url' => $document['url'] ?? '#',
-            ], $listing->publicDocuments()),
+            // Route URLs, not static paths. Documents live on the private disk and are
+            // handed out by DocumentDownloadController::publicShow, which re-checks that
+            // this listing is still publicly visible — so unpublishing a listing takes
+            // its paperwork off the internet with it, which a frozen static URL could
+            // never do.
+            'documents' => $listing->publicDocuments()
+                ->map(fn (Document $document): array => [
+                    'name' => $document->original_name,
+                    'url' => route('documents.public', $document),
+                ])
+                ->values()
+                ->all(),
             'specifications' => [
                 'manufacturer' => $listing->manufacturer,
                 'model' => $listing->model,

@@ -4,15 +4,19 @@ namespace App\Http\Controllers\Broker;
 
 use App\Enums\ListingStatus;
 use App\Enums\OfferStatus;
+use App\Enums\ThreadSubjectType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Broker\RespondToOfferRequest;
 use App\Http\Requests\Broker\StoreOfferRequest;
 use App\Http\Requests\Broker\UpdateEquipmentRequestStatusRequest;
 use App\Http\Requests\Broker\UpdateEquipmentSubmissionStatusRequest;
+use App\Http\Requests\StoreListingPhotosRequest;
 use App\Models\EquipmentRequest;
 use App\Models\EquipmentSubmission;
 use App\Models\Offer;
 use App\Models\User;
+use App\Support\DocumentPresenter;
+use App\Support\UploadStore;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -29,11 +33,18 @@ class SubmissionReviewController extends Controller
      */
     public function index(Request $request): Response
     {
+        $submissions = EquipmentSubmission::with(['user', 'offers' => fn ($query) => $query->latest()])
+            ->latest()
+            ->get();
+
+        // Two extra queries for the whole page rather than two per row: the unified
+        // document view has to reach into message attachments, and resolving that per
+        // submission would be a textbook N+1 on the broker's landing page.
+        $documentsBySubject = DocumentPresenter::forBrokerSubjects($submissions, ThreadSubjectType::Listing);
+
         return Inertia::render('Broker/Submissions', [
             'portal' => $this->portalData($request),
-            'sellerSubmissions' => EquipmentSubmission::with(['user', 'offers' => fn ($query) => $query->latest()])
-                ->latest()
-                ->get()
+            'sellerSubmissions' => $submissions
                 ->map(fn (EquipmentSubmission $submission): array => [
                     'id' => $submission->id,
                     // Falls back to the contact_* columns so an unclaimed lead from the public
@@ -69,11 +80,17 @@ class SubmissionReviewController extends Controller
                     'year' => $submission->year,
                     'capacity' => $submission->capacity,
                     'featured' => $submission->featured,
-                    'photo_count' => count($submission->photos ?? []),
-                    'documents' => collect($submission->documents ?? [])->map(fn (array $document): array => [
-                        'name' => $document['name'] ?? 'Document',
-                        'public' => (bool) ($document['public'] ?? false),
-                    ])->values(),
+                    'photo_count' => $submission->photoCount(),
+                    // The set itself, not just the count: the Photos tab shows thumbnails
+                    // and offers an upload, because photos often reach the broker by email
+                    // after the seller has already submitted — and until they could be
+                    // added here, the publish checklist had no way to be satisfied.
+                    'photos' => $submission->photoList(),
+                    'photos_editable' => $submission->listingStatus()->acceptsPhotoEdits(),
+                    // Every file on this listing from every source — the seller's
+                    // submission uploads, anything attached to a message in the thread,
+                    // and the broker's own uploads — in one list with source labels.
+                    'documents' => $documentsBySubject[$submission->id] ?? [],
                     'status' => $submission->listingStatus()->value,
                     'status_label' => $submission->statusLabel(),
                     'status_tone' => $submission->listingStatus()->tone(),
@@ -105,11 +122,12 @@ class SubmissionReviewController extends Controller
      */
     public function requests(Request $request): Response
     {
+        $requests = EquipmentRequest::with('user')->latest()->get();
+        $documentsBySubject = DocumentPresenter::forBrokerSubjects($requests, ThreadSubjectType::BuyerRequest);
+
         return Inertia::render('Broker/Requests', [
             'portal' => $this->portalData($request),
-            'buyerRequests' => EquipmentRequest::with('user')
-                ->latest()
-                ->get()
+            'buyerRequests' => $requests
                 ->map(fn (EquipmentRequest $equipmentRequest): array => [
                     'id' => $equipmentRequest->id,
                     'buyer' => $equipmentRequest->user?->name,
@@ -125,6 +143,7 @@ class SubmissionReviewController extends Controller
                     'status_label' => $equipmentRequest->statusLabel(),
                     'created_at' => $equipmentRequest->created_at?->toFormattedDateString(),
                     'created_at_timestamp' => $equipmentRequest->created_at?->getTimestamp(),
+                    'documents' => $documentsBySubject[$equipmentRequest->id] ?? [],
                 ])
                 ->values(),
             'buyerStatusOptions' => EquipmentRequest::STATUSES,
@@ -255,10 +274,6 @@ class SubmissionReviewController extends Controller
             'year' => $request->validated('year'),
             'capacity' => $request->validated('capacity'),
             'featured' => $request->boolean('featured'),
-            'documents' => $this->applyDocumentVisibility(
-                $equipmentSubmission->documents ?? [],
-                $request->validated('documents_public', []),
-            ),
         ];
 
         // Stamp a public id + publish time the first time a listing goes public.
@@ -282,21 +297,37 @@ class SubmissionReviewController extends Controller
     }
 
     /**
-     * Merge broker per-document public/private choices back into the stored documents.
+     * The broker's half of post-submission photo uploads.
      *
-     * @param  array<int, array<string, mixed>>  $documents
-     * @param  array<int, bool>  $visibility
-     * @return array<int, array<string, mixed>>
+     * Sellers photograph their own equipment, but the pictures routinely reach Petra as
+     * an email attachment or a text after the form has already been submitted. Without
+     * this, the only way to satisfy the publish checklist was to ask the seller to go
+     * back and do it themselves — see the seller's own storePhotos for that path.
+     *
+     * No ownership check, unlike the seller side: brokers are staff and every listing is
+     * theirs to work, so user.type:broker on the route group is the whole story.
      */
-    private function applyDocumentVisibility(array $documents, array $visibility): array
+    public function storePhotos(StoreListingPhotosRequest $request, EquipmentSubmission $equipmentSubmission): RedirectResponse
     {
-        return collect($documents)
-            ->map(function (array $document, int $index) use ($visibility): array {
-                $document['public'] = (bool) ($visibility[$index] ?? ($document['public'] ?? false));
+        abort_unless($equipmentSubmission->listingStatus()->acceptsPhotoEdits(), 403);
 
-                return $document;
-            })
-            ->all();
+        $stored = UploadStore::storePublicBatch($request->file('photos', []), EquipmentSubmission::PHOTO_FOLDER);
+        $equipmentSubmission->addPhotos($stored);
+
+        $count = count($stored);
+
+        return back()->with('status', $count === 1 ? 'Photo added.' : "{$count} photos added.");
+    }
+
+    public function destroyPhoto(EquipmentSubmission $equipmentSubmission, int $index): RedirectResponse
+    {
+        abort_unless($equipmentSubmission->listingStatus()->acceptsPhotoEdits(), 403);
+
+        if (! $equipmentSubmission->removePhotoAt($index)) {
+            return back()->with('status', 'That photo is no longer on this listing.');
+        }
+
+        return back()->with('status', 'Photo removed.');
     }
 
     public function updateBuyerRequest(

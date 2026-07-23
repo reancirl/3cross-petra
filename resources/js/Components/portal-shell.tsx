@@ -27,10 +27,10 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
     }, []);
 
     /**
-     * Keep the Messages nav badge current on every portal screen.
+     * Keep the Messages and Documents nav badges current on every portal screen.
      *
-     * A partial reload of the single shared `unreadMessageThreads` prop, so the poll
-     * costs one indexed count and never re-serializes the page the user is reading —
+     * A partial reload of the two shared counter props, so the poll costs two indexed
+     * counts and never re-serializes the page the user is reading —
      * important because a mutation on this codebase otherwise re-sends all props.
      *
      * Paused while the tab is hidden, and fired once on becoming visible so a user
@@ -43,7 +43,7 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
                 return;
             }
 
-            router.reload({ only: ['unreadMessageThreads'] });
+            router.reload({ only: ['unreadMessageThreads', 'unseenDocuments'] });
         }
 
         const timer = window.setInterval(refreshUnread, UNREAD_POLL_MS);

@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Enums\DocumentVisibility;
 use App\Enums\ListingStatus;
+use App\Enums\ThreadSubjectType;
+use App\Models\Document;
 use App\Models\EquipmentSubmission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -83,18 +86,38 @@ class MarketplaceTest extends TestCase
 
     public function test_detail_page_hides_private_documents(): void
     {
-        $listing = $this->listing([
-            'documents' => [
-                ['name' => 'public-spec.pdf', 'path' => 'd/1.pdf', 'url' => '/storage/d/1.pdf', 'size' => 1, 'public' => true],
-                ['name' => 'private-invoice.pdf', 'path' => 'd/2.pdf', 'url' => '/storage/d/2.pdf', 'size' => 1, 'public' => false],
-            ],
-        ]);
+        $listing = $this->listing();
+
+        // Documents moved off the equipment_submissions JSON column into their own
+        // table (2026_07_22). The rule under test is unchanged: only what a broker
+        // published with the listing reaches a public visitor.
+        foreach ([
+            ['public-spec.pdf', DocumentVisibility::PublicListing],
+            ['private-invoice.pdf', DocumentVisibility::SharedUser],
+            ['internal-notes.pdf', DocumentVisibility::PrivateBroker],
+        ] as [$name, $visibility]) {
+            Document::create([
+                'subject_type' => ThreadSubjectType::Listing->value,
+                'subject_id' => $listing->id,
+                'uploaded_by_type' => Document::UPLOADER_BROKER,
+                'visibility' => $visibility->value,
+                'disk' => 'local',
+                'file_path' => "portal/documents/{$name}",
+                'original_name' => $name,
+                'mime' => 'application/pdf',
+                'size' => 1,
+            ]);
+        }
 
         $props = $this->get("/equipment/{$listing->public_id}")->assertOk()->viewData('page')['props'];
         $encoded = json_encode($props['listing']['documents']);
 
         $this->assertStringContainsString('public-spec.pdf', $encoded);
         $this->assertStringNotContainsString('private-invoice.pdf', $encoded);
+        $this->assertStringNotContainsString('internal-notes.pdf', $encoded);
+        // And what does reach them is a route through the authorizing endpoint, never
+        // a static path on the public disk.
+        $this->assertStringNotContainsString('/storage/', $encoded);
     }
 
     public function test_non_public_listing_detail_returns_404(): void

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Portal\DashboardController;
+use App\Http\Controllers\Portal\DocumentController;
 use App\Http\Controllers\Portal\EquipmentRequestController;
 use App\Http\Controllers\Portal\MessageThreadController;
 use App\Http\Controllers\Portal\ProfileController;
@@ -28,7 +29,10 @@ use Illuminate\Support\Facades\Route;
 // 'messages' has graduated out of this list — it is a real page now (see the
 // messaging routes below), so leaving it here would let the generic placeholder
 // shadow it.
-$portalSections = ['saved-equipment', 'documents', 'notifications'];
+// 'documents' has graduated out of this list too — the hub is live for both customer
+// portals (see the dedicated route below), so leaving it here would let the generic
+// placeholder shadow it.
+$portalSections = ['saved-equipment', 'notifications'];
 
 Route::middleware(['auth', 'no.back.history', 'user.type:buyer'])
     ->prefix('buyer')
@@ -47,6 +51,10 @@ Route::middleware(['auth', 'no.back.history', 'user.type:buyer'])
         Route::get('/messages/{thread}', [MessageThreadController::class, 'show'])->whereNumber('thread')->name('messages.show');
         Route::post('/messages/{thread}/messages', [MessageThreadController::class, 'store'])->whereNumber('thread')->name('messages.store');
         Route::post('/messages/{thread}/read', [MessageThreadController::class, 'markRead'])->whereNumber('thread')->name('messages.read');
+        // The Documents hub — the same controller and screen the seller portal uses.
+        // A buyer sees public documents on listings they have inquired about, plus
+        // anything a broker shared with them by name.
+        Route::get('/documents', [DocumentController::class, 'index'])->defaults('userType', 'buyer')->name('documents');
         Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'buyer')->name('profile');
         Route::patch('/profile', [ProfileController::class, 'update'])->defaults('userType', 'buyer')->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->defaults('userType', 'buyer')->name('profile.password');

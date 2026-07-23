@@ -35,6 +35,67 @@ export type SharedPageProps = {
      * PortalShell via a partial reload; 0 for guests.
      */
     unreadMessageThreads?: number;
+    /**
+     * Documents added since the user last opened the Documents page. Drives the
+     * Documents nav badge. Refreshed on the same 45s partial reload as the counter
+     * above; always 0 for brokers and guests.
+     */
+    unseenDocuments?: number;
+};
+
+/**
+ * One file in the Documents hub or the broker's per-subject panel.
+ *
+ * The same shape covers both the documents table and message attachments unioned in
+ * at read time (App\Support\DocumentPresenter) — `source` is what distinguishes them.
+ * Fields below the divider are broker-only and are simply absent from a customer
+ * payload; the presenter never sends them, so an undefined check is a real one.
+ */
+export type PortalDocument = {
+    /** Namespaced ("doc-12" / "msg-7") because the broker view interleaves two tables. */
+    key: string;
+    name: string;
+    mime: string;
+    size: number;
+    isImage: boolean;
+    /** False when the row outlived its file — render as unavailable, not a dead link. */
+    available: boolean;
+    /** An authorizing route, never a static path. */
+    url: string;
+    addedBy: string;
+    source: 'broker_upload' | 'submission_upload' | 'message_attachment';
+    sourceLabel: string;
+    createdAt: string | null;
+    createdAtLabel: string | null;
+    /** Published with the listing. The full visibility value is broker-only. */
+    isPublic: boolean;
+    // Customer payloads only.
+    addedByLabel?: string;
+    isNew?: boolean;
+    // Broker payloads only.
+    id?: number;
+    visibility?: 'private_broker' | 'shared_user' | 'public_listing' | null;
+    visibilityLabel?: string;
+    visibilityTone?: StatusTone;
+    sharedWith?: string | null;
+    archived?: boolean;
+    archiveUrl?: string | null;
+    downloadCount?: number | null;
+};
+
+/**
+ * Documents grouped by what they are about, as the customer hub renders them. The
+ * status badge is resolved server-side because it is the subject's live status, not
+ * anything the document knows.
+ */
+export type DocumentGroup = {
+    key: string;
+    kind: string;
+    kindLabel: string;
+    title: string;
+    statusLabel: string;
+    statusTone: StatusTone;
+    documents: PortalDocument[];
 };
 
 export type MessageAttachment = {
@@ -133,17 +194,19 @@ export type PortalData = {
     profileName?: string;
 };
 
+/**
+ * A listing photo, as stored in the equipment_submissions.photos JSON column.
+ *
+ * Documents used to share this shape and that column. They are their own table now
+ * (PortalDocument above) because a JSON array cannot express who a file is for, and
+ * because these URLs are static public-disk paths with no auth in them — fine for a
+ * marketplace gallery, never acceptable for a seller's paperwork.
+ */
 export type UploadFileMeta = {
     name: string;
     path: string;
     url: string;
     size: number | null;
-    /**
-     * Documents only, and only where the payload includes it. Seller-uploaded documents
-     * are private until a broker marks them public (see PublicListingPresenter); photos
-     * carry no such flag.
-     */
-    public?: boolean;
 };
 
 export type StatusTone = 'neutral' | 'success' | 'warning' | 'muted' | 'danger';
@@ -190,7 +253,7 @@ export type EquipmentSubmission = {
     asking_price: string | null;
     needs_valuation: boolean;
     photos: UploadFileMeta[];
-    documents: UploadFileMeta[];
+    documents: PortalDocument[];
     status: string;
     status_label: string;
     status_tone: StatusTone;
@@ -204,6 +267,13 @@ export type EquipmentSubmission = {
  * state and the offers logged against it.
  */
 export type EquipmentSubmissionDetail = EquipmentSubmission & {
+    /**
+     * Whether the photo set may still be changed — false once a listing is Sold or Not
+     * Accepted. Sent by the server rather than derived from the status string here, so
+     * the screen cannot offer an upload the controller would 403.
+     */
+    photos_editable: boolean;
+    max_photos: number;
     public_id: string | null;
     /** Set only when the listing is actually reachable on the public marketplace. */
     public_href: string | null;

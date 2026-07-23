@@ -5,6 +5,8 @@ import { toast } from 'sonner';
 import PortalShell from '../../Components/portal-shell';
 import PortalPageHeader, { portalHeaderActionClass } from '../../Components/portal-page-header';
 import BackLink from '../../Components/back-link';
+import { DocumentRow, DocumentRows } from '../../Components/document-list';
+import { NoPhotosNotice, PhotoUploadForm, RemovePhotoButton } from '../../Components/photo-manager';
 import type { EquipmentSubmissionDetail, PortalData, SharedPageProps, StatusTone } from '../../types';
 
 type SellerListingDetailProps = {
@@ -153,7 +155,7 @@ export default function SellerListingDetail({ portal, listing }: SellerListingDe
                             </Panel>
                         </div>
                         <div className="grid gap-4 xl:order-1">
-                            <PhotoGallery photos={listing.photos} title={listing.title} />
+                            <PhotoGallery listing={listing} />
 
                             {/*
                               * What buyers see. These fields are written by a broker after review, so
@@ -191,28 +193,27 @@ export default function SellerListingDetail({ portal, listing }: SellerListingDe
                                 {listing.documents.length === 0 ? (
                                     <p className="text-base leading-7 text-neutral-600">No documents uploaded.</p>
                                 ) : (
-                                    <ul className="grid gap-2">
-                                        {listing.documents.map((document) => (
-                                            <li
-                                                key={document.path}
-                                                className="flex items-center justify-between gap-4 rounded-lg border border-[#dad5cb] bg-[#f8f8f6] px-4 py-3"
-                                            >
-                                                <a
-                                                    href={document.url}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="focus-copper min-w-0 truncate text-sm font-semibold text-[#a56437] underline-offset-4 hover:underline"
-                                                >
-                                                    {document.name}
-                                                </a>
-                                                {/* Documents are private until a broker marks them public,
-                                                    so the seller can see which of theirs buyers can read. */}
-                                                <Pill tone={document.public ? 'success' : 'muted'}>
-                                                    {document.public ? 'Public' : 'Private'}
-                                                </Pill>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <div className="-mx-1 overflow-hidden rounded-lg border border-[#dad5cb]">
+                                        {/* The same row the Documents hub renders, so a file looks
+                                            and behaves identically wherever the seller meets it —
+                                            including going through the authorizing download route
+                                            rather than a static path. */}
+                                        <DocumentRows>
+                                            {listing.documents.map((document) => (
+                                                <DocumentRow
+                                                    key={document.key}
+                                                    document={document}
+                                                    meta={
+                                                        // Private until a broker publishes it, so the
+                                                        // seller can see which of theirs buyers read.
+                                                        <Pill tone={document.isPublic ? 'success' : 'muted'}>
+                                                            {document.isPublic ? 'Public' : 'Private'}
+                                                        </Pill>
+                                                    }
+                                                />
+                                            ))}
+                                        </DocumentRows>
+                                    </div>
                                 )}
                             </Panel>
                         </div>
@@ -230,65 +231,93 @@ function hasEnrichment(listing: EquipmentSubmissionDetail): boolean {
     );
 }
 
-function PhotoGallery({ photos, title }: { photos: EquipmentSubmissionDetail['photos']; title: string }) {
+/**
+ * The seller's own gallery, and the one place they can correct it.
+ *
+ * The upload lives here rather than on the listings index because this is where a seller
+ * lands when a broker tells them the listing cannot go live yet — and until it existed,
+ * "add a photo" was not something the product could do at all after submission.
+ */
+function PhotoGallery({ listing }: { listing: EquipmentSubmissionDetail }) {
+    const { photos, title } = listing;
     const [activeIndex, setActiveIndex] = useState(0);
     const [failed, setFailed] = useState<Record<number, boolean>>({});
-    const active = photos[activeIndex];
-
-    if (photos.length === 0) {
-        return (
-            <div className="grid h-32 place-items-center rounded-xl border border-[#dad5cb] bg-white text-sm text-neutral-500 shadow-sm">
-                No photos uploaded.
-            </div>
-        );
-    }
+    // Clamped rather than reset: removing the last photo in the set would otherwise leave
+    // activeIndex pointing past the end and blank the hero until something else re-rendered.
+    const safeIndex = Math.min(activeIndex, Math.max(0, photos.length - 1));
+    const active = photos[safeIndex];
+    const uploadUrl = `/seller/listings/${listing.id}/photos`;
 
     return (
         <div className="grid gap-2">
-            {/* Aspect ratio keeps the frame stable while the photo loads; the max height
-                is the backstop that stops a wide viewport from turning the hero into a
-                full screen of image and pushing the listing facts out of sight. */}
-            <div className="aspect-[16/9] max-h-[360px] overflow-hidden rounded-xl border border-[#dad5cb] bg-[#f3f1ec] shadow-sm">
-                {active && !failed[activeIndex] ? (
-                    <img
-                        src={active.url}
-                        alt={`${title} — photo ${activeIndex + 1} of ${photos.length}`}
-                        className="h-full w-full object-cover"
-                        onError={() => setFailed((current) => ({ ...current, [activeIndex]: true }))}
-                    />
-                ) : (
-                    <div className="grid h-full place-items-center text-sm text-neutral-500">Image unavailable</div>
-                )}
-            </div>
+            {photos.length === 0 ? (
+                // 'Under Review' is the state where a missing photo is actively holding
+                // the listing back; on a Sold one it is just history.
+                <NoPhotosNotice blocksPublishing={listing.status === 'under_review'} />
+            ) : (
+                <>
+                    {/* Aspect ratio keeps the frame stable while the photo loads; the max height
+                        is the backstop that stops a wide viewport from turning the hero into a
+                        full screen of image and pushing the listing facts out of sight. */}
+                    <div className="relative aspect-[16/9] max-h-[360px] overflow-hidden rounded-xl border border-[#dad5cb] bg-[#f3f1ec] shadow-sm">
+                        {active && !failed[safeIndex] ? (
+                            <img
+                                src={active.url}
+                                alt={`${title} — photo ${safeIndex + 1} of ${photos.length}`}
+                                className="h-full w-full object-cover"
+                                onError={() => setFailed((current) => ({ ...current, [safeIndex]: true }))}
+                            />
+                        ) : (
+                            <div className="grid h-full place-items-center text-sm text-neutral-500">Image unavailable</div>
+                        )}
 
-            {photos.length > 1 && (
-                <div className="flex flex-wrap gap-2">
-                    {photos.map((photo, index) => (
-                        <button
-                            key={photo.path}
-                            type="button"
-                            onClick={() => setActiveIndex(index)}
-                            aria-label={`Show photo ${index + 1}`}
-                            aria-current={index === activeIndex}
-                            className={`focus-copper h-16 w-20 overflow-hidden rounded-lg border-2 transition-colors ${
-                                index === activeIndex ? 'border-[#a56437]' : 'border-transparent hover:border-[#dad5cb]'
-                            }`}
-                        >
-                            {failed[index] ? (
-                                <span className="grid h-full w-full place-items-center bg-[#f3f1ec] text-[0.6rem] text-neutral-400">n/a</span>
-                            ) : (
-                                <img
-                                    src={photo.url}
-                                    alt=""
-                                    loading="lazy"
-                                    className="h-full w-full object-cover"
-                                    onError={() => setFailed((current) => ({ ...current, [index]: true }))}
+                        {listing.photos_editable && (
+                            <div className="absolute right-2 top-2">
+                                <RemovePhotoButton
+                                    action={`${uploadUrl}/${safeIndex}`}
+                                    label={`Remove photo ${safeIndex + 1}`}
                                 />
-                            )}
-                        </button>
-                    ))}
-                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {photos.length > 1 && (
+                        <div className="flex flex-wrap gap-2">
+                            {photos.map((photo, index) => (
+                                <button
+                                    key={photo.path}
+                                    type="button"
+                                    onClick={() => setActiveIndex(index)}
+                                    aria-label={`Show photo ${index + 1}`}
+                                    aria-current={index === safeIndex}
+                                    className={`focus-copper h-16 w-20 overflow-hidden rounded-lg border-2 transition-colors ${
+                                        index === safeIndex ? 'border-[#a56437]' : 'border-transparent hover:border-[#dad5cb]'
+                                    }`}
+                                >
+                                    {failed[index] ? (
+                                        <span className="grid h-full w-full place-items-center bg-[#f3f1ec] text-[0.6rem] text-neutral-400">n/a</span>
+                                    ) : (
+                                        <img
+                                            src={photo.url}
+                                            alt=""
+                                            loading="lazy"
+                                            className="h-full w-full object-cover"
+                                            onError={() => setFailed((current) => ({ ...current, [index]: true }))}
+                                        />
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </>
             )}
+
+            <PhotoUploadForm
+                action={uploadUrl}
+                photoCount={photos.length}
+                maxPhotos={listing.max_photos}
+                editable={listing.photos_editable}
+            />
         </div>
     );
 }

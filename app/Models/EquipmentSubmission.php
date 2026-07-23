@@ -4,8 +4,11 @@ namespace App\Models;
 
 use App\Enums\ListingStatus;
 use App\Enums\OfferStatus;
+use App\Enums\ThreadSubjectType;
+use App\Support\UploadStore;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -41,7 +44,6 @@ use Illuminate\Support\Str;
     'consented_at',
     'source',
     'photos',
-    'documents',
     'status',
     'published_at',
     'sold_at',
@@ -54,6 +56,23 @@ class EquipmentSubmission extends Model
     public const SOLD_VISIBLE_DAYS = 30;
 
     public const CARD_IMAGE_PLACEHOLDER = '/images/petra-equipment-yard-hero.png';
+
+    /**
+     * Photos a listing may hold in total, across every upload.
+     *
+     * A total rather than a per-request cap. The submission form's own `max:8` bounded
+     * the whole set only while photos were write-once; now that a seller or broker can
+     * add more later, the cap has to be checked against what is already stored or it
+     * bounds nothing.
+     */
+    public const MAX_PHOTOS = 8;
+
+    public const MAX_PHOTO_SIZE_KB = 10240;
+
+    /**
+     * Where every listing photo is written, whichever form or portal it arrived through.
+     */
+    public const PHOTO_FOLDER = 'portal/equipment-submissions/photos';
 
     /**
      * Ordered as the content doc's submission-form dropdown. The order flows straight to
@@ -337,6 +356,77 @@ class EquipmentSubmission extends Model
     }
 
     /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function photoList(): array
+    {
+        return $this->photos ?? [];
+    }
+
+    public function photoCount(): int
+    {
+        return count($this->photoList());
+    }
+
+    /**
+     * How many more photos this listing will accept.
+     */
+    public function remainingPhotoSlots(): int
+    {
+        return max(0, self::MAX_PHOTOS - $this->photoCount());
+    }
+
+    /**
+     * Append newly stored photos to the set.
+     *
+     * Append, never replace: both the seller's page and the broker's tab post batches
+     * to the same column, and a replace semantic would let the second upload silently
+     * discard the first. The cap is enforced by the form requests, which can report it
+     * as a validation error before anything reaches the disk.
+     *
+     * @param  array<int, array<string, mixed>>  $stored  as returned by UploadStore::storePublicBatch
+     */
+    public function addPhotos(array $stored): void
+    {
+        if ($stored === []) {
+            return;
+        }
+
+        $this->photos = array_values(array_merge($this->photoList(), $stored));
+        $this->save();
+    }
+
+    /**
+     * Drop one photo by position, unlinking the file behind it.
+     *
+     * Unlike documents — which are archived, never deleted, because a file a customer
+     * has been shown is part of the record of the deal — a photo is presentation. A
+     * duplicate or a wrong unit on a public card should leave no trace, so this really
+     * removes it. The unlink lives here rather than in the callers so neither of the
+     * two upload surfaces can drop the row and leave the file orphaned on the public disk.
+     *
+     * Returns false when the index does not exist, which is what a stale page posting
+     * an index that another session already removed looks like.
+     */
+    public function removePhotoAt(int $index): bool
+    {
+        $photos = $this->photoList();
+
+        if (! array_key_exists($index, $photos)) {
+            return false;
+        }
+
+        [$removed] = array_splice($photos, $index, 1);
+
+        $this->photos = array_values($photos);
+        $this->save();
+
+        UploadStore::deletePublic($removed['path'] ?? null);
+
+        return true;
+    }
+
+    /**
      * Buyer-facing description. Brokers write public_description; if it is somehow
      * empty we fall back to a safe generated summary — never the raw seller notes.
      */
@@ -353,16 +443,30 @@ class EquipmentSubmission extends Model
     }
 
     /**
+     * Every document filed against this listing, whatever its visibility.
+     *
+     * These used to be a JSON blob on this row (the `documents` column, dropped by the
+     * 2026_07_22 migrations that moved them out). They are
+     * a real table now because a JSON array cannot express "this file is for the seller
+     * and not the buyer", and because the files themselves were world-readable on the
+     * public disk while they lived there.
+     *
+     * @return HasMany<Document, $this>
+     */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class, 'subject_id')
+            ->where('subject_type', ThreadSubjectType::Listing->value);
+    }
+
+    /**
      * Documents a broker has explicitly marked public. Seller uploads default to private.
      *
-     * @return array<int, array<string, mixed>>
+     * @return Collection<int, Document>
      */
-    public function publicDocuments(): array
+    public function publicDocuments(): Collection
     {
-        return array_values(array_filter(
-            $this->documents ?? [],
-            fn (array $document): bool => (bool) ($document['public'] ?? false),
-        ));
+        return Document::query()->publicOnListing($this->id)->orderBy('id')->get();
     }
 
     public function isSoldVisible(): bool
@@ -393,7 +497,6 @@ class EquipmentSubmission extends Model
     {
         return [
             'photos' => 'array',
-            'documents' => 'array',
             'intent' => 'array',
             'asking_price' => 'decimal:2',
             'needs_valuation' => 'boolean',

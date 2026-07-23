@@ -103,7 +103,10 @@ class AuthPortalTest extends TestCase
 
     public function test_seller_can_submit_equipment_and_see_it_on_listings(): void
     {
+        // Photos go to the public disk, documents to the private one — see
+        // App\Support\DocumentStore. Both are faked so neither lands in storage/app.
         Storage::fake('public');
+        Storage::fake('local');
 
         $user = User::factory()->seller()->create();
 

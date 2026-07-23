@@ -60,8 +60,8 @@ class StorePublicEquipmentSubmissionRequest extends FormRequest
             'estimated_value_range' => ['nullable', 'string', Rule::in(array_keys(EquipmentSubmission::VALUE_RANGE_OPTIONS))],
 
             // Same limits as the portal form so the two intake paths accept the same uploads.
-            'photos' => ['nullable', 'array', 'max:8'],
-            'photos.*' => ['file', 'image', 'max:10240'],
+            'photos' => ['nullable', 'array', 'max:'.EquipmentSubmission::MAX_PHOTOS],
+            'photos.*' => ['file', 'image', 'max:'.EquipmentSubmission::MAX_PHOTO_SIZE_KB],
             'documents' => ['nullable', 'array', 'max:8'],
             'documents.*' => ['file', 'max:20480'],
 

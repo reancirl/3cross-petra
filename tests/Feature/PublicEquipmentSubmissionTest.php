@@ -165,6 +165,7 @@ class PublicEquipmentSubmissionTest extends TestCase
     public function test_uploads_are_stored_against_the_submission(): void
     {
         Storage::fake('public');
+        Storage::fake('local');
 
         $this->post('/sell-equipment/equipment-submission', $this->payload([
             'photos' => [UploadedFile::fake()->image('unit.jpg')],
@@ -173,9 +174,21 @@ class PublicEquipmentSubmissionTest extends TestCase
 
         $submission = EquipmentSubmission::sole();
 
+        // Photos stay a JSON blob on the public disk — they are the marketplace gallery.
         $this->assertCount(1, $submission->photos);
-        $this->assertCount(1, $submission->documents);
         $this->assertSame('unit.jpg', $submission->photos[0]['name']);
+        Storage::disk('public')->assertExists($submission->photos[0]['path']);
+
+        // Documents are rows on the private disk. An unclaimed public submission has no
+        // account behind it, so there is nobody to credit or share back to and the file
+        // stays broker-only until the listing is claimed.
+        $document = $submission->documents->sole();
+
+        $this->assertSame('spec.pdf', $document->original_name);
+        $this->assertNull($document->uploaded_by_id);
+        $this->assertNull($document->shared_with_user_id);
+        Storage::disk('local')->assertExists($document->file_path);
+        Storage::disk('public')->assertMissing($document->file_path);
     }
 
     public function test_both_consent_checkboxes_are_required(): void

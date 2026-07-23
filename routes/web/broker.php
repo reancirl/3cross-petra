@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Broker\DocumentController;
 use App\Http\Controllers\Broker\InboxController;
 use App\Http\Controllers\Broker\LeadController;
 use App\Http\Controllers\Broker\SubmissionReviewController;
@@ -36,8 +37,32 @@ Route::middleware(['auth', 'no.back.history', 'user.type:broker'])
         // place (accept / decline / re-offer) instead of logging a duplicate offer.
         Route::patch('/offers/{offer}', [SubmissionReviewController::class, 'respondToOffer'])
             ->name('offers.respond');
+        // Photos. No {subjectType} segment, unlike documents: a photo only ever belongs
+        // to a listing, so the indirection would buy nothing. Brokers upload here because
+        // photos often arrive by email after the seller has already submitted.
+        Route::post('/seller-submissions/{equipmentSubmission}/photos', [SubmissionReviewController::class, 'storePhotos'])
+            ->whereNumber('equipmentSubmission')
+            ->name('seller-submissions.photos.store');
+        // Delete, not archive — the opposite of the documents rule above. A document a
+        // customer has seen is part of the record of the deal; a photo is presentation,
+        // and a wrong unit on a public card should leave no trace.
+        Route::delete('/seller-submissions/{equipmentSubmission}/photos/{index}', [SubmissionReviewController::class, 'destroyPhoto'])
+            ->whereNumber('equipmentSubmission')
+            ->whereNumber('index')
+            ->name('seller-submissions.photos.destroy');
         Route::patch('/buyer-requests/{equipmentRequest}', [SubmissionReviewController::class, 'updateBuyerRequest'])
             ->name('buyer-requests.update');
+        // Documents. The subject is in the path rather than the body so the two queue
+        // pages post to a URL that names what they are adding to, and a mistyped
+        // subject 404s instead of silently filing the upload somewhere else.
+        Route::post('/documents/{subjectType}/{subjectId}', [DocumentController::class, 'store'])
+            ->whereIn('subjectType', ['listing', 'buyer_request'])
+            ->whereNumber('subjectId')
+            ->name('documents.store');
+        // Archive, not delete: a document a customer has seen stays in the record.
+        Route::patch('/documents/{document}/archive', [DocumentController::class, 'archive'])
+            ->whereNumber('document')
+            ->name('documents.archive');
         // Inbox: every thread from every buyer and seller. Brokers are staff, so unlike
         // the customer side there is no ownership filter — user.type:broker on this
         // group is the whole authorization story, matching the queues above.

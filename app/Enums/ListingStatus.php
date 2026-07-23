@@ -82,6 +82,23 @@ enum ListingStatus: string
     }
 
     /**
+     * Whether the photo set may still be changed.
+     *
+     * Published is deliberately included: a listing going live with the wrong photos —
+     * or with none, which blocks publishing in the first place — is the whole reason
+     * post-submission uploads exist. Sold and Not Accepted are closed records; a Sold
+     * listing stays publicly visible for 30 days and its gallery should not move
+     * underneath the buyers still looking at it.
+     */
+    public function acceptsPhotoEdits(): bool
+    {
+        return match ($this) {
+            self::UnderReview, self::Published, self::Pending => true,
+            self::Sold, self::NotAccepted => false,
+        };
+    }
+
+    /**
      * @return array<string, string> value => label, for select inputs.
      */
     public static function options(): array

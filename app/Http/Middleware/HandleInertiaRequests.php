@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Thread;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -70,6 +71,15 @@ class HandleInertiaRequests extends Middleware
             'unreadMessageThreads' => fn (): int => $user === null
                 ? 0
                 : Thread::unreadThreadCountFor($user),
+            // The Documents nav badge: files added since the customer last opened the
+            // Documents page. A closure for the same reasons as the counter above, and
+            // refreshed by the same 45s partial reload in PortalShell.
+            //
+            // Always 0 for brokers — they are the ones adding documents, so a "new for
+            // you" badge on their own uploads would be noise.
+            'unseenDocuments' => fn (): int => $user === null
+                ? 0
+                : User::unseenDocumentCountFor($user),
         ];
     }
 }
