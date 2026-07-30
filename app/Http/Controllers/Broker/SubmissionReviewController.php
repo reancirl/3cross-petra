@@ -16,6 +16,7 @@ use App\Models\EquipmentSubmission;
 use App\Models\Offer;
 use App\Models\User;
 use App\Support\DocumentPresenter;
+use App\Support\Notifier;
 use App\Support\UploadStore;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -265,6 +266,9 @@ class SubmissionReviewController extends Controller
         EquipmentSubmission $equipmentSubmission,
     ): RedirectResponse {
         $status = ListingStatus::from($request->validated('status'));
+        // Captured before the write so a broker who only edits the buyer-facing copy
+        // does not re-notify the seller that the status "changed" to what it already was.
+        $statusChanged = $equipmentSubmission->listingStatus() !== $status;
 
         $attributes = [
             'status' => $status,
@@ -288,6 +292,10 @@ class SubmissionReviewController extends Controller
             : null;
 
         $equipmentSubmission->update($attributes);
+
+        if ($statusChanged) {
+            app(Notifier::class)->listingStatusChanged($equipmentSubmission, $status);
+        }
 
         $message = $status === ListingStatus::Published
             ? "Listing published as {$equipmentSubmission->public_id}."
@@ -334,7 +342,13 @@ class SubmissionReviewController extends Controller
         UpdateEquipmentRequestStatusRequest $request,
         EquipmentRequest $equipmentRequest,
     ): RedirectResponse {
+        $statusChanged = $equipmentRequest->status !== $request->validated('status');
+
         $equipmentRequest->update($request->safe()->only(['status']));
+
+        if ($statusChanged) {
+            app(Notifier::class)->requestStatusChanged($equipmentRequest);
+        }
 
         return back()->with('status', 'Buyer request status updated.');
     }

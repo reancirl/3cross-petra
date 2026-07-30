@@ -13,6 +13,7 @@ use App\Models\Offer;
 use App\Models\User;
 use App\Support\DocumentPresenter;
 use App\Support\DocumentStore;
+use App\Support\Notifier;
 use App\Support\UploadStore;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -105,6 +106,8 @@ class EquipmentSubmissionController extends Controller
             $submission->id,
             $request->user()->id,
         );
+
+        app(Notifier::class)->newSubmission($submission);
 
         return back()->with('status', 'Equipment submitted.');
     }

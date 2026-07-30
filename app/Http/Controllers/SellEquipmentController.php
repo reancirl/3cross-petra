@@ -10,6 +10,7 @@ use App\Models\BrokerInquiry;
 use App\Models\EquipmentSubmission;
 use App\Models\User;
 use App\Support\DocumentStore;
+use App\Support\Notifier;
 use App\Support\PublicLocationOptions;
 use App\Support\UploadStore;
 use Illuminate\Http\RedirectResponse;
@@ -106,6 +107,8 @@ class SellEquipmentController extends Controller
             $isSeller ? $user->id : null,
         );
 
+        app(Notifier::class)->newSubmission($submission);
+
         return redirect('/sell-equipment/equipment-submission/thank-you');
     }
 
@@ -137,13 +140,15 @@ class SellEquipmentController extends Controller
             return $this->backToContactForm();
         }
 
-        BrokerInquiry::create([
+        $inquiry = BrokerInquiry::create([
             ...$request->safe()->except('consent'),
             'type' => BrokerInquiry::TYPE_BROKER_INQUIRY,
             'user_id' => $request->user()?->id,
             'consented_at' => now(),
             'status' => BrokerInquiry::STATUS_NEW,
         ]);
+
+        app(Notifier::class)->newInquiry($inquiry);
 
         return $this->backToContactForm();
     }

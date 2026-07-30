@@ -55,6 +55,7 @@ class MessageThreadService
         ThreadSide $side,
         ?string $body,
         array $attachments = [],
+        bool $recordInAppNotification = true,
     ): Message {
         $message = DB::transaction(function () use ($thread, $sender, $side, $body, $attachments): Message {
             $message = $thread->messages()->create([
@@ -86,7 +87,12 @@ class MessageThreadService
 
         $message->load('attachments');
 
-        app(ThreadNotifier::class)->notifyOtherSide($thread->fresh(), $message);
+        // One event, two outputs: the in-app notification for the other side plus the
+        // email, which Notifier delegates back to ThreadNotifier so its batching window
+        // still decides whether a message actually sends. The in-app row is suppressed
+        // only for a quote inquiry's opening message, which is already covered by its
+        // new_request notification (see openListingInquiry / EquipmentListingController).
+        app(Notifier::class)->newMessage($thread->fresh(), $message, $recordInAppNotification);
 
         return $message;
     }
@@ -100,8 +106,12 @@ class MessageThreadService
      * for one would be unreachable — and emailing it would be messaging a stranger
      * about an account they do not know exists.
      */
-    public function openListingInquiry(User $buyer, EquipmentSubmission $listing, ?string $note): Thread
-    {
+    public function openListingInquiry(
+        User $buyer,
+        EquipmentSubmission $listing,
+        ?string $note,
+        bool $recordInAppNotification = true,
+    ): Thread {
         $thread = $this->findOrCreateThread($buyer, $listing);
 
         $this->postMessage(
@@ -111,6 +121,7 @@ class MessageThreadService
             $note !== null && trim($note) !== ''
                 ? $note
                 : "I'd like more details on {$listing->title}.",
+            recordInAppNotification: $recordInAppNotification,
         );
 
         return $thread;
