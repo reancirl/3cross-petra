@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Portal\DashboardController;
 use App\Http\Controllers\Portal\DocumentController;
 use App\Http\Controllers\Portal\EquipmentRequestController;
@@ -32,7 +33,11 @@ use Illuminate\Support\Facades\Route;
 // 'documents' has graduated out of this list too — the hub is live for both customer
 // portals (see the dedicated route below), so leaving it here would let the generic
 // placeholder shadow it.
-$portalSections = ['saved-equipment', 'notifications'];
+//
+// 'notifications' has graduated out too — the in-app feed is a real page in all three
+// portals now (see the dedicated route below). Leaving it here would let the "Soon"
+// placeholder shadow the live page.
+$portalSections = ['saved-equipment'];
 
 Route::middleware(['auth', 'no.back.history', 'user.type:buyer'])
     ->prefix('buyer')
@@ -55,6 +60,12 @@ Route::middleware(['auth', 'no.back.history', 'user.type:buyer'])
         // A buyer sees public documents on listings they have inquired about, plus
         // anything a broker shared with them by name.
         Route::get('/documents', [DocumentController::class, 'index'])->defaults('userType', 'buyer')->name('documents');
+        // In-app notifications — the shared feed controller scopes to this buyer.
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+        Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+        Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])
+            ->whereNumber('notification')
+            ->name('notifications.read');
         Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'buyer')->name('profile');
         Route::patch('/profile', [ProfileController::class, 'update'])->defaults('userType', 'buyer')->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->defaults('userType', 'buyer')->name('profile.password');

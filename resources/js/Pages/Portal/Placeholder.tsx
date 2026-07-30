@@ -2,14 +2,13 @@ import { Head } from '@inertiajs/react';
 import PortalShell from '../../Components/portal-shell';
 import type { PortalData } from '../../types';
 
-// 'documents' has left this list — the hub is a real page in both customer portals now,
-// and a stale label here would still read "Documents is a later phase" if anything ever
-// routed back through the placeholder.
+// 'documents' and 'notifications' have both left this list — each is a real page in the
+// portals now, and a stale label here would still read "… is a later phase" if anything
+// ever routed back through the placeholder.
 const sectionLabels: Record<string, string> = {
     'saved-equipment': 'Saved Equipment',
     quotes: 'Quotes',
     offers: 'Offers',
-    notifications: 'Notifications',
 };
 
 type PlaceholderProps = {

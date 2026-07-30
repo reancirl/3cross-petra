@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import { useEffect } from 'react';
 import PortalPageHeader from '../../Components/portal-page-header';
 import PortalShell from '../../Components/portal-shell';
 import StatusBadge from '../../Components/status-badge';
@@ -28,6 +29,18 @@ export default function Documents({ portal, groups }: DocumentsProps) {
         0,
     );
 
+    // A document_shared notification deep-links here with a #doc-{subjectType}-{id} hash
+    // (see App\Models\Notification::deepLinkFor). Inertia client visits set the hash but
+    // do not scroll, so scroll the matching group into view once on arrival.
+    useEffect(() => {
+        const { hash } = window.location;
+        if (!hash) {
+            return;
+        }
+
+        document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start' });
+    }, []);
+
     return (
         <>
             <Head title={`Documents | ${portal.roleLabel} Portal`} />
@@ -52,7 +65,11 @@ export default function Documents({ portal, groups }: DocumentsProps) {
                         groups.map((group) => (
                             <section
                                 key={group.key}
-                                className="overflow-hidden rounded-xl border border-[#dad5cb] bg-white shadow-sm"
+                                // Anchor target for a document_shared notification deep link.
+                                // group.key is "{subjectType}:{subjectId}"; the hash form
+                                // swaps the colon for a dash — see Notification::deepLinkFor.
+                                id={`doc-${group.key.replace(':', '-')}`}
+                                className="overflow-hidden rounded-xl border border-[#dad5cb] bg-white shadow-sm scroll-mt-24"
                             >
                                 <header className="flex flex-col gap-2 border-b border-[#ece7dd] bg-[#f9f7f3] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
                                     <div className="min-w-0">

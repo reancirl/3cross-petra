@@ -27,9 +27,10 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
     }, []);
 
     /**
-     * Keep the Messages and Documents nav badges current on every portal screen.
+     * Keep the Messages, Documents and Notifications nav badges current on every portal
+     * screen.
      *
-     * A partial reload of the two shared counter props, so the poll costs two indexed
+     * A partial reload of the three shared counter props, so the poll costs three indexed
      * counts and never re-serializes the page the user is reading —
      * important because a mutation on this codebase otherwise re-sends all props.
      *
@@ -43,7 +44,7 @@ export default function PortalShell({ portal, title, eyebrow, children }: Portal
                 return;
             }
 
-            router.reload({ only: ['unreadMessageThreads', 'unseenDocuments'] });
+            router.reload({ only: ['unreadMessageThreads', 'unseenDocuments', 'unseenNotifications'] });
         }
 
         const timer = window.setInterval(refreshUnread, UNREAD_POLL_MS);

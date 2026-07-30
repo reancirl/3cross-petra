@@ -19,8 +19,8 @@ type PortalNavItem = {
     icon: PortalNavIconName;
     // Which shared counter to render as a badge, if any. A name rather than a boolean
     // precisely so a second counter could be added without a second flag — which is
-    // what 'documents' is.
-    badge?: 'unread' | 'documents';
+    // what 'documents' and 'notifications' are.
+    badge?: 'unread' | 'documents' | 'notifications';
 };
 
 type PortalNavGroup = {
@@ -28,11 +28,11 @@ type PortalNavGroup = {
     items: PortalNavItem[];
 };
 
-// Notifications remain deferred for sellers. Messages is live in all three portals —
-// it was previously absent here entirely, so a seller had no way to reach their broker
-// about their own submission. Documents is live for both customer portals; brokers
-// reach documents through the per-subject tab on their queues instead, so they have no
-// hub entry of their own.
+// Notifications is live in all three portals. Messages is live everywhere too — it was
+// previously absent here entirely, so a seller had no way to reach their broker about
+// their own submission. Documents is live for both customer portals; brokers reach
+// documents through the per-subject tab on their queues instead, so they have no hub
+// entry of their own.
 const sellerNavGroups: PortalNavGroup[] = [
     {
         label: 'Main Menu',
@@ -48,6 +48,7 @@ const sellerNavGroups: PortalNavGroup[] = [
         items: [
             { label: 'Documents', path: 'documents', real: true, icon: 'documents', badge: 'documents' },
             { label: 'Messages', path: 'messages', real: true, icon: 'messages', badge: 'unread' },
+            { label: 'Notifications', path: 'notifications', real: true, icon: 'notifications', badge: 'notifications' },
         ],
     },
     {
@@ -71,7 +72,7 @@ const buyerNavGroups: PortalNavGroup[] = [
         items: [
             { label: 'Documents', path: 'documents', real: true, icon: 'documents', badge: 'documents' },
             { label: 'Messages', path: 'messages', real: true, icon: 'messages', badge: 'unread' },
-            { label: 'Notifications', path: 'notifications', real: false, icon: 'notifications' },
+            { label: 'Notifications', path: 'notifications', real: true, icon: 'notifications', badge: 'notifications' },
         ],
     },
     {
@@ -94,6 +95,9 @@ const brokerNavGroups: PortalNavGroup[] = [
             { label: 'Leads', path: 'leads', real: true, icon: 'leads' },
             // Every customer conversation, from buyers and sellers alike.
             { label: 'Inbox', path: 'inbox', real: true, icon: 'messages', badge: 'unread' },
+            // The shared broker feed: submissions, requests and inquiries arriving in the
+            // queues, plus every customer reply. One feed, read state shared across staff.
+            { label: 'Notifications', path: 'notifications', real: true, icon: 'notifications', badge: 'notifications' },
         ],
     },
     {
@@ -142,6 +146,7 @@ export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, on
     // Shared props, refreshed app-wide by the 45s poll in PortalShell.
     const unreadThreads = page.props.unreadMessageThreads ?? 0;
     const unseenDocuments = page.props.unseenDocuments ?? 0;
+    const unseenNotifications = page.props.unseenNotifications ?? 0;
     const currentPath = page.url.split('?')[0];
     const userName = auth.user?.name ?? portal.profileName;
     const userInitial = (userName ?? portal.roleLabel).charAt(0).toUpperCase();
@@ -209,7 +214,9 @@ export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, on
                                     ? unreadThreads
                                     : item.badge === 'documents'
                                         ? unseenDocuments
-                                        : 0;
+                                        : item.badge === 'notifications'
+                                            ? unseenNotifications
+                                            : 0;
 
                                 return (
                                     <Link
@@ -248,7 +255,9 @@ export default function PortalSidebar({ portal, collapsed, onToggleCollapsed, on
                                                 aria-label={
                                                     item.badge === 'documents'
                                                         ? `${badgeCount} new ${badgeCount === 1 ? 'document' : 'documents'}`
-                                                        : `${badgeCount} unread ${badgeCount === 1 ? 'conversation' : 'conversations'}`
+                                                        : item.badge === 'notifications'
+                                                            ? `${badgeCount} unread ${badgeCount === 1 ? 'notification' : 'notifications'}`
+                                                            : `${badgeCount} unread ${badgeCount === 1 ? 'conversation' : 'conversations'}`
                                                 }
                                             >
                                                 {badgeCount > 99 ? '99+' : badgeCount}

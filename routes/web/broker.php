@@ -4,6 +4,7 @@ use App\Http\Controllers\Broker\DocumentController;
 use App\Http\Controllers\Broker\InboxController;
 use App\Http\Controllers\Broker\LeadController;
 use App\Http\Controllers\Broker\SubmissionReviewController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Portal\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,13 @@ Route::middleware(['auth', 'no.back.history', 'user.type:broker'])
         // rather than a tab, for the same reason the two above are separate pages.
         Route::get('/leads', [LeadController::class, 'index'])->name('leads');
         Route::patch('/leads/{brokerInquiry}', [LeadController::class, 'update'])->name('leads.update');
+        // In-app notifications — the shared broker feed (every broker sees one feed,
+        // read state shared), served by the same controller the customer portals use.
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+        Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+        Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])
+            ->whereNumber('notification')
+            ->name('notifications.read');
         // Same generic profile screen the seller and buyer portals use; the userType
         // default drives the shell chrome and the form's own patch/put URLs.
         Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'broker')->name('profile');
