@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Portal\StoreEquipmentRequestRequest;
 use App\Models\EquipmentRequest;
 use App\Models\User;
+use App\Support\Notifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -38,13 +39,15 @@ class EquipmentRequestController extends Controller
 
     public function store(StoreEquipmentRequestRequest $request): RedirectResponse
     {
-        $request->user()->equipmentRequests()->create($request->safe()->only([
+        $equipmentRequest = $request->user()->equipmentRequests()->create($request->safe()->only([
             'equipment_type',
             'specifications',
             'budget_range',
             'location_preference',
             'timeline',
         ]));
+
+        app(Notifier::class)->newRequest($equipmentRequest);
 
         return back()->with('status', 'Equipment request submitted.');
     }

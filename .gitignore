@@ -30,3 +30,5 @@ Thumbs.db
 /docs
 /implementation
 /rules
+# Stray SQLite database from local artisan runs (never the app DB)
+/laravel

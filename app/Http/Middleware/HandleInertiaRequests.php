@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Notification;
 use App\Models\Thread;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -80,6 +81,14 @@ class HandleInertiaRequests extends Middleware
             'unseenDocuments' => fn (): int => $user === null
                 ? 0
                 : User::unseenDocumentCountFor($user),
+            // The Notifications nav badge: unread rows in this user's feed (their own,
+            // or the shared broker feed for staff). A closure for the same reasons as
+            // the two counters above, refreshed by the same 45s partial reload in
+            // PortalShell — one poll returns message, document and notification unreads,
+            // never a second loop.
+            'unseenNotifications' => fn (): int => $user === null
+                ? 0
+                : Notification::unreadCountFor($user),
         ];
     }
 }

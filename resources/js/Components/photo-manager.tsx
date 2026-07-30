@@ -1,6 +1,7 @@
 import { router, useForm } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+import ConfirmDialog from './confirm-dialog';
 import type { UploadFileMeta } from '../types';
 
 /**
@@ -126,12 +127,10 @@ type RemovePhotoButtonProps = {
  */
 export function RemovePhotoButton({ action, label }: RemovePhotoButtonProps) {
     const [working, setWorking] = useState(false);
+    const [confirmOpen, setConfirmOpen] = useState(false);
 
     function remove() {
-        if (!window.confirm('Remove this photo? This cannot be undone.')) {
-            return;
-        }
-
+        setConfirmOpen(false);
         setWorking(true);
 
         router.delete(action, {
@@ -141,18 +140,29 @@ export function RemovePhotoButton({ action, label }: RemovePhotoButtonProps) {
     }
 
     return (
-        <button
-            type="button"
-            onClick={remove}
-            disabled={working}
-            aria-label={label}
-            title={label}
-            className="focus-copper grid h-7 w-7 place-items-center rounded-full border border-[#dad5cb] bg-white/95 text-neutral-600 shadow-sm transition-colors hover:border-[#b3261e] hover:text-[#b3261e] disabled:opacity-50"
-        >
-            <svg viewBox="0 0 20 20" aria-hidden="true" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
-            </svg>
-        </button>
+        <>
+            <button
+                type="button"
+                onClick={() => setConfirmOpen(true)}
+                disabled={working}
+                aria-label={label}
+                title={label}
+                className="focus-copper grid h-7 w-7 place-items-center rounded-full border border-[#dad5cb] bg-white/95 text-neutral-600 shadow-sm transition-colors hover:border-[#b3261e] hover:text-[#b3261e] disabled:opacity-50"
+            >
+                <svg viewBox="0 0 20 20" aria-hidden="true" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 5l10 10M15 5L5 15" strokeLinecap="round" />
+                </svg>
+            </button>
+
+            <ConfirmDialog
+                open={confirmOpen}
+                title="Remove photo?"
+                description="This removes the photo from the listing. This cannot be undone."
+                confirmLabel="Remove"
+                onCancel={() => setConfirmOpen(false)}
+                onConfirm={remove}
+            />
+        </>
     );
 }
 

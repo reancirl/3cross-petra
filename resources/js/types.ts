@@ -41,6 +41,39 @@ export type SharedPageProps = {
      * above; always 0 for brokers and guests.
      */
     unseenDocuments?: number;
+    /**
+     * Unread notifications in the user's feed (their own, or the shared broker feed for
+     * staff). Drives the Notifications nav badge. Refreshed on the same 45s partial
+     * reload as the two counters above — one poll, three counts; 0 for guests.
+     */
+    unseenNotifications?: number;
+};
+
+/**
+ * One row in the in-app notification feed. `icon` reuses the PortalNavIcon vocabulary so
+ * a notification wears the same glyph as the section it points at. `url` is the resolved
+ * deep link — clicking marks the row read, then navigates there.
+ */
+export type NotificationItem = {
+    id: number;
+    type: string;
+    icon: string;
+    title: string;
+    url: string;
+    isRead: boolean;
+    createdAt: string | null;
+};
+
+/**
+ * A page of the feed. Server-paginated (20 to a page, newest first) rather than the
+ * client-side pattern the list pages use, because the feed grows without bound until the
+ * 90-day retention prune catches up.
+ */
+export type NotificationFeed = {
+    items: NotificationItem[];
+    currentPage: number;
+    lastPage: number;
+    total: number;
 };
 
 /**

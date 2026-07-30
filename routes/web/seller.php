@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Portal\DashboardController;
 use App\Http\Controllers\Portal\DocumentController;
 use App\Http\Controllers\Portal\EquipmentSubmissionController;
@@ -52,6 +53,12 @@ Route::middleware(['auth', 'no.back.history', 'user.type:seller'])
         // their own submission or from a broker sharing it. The same controller serves
         // the buyer portal — the access rule is Document::visibleTo either way.
         Route::get('/documents', [DocumentController::class, 'index'])->defaults('userType', 'seller')->name('documents');
+        // In-app notifications — the shared feed controller scopes to this seller.
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+        Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+        Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])
+            ->whereNumber('notification')
+            ->name('notifications.read');
         Route::get('/profile', [ProfileController::class, 'show'])->defaults('userType', 'seller')->name('profile');
         Route::patch('/profile', [ProfileController::class, 'update'])->defaults('userType', 'seller')->name('profile.update');
         Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->defaults('userType', 'seller')->name('profile.password');

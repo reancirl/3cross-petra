@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\EquipmentSubmission;
 use App\Models\User;
 use App\Support\MessageThreadService;
+use App\Support\Notifier;
 use App\Support\PublicListingPresenter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -105,7 +106,7 @@ class EquipmentListingController extends Controller
             return back()->with('status', 'You already have an open quote request on this listing — Petra will follow up there.');
         }
 
-        $buyer->equipmentRequests()->create([
+        $equipmentRequest = $buyer->equipmentRequests()->create([
             'equipment_submission_id' => $equipment->id,
             'equipment_type' => "Quote Request: {$equipment->title}",
             'specifications' => $this->formatInquiryNote($equipment, $validated),
@@ -114,12 +115,22 @@ class EquipmentListingController extends Controller
             'timeline' => 'Availability, pricing, and inspection confirmation requested',
         ]);
 
+        // A new quote inquiry in the broker request queue. The thread opened below (for
+        // signed-in buyers) emits its own new_message notification — the two are
+        // deliberately distinct: the queue item is the record, the thread is the talk.
+        app(Notifier::class)->newRequest($equipmentRequest);
+
         // The inquiry record stays the system of record for the broker queue and the
         // buyer's Quotes page; the thread is where the conversation about it happens.
         // Both exist deliberately — see the Phase 0 decision recorded in the messaging
         // work — so nothing about the existing quote flow changes for guests.
+        //
+        // recordInAppNotification: false — the new_request notification above is already
+        // the broker's feed entry for this action. The opening message would otherwise
+        // add a second row for one buyer click; the email and the Inbox unread badge
+        // still fire, so the broker loses nothing.
         if ($isSignedIn) {
-            $this->threads->openListingInquiry($buyer, $equipment, $validated['note'] ?? null);
+            $this->threads->openListingInquiry($buyer, $equipment, $validated['note'] ?? null, recordInAppNotification: false);
 
             return back()->with('status', 'Request sent — Petra will follow up in your portal messages.');
         }

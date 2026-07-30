@@ -9,8 +9,8 @@ use App\Http\Requests\Broker\StoreDocumentRequest;
 use App\Models\Document;
 use App\Models\EquipmentRequest;
 use App\Models\EquipmentSubmission;
-use App\Support\DocumentNotifier;
 use App\Support\DocumentStore;
+use App\Support\Notifier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,9 +72,10 @@ class DocumentController extends Controller
 
         // After the transaction, and only once however many files went up: the batching
         // window in DocumentNotifier collapses the rest, but calling it per document
-        // would still cost a query each to discover that.
+        // would still cost a query each to discover that. Notifier writes the in-app
+        // notification and delegates the email back to DocumentNotifier, unchanged.
         if ($visibility === DocumentVisibility::SharedUser && $documents !== []) {
-            app(DocumentNotifier::class)->notifyShare($documents[0]);
+            app(Notifier::class)->documentShared($documents[0]);
         }
 
         $count = count($documents);

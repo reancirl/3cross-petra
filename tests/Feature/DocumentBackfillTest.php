@@ -38,6 +38,25 @@ class DocumentBackfillTest extends TestCase
         Storage::fake('public');
     }
 
+    /**
+     * Roll back to before the documents column was dropped, so a later migrate re-runs
+     * the backfill against the legacy JSON these tests plant.
+     *
+     * Counted rather than a hardcoded step: the pair under test is no longer the last two
+     * migrations once anything is added after them (notifications was), and a fixed
+     * `--step 2` would then roll back the newcomer instead of the backfill, leaving the
+     * planted data unconverted. Rolling back every migration from the backfill onward
+     * keeps this correct however many land later.
+     */
+    private function rollbackThroughDocumentBackfill(): void
+    {
+        $step = DB::table('migrations')
+            ->where('migration', '>=', '2026_07_22_000004_migrate_listing_documents_into_documents_table')
+            ->count();
+
+        Artisan::call('migrate:rollback', ['--step' => $step]);
+    }
+
     public function test_it_moves_listing_documents_into_the_table_and_off_the_public_disk(): void
     {
         $seller = User::factory()->seller()->create();
@@ -53,7 +72,7 @@ class DocumentBackfillTest extends TestCase
         ]);
 
         // Back to before the documents column was dropped.
-        Artisan::call('migrate:rollback', ['--step' => 2]);
+        $this->rollbackThroughDocumentBackfill();
 
         Storage::disk('public')->put('portal/equipment-submissions/documents/spec.pdf', 'spec bytes');
         Storage::disk('public')->put('portal/equipment-submissions/documents/invoice.pdf', 'invoice bytes');
@@ -129,7 +148,7 @@ class DocumentBackfillTest extends TestCase
             'status' => ListingStatus::UnderReview,
         ]);
 
-        Artisan::call('migrate:rollback', ['--step' => 2]);
+        $this->rollbackThroughDocumentBackfill();
 
         // A row whose bytes were destroyed on a container rebuild before storage/app
         // was a persisted volume. The row still has to survive — dropping it would
